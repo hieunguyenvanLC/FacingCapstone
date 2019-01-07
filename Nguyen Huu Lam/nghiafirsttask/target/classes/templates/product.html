@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Product</title>
+</head>
+<body onload="loadProList()">
+<h2>Product Page</h2>
+
+<div>
+    <table border="0">
+        <tr>
+            <td style="width: 200px">Name</td>
+            <td style="width: 100px">Price</td>
+            <td style="width: 100px">Action</td>
+        </tr>
+        <tbody id="tableBodyProduct"></tbody>
+    </table>
+</div>
+<h2>Add</h2>
+<div>
+    Name:
+    <input type="text" id="addName"/>
+    <br/>
+    Price:
+    <input type="text" id="addPrice"/>
+    <br/>
+    <button onclick="addPro()">Add</button>
+</div>
+<h2>Edit</h2>
+<div>
+    Name:
+    <input type="text" id="fixName"/>
+    <br/>
+    Price:
+    <input type="text" id="fixPrice"/>
+    <br/>
+    <button onclick="fixPro()">Edit</button>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    var backendServer = "http://localhost:8080/";
+    var tableBody = $('#tableBodyProduct');
+    var addName = $('#addName');
+    var addPrice = $('#addPrice');
+    var fixName = $('#fixName');
+    var fixPrice = $('#fixPrice');
+    var proList;
+    var editProId;
+
+    function loadProList() {
+        $.ajax({
+            type: 'GET',
+            url: backendServer + "/api/viewall",
+            dataType: 'json',
+            success: function (data) {
+                clearEditPro();
+                clearAddPro();
+                proList = data.data;
+                // alert(1);
+                if (proList != null) {
+                    tableBody.empty();
+                    for (var i = 0; i < proList.length; i++) {
+                        var rowData = proList[i];
+                        tableBody.append("                                <tr>\n" +
+                            "                                    <td>" + rowData.name + "</td>\n" +
+                            "                                    <td>" + rowData.price + "</td>\n" +
+                            "                                    <td>\n" +
+                            "                                        <div class=\"form-group\">\n" +
+                            "                                            <button onclick='loadEditPro(" + i + ")'>edit</button>\n" +
+                            "                                            <button onclick='delPro(" + rowData.id + ")'>delete</button>\n" +
+                            "                                        </div>\n" +
+                            "                                    </td>");
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
+    function delPro(proId) {
+        $.ajax({
+            type: 'GET',
+            url: backendServer + "/api/del?proId=" + proId,
+            dataType: 'json',
+            success: function (data) {
+                loadProList();
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
+    function addPro() {
+        var name = addName.val();
+        var price = addPrice.val();
+        if (name != "" && price != "") {
+            $.ajax({
+                type: 'POST',
+                url: backendServer + "/api/add?name=" + addName.val() + "&price=" + addPrice.val(),
+                dataType: 'json',
+                success: function (data) {
+                    loadProList();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+    }
+
+    function clearAddPro() {
+        addName.val("");
+        addPrice.val("");
+    }
+
+    function loadEditPro(i) {
+        var editPro = proList[i];
+        editProId = editPro.id;
+        fixName.val(editPro.name);
+        fixPrice.val(editPro.price);
+    }
+
+    function clearEditPro() {
+        editProId = -1;
+        fixName.val("");
+        fixPrice.val("");
+    }
+
+    function fixPro() {
+        var name = fixName.val();
+        var price = fixPrice.val();
+        if (editProId > 0 && name != "" && price != "") {
+            $.ajax({
+                type: 'POST',
+                url: backendServer + "/api/fix?proId=" + editProId + "&name=" + name + "&price=" + price,
+                dataType: 'json',
+                success: function (data) {
+                    loadProList();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+    }
+
+
+</script>
+</body>
+</html>
