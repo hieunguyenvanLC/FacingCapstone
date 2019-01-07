@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Product</title>
+</head>
+<body onload="loadProList()">
+<h2>Product Page</h2>
+<div style="display: table">
+    <div style="display: table-row">
+        <div style="width: 600px;display: table-cell">
+            <table border="0">
+                <tr>
+                    <td style="width: 200px">Name</td>
+                    <td style="width: 100px">Price</td>
+                    <td style="width: 100px">Action</td>
+                </tr>
+                <tbody id="tableBodyProduct"></tbody>
+            </table>
+        </div>
+        <div style="width: 400px;display: table-cell">
+            <h2>Add</h2>
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" id="addName"/></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="text" id="addPrice"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button onclick="addPro()">Add</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 400px;display: table-cell">
+            <h2>Edit</h2>
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" id="fixName"/></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="text" id="fixPrice"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button onclick="fixPro()">Edit</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    var backendAPI = "http://localhost:8080/api/";
+    var tableBody = $('#tableBodyProduct');
+    var addName = $('#addName');
+    var addPrice = $('#addPrice');
+    var fixName = $('#fixName');
+    var fixPrice = $('#fixPrice');
+    var proList;
+    var editProId;
+
+    function loadProList() {
+        $.ajax({
+            type: 'GET',
+            url: backendAPI + "viewall",
+            dataType: 'json',
+            success: function (data) {
+                clearEditPro();
+                clearAddPro();
+                proList = data.data;
+                // alert(1);
+                if (proList != null) {
+                    tableBody.empty();
+                    for (var i = 0; i < proList.length; i++) {
+                        var rowData = proList[i];
+                        tableBody.append("                                <tr>\n" +
+                            "                                    <td>" + rowData.name + "</td>\n" +
+                            "                                    <td>" + rowData.price + "</td>\n" +
+                            "                                    <td>\n" +
+                            "                                        <div class=\"form-group\">\n" +
+                            "                                            <button onclick='loadEditPro(" + i + ")'>edit</button>\n" +
+                            "                                            <button onclick='delPro(" + rowData.id + ")'>delete</button>\n" +
+                            "                                        </div>\n" +
+                            "                                    </td>");
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
+    function delPro(proId) {
+        $.ajax({
+            type: 'POST',
+            url: backendAPI + "del",
+            data: {proId: proId},
+            dataType: 'json',
+            success: function (data) {
+                loadProList();
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    }
+
+    function addPro() {
+        var name = addName.val();
+        var price = addPrice.val();
+        if (name != "" && price != "") {
+            $.ajax({
+                type: 'POST',
+                url: backendAPI + "add",
+                data: {name: name, price: price},
+                dataType: 'json',
+                success: function (data) {
+                    loadProList();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+    }
+
+    function clearAddPro() {
+        addName.val("");
+        addPrice.val("");
+    }
+
+    function loadEditPro(i) {
+        var editPro = proList[i];
+        editProId = editPro.id;
+        fixName.val(editPro.name);
+        fixPrice.val(editPro.price);
+    }
+
+    function clearEditPro() {
+        editProId = -1;
+        fixName.val("");
+        fixPrice.val("");
+    }
+
+    function fixPro() {
+        var name = fixName.val();
+        var price = fixPrice.val();
+        if (editProId > 0 && name != "" && price != "") {
+            $.ajax({
+                type: 'POST',
+                url: backendAPI + "fix",
+                data: {proId: editProId, name: name, price: price},
+                dataType: 'json',
+                success: function (data) {
+                    loadProList();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+    }
+
+
+</script>
+</body>
+</html>
