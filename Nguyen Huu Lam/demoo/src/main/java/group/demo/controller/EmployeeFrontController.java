@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class EmployeeFrontController {
 
     @GetMapping("/all")
-    public String viewEmployeeList(Model model){
-        System.out.println("index");
-        model.addAttribute("page", "employeePage");
+    public String viewEmployeeList() {
         return "index";
     }
 }

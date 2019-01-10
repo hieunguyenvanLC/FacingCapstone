@@ -28,8 +28,12 @@
                     <td><input type="text" id="addName"/></td>
                 </tr>
                 <tr>
-                    <td>Price:</td>
+                    <td>Phone:</td>
                     <td><input type="text" id="addPhone"/></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="text" id="addPassword"/></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -50,6 +54,10 @@
                     <td>Phone:</td>
                     <td><input type="text" id="fixPhone"/></td>
                 </tr>
+                <tr >
+                    <td>Password:</td>
+                    <td><input type="text" id="fixPassword" /></td>
+                </tr>
                 <tr>
                     <td></td>
                     <td>
@@ -69,8 +77,10 @@
     var tableBody = $('#tableBodyEmployye');
     var addName = $('#addName');
     var addPhone = $('#addPhone');
+    var addPassword = $('#addPassword');
     var fixName = $('#fixName');
     var fixPhone = $('#fixPhone');
+    var fixPassword = $('#fixPassword');
     var empList;
     var editEmpId;
 
@@ -79,7 +89,7 @@
         $.ajax(
             {
                 type: 'GET',
-                url: backendAPI +"viewall",
+                url: backendAPI + "viewall",
                 dataType: 'json',
                 success: function (data) {
                     clearEditEmp();
@@ -94,6 +104,7 @@
                                 "                                    <td>" + rowData.id + "</td>\n" +
                                 "                                    <td>" + rowData.name + "</td>\n" +
                                 "                                    <td>" + rowData.phone + "</td>\n" +
+
                                 "                                    <td>\n" +
                                 "                                        <div class=\"form-group\">\n" +
                                 "                                            <button onclick='loadEditEmp(" + i + ")'>edit</button>\n" +
@@ -109,6 +120,7 @@
             }
         )
     }
+
     function delEmp(empId) {
         $.ajax({
             type: 'POST',
@@ -123,14 +135,16 @@
             }
         })
     }
+
     function addEmp() {
         var name = addName.val();
         var phone = addPhone.val();
-        if (name != "" && phone != "") {
+        var password = addPassword.val();
+        if (name != "" && phone != "" && password !="") {
             $.ajax({
                 type: 'POST',
                 url: backendAPI + "add",
-                data: {name: name, phone: phone},
+                data: {name: name, phone: phone, password: password},
                 dataType: 'json',
                 success: function (data) {
                     loadEmpList();
@@ -141,30 +155,37 @@
             })
         }
     }
+
     function clearAddEmp() {
         addName.val("");
         addPhone.val("");
+        addPassword.val();
     }
+
     function loadEditEmp(i) {
         var editEmp = empList[i];
         editEmpId = editEmp.id;
         fixName.val(editEmp.name);
         fixPhone.val(editEmp.phone);
+        fixPassword.val(editEmp.password);
     }
+
     function clearEditEmp() {
         editEmpId = -1;
         fixName.val("");
         fixPhone.val("");
+        fixPassword.val("");
     }
 
     function fixEmp() {
         var name = fixName.val();
         var phone = fixPhone.val();
-        if (editEmpId > 0 && name != "" && phone != "") {
+        var password = fixPassword.val();
+        if (editEmpId > 0 && name != "" && phone != "" && password != "") {
             $.ajax({
                 type: 'POST',
                 url: backendAPI + "fix",
-                data: {empId: editEmpId, name: name, phone: phone},
+                data: {empId: editEmpId, name: name, phone: phone, password: password},
                 dataType: 'json',
                 success: function (data) {
                     loadEmpList();

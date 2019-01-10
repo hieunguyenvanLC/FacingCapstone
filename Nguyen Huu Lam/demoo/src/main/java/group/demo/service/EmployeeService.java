@@ -31,7 +31,9 @@ public class EmployeeService {
     public void updateEmployee(Integer editEmployeeId,String name, String phone, String password) {
         Employee employeeEntity= employeeRepository.findById(editEmployeeId).get();
         employeeEntity.setName(name);
+        employeeEntity.setPhone(phone);
         employeeEntity.setPassword(password);
+
         employeeRepository.save(employeeEntity);
     }
 
