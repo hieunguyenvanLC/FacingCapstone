@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
@@ -7,6 +11,7 @@
 <body onload="loadEmpList()">
 
 <h2>Employee Page</h2>
+
 <div style="display: table">
     <div style="display: table-row">
         <div style="width: 600px;display: table-cell">
@@ -54,9 +59,9 @@
                     <td>Phone:</td>
                     <td><input type="text" id="fixPhone"/></td>
                 </tr>
-                <tr >
+                <tr>
                     <td>Password:</td>
-                    <td><input type="text" id="fixPassword" /></td>
+                    <td><input type="text" id="fixPassword"/></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -107,7 +112,9 @@
 
                                 "                                    <td>\n" +
                                 "                                        <div class=\"form-group\">\n" +
-                                "                                            <button onclick='loadEditEmp(" + i + ")'>edit</button>\n" +
+                                "<button onclick='loadEditEmp(" + i + ")' class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">\n" +
+                                "    Edit\n" +
+                                "</button>" +
                                 "                                            <button onclick='delEmp(" + rowData.id + ")'>delete</button>\n" +
                                 "                                        </div>\n" +
                                 "                                    </td>");
@@ -120,7 +127,6 @@
             }
         )
     }
-
 
 
     function delEmp(empId) {
@@ -142,7 +148,7 @@
         var name = addName.val();
         var phone = addPhone.val();
         var password = addPassword.val();
-        if (name != "" && phone != "" && password !="") {
+        if (name != "" && phone != "" && password != "") {
             $.ajax({
                 type: 'POST',
                 url: backendAPI + "add",
