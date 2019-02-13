@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_role", catalog = "fpsdb", schema = "")
+@Table(name = "fr_role", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRRole implements Serializable {
 
@@ -22,14 +22,13 @@ public class FRRole implements Serializable {
     @Column(name = "name", length = 50)
     private String name;
     @Expose
+    @Column(name = "description", length = 300)
+    private String description;
+    @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     private Collection<FRAccount> accountCollection;
 
     public FRRole() {
-    }
-
-    public FRRole(Integer id) {
-        this.id = id;
     }
 
     public Integer getId() {
@@ -46,5 +45,13 @@ public class FRRole implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

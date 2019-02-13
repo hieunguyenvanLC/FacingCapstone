@@ -8,9 +8,10 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_resource", catalog = "fpsdb", schema = "")
+@Table(name = "fr_resource", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRResource implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Expose

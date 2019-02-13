@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_price", catalog = "fpsdb", schema = "")
+@Table(name = "fr_price_level", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FRPrice {
+public class FRPriceLevel {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -18,16 +18,19 @@ public class FRPrice {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Expose
-    @Column(name = "level", length = 100)
-    private String level;
+    @Column(name = "level_name", length = 100)
+    private String levelName;
+    @Expose
+    @Column(name = "description", length = 300)
+    private String description;
     @Expose
     @Column(name = "price")
     private Double price;
     @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "price")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "priceLevel")
     private Collection<FRShipper> shipperCollection;
 
-    public FRPrice() {
+    public FRPriceLevel() {
     }
 
     public Integer getId() {
@@ -38,12 +41,20 @@ public class FRPrice {
         this.id = id;
     }
 
-    public String getLevel() {
-        return level;
+    public String getLevelName() {
+        return levelName;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Double getPrice() {

@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_product_status", catalog = "fpsdb", schema = "fpsdb")
+@Table(name = "fr_weekday", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FRProductStatus {
+public class FRWeekday {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -21,13 +21,10 @@ public class FRProductStatus {
     @Column(name = "name", length = 50)
     private String name;
     @Expose
-    @Column(name = "description", length = 300)
-    private String description;
-    @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
-    private Collection<FRProduct> productCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weekday")
+    private Collection<FRSchedule> scheduleCollection;
 
-    public FRProductStatus() {
+    public FRWeekday() {
     }
 
     public Integer getId() {
@@ -44,13 +41,5 @@ public class FRProductStatus {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

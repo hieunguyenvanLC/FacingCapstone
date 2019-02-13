@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_city", catalog = "fpsdb", schema = "")
+@Table(name = "fr_city", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRCity {
 
@@ -25,7 +25,7 @@ public class FRCity {
     private String postalCode;
     @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "city")
-    private Collection<FRTown> townCollection;
+    private Collection<FRDistrict> townCollection;
 
     public FRCity() {
     }

@@ -13,19 +13,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FRRole;
-import capstone.fps.repository.AccountRepository;
+
+
 
 @Service
 
 public class LoginService {
 
-    private AccountRepository accountRepository;
+//    private AccountRepository accountRepository;
 
-    public LoginService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+//    public LoginService(AccountRepository accountRepository) {
+//        this.accountRepository = accountRepository;
+//    }
 
     //    @Override
 //    @Transactional
@@ -51,8 +50,9 @@ public class LoginService {
         if (phone == null || password == null) {
             return false;
         }
-        Optional<FRAccount> accountOptional = accountRepository.findByPhoneAndPassword(phone, password);
-        return accountOptional.isPresent();
+//        Optional<FRAccount> accountOptional = accountRepository.findByPhoneAndPassword(phone, password);
+//        return accountOptional.isPresent();
+        return true;
     }
 
 }

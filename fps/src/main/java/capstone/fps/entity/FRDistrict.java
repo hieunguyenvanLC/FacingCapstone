@@ -7,9 +7,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_town", catalog = "fpsdb", schema = "")
+@Table(name = "fr_district", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FRTown {
+public class FRDistrict {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Expose
@@ -17,17 +18,17 @@ public class FRTown {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Expose
-    @Column(name = "name", length = 50)
+    @Column(name = "name", length = 300)
     private String name;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "city_id")
+    @JoinColumn(name = "FR_City_id")
     private FRCity city;
     @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "town")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "district")
     private Collection<FROrder> orderCollection;
 
-    public FRTown() {
+    public FRDistrict() {
     }
 
     public Integer getId() {

@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_status", catalog = "fpsdb", schema = "")
+@Table(name = "fr_status", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRStatus {
 
@@ -17,6 +17,9 @@ public class FRStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+    @Expose
+    @Column(name = "name", length = 50)
+    private String name;
     @Expose
     @Column(name = "description", length = 300)
     private String description;
@@ -34,6 +37,14 @@ public class FRStatus {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

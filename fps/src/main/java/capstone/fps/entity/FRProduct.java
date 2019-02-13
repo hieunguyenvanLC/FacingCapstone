@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_product", catalog = "fpsdb", schema = "")
+@Table(name = "fr_product", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRProduct {
 
@@ -38,15 +38,18 @@ public class FRProduct {
     private Integer ratingNumber;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "FR_Store_id")
     private FRStore store;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "product_status_id")
+    @JoinColumn(name = "FR_Product_Status_id")
     private FRProductStatus status;
     @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<FROrderDetail> orderDetailCollection;
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private Collection<FRProductRating> productRatingCollection;
 
     public FRProduct() {
     }

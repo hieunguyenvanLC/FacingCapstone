@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_payment_information", catalog = "fpsdb", schema = "")
+@Table(name = "fr_payment_information", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRPaymentInformation  implements Serializable {
 
@@ -19,24 +19,23 @@ public class FRPaymentInformation  implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Expose
-    @Column(name = "username", length = 100)
-    private String username;
-    @Expose
-    @Column(name = "password", length = 100)
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "FR_Account_id")
+    private FRAccount account;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "payment_type_id")
+    @JoinColumn(name = "FR_Payment_Type_id")
     private FRPaymentType paymentType;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private FRAccount customer;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "shipper_id")
+    @JoinColumn(name = "FR_Shipper_id")
     private FRShipper shipper;
-
+    @Expose
+    @Column(name = "username", length = 100)
+    private String username;
+    @Expose
+    @Column(name = "password", length = 300)
+    private String password;
 
     public FRPaymentInformation() {
     }
@@ -45,16 +44,36 @@ public class FRPaymentInformation  implements Serializable {
         this.id = id;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public FRAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(FRAccount account) {
+        this.account = account;
+    }
+
+    public FRPaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(FRPaymentType paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public FRShipper getShipper() {
+        return shipper;
+    }
+
+    public void setShipper(FRShipper shipper) {
+        this.shipper = shipper;
     }
 
     public String getUsername() {
@@ -71,13 +90,5 @@ public class FRPaymentInformation  implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public FRPaymentType getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(FRPaymentType paymentType) {
-        this.paymentType = paymentType;
     }
 }

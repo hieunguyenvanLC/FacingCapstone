@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_order", catalog = "fpsdb", schema = "")
+@Table(name = "fr_order", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FROrder {
 
@@ -19,42 +19,54 @@ public class FROrder {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Expose
+    @ManyToOne
+    @JoinColumn(name = "FR_Account_id")
+    private FRAccount account;
+    @Expose
+    @ManyToOne
+    @JoinColumn(name = "FR_Shipper_id")
+    private FRShipper shipper;
+    @Expose
     @Column(name = "order_code", length = 50)
     private String orderCode;
     @Expose
-    @Column(name = "sum_money")
-    private Double sumMoney;
+    @Column(name = "total_price")
+    private Double totalPrice;
     @Expose
-    @Column(name = "time_book")
-    private Date timeBook;
+    @Column(name = "book_time")
+    private Date bookTime;
     @Expose
-    @Column(name = "time_received")
-    private Date timeReceived;
+    @Column(name = "receive_time")
+    private Date receiveTime;
     @Expose
-    @Column(name = "ship_earn")
-    private Double shipEarn;
+    @Column(name = "shipper_earn")
+    private Double shipperEarn;
     @Expose
     @Column(name = "ship_address", length = 300)
     private String shipAddress;
+    @Expose
+    @ManyToOne
+    @JoinColumn(name = "FR_District_id")
+    private FRShipper district;
     @Expose
     @Column(name = "customer_description", length = 300)
     private String customerDescription;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private FRAccount customer;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "shipper_id")
-    private FRShipper shipper;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "town_id")
-    private FRShipper town;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "FR_Status_id")
     private FRStatus status;
+    @Expose
+    @Column(name = "create_time")
+    private Date createTime;
+    @Expose
+    @Column(name = "update_time")
+    private Date updateTime;
+    @Expose
+    @Column(name = "deactivate_time")
+    private Date deactivateTime;
+    @Expose
+    @Column(name = "note", length = 300)
+    private String note;
     @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
@@ -70,68 +82,12 @@ public class FROrder {
         this.id = id;
     }
 
-    public String getOrderCode() {
-        return orderCode;
+    public FRAccount getAccount() {
+        return account;
     }
 
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public Double getSumMoney() {
-        return sumMoney;
-    }
-
-    public void setSumMoney(Double sumMoney) {
-        this.sumMoney = sumMoney;
-    }
-
-    public Date getTimeBook() {
-        return timeBook;
-    }
-
-    public void setTimeBook(Date timeBook) {
-        this.timeBook = timeBook;
-    }
-
-    public Date getTimeReceived() {
-        return timeReceived;
-    }
-
-    public void setTimeReceived(Date timeReceived) {
-        this.timeReceived = timeReceived;
-    }
-
-    public Double getShipEarn() {
-        return shipEarn;
-    }
-
-    public void setShipEarn(Double shipEarn) {
-        this.shipEarn = shipEarn;
-    }
-
-    public String getShipAddress() {
-        return shipAddress;
-    }
-
-    public void setShipAddress(String shipAddress) {
-        this.shipAddress = shipAddress;
-    }
-
-    public String getCustomerDescription() {
-        return customerDescription;
-    }
-
-    public void setCustomerDescription(String customerDescription) {
-        this.customerDescription = customerDescription;
-    }
-
-    public FRAccount getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(FRAccount customer) {
-        this.customer = customer;
+    public void setAccount(FRAccount account) {
+        this.account = account;
     }
 
     public FRShipper getShipper() {
@@ -142,12 +98,68 @@ public class FROrder {
         this.shipper = shipper;
     }
 
-    public FRShipper getTown() {
-        return town;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setTown(FRShipper town) {
-        this.town = town;
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Date getBookTime() {
+        return bookTime;
+    }
+
+    public void setBookTime(Date bookTime) {
+        this.bookTime = bookTime;
+    }
+
+    public Date getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(Date receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+
+    public Double getShipperEarn() {
+        return shipperEarn;
+    }
+
+    public void setShipperEarn(Double shipperEarn) {
+        this.shipperEarn = shipperEarn;
+    }
+
+    public String getShipAddress() {
+        return shipAddress;
+    }
+
+    public void setShipAddress(String shipAddress) {
+        this.shipAddress = shipAddress;
+    }
+
+    public FRShipper getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(FRShipper district) {
+        this.district = district;
+    }
+
+    public String getCustomerDescription() {
+        return customerDescription;
+    }
+
+    public void setCustomerDescription(String customerDescription) {
+        this.customerDescription = customerDescription;
     }
 
     public FRStatus getStatus() {
@@ -156,5 +168,37 @@ public class FROrder {
 
     public void setStatus(FRStatus status) {
         this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getDeactivateTime() {
+        return deactivateTime;
+    }
+
+    public void setDeactivateTime(Date deactivateTime) {
+        this.deactivateTime = deactivateTime;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

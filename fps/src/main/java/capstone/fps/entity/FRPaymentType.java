@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_payment_type", catalog = "fpsdb", schema = "")
+@Table(name = "fr_payment_type", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRPaymentType implements Serializable {
 

@@ -9,8 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class FpsApplication {
 
     public static void main(String[] args) {
-        BCrypt.gensalt();
-        System.out.println( BCrypt.hashpw());
+//        BCrypt.gensalt();
+//        System.out.println( BCrypt.hashpw());
         SpringApplication.run(FpsApplication.class, args);
     }
 

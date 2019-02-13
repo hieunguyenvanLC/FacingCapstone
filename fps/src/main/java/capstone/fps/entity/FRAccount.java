@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_account", catalog = "fpsdb", schema = "")
+@Table(name = "fr_account", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRAccount implements Serializable {
 
@@ -24,11 +24,15 @@ public class FRAccount implements Serializable {
     @Column(name = "phone_number")
     private Double phone;
     @Expose
-    @Column(name = "password", length = 100)
+    @ManyToOne
+    @JoinColumn(name = "FR_Role_id")
+    private FRRole role;
+    @Expose
+    @Column(name = "password", length = 300)
     private String password;
     @Expose
-    @Column(name = "account_name", length = 100)
-    private String accountName;
+    @Column(name = "name", length = 300)
+    private String name;
     @Expose
     @Column(name = "email", length = 100)
     private String email;
@@ -39,8 +43,8 @@ public class FRAccount implements Serializable {
     @Column(name = "report_point")
     private Integer reportPoint;
     @Expose
-    @Column(name = "customer_image")
-    private byte[] customerImage;
+    @Column(name = "user_image")
+    private byte[] userImage;
     @Expose
     @Column(name = "national_id", length = 50)
     private String nationalId;
@@ -51,18 +55,36 @@ public class FRAccount implements Serializable {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
     @Expose
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private FRRole role;
+    @Column(name = "hash_key", length = 100)
+    private String hashKey;
     @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
+    @Column(name = "create_time")
+    private Date createTime;
+    @Expose
+    @Column(name = "update_time")
+    private Date updateTime;
+    @Expose
+    @Column(name = "deactivate_time")
+    private Date deactivateTime;
+    @Expose
+    @Column(name = "note", length = 300)
+    private String note;
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private Collection<FRPaymentInformation> paymentInformationCollection;
     @Expose
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
     private FRShipper shipper;
     @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private Collection<FROrder> orderCollection;
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private Collection<FRProductRating> productRatingCollection;
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private Collection<FRStoreRating> storeRatingCollection;
+
 
     public FRAccount() {
     }
@@ -83,6 +105,14 @@ public class FRAccount implements Serializable {
         this.phone = phone;
     }
 
+    public FRRole getRole() {
+        return role;
+    }
+
+    public void setRole(FRRole role) {
+        this.role = role;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -91,12 +121,12 @@ public class FRAccount implements Serializable {
         this.password = password;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public String getName() {
+        return name;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -123,12 +153,12 @@ public class FRAccount implements Serializable {
         this.reportPoint = reportPoint;
     }
 
-    public byte[] getCustomerImage() {
-        return customerImage;
+    public byte[] getUserImage() {
+        return userImage;
     }
 
-    public void setCustomerImage(byte[] customerImage) {
-        this.customerImage = customerImage;
+    public void setUserImage(byte[] userImage) {
+        this.userImage = userImage;
     }
 
     public String getNationalId() {
@@ -155,11 +185,43 @@ public class FRAccount implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public FRRole getRole() {
-        return role;
+    public String getHashKey() {
+        return hashKey;
     }
 
-    public void setRole(FRRole role) {
-        this.role = role;
+    public void setHashKey(String hashKey) {
+        this.hashKey = hashKey;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getDeactivateTime() {
+        return deactivateTime;
+    }
+
+    public void setDeactivateTime(Date deactivateTime) {
+        this.deactivateTime = deactivateTime;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

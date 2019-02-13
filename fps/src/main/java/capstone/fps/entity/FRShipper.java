@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_shipper", catalog = "fpsdb", schema = "")
+@Table(name = "fr_shipper", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FRShipper  implements Serializable {
 
@@ -40,17 +40,17 @@ public class FRShipper  implements Serializable {
     @Column(name = "sum_revenue")
     private Double sumRevenue;
     @Expose
+    @ManyToOne
+    @JoinColumn(name = "FR_Resource_id")
+    private FRResource resource;
+    @Expose
     @OneToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "resource_id")
-    private FRResource resource;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "price_id")
-    private FRPrice price;
+    @JoinColumn(name = "FR_Price_Level_id")
+    private FRPriceLevel priceLevel;
     @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
     private Collection<FRPaymentInformation> paymentInformationCollection;
@@ -125,14 +125,6 @@ public class FRShipper  implements Serializable {
         this.sumRevenue = sumRevenue;
     }
 
-    public FRAccount getAccount() {
-        return account;
-    }
-
-    public void setAccount(FRAccount account) {
-        this.account = account;
-    }
-
     public FRResource getResource() {
         return resource;
     }
@@ -141,12 +133,19 @@ public class FRShipper  implements Serializable {
         this.resource = resource;
     }
 
-    public FRPrice getPrice() {
-        return price;
+    public FRAccount getAccount() {
+        return account;
     }
 
-    public void setPrice(FRPrice price) {
-        this.price = price;
+    public void setAccount(FRAccount account) {
+        this.account = account;
     }
 
+    public FRPriceLevel getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(FRPriceLevel priceLevel) {
+        this.priceLevel = priceLevel;
+    }
 }

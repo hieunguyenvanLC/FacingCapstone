@@ -1,6 +1,6 @@
 package capstone.fps.controller;
 
-import capstone.fps.entity.FRAccount;
+
 import capstone.fps.model.Response;
 import capstone.fps.service.LoginService;
 import org.springframework.stereotype.Controller;

@@ -6,9 +6,10 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "fr_order_detail", catalog = "fpsdb", schema = "fpsdb")
+@Table(name = "fr_product_rating", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FROrderDetail {
+public class FRProductRating {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Expose
@@ -17,20 +18,17 @@ public class FROrderDetail {
     private Integer id;
     @Expose
     @ManyToOne
-    @JoinColumn(name = "FR_Order_id")
-    private FROrder order;
+    @JoinColumn(name = "FR_Account_id")
+    private FRAccount account;
     @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Product_id")
     private FRProduct product;
     @Expose
-    @Column(name = "unit_price")
-    private Double unitPrice;
-    @Expose
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(name = "rating")
+    private Integer rating;
 
-    public FROrderDetail() {
+    public FRProductRating() {
     }
 
     public Integer getId() {
@@ -41,12 +39,12 @@ public class FROrderDetail {
         this.id = id;
     }
 
-    public FROrder getOrder() {
-        return order;
+    public FRAccount getAccount() {
+        return account;
     }
 
-    public void setOrder(FROrder order) {
-        this.order = order;
+    public void setAccount(FRAccount account) {
+        this.account = account;
     }
 
     public FRProduct getProduct() {
@@ -57,19 +55,11 @@ public class FROrderDetail {
         this.product = product;
     }
 
-    public Double getUnitPrice() {
-        return unitPrice;
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setUnitPrice(Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }
