@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
-@Table(name = "fr_acount", catalog = "fpsdb", schema = "")
+@Table(name = "fr_account", catalog = "fpsdb", schema = "")
 @XmlRootElement
 public class FRAccount implements Serializable {
 
@@ -53,7 +53,7 @@ public class FRAccount implements Serializable {
     @Expose
     @ManyToOne
     @JoinColumn(name = "role_id")
-    private FRRole roleId;
+    private FRRole role;
     @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Collection<FRPaymentInformation> paymentInformationCollection;
@@ -65,14 +65,6 @@ public class FRAccount implements Serializable {
     private Collection<FROrder> orderCollection;
 
     public FRAccount() {
-    }
-
-    public FRAccount(Integer id) {
-        this.id = id;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
     }
 
     public Integer getId() {
@@ -163,29 +155,11 @@ public class FRAccount implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public FRRole getRoleId() {
-        return roleId;
+    public FRRole getRole() {
+        return role;
     }
 
-    public void setRoleId(FRRole roleId) {
-        this.roleId = roleId;
-    }
-
-    @Override
-    public String toString() {
-        return "FRAccount{" +
-                "id=" + id +
-                ", phone=" + phone +
-                ", password='" + password + '\'' +
-                ", accountName='" + accountName + '\'' +
-                ", email='" + email + '\'' +
-                ", extraPoint=" + extraPoint +
-                ", reportPoint=" + reportPoint +
-                ", customerImage=" + Arrays.toString(customerImage) +
-                ", nationalId='" + nationalId + '\'' +
-                ", nationalIdCreatedDate=" + nationalIdCreatedDate +
-                ", dateOfBirth=" + dateOfBirth +
-                ", roleId=" + roleId +
-                '}';
+    public void setRole(FRRole role) {
+        this.role = role;
     }
 }

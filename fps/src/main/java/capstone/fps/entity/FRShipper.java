@@ -140,4 +140,13 @@ public class FRShipper  implements Serializable {
     public void setResource(FRResource resource) {
         this.resource = resource;
     }
+
+    public FRPrice getPrice() {
+        return price;
+    }
+
+    public void setPrice(FRPrice price) {
+        this.price = price;
+    }
+
 }

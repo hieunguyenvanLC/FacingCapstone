@@ -38,31 +38,6 @@ public class FRStore {
 
 
     @Expose
-    @Column(name = "phone_number")
-    private Double phone;
-
-    @Expose
-    @Column(name = "email", length = 100)
-    private String email;
-
-    @Expose
-    @Column(name = "report_point")
-    private Integer reportPoint;
-    @Expose
-    @Column(name = "customer_image")
-    private byte[] customerImage;
-    @Expose
-    @Column(name = "national_id", length = 50)
-    private String nationalId;
-    @Expose
-    @Column(name = "national_id_created_date")
-    private Date nationalIdCreatedDate;
-
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private FRRole roleId;
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Collection<FRPaymentInformation> paymentInformationCollection;
     @Expose

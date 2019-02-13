@@ -22,7 +22,7 @@ public class FRRole implements Serializable {
     @Column(name = "name", length = 50)
     private String name;
     @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roleId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     private Collection<FRAccount> accountCollection;
 
     public FRRole() {
