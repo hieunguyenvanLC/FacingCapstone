@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+
+<head>
+    <title>User Management</title>
+</head>
+
+<th:block layout:fragment="top-section">
+    <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">User Management</span>
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+            <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+                <i class="material-icons">search</i>
+            </label>
+            <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" type="text" id="search">
+                <label class="mdl-textfield__label" for="search">Enter your query...</label>
+            </div>
+        </div>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+            <i class="material-icons">more_vert</i>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+            <li class="mdl-menu__item">About</li>
+            <li class="mdl-menu__item">Contact</li>
+            <li class="mdl-menu__item">Legal information</li>
+        </ul>
+    </div>
+</th:block>
+
+<div layout:fragment="content" class="mdl-grid demo-content">
+    <form action="/user-new" method="post">
+        <div class="mdl-cell mdl-cell--12-col mdl-grid">
+            <div>
+                <span th:if="${success != null }" th:text="${success}"></span>
+                <span th:if="${error != null }" th:text="${error}"></span>
+            </div>
+            <input type="hidden" name="id" th:value="${user?.id}">
+            <div id="username-field">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="username" id="username"
+                           th:value="${user?.username}">
+                    <label class="mdl-textfield__label" for="username">User Name</label>
+                </div>
+            </div>
+
+            <div id="fullname-field">
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="fullname" id="fullname"
+                           th:value="${user?.fullname}">
+                    <label class="mdl-textfield__label" for="fullname">Fullname</label>
+                    <!--<span class="mdl-textfield__error">Enter a valid email!</span>-->
+                </div>
+
+            </div>
+
+            <div id="gender-field">
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="gender" id="gender"
+                           th:value="${user?.gender}">
+                    <label class="mdl-textfield__label" for="gender">Gender</label>
+                    <!--<span class="mdl-textfield__error">Enter a valid email!</span>-->
+                </div>
+
+            </div>
+
+            <div id="password-field">
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="password" id="password"
+                           th:value="${user?.password}">
+                    <label class="mdl-textfield__label" for="password">Password</label>
+                    <!--<span class="mdl-textfield__error">Enter a valid email!</span>-->
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="mdl-cell mdl-cell--12-col mdl-grid">
+            <!-- Primary-colored flat button -->
+            <div class="mdl-layout-spacer"></div>
+            <button class="mdl-button mdl-js-button mdl-button--primary" type="submit">
+                Save
+            </button>
+            <a href="/user" class="mdl-button mdl-js-button mdl-button--primary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
