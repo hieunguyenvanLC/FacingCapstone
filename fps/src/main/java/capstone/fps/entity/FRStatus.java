@@ -27,8 +27,7 @@ public class FRStatus {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
     private Collection<FROrder> orderCollection;
 
-    public FRStatus(String description) {
-        this.description = description;
+    public FRStatus() {
     }
 
     public Integer getId() {
@@ -54,4 +53,5 @@ public class FRStatus {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

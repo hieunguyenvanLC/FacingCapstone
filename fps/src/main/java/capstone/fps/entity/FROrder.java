@@ -47,7 +47,7 @@ public class FROrder {
     @Expose
     @ManyToOne
     @JoinColumn(name = "FR_District_id")
-    private FRShipper district;
+    private FRDistrict district;
     @Expose
     @Column(name = "customer_description", length = 300)
     private String customerDescription;
@@ -146,11 +146,11 @@ public class FROrder {
         this.shipAddress = shipAddress;
     }
 
-    public FRShipper getDistrict() {
+    public FRDistrict getDistrict() {
         return district;
     }
 
-    public void setDistrict(FRShipper district) {
+    public void setDistrict(FRDistrict district) {
         this.district = district;
     }
 

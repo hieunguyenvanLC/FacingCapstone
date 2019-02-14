@@ -9,4 +9,11 @@ public interface ConstantList {
     String PAYPAL_CLIENT_ID = "Ae-WAkmVpZzdf5yYCDsw712GLWeT1RMqWTwirxkRRFnEEvMWKKxvpcn6WW7k2tv6Ck7RmRDEPLLUdJ0F";
     String PAYPAL_CLIENT_SECRET = "EAbfxREiU06k1rVeIbql1kC0zNc0_-3Yw6JY0hpMCMjT3VLd4PQj_eJuvop4xINX6OJProI3f6F3B2Nn";
     String PAYPAL_MODE = "sandbox";
+
+    //Order
+    String ORDER_STAT_NEW = "NEW";
+    String ORDER_STAT_ASSIGNED = "NEW";
+    String ORDER_STAT_IS_BOUGHT = "NEW";
+    String ORDER_STAT_RECEIVED = "NEW";
+    String ORDER_STAT_VOIDED = "NEW";
 }

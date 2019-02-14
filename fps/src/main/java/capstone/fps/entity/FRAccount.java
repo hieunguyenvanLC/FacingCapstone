@@ -224,4 +224,12 @@ public class FRAccount implements Serializable {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public FRShipper getShipper() {
+        return shipper;
+    }
+
+    public void setShipper(FRShipper shipper) {
+        this.shipper = shipper;
+    }
 }

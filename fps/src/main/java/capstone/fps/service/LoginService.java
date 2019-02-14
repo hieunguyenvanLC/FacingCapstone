@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import capstone.fps.entity.FRAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class LoginService {
+
+     public static FRAccount currentUser;
+
 
 //    private AccountRepository accountRepository;
 
@@ -45,6 +49,10 @@ public class LoginService {
 //                user.getEmail(), user.getPassword(), grantedAuthorities);
 //    }
 
+
+    public static FRAccount getCurrentUser() {
+        return currentUser;
+    }
 
     public boolean checkLogin(Double phone, String password) {
         if (phone == null || password == null) {
