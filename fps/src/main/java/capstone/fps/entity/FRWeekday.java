@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
@@ -13,14 +11,12 @@ public class FRWeekday {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @Column(name = "name", length = 50)
     private String name;
-    @Expose
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "weekday")
     private Collection<FRSchedule> scheduleCollection;
 

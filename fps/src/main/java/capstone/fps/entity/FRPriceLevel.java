@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
@@ -13,20 +11,16 @@ public class FRPriceLevel {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @Column(name = "level_name", length = 100)
     private String levelName;
-    @Expose
     @Column(name = "description", length = 300)
     private String description;
-    @Expose
     @Column(name = "price")
     private Double price;
-    @Expose
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "priceLevel")
     private Collection<FRShipper> shipperCollection;
 

@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
@@ -13,50 +11,35 @@ import java.util.Collection;
 public class FRStore {
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @Column(name = "store_name", length = 300)
     private String storeName;
-    @Expose
     @Column(name = "address", length = 300)
     private String address;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_District_id")
-    private FRShipper district;
-    @Expose
+    private FRDistrict district;
     @Column(name = "store_image")
     private byte[] storeImage;
-    @Expose
     @Column(name = "rating")
     private Double rating;
-    @Expose
     @Column(name = "rating_count")
-    private Integer ratingNumber;
-    @Expose
+    private Integer ratingCount;
     @Column(name = "create_time")
     private Date createTime;
-    @Expose
     @Column(name = "update_time")
     private Date updateTime;
-    @Expose
     @Column(name = "deactivate_time")
     private Date deactivateTime;
-    @Expose
     @Column(name = "note", length = 300)
     private String note;
-    @Expose
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<FRSchedule> scheduleCollection;
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<FRProduct> productCollection;
-    @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<FRStoreRating> storeRatingCollection;
 
     public FRStore() {
     }
@@ -85,11 +68,11 @@ public class FRStore {
         this.address = address;
     }
 
-    public FRShipper getDistrict() {
+    public FRDistrict getDistrict() {
         return district;
     }
 
-    public void setDistrict(FRShipper district) {
+    public void setDistrict(FRDistrict district) {
         this.district = district;
     }
 
@@ -109,12 +92,12 @@ public class FRStore {
         this.rating = rating;
     }
 
-    public Integer getRatingNumber() {
-        return ratingNumber;
+    public Integer getRatingCount() {
+        return ratingCount;
     }
 
-    public void setRatingNumber(Integer ratingNumber) {
-        this.ratingNumber = ratingNumber;
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
     public Date getCreateTime() {

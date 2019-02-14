@@ -11,9 +11,9 @@ public interface ConstantList {
     String PAYPAL_MODE = "sandbox";
 
     //Order
-    String ORDER_STAT_NEW = "NEW";
-    String ORDER_STAT_ASSIGNED = "NEW";
-    String ORDER_STAT_IS_BOUGHT = "NEW";
-    String ORDER_STAT_RECEIVED = "NEW";
-    String ORDER_STAT_VOIDED = "NEW";
+    int ORDER_STAT_BOOK = 1;
+    int ORDER_STAT_TAKE = 2;
+    int ORDER_STAT_DELI = 3;
+    int ORDER_STAT_DONE = 4;
+    int ORDER_STAT_VOID = 5;
 }

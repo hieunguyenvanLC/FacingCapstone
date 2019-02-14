@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -14,47 +12,33 @@ public class FRShipper  implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
-    @Column(name = "bike_registration", length = 100)
-    private String bikeRegistration;
-    @Expose
+    @Column(name = "bike_registration_id", length = 100)
+    private String bikeRegistrationId;
     @Column(name = "introduce", length = 300)
     private String introduce;
-    @Expose
     @Column(name = "national_id_front_image")
     private byte[] nationalIdFrontImage;
-    @Expose
     @Column(name = "national_id_back_image")
     private byte[] nationalIdBackImage;
-    @Expose
-    @Column(name = "bike_registration_front_image")
-    private byte[] bikeRegistrationFrontImage;
-    @Expose
-    @Column(name = "bike_registration_back_image")
-    private byte[] bikeRegistrationBackImage;
-    @Expose
     @Column(name = "sum_revenue")
     private Double sumRevenue;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Resource_id")
     private FRResource resource;
-    @Expose
+    @Column(name = "bike_registration_front_image")
+    private byte[] bikeRegistrationFrontImage;
+    @Column(name = "bike_registration_back_image")
+    private byte[] bikeRegistrationBackImage;
     @OneToOne
     @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Price_Level_id")
     private FRPriceLevel priceLevel;
-    @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
-    private Collection<FRPaymentInformation> paymentInformationCollection;
-    @Expose
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
     private Collection<FROrder> orderCollection;
 
@@ -69,12 +53,12 @@ public class FRShipper  implements Serializable {
         this.id = id;
     }
 
-    public String getBikeRegistration() {
-        return bikeRegistration;
+    public String getBikeRegistrationId() {
+        return bikeRegistrationId;
     }
 
-    public void setBikeRegistration(String bikeRegistration) {
-        this.bikeRegistration = bikeRegistration;
+    public void setBikeRegistrationId(String bikeRegistrationId) {
+        this.bikeRegistrationId = bikeRegistrationId;
     }
 
     public String getIntroduce() {
@@ -101,22 +85,6 @@ public class FRShipper  implements Serializable {
         this.nationalIdBackImage = nationalIdBackImage;
     }
 
-    public byte[] getBikeRegistrationFrontImage() {
-        return bikeRegistrationFrontImage;
-    }
-
-    public void setBikeRegistrationFrontImage(byte[] bikeRegistrationFrontImage) {
-        this.bikeRegistrationFrontImage = bikeRegistrationFrontImage;
-    }
-
-    public byte[] getBikeRegistrationBackImage() {
-        return bikeRegistrationBackImage;
-    }
-
-    public void setBikeRegistrationBackImage(byte[] bikeRegistrationBackImage) {
-        this.bikeRegistrationBackImage = bikeRegistrationBackImage;
-    }
-
     public Double getSumRevenue() {
         return sumRevenue;
     }
@@ -131,6 +99,22 @@ public class FRShipper  implements Serializable {
 
     public void setResource(FRResource resource) {
         this.resource = resource;
+    }
+
+    public byte[] getBikeRegistrationFrontImage() {
+        return bikeRegistrationFrontImage;
+    }
+
+    public void setBikeRegistrationFrontImage(byte[] bikeRegistrationFrontImage) {
+        this.bikeRegistrationFrontImage = bikeRegistrationFrontImage;
+    }
+
+    public byte[] getBikeRegistrationBackImage() {
+        return bikeRegistrationBackImage;
+    }
+
+    public void setBikeRegistrationBackImage(byte[] bikeRegistrationBackImage) {
+        this.bikeRegistrationBackImage = bikeRegistrationBackImage;
     }
 
     public FRAccount getAccount() {

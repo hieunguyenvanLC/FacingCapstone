@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
@@ -13,17 +11,14 @@ public class FRCity {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @Column(name = "name", length = 100)
     private String name;
-    @Expose
     @Column(name = "postal_code", length = 50)
     private String postalCode;
-    @Expose
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "city")
     private Collection<FRDistrict> townCollection;
 

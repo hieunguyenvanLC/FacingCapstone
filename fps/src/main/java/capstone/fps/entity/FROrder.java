@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
@@ -14,60 +12,43 @@ public class FROrder {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Shipper_id")
     private FRShipper shipper;
-    @Expose
     @Column(name = "order_code", length = 50)
     private String orderCode;
-    @Expose
     @Column(name = "total_price")
     private Double totalPrice;
-    @Expose
     @Column(name = "book_time")
     private Date bookTime;
-    @Expose
     @Column(name = "receive_time")
     private Date receiveTime;
-    @Expose
     @Column(name = "shipper_earn")
     private Double shipperEarn;
-    @Expose
     @Column(name = "ship_address", length = 300)
     private String shipAddress;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_District_id")
     private FRDistrict district;
-    @Expose
     @Column(name = "customer_description", length = 300)
     private String customerDescription;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "FR_Status_id")
-    private FRStatus status;
-    @Expose
     @Column(name = "create_time")
     private Date createTime;
-    @Expose
     @Column(name = "update_time")
     private Date updateTime;
-    @Expose
     @Column(name = "deactivate_time")
     private Date deactivateTime;
-    @Expose
     @Column(name = "note", length = 300)
     private String note;
-    @Expose
+    @Column(name = "status")
+    private Integer status;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
 
@@ -162,14 +143,6 @@ public class FROrder {
         this.customerDescription = customerDescription;
     }
 
-    public FRStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(FRStatus status) {
-        this.status = status;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -200,5 +173,13 @@ public class FROrder {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

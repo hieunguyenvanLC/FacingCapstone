@@ -18,37 +18,25 @@ public class OrderService {
     private OrderStatusRepository orderStatusRepository;
     private ProductRepository productRepository;
 
-    public final FRStatus statBook;
-    public final FRStatus statTake;
-    public final FRStatus statDeli;
-    public final FRStatus statDone;
-    public final FRStatus statVoid;
-
     public OrderService(DistrictRepository districtRepository, OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, OrderStatusRepository orderStatusRepository, ProductRepository productRepository) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.orderStatusRepository = orderStatusRepository;
         this.productRepository = productRepository;
-
-        this.statBook = getStatus(ConstantList.ORDER_STAT_NEW);
-        this.statTake = getStatus(ConstantList.ORDER_STAT_ASSIGNED);
-        this.statDeli = getStatus(ConstantList.ORDER_STAT_IS_BOUGHT);
-        this.statDone = getStatus(ConstantList.ORDER_STAT_RECEIVED);
-        this.statVoid = getStatus(ConstantList.ORDER_STAT_VOIDED);
     }
 
-    private FRStatus getStatus(String statName) {
-        Optional<FRStatus> optional = orderStatusRepository.findByName(statName);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            FRStatus status = new FRStatus();
-            status.setName(statName);
-            orderStatusRepository.save(status);
-            return orderStatusRepository.findByName(statName).get();
-        }
-    }
+//    private FRStatus getStatus(String statName) {
+//        Optional<FRStatus> optional = orderStatusRepository.findByName(statName);
+//        if (optional.isPresent()) {
+//            return optional.get();
+//        } else {
+//            FRStatus status = new FRStatus();
+//            status.setName(statName);
+//            orderStatusRepository.save(status);
+//            return orderStatusRepository.findByName(statName).get();
+//        }
+//    }
 
     private void setCreateTime(FROrder frOrder) {
         Methods methods = new Methods();
@@ -71,7 +59,7 @@ public class OrderService {
             return null;
         }
         frOrder.setAccount(account);
-        frOrder.setStatus(statBook);
+        frOrder.setStatus(ConstantList.ORDER_STAT_BOOK);
         setCreateTime(frOrder);
         frOrder = fillInfo(mdlOrder, frOrder);
         return frOrder;
@@ -118,17 +106,17 @@ public class OrderService {
         }
         FROrder frOrder = optionalFROrder.get();
         //check cancelable
-        if (!frOrder.getStatus().getId().equals(statBook.getId())) {
+        if (ConstantList.ORDER_STAT_BOOK != frOrder.getStatus()) {
             return false;
         }
-        frOrder.setStatus(statVoid);
+        frOrder.setStatus(ConstantList.ORDER_STAT_VOID);
         orderRepository.save(frOrder);
         return true;
     }
 
     public boolean assignOrder(int orderId) {
         FRAccount account = LoginService.getCurrentUser();
-        if(account.getShipper() == null){
+        if (account.getShipper() == null) {
             // Something is wrong: none shipper is not suppose to be able to access this method
             return false;
         }
@@ -138,7 +126,7 @@ public class OrderService {
         }
         FROrder frOrder = optionalFROrder.get();
         frOrder.setShipper(account.getShipper());
-        frOrder.setStatus(statTake);
+        frOrder.setStatus(ConstantList.ORDER_STAT_TAKE);
         setUpdateTime(frOrder);
         orderRepository.save(frOrder);
         return true;

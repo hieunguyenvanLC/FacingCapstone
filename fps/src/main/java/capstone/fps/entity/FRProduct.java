@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
@@ -14,42 +12,37 @@ public class FRProduct {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
-    @Column(name = "product_name", length = 300)
-    private String productName;
-    @Expose
-    @Column(name = "price")
-    private Double price;
-    @Expose
-    @Column(name = "product_image")
-    private byte[] productImage;
-    @Expose
-    @Column(name = "description", length = 300)
-    private String description;
-    @Expose
-    @Column(name = "rating")
-    private Integer rating;
-    @Expose
-    @Column(name = "customer_rating_number")
-    private Integer ratingNumber;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Store_id")
     private FRStore store;
-    @Expose
-    @ManyToOne
-    @JoinColumn(name = "FR_Product_Status_id")
-    private FRProductStatus status;
-    @Expose
+    @Column(name = "product_name", length = 300)
+    private String productName;
+    @Column(name = "product_image")
+    private byte[] productImage;
+    @Column(name = "price")
+    private Double price;
+    @Column(name = "description", length = 300)
+    private String description;
+    @Column(name = "rating")
+    private Integer rating;
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+    @Column(name = "create_time")
+    private Date createTime;
+    @Column(name = "update_time")
+    private Date updateTime;
+    @Column(name = "deactivate_time")
+    private Date deactivateTime;
+    @Column(name = "note", length = 300)
+    private String note;
+    @Column(name = "status")
+    private Integer status;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Collection<FROrderDetail> orderDetailCollection;
-    @Expose
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    private Collection<FRProductRating> productRatingCollection;
 
     public FRProduct() {
     }
@@ -62,6 +55,14 @@ public class FRProduct {
         this.id = id;
     }
 
+    public FRStore getStore() {
+        return store;
+    }
+
+    public void setStore(FRStore store) {
+        this.store = store;
+    }
+
     public String getProductName() {
         return productName;
     }
@@ -70,20 +71,20 @@ public class FRProduct {
         this.productName = productName;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
     public byte[] getProductImage() {
         return productImage;
     }
 
     public void setProductImage(byte[] productImage) {
         this.productImage = productImage;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public String getDescription() {
@@ -102,27 +103,51 @@ public class FRProduct {
         this.rating = rating;
     }
 
-    public Integer getRatingNumber() {
-        return ratingNumber;
+    public Integer getRatingCount() {
+        return ratingCount;
     }
 
-    public void setRatingNumber(Integer ratingNumber) {
-        this.ratingNumber = ratingNumber;
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
-    public FRStore getStore() {
-        return store;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setStore(FRStore store) {
-        this.store = store;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public FRProductStatus getStatus() {
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getDeactivateTime() {
+        return deactivateTime;
+    }
+
+    public void setDeactivateTime(Date deactivateTime) {
+        this.deactivateTime = deactivateTime;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(FRProductStatus status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

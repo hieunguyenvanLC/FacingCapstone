@@ -1,7 +1,5 @@
 package capstone.fps.entity;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -9,24 +7,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "fr_order_detail", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
 public class FROrderDetail {
+
     private static final long serialVersionUID = 1L;
     @Id
-    @Expose
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Order_id")
     private FROrder order;
-    @Expose
     @ManyToOne
     @JoinColumn(name = "FR_Product_id")
     private FRProduct product;
-    @Expose
     @Column(name = "unit_price")
     private Double unitPrice;
-    @Expose
     @Column(name = "quantity")
     private Integer quantity;
 
