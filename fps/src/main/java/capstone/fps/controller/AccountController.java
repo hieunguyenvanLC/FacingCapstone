@@ -1,12 +1,15 @@
 package capstone.fps.controller;
 
+import capstone.fps.model.MdlAccBan;
+import capstone.fps.model.MdlAccEdt;
+import capstone.fps.model.MdlAccNewMem;
 import capstone.fps.model.Response;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class AccountController extends AbstractController {
@@ -19,10 +22,11 @@ public class AccountController extends AbstractController {
     }
 
     @PostMapping(API)
-    public String createAccount(@RequestParam String profileStr) {
+    public String createAccount(@RequestParam String dataStr) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            if (accountService.createAccount(profileStr)) {
+            MdlAccNewMem accountCreate = gson.fromJson(dataStr, MdlAccNewMem.class);
+            if (accountService.createAccountMember(accountCreate)) {
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             }
         } catch (Exception e) {
@@ -36,7 +40,8 @@ public class AccountController extends AbstractController {
     public String updateProfile(@RequestParam String profileStr) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            if (accountService.updateProfile(profileStr)) {
+            MdlAccEdt accEdt = gson.fromJson(profileStr, MdlAccEdt.class);
+            if (accountService.updateProfile(accEdt)) {
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             }
         } catch (Exception e) {
@@ -46,7 +51,20 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
 
-
+    @DeleteMapping(API)
+    public String deactivateAccount(@RequestParam String banStr) {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            MdlAccBan accBan = gson.fromJson(banStr, MdlAccBan.class);
+            if (accountService.banAccount(accBan)) {
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
 
 //    @PutMapping(API + "/face")
 //    public String updateFace(@RequestParam MultipartFile faceImg) {

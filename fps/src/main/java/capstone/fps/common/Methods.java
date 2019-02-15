@@ -18,6 +18,7 @@ public final class Methods {
     }
 
     public String getAbsolutePath(){
+        //        this.absolutePath = context.getRealPath("resources/upload");
         return context.getContextPath();
     }
 }

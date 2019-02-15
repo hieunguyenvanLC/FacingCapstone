@@ -15,14 +15,12 @@ public class OrderService {
     private DistrictRepository districtRepository;
     private OrderRepository orderRepository;
     private OrderDetailRepository orderDetailRepository;
-    private OrderStatusRepository orderStatusRepository;
     private ProductRepository productRepository;
 
-    public OrderService(DistrictRepository districtRepository, OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, OrderStatusRepository orderStatusRepository, ProductRepository productRepository) {
+    public OrderService(DistrictRepository districtRepository, OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, ProductRepository productRepository) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
-        this.orderStatusRepository = orderStatusRepository;
         this.productRepository = productRepository;
     }
 
@@ -59,7 +57,7 @@ public class OrderService {
             return null;
         }
         frOrder.setAccount(account);
-        frOrder.setStatus(ConstantList.ORDER_STAT_BOOK);
+        frOrder.setStatus(ConstantList.ORD_NEW);
         setCreateTime(frOrder);
         frOrder = fillInfo(mdlOrder, frOrder);
         return frOrder;
@@ -106,10 +104,10 @@ public class OrderService {
         }
         FROrder frOrder = optionalFROrder.get();
         //check cancelable
-        if (ConstantList.ORDER_STAT_BOOK != frOrder.getStatus()) {
+        if (ConstantList.ORD_NEW != frOrder.getStatus()) {
             return false;
         }
-        frOrder.setStatus(ConstantList.ORDER_STAT_VOID);
+        frOrder.setStatus(ConstantList.ORD_CXL);
         orderRepository.save(frOrder);
         return true;
     }
@@ -126,7 +124,7 @@ public class OrderService {
         }
         FROrder frOrder = optionalFROrder.get();
         frOrder.setShipper(account.getShipper());
-        frOrder.setStatus(ConstantList.ORDER_STAT_TAKE);
+        frOrder.setStatus(ConstantList.ORD_ASS);
         setUpdateTime(frOrder);
         orderRepository.save(frOrder);
         return true;

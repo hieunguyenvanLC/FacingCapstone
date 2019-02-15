@@ -19,10 +19,10 @@ public class OrderController extends AbstractController {
     }
 
     @PostMapping(API)
-    public String createAccount(@RequestParam String mdlOrderStr) {
+    public String createAccount(@RequestParam String dataStr) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            MdlOrderNew mdlOrder = gson.fromJson(mdlOrderStr, MdlOrderNew.class);
+            MdlOrderNew mdlOrder = gson.fromJson(dataStr, MdlOrderNew.class);
             FROrder frOrder = orderService.createOrder(mdlOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         } catch (Exception e) {

@@ -17,7 +17,7 @@ public class MdlOrderReadBuyer {
   private long frStatusId;
   private java.sql.Timestamp createTime;
   private java.sql.Timestamp updateTime;
-  private java.sql.Timestamp deactiveTime;
+  private java.sql.Timestamp deactivateTime;
   private String note;
 
 
@@ -147,12 +147,12 @@ public class MdlOrderReadBuyer {
   }
 
 
-  public java.sql.Timestamp getDeactiveTime() {
-    return deactiveTime;
+  public java.sql.Timestamp getDeactivateTime() {
+    return deactivateTime;
   }
 
-  public void setDeactiveTime(java.sql.Timestamp deactiveTime) {
-    this.deactiveTime = deactiveTime;
+  public void setDeactivateTime(java.sql.Timestamp deactivateTime) {
+    this.deactivateTime = deactivateTime;
   }
 
 

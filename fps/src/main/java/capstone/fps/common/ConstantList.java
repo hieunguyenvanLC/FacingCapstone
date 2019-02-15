@@ -10,10 +10,21 @@ public interface ConstantList {
     String PAYPAL_CLIENT_SECRET = "EAbfxREiU06k1rVeIbql1kC0zNc0_-3Yw6JY0hpMCMjT3VLd4PQj_eJuvop4xINX6OJProI3f6F3B2Nn";
     String PAYPAL_MODE = "sandbox";
 
-    //Order
-    int ORDER_STAT_BOOK = 1;
-    int ORDER_STAT_TAKE = 2;
-    int ORDER_STAT_DELI = 3;
-    int ORDER_STAT_DONE = 4;
-    int ORDER_STAT_VOID = 5;
+    /* Order status */
+    int ORD_NEW = 1;
+    int ORD_ASS = 2;
+    int ORD_BUY = 3;
+    int ORD_REV = 4;
+    int ORD_CXL = 5;
+
+    /* Role */
+    String ROL_ADM = "admin";
+    String ROL_MEM = "member";
+    String ROL_SHP = "shipper";
+
+    /* Account status */
+    int ACC_NEW = 1;
+    // Account info has been checked and approved
+    int ACC_CHK = 2;
+    int ACC_BAN = 3;
 }

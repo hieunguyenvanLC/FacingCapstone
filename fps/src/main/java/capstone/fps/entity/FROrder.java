@@ -42,8 +42,8 @@ public class FROrder {
     private Date createTime;
     @Column(name = "update_time")
     private Date updateTime;
-    @Column(name = "deactivate_time")
-    private Date deactivateTime;
+    @Column(name = "delete_time")
+    private Date deleteTime;
     @Column(name = "note", length = 300)
     private String note;
     @Column(name = "status")
@@ -159,12 +159,12 @@ public class FROrder {
         this.updateTime = updateTime;
     }
 
-    public Date getDeactivateTime() {
-        return deactivateTime;
+    public Date getDeleteTime() {
+        return deleteTime;
     }
 
-    public void setDeactivateTime(Date deactivateTime) {
-        this.deactivateTime = deactivateTime;
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
     }
 
     public String getNote() {

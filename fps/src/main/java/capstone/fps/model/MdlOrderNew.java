@@ -3,15 +3,21 @@ package capstone.fps.model;
 
 import capstone.fps.entity.FRDistrict;
 import capstone.fps.entity.FROrder;
+import com.google.gson.annotations.Expose;
 
 import java.util.Optional;
 
 public class MdlOrderNew {
 
+    @Expose
     private String shipAddress;
+    @Expose
     private Integer frDistrictId;
+    @Expose
     private String customerDescription;
+    @Expose
     private Integer[] productList;
+    @Expose
     private Integer[] quantityList;
 
 
