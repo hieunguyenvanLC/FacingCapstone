@@ -1,0 +1,6 @@
+{
+  "appId": "com.example.fps",
+  "appName": "FPS",
+  "bundledWebRuntime": false,
+  "webDir": "www"
+}
