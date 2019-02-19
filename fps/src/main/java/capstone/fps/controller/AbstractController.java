@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
-public class AbstractController  {
+public class AbstractController {
 
     final Gson gson;
 

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 
-public class LoginService implements UserDetailsService{
+public class LoginService implements UserDetailsService {
 
     private AccountRepository accountRepository;
 

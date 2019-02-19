@@ -52,19 +52,6 @@ public class AccountService {
         return null;
     }
 
-//    public String handleImage(MultipartFile image) {
-//        if (image != null) {
-//            String fileName = String.format("i%015d", imageNumber);
-//            imageNumber++;
-//
-//            Files.copy(image.getInputStream(),);
-//
-//
-//            LOGGER.info("file name:" + fileName);
-//        }
-//        return "";
-//    }
-
 
     public boolean createAccountMember(MdlAccNewMem mdlAccount) {
         Methods methods = new Methods();
@@ -76,8 +63,6 @@ public class AccountService {
         frAccount.setPhone(mdlAccount.getPhone());
         frAccount.setPassword(password);
         frAccount.setName(mdlAccount.getName());
-        frAccount.setEmail(mdlAccount.getEmail());
-        frAccount.setDateOfBirth(new java.sql.Date(mdlAccount.getDob()));
 
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);

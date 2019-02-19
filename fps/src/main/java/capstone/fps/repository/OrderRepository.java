@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<FROrder,Integer> {
+public interface OrderRepository extends JpaRepository<FROrder, Integer> {
 
 
 }

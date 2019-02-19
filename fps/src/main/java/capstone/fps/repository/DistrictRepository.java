@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface DistrictRepository extends JpaRepository<FRDistrict,Integer> {
+public interface DistrictRepository extends JpaRepository<FRDistrict, Integer> {
 
     @Override
     Optional<FRDistrict> findById(Integer integer);

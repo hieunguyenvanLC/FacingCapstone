@@ -8,7 +8,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "fr_shipper", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FRShipper  implements Serializable {
+public class FRShipper implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id

@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class AccountController extends AbstractController {
+public class AccountMemberController extends AbstractController {
 
-    private static final String API = "/api/account";
+    private static final String API = "/api/account/member";
     AccountService accountService;
 
-    public AccountController(AccountService accountService) {
+    public AccountMemberController(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @PostMapping(API)
-    public String createAccount(@RequestParam String dataStr) {
+    public String createAccountMember(@RequestParam String dataStr) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             MdlAccNewMem accountCreate = gson.fromJson(dataStr, MdlAccNewMem.class);

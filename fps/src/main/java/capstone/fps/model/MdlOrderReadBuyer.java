@@ -3,165 +3,165 @@ package capstone.fps.model;
 
 public class MdlOrderReadBuyer {
 
-  private long id;
-  private long frAccountId;
-  private long frShipperId;
-  private String orderCode;
-  private double totalPrice;
-  private java.sql.Timestamp bookTime;
-  private java.sql.Timestamp receiveTime;
-  private double shipperEarn;
-  private String shipAddress;
-  private long frDistrictId;
-  private String customerDescription;
-  private long frStatusId;
-  private java.sql.Timestamp createTime;
-  private java.sql.Timestamp updateTime;
-  private java.sql.Timestamp deactivateTime;
-  private String note;
+    private long id;
+    private long frAccountId;
+    private long frShipperId;
+    private String orderCode;
+    private double totalPrice;
+    private java.sql.Timestamp bookTime;
+    private java.sql.Timestamp receiveTime;
+    private double shipperEarn;
+    private String shipAddress;
+    private long frDistrictId;
+    private String customerDescription;
+    private long frStatusId;
+    private java.sql.Timestamp createTime;
+    private java.sql.Timestamp updateTime;
+    private java.sql.Timestamp deactivateTime;
+    private String note;
 
 
-  public long getId() {
-    return id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
-
-  public long getFrAccountId() {
-    return frAccountId;
-  }
-
-  public void setFrAccountId(long frAccountId) {
-    this.frAccountId = frAccountId;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
 
-  public long getFrShipperId() {
-    return frShipperId;
-  }
+    public long getFrAccountId() {
+        return frAccountId;
+    }
 
-  public void setFrShipperId(long frShipperId) {
-    this.frShipperId = frShipperId;
-  }
-
-
-  public String getOrderCode() {
-    return orderCode;
-  }
-
-  public void setOrderCode(String orderCode) {
-    this.orderCode = orderCode;
-  }
+    public void setFrAccountId(long frAccountId) {
+        this.frAccountId = frAccountId;
+    }
 
 
-  public double getTotalPrice() {
-    return totalPrice;
-  }
+    public long getFrShipperId() {
+        return frShipperId;
+    }
 
-  public void setTotalPrice(double totalPrice) {
-    this.totalPrice = totalPrice;
-  }
-
-
-  public java.sql.Timestamp getBookTime() {
-    return bookTime;
-  }
-
-  public void setBookTime(java.sql.Timestamp bookTime) {
-    this.bookTime = bookTime;
-  }
+    public void setFrShipperId(long frShipperId) {
+        this.frShipperId = frShipperId;
+    }
 
 
-  public java.sql.Timestamp getReceiveTime() {
-    return receiveTime;
-  }
+    public String getOrderCode() {
+        return orderCode;
+    }
 
-  public void setReceiveTime(java.sql.Timestamp receiveTime) {
-    this.receiveTime = receiveTime;
-  }
-
-
-  public double getShipperEarn() {
-    return shipperEarn;
-  }
-
-  public void setShipperEarn(double shipperEarn) {
-    this.shipperEarn = shipperEarn;
-  }
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
 
 
-  public String getShipAddress() {
-    return shipAddress;
-  }
+    public double getTotalPrice() {
+        return totalPrice;
+    }
 
-  public void setShipAddress(String shipAddress) {
-    this.shipAddress = shipAddress;
-  }
-
-
-  public long getFrDistrictId() {
-    return frDistrictId;
-  }
-
-  public void setFrDistrictId(long frDistrictId) {
-    this.frDistrictId = frDistrictId;
-  }
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
 
-  public String getCustomerDescription() {
-    return customerDescription;
-  }
+    public java.sql.Timestamp getBookTime() {
+        return bookTime;
+    }
 
-  public void setCustomerDescription(String customerDescription) {
-    this.customerDescription = customerDescription;
-  }
-
-
-  public long getFrStatusId() {
-    return frStatusId;
-  }
-
-  public void setFrStatusId(long frStatusId) {
-    this.frStatusId = frStatusId;
-  }
+    public void setBookTime(java.sql.Timestamp bookTime) {
+        this.bookTime = bookTime;
+    }
 
 
-  public java.sql.Timestamp getCreateTime() {
-    return createTime;
-  }
+    public java.sql.Timestamp getReceiveTime() {
+        return receiveTime;
+    }
 
-  public void setCreateTime(java.sql.Timestamp createTime) {
-    this.createTime = createTime;
-  }
-
-
-  public java.sql.Timestamp getUpdateTime() {
-    return updateTime;
-  }
-
-  public void setUpdateTime(java.sql.Timestamp updateTime) {
-    this.updateTime = updateTime;
-  }
+    public void setReceiveTime(java.sql.Timestamp receiveTime) {
+        this.receiveTime = receiveTime;
+    }
 
 
-  public java.sql.Timestamp getDeactivateTime() {
-    return deactivateTime;
-  }
+    public double getShipperEarn() {
+        return shipperEarn;
+    }
 
-  public void setDeactivateTime(java.sql.Timestamp deactivateTime) {
-    this.deactivateTime = deactivateTime;
-  }
+    public void setShipperEarn(double shipperEarn) {
+        this.shipperEarn = shipperEarn;
+    }
 
 
-  public String getNote() {
-    return note;
-  }
+    public String getShipAddress() {
+        return shipAddress;
+    }
 
-  public void setNote(String note) {
-    this.note = note;
-  }
+    public void setShipAddress(String shipAddress) {
+        this.shipAddress = shipAddress;
+    }
+
+
+    public long getFrDistrictId() {
+        return frDistrictId;
+    }
+
+    public void setFrDistrictId(long frDistrictId) {
+        this.frDistrictId = frDistrictId;
+    }
+
+
+    public String getCustomerDescription() {
+        return customerDescription;
+    }
+
+    public void setCustomerDescription(String customerDescription) {
+        this.customerDescription = customerDescription;
+    }
+
+
+    public long getFrStatusId() {
+        return frStatusId;
+    }
+
+    public void setFrStatusId(long frStatusId) {
+        this.frStatusId = frStatusId;
+    }
+
+
+    public java.sql.Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(java.sql.Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+
+    public java.sql.Timestamp getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(java.sql.Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
+
+    public java.sql.Timestamp getDeactivateTime() {
+        return deactivateTime;
+    }
+
+    public void setDeactivateTime(java.sql.Timestamp deactivateTime) {
+        this.deactivateTime = deactivateTime;
+    }
+
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
 }
