@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+<body>
+<div>
+
+    <input type="number" id="txtPhone" placeholder="phone"/><br/>
+    <input type="password" id="txtPassword" placeholder="password"/><br/>
+    <input type="name" id="txtName" placeholder="full name"/><br/>
+    <button onclick="sendSignUp()">Sign Up</button>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+    var backendAPI = "http://localhost:8080/";
+
+
+    function sendSignUp() {
+        var txtPhone = $('#txtPhone');
+        var txtPassword = $('#txtPassword');
+        var txtName = $('#txtName');
+
+        $.ajax({
+            type: 'GET',
+            url: backendAPI + "sign_up",
+            data: { phoneNumber: txtPhone.val(), password: txtPassword.val(), fullName: txtName.val()},
+            dataType: 'json',
+            success: function (response) {
+
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        })
+    }
+</script>
+</body>
+</html>
