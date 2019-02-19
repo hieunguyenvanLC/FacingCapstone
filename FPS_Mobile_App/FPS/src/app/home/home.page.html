@@ -12,7 +12,7 @@
 <ion-content>
   <!-- Default Searchbar -->
 <ion-searchbar ([ngModel])="searchValue" (change)="search($event)"></ion-searchbar>
-  <ion-slides class="slide-promotion" pager="true" [options]="slideOpts">
+  <ion-slides #promotionSlides (ionSlidesDidLoad)="slidesDidLoad(promotionSlides)" class="slide-promotion" pager="true" [options]="slideOpts">
     <ion-slide>
       <img src="../../assets/image/slide1.jpg" />
     </ion-slide>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,10 @@ export class HomePage {
   };
 
   searchValue: string;
+
+  slidesDidLoad(slides: IonSlides) {
+    slides.startAutoplay();
+  }
 
   search(event){
     console.log("search value: " + event.target.value);

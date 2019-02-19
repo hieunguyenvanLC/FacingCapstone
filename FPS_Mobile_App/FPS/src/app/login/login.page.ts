@@ -17,6 +17,8 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.phonenumber = "admin";
+    this.password = "admin";
   }
 
   async login() {
