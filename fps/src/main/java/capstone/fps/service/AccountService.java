@@ -31,12 +31,12 @@ public class AccountService {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
 
-        this.roleAdm = getRole(ConstantList.ROL_ADM);
-        this.roleMem = getRole(ConstantList.ROL_MEM);
-        this.roleShp = getRole(ConstantList.ROL_SHP);
+        this.roleAdm = initRole(ConstantList.ROL_ADM);
+        this.roleMem = initRole(ConstantList.ROL_MEM);
+        this.roleShp = initRole(ConstantList.ROL_SHP);
     }
 
-    private FRRole getRole(String name) {
+    private FRRole initRole(String name) {
         Optional<FRRole> optional;
         optional = roleRepository.findByName(name);
         if (optional.isPresent()) {

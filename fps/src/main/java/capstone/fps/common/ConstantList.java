@@ -18,13 +18,15 @@ public interface ConstantList {
     int ORD_CXL = 5;
 
     /* Role */
-    String ROL_ADM = "admin";
-    String ROL_MEM = "member";
-    String ROL_SHP = "shipper";
+    String ROL_ADM = "ROLE_ADMIN";
+    String ROL_MEM = "ROLE_MEMBER";
+    String ROL_SHP = "ROLE_SHIPPER";
 
     /* Account status */
     int ACC_NEW = 1;
     // Account info has been checked and approved
     int ACC_CHK = 2;
     int ACC_BAN = 3;
+
+
 }

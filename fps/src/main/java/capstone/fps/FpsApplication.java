@@ -9,7 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class FpsApplication {
 
     public static void main(String[] args) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+        String s = bCryptPasswordEncoder.encode("abc");
+        System.out.println(s);
         SpringApplication.run(FpsApplication.class, args);
     }
 

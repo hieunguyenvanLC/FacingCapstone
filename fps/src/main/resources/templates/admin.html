@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Page</title>
-</head>
+
 <body>
-<h2>Welcome, Admin</h2>
+<div class="container">
+    <div class="nav-wrapper">
+        <form class="logout inline" th:action="@{/logout}" method="post">
+            <button type="submit"><i class="material-icons">Log out</i></button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

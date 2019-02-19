@@ -52,7 +52,7 @@ public class OrderService {
 
     public FROrder createOrder(MdlOrderNew mdlOrder) {
         FROrder frOrder = new FROrder();
-        FRAccount account = LoginService.getCurrentUser();
+        FRAccount account = null;
         if (account == null) {
             return null;
         }
@@ -113,7 +113,7 @@ public class OrderService {
     }
 
     public boolean assignOrder(int orderId) {
-        FRAccount account = LoginService.getCurrentUser();
+        FRAccount account = null;
         if (account.getShipper() == null) {
             // Something is wrong: none shipper is not suppose to be able to access this method
             return false;

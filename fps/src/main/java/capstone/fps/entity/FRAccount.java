@@ -1,15 +1,22 @@
 package capstone.fps.entity;
 
+import capstone.fps.common.ConstantList;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "fr_account", catalog = "fpsdb", schema = "fpsdb")
 @XmlRootElement
-public class FRAccount implements Serializable {
+public class FRAccount implements UserDetails {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,8 +46,6 @@ public class FRAccount implements Serializable {
     private Date nationalIdCreatedDate;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
-    @Column(name = "hash_key", length = 100)
-    private String hashKey;
     @Column(name = "create_time")
     private Date createTime;
     @Column(name = "update_time")
@@ -88,8 +93,40 @@ public class FRAccount implements Serializable {
         this.role = role;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        return authorities;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return String.valueOf(phone);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status != ConstantList.ACC_BAN;
     }
 
     public void setPassword(String password) {
@@ -158,14 +195,6 @@ public class FRAccount implements Serializable {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getHashKey() {
-        return hashKey;
-    }
-
-    public void setHashKey(String hashKey) {
-        this.hashKey = hashKey;
     }
 
     public Date getCreateTime() {

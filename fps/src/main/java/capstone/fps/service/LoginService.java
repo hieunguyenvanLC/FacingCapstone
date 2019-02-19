@@ -5,9 +5,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FRRole;
+import capstone.fps.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,52 +18,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
-
 @Service
 
-public class LoginService {
+public class LoginService implements UserDetailsService{
 
-     public static FRAccount currentUser;
+    private AccountRepository accountRepository;
 
-
-//    private AccountRepository accountRepository;
-
-//    public LoginService(AccountRepository accountRepository) {
-//        this.accountRepository = accountRepository;
-//    }
-
-    //    @Override
-//    @Transactional
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<FRAccount> optional = accountRepository.findByAccountName(username);
-//        if (!optional.isPresent()) {
-//            throw new UsernameNotFoundException("User not found");
-//        }
-//        FRAccount user = optional.get();
-//                Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-//        Set<FRRole> roles = new HashSet<>();
-//        roles.add(user.getRole());
-//        for (FRRole role : roles) {
-//            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-//        }
-//
-//        return new org.springframework.security.core.userdetails.User(
-//                user.getEmail(), user.getPassword(), grantedAuthorities);
-//    }
-
-
-    public static FRAccount getCurrentUser() {
-        return currentUser;
+    public LoginService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
-    public boolean checkLogin(Double phone, String password) {
-        if (phone == null || password == null) {
-            return false;
+    public FRAccount findByPhone(Double phone) {
+        Optional<FRAccount> optional = accountRepository.findByPhone(phone);
+        if (!optional.isPresent()) {
+            throw new UsernameNotFoundException("User not found");
         }
-//        Optional<FRAccount> accountOptional = accountRepository.findByPhoneAndPassword(phone, password);
-//        return accountOptional.isPresent();
-        return true;
+        return optional.get();
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Load user from the database (throw exception if not found)
+        Optional<FRAccount> optional = accountRepository.findByPhone(Double.valueOf(username));
+        if (!optional.isPresent()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return optional.get();
+    }
 }

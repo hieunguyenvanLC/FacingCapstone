@@ -6,15 +6,16 @@ import com.google.gson.annotations.SerializedName;
 public class Response<E> {
 
     //API Response code
-    public static final int STATUS_SERVER_ERROR = -1;
-    public static final int STATUS_FAIL = 0;
     public static final int STATUS_SUCCESS = 1;
-    public static final int STATUS_NO_RESULT = 2;
+    public static final int STATUS_NO_RESULT = 0;
+    public static final int STATUS_FAIL = -1;
+    public static final int STATUS_SERVER_ERROR = -2;
 
     public static final String MESSAGE_SUCCESS = "Success";
+    public static final String MESSAGE_NO_RESULT = "No result";
     public static final String MESSAGE_FAIL = "Fail";
     public static final String MESSAGE_SERVER_ERROR = "Server error";
-    public static final String MESSAGE_NO_RESULT = "No result";
+
 
     @Expose
     @SerializedName(value = "status_code")
