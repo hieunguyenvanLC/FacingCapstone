@@ -22,7 +22,7 @@ public class LoginFrontController {
         return "admin";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    @GetMapping(path = "/login")
     public String loginForm(Model model, HttpServletRequest request) {
         model.addAttribute("user", new FRAccount());
         try {
@@ -36,9 +36,14 @@ public class LoginFrontController {
         return "login";
     }
 
-    @RequestMapping("/access_denied")
+    @GetMapping("/access_denied")
     public String accessDenied() {
-        return "noaccess";
+        return "no_access";
+    }
+
+    @GetMapping("/sign_up_page")
+    public String signUpPage() {
+        return "sign_up";
     }
 
 }

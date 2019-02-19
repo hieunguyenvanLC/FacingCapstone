@@ -3,6 +3,7 @@ package capstone.fps.service;
 import capstone.fps.common.ConstantList;
 import capstone.fps.common.Methods;
 import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FROrder;
 import capstone.fps.entity.FRRole;
 import capstone.fps.model.MdlAccBan;
 import capstone.fps.model.MdlAccEdt;
@@ -52,17 +53,23 @@ public class AccountService {
         return null;
     }
 
+    public boolean updateProfile(MdlAccEdt mdlAccEdt) {
+        Methods methods = new Methods();
+        java.sql.Date now = methods.getSqlNow();
 
-    public boolean createAccountMember(MdlAccNewMem mdlAccount) {
+        return false;
+    }
+
+    public boolean createAccountMember(Double phone, String pass, String name) {
         Methods methods = new Methods();
         java.sql.Date now = methods.getSqlNow();
         FRAccount frAccount = new FRAccount();
 
+        frAccount.setPhone(phone);
         String salt = BCrypt.gensalt();
-        String password = BCrypt.hashpw(mdlAccount.getPassword(), salt);
-        frAccount.setPhone(mdlAccount.getPhone());
+        String password = BCrypt.hashpw(pass, salt);
         frAccount.setPassword(password);
-        frAccount.setName(mdlAccount.getName());
+        frAccount.setName(name);
 
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
@@ -74,15 +81,6 @@ public class AccountService {
         return true;
     }
 
-    public boolean updateProfile(MdlAccEdt mdlAccEdt) {
-        Methods methods = new Methods();
-        java.sql.Date now = methods.getSqlNow();
-
-        return false;
-    }
-
-
-    // check role admin
     public boolean banAccount(MdlAccBan accBan) {
         if (accBan.getId() == null) {
             return false;
@@ -100,4 +98,6 @@ public class AccountService {
         frAccount.setNote(accBan.getReason());
         return true;
     }
+
+
 }

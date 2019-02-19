@@ -6,10 +6,7 @@ import capstone.fps.model.MdlAccNewMem;
 import capstone.fps.model.Response;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AccountMemberController extends AbstractController {
@@ -21,12 +18,12 @@ public class AccountMemberController extends AbstractController {
         this.accountService = accountService;
     }
 
-    @PostMapping(API)
-    public String createAccountMember(@RequestParam String dataStr) {
+    @PostMapping("/sign_up")
+    public String createAccountMember( Double phoneNumber,  String password,  String fullName) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            MdlAccNewMem accountCreate = gson.fromJson(dataStr, MdlAccNewMem.class);
-            if (accountService.createAccountMember(accountCreate)) {
+
+            if (accountService.createAccountMember(phoneNumber, password, fullName)) {
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             }
         } catch (Exception e) {
