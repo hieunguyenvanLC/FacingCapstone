@@ -43,3 +43,18 @@ ion-grid{
 .item-native{
     padding: 0;
 }
+
+.add-prod{
+    font-size:24px;
+}
+
+.custom-modal-page {
+    height: 270px;
+    position: absolute;
+    top: calc(100% - 270px);
+
+    ion-content {
+        background-color: #333;
+        color: #eee;
+    }
+}
