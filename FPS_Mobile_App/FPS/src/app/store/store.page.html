@@ -7,9 +7,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-   <!-- Title Store -->
-   <div class="store">
+<ion-content class="no-scroll">
+  <!-- Title Store -->
+  <div class="store">
     <img class="store__img" src="../../assets/image/trasua3.jpg" />
     <h1 class="store__title">The Alley - 990 Phan Văn Trị, Gò Vấp</h1>
     <div class="store__subtitle">
@@ -40,7 +40,7 @@
         </ion-row>
         <ion-row>
           <ion-col class="prod-price none-padding">
-            
+
             <p (click)="removeProduct(item.id)">
               <ion-icon class="add-prod" name="remove-circle-outline"></ion-icon>
             </p>
@@ -61,4 +61,8 @@
 
   </ion-item-group>
   <!-- End Product -->
+
 </ion-content>
+<ion-footer *ngIf=(isHaveProduct) class="footer">
+  <ion-button expand="full" (click)="openOrderModal()">Your cart: {{num}} item(s)</ion-button>
+</ion-footer>

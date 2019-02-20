@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ToastController } from '@ionic/angular';
+import {
+  ToastController,
+  ModalController
+} from '@ionic/angular';
+import { OrdermodalPage } from '../ordermodal/ordermodal.page';
+
 @Component({
   selector: 'app-store',
   templateUrl: './store.page.html',
@@ -46,9 +51,12 @@ export class StorePage implements OnInit {
       quantity: 0
     }
   ]
+  isHaveProduct = false;
   constructor(
-    private route: Router,
-    public toastController: ToastController
+    private router: Router,
+    public toastController: ToastController,
+    private modalController: ModalController,
+
   ) {
   }
 
@@ -62,10 +70,8 @@ export class StorePage implements OnInit {
     prod.quantity++;
     this.num++;
     if (this.num == 1) {
-      this.presentToastWithOptions();
-    } else{
-      this.toastController.dismiss();
-      this.presentToastWithOptions();
+      // this.presentToastWithOptions();
+      this.isHaveProduct = true;
     }
   }
 
@@ -77,29 +83,25 @@ export class StorePage implements OnInit {
         if (this.num > 0) {
           this.num--;
           if (this.num == 0) {
-            this.toastController.dismiss();
-          }else {
-            this.toastController.dismiss();
-            this.presentToastWithOptions();
+            // this.toastController.dismiss();
+            this.isHaveProduct = false;
           }
         }
       }
     };
-    
-  }
-  async presentToastWithOptions() {
-    const toast = await this.toastController.create({
-      message: 'Total :' + this.num,
-      showCloseButton: false,
-      position: 'bottom',
-      closeButtonText: 'Done',
-    });
-    toast.present();
+
   }
 
+  async openOrderModal() {
+    const modal = await this.modalController.create({
+      component: OrdermodalPage,
+      componentProps: { value: 123 }
+    });
+    return await modal.present();
+  }
 
   backToHome() {
-    this.route.navigateByUrl("home");
+    this.router.navigateByUrl("home");
   }
 
 }

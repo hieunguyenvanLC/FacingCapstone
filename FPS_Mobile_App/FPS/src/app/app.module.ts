@@ -8,6 +8,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { OrdermodalPage } from './ordermodal/ordermodal.page';
+import { OrdermodalPageModule } from './ordermodal/ordermodal.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,7 +17,8 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    OrdermodalPageModule
   ],
   providers: [
     StatusBar,
