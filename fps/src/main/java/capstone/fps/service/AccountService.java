@@ -3,11 +3,8 @@ package capstone.fps.service;
 import capstone.fps.common.ConstantList;
 import capstone.fps.common.Methods;
 import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FROrder;
 import capstone.fps.entity.FRRole;
-import capstone.fps.model.MdlAccBan;
 import capstone.fps.model.MdlAccEdt;
-import capstone.fps.model.MdlAccNewMem;
 import capstone.fps.repository.AccountRepository;
 import capstone.fps.repository.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -55,14 +52,14 @@ public class AccountService {
 
     public boolean updateProfile(MdlAccEdt mdlAccEdt) {
         Methods methods = new Methods();
-        java.sql.Date now = methods.getSqlNow();
+        long date = methods.getTimeNow();
 
         return false;
     }
 
-    public boolean createAccountMember(Double phone, String pass, String name) {
+    public boolean createAccountMember(String phone, String pass, String name) {
         Methods methods = new Methods();
-        java.sql.Date now = methods.getSqlNow();
+        long timeNow = methods.getTimeNow();
         FRAccount frAccount = new FRAccount();
 
         frAccount.setPhone(phone);
@@ -73,31 +70,29 @@ public class AccountService {
 
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setCreateTime(now);
-        frAccount.setUpdateTime(now);
+        frAccount.setCreateTime(timeNow);
+        frAccount.setUpdateTime(timeNow);
         frAccount.setRole(roleMem);
         frAccount.setStatus(ConstantList.ACC_NEW);
         accountRepository.save(frAccount);
         return true;
     }
 
-    public boolean banAccount(MdlAccBan accBan) {
-        if (accBan.getId() == null) {
+    public boolean banAccount(Integer accountId, String reason) {
+        if (accountId == null) {
             return false;
         }
-        Optional<FRAccount> optional = accountRepository.findById(accBan.getId());
+        Optional<FRAccount> optional = accountRepository.findById(accountId);
         if (!optional.isPresent()) {
             return false;
         }
         FRAccount frAccount = optional.get();
         Methods methods = new Methods();
-        java.sql.Date now = methods.getSqlNow();
-        frAccount.setUpdateTime(now);
-        frAccount.setDeleteTime(now);
+        long timeNow = methods.getTimeNow();
+        frAccount.setUpdateTime(timeNow);
+        frAccount.setDeleteTime(timeNow);
         frAccount.setStatus(ConstantList.ACC_BAN);
-        frAccount.setNote(accBan.getReason());
+        frAccount.setNote(reason);
         return true;
     }
-
-
 }

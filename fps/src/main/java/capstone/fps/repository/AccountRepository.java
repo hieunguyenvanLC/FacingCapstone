@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<FRAccount, Integer> {
 
 
-    Optional<FRAccount> findByPhone(Double phone);
+    Optional<FRAccount> findByPhone(String phone);
 }

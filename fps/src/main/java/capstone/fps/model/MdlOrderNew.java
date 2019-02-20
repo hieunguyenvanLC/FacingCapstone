@@ -1,11 +1,6 @@
 package capstone.fps.model;
 
-
-import capstone.fps.entity.FRDistrict;
-import capstone.fps.entity.FROrder;
 import com.google.gson.annotations.Expose;
-
-import java.util.Optional;
 
 public class MdlOrderNew {
 

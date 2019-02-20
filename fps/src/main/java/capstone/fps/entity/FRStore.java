@@ -3,6 +3,7 @@ package capstone.fps.entity;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
@@ -28,13 +29,15 @@ public class FRStore {
     @Column(name = "rating_count")
     private Integer ratingCount;
     @Column(name = "create_time")
-    private Date createTime;
+    private Long createTime;
     @Column(name = "update_time")
-    private Date updateTime;
+    private Long updateTime;
     @Column(name = "delete_time")
-    private Date deleteTime;
+    private Long deleteTime;
     @Column(name = "note", length = 300)
     private String note;
+    @Column(name = "status")
+    private Integer status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<FRSchedule> scheduleCollection;
@@ -100,27 +103,27 @@ public class FRStore {
         this.ratingCount = ratingCount;
     }
 
-    public Date getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public Long getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
     }
 
-    public Date getDeleteTime() {
+    public Long getDeleteTime() {
         return deleteTime;
     }
 
-    public void setDeleteTime(Date deleteTime) {
+    public void setDeleteTime(Long deleteTime) {
         this.deleteTime = deleteTime;
     }
 
@@ -130,5 +133,13 @@ public class FRStore {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

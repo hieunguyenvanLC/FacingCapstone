@@ -2,7 +2,6 @@ package capstone.fps.controller;
 
 import capstone.fps.model.MdlAccBan;
 import capstone.fps.model.MdlAccEdt;
-import capstone.fps.model.MdlAccNewMem;
 import capstone.fps.model.Response;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
@@ -11,18 +10,17 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class AccountMemberController extends AbstractController {
 
-    private static final String API = "/api/account/member";
+    private static final String API = "/api/account/";
     AccountService accountService;
 
     public AccountMemberController(AccountService accountService) {
         this.accountService = accountService;
     }
 
-    @PostMapping("/sign_up")
-    public String createAccountMember( Double phoneNumber,  String password,  String fullName) {
+    @GetMapping("/sign_up")
+    public String createAccountMember(String phoneNumber, String password, String fullName) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-
             if (accountService.createAccountMember(phoneNumber, password, fullName)) {
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             }
@@ -48,12 +46,11 @@ public class AccountMemberController extends AbstractController {
         return gson.toJson(response);
     }
 
-    @DeleteMapping(API)
-    public String deactivateAccount(@RequestParam String banStr) {
+    @DeleteMapping("/admin/api/deactivate_account")
+    public String deactivateAccount(Integer accountId, String reason) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            MdlAccBan accBan = gson.fromJson(banStr, MdlAccBan.class);
-            if (accountService.banAccount(accBan)) {
+            if (accountService.banAccount(accountId, reason)) {
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             }
         } catch (Exception e) {
@@ -62,6 +59,8 @@ public class AccountMemberController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+
 
 //    @PutMapping(API + "/face")
 //    public String updateFace(@RequestParam MultipartFile faceImg) {

@@ -1,6 +1,7 @@
 package capstone.fps.config;
 
 import capstone.fps.common.ConstantList;
+import capstone.fps.entity.FRAccount;
 import capstone.fps.model.FlashMessage;
 import capstone.fps.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;

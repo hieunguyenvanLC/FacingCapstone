@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +25,7 @@ public class FRAccount implements UserDetails {
     @Column(name = "id", nullable = false)
     private Integer id;
     @Column(name = "phone_number")
-    private Double phone;
+    private String phone;
     @ManyToOne
     @JoinColumn(name = "FR_Role_id")
     private FRRole role;
@@ -43,15 +44,15 @@ public class FRAccount implements UserDetails {
     @Column(name = "national_id", length = 50)
     private String nationalId;
     @Column(name = "national_id_created_date")
-    private Date nationalIdCreatedDate;
+    private Long nationalIdCreatedDate;
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    private Long dateOfBirth;
     @Column(name = "create_time")
-    private Date createTime;
+    private Long createTime;
     @Column(name = "update_time")
-    private Date updateTime;
+    private Long updateTime;
     @Column(name = "delete_time")
-    private Date deleteTime;
+    private Long deleteTime;
     @Column(name = "note", length = 300)
     private String note;
     @Column(name = "status")
@@ -77,11 +78,11 @@ public class FRAccount implements UserDetails {
         this.id = id;
     }
 
-    public Double getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Double phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -181,43 +182,43 @@ public class FRAccount implements UserDetails {
         this.nationalId = nationalId;
     }
 
-    public Date getNationalIdCreatedDate() {
+    public Long getNationalIdCreatedDate() {
         return nationalIdCreatedDate;
     }
 
-    public void setNationalIdCreatedDate(Date nationalIdCreatedDate) {
+    public void setNationalIdCreatedDate(Long nationalIdCreatedDate) {
         this.nationalIdCreatedDate = nationalIdCreatedDate;
     }
 
-    public Date getDateOfBirth() {
+    public Long getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(Long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Date getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public Long getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
     }
 
-    public Date getDeleteTime() {
+    public Long getDeleteTime() {
         return deleteTime;
     }
 
-    public void setDeleteTime(Date deleteTime) {
+    public void setDeleteTime(Long deleteTime) {
         this.deleteTime = deleteTime;
     }
 

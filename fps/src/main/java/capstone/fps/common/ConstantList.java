@@ -28,5 +28,12 @@ public interface ConstantList {
     int ACC_CHK = 2;
     int ACC_BAN = 3;
 
+    /* Product status */
+    int PRO_NEW = 1;
+    int PRO_REV = 2;
 
+    /* Product status */
+    int STO_NEW = 1;
+    int STO_CHK = 2;
+    int STO_REV = 3;
 }

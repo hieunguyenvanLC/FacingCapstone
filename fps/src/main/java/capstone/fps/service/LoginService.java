@@ -28,7 +28,7 @@ public class LoginService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
-    public FRAccount findByPhone(Double phone) {
+    public FRAccount findByPhone(String phone) {
         Optional<FRAccount> optional = accountRepository.findByPhone(phone);
         if (!optional.isPresent()) {
             throw new UsernameNotFoundException("User not found");
@@ -39,7 +39,7 @@ public class LoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Load user from the database (throw exception if not found)
-        Optional<FRAccount> optional = accountRepository.findByPhone(Double.valueOf(username));
+        Optional<FRAccount> optional = accountRepository.findByPhone(username);
         if (!optional.isPresent()) {
             throw new UsernameNotFoundException("User not found");
         }

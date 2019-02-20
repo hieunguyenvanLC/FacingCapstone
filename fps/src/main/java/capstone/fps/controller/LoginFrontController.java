@@ -4,8 +4,6 @@ import capstone.fps.entity.FRAccount;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,8 +16,9 @@ public class LoginFrontController {
     }
 
     @GetMapping("/admin")
-    public String admin() {
-        return "admin";
+    public String admin(Model model) {
+        model.addAttribute("page", "home");
+        return "admin/admin";
     }
 
     @GetMapping(path = "/login")
@@ -46,4 +45,19 @@ public class LoginFrontController {
         return "sign_up";
     }
 
+
+//    @GetMapping("/base")
+//    public String base() {
+//        return "admin/base";
+//    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "admin/user";
+    }
+
+    @GetMapping("/userd")
+    public String userd() {
+        return "admin/user-detail";
+    }
 }
