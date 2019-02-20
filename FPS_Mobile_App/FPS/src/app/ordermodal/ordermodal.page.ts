@@ -7,7 +7,7 @@ import { NavParams } from '../../../node_modules/@ionic/angular';
   styleUrls: ['./ordermodal.page.scss'],
 })
 export class OrdermodalPage implements OnInit {
-  @Input() value: number;
+  @Input() products: any;
   constructor(navParams: NavParams) {
     // componentProps can also be accessed at construction time using NavParams
   }

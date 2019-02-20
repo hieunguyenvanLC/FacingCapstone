@@ -51,6 +51,7 @@ export class StorePage implements OnInit {
       quantity: 0
     }
   ]
+  orders = []
   isHaveProduct = false;
   constructor(
     private router: Router,
@@ -66,36 +67,50 @@ export class StorePage implements OnInit {
   }
 
   addProduct(id) {
-    let prod = this.products.find(obj => obj.id == id);
-    prod.quantity++;
+    let prod = this.products.find(obj => obj.id == id); // find product in product list
+    let prodInOrder
+    if (prod.quantity == 0) {
+      prod.quantity++;
+    }
+    if (this.orders != []) {
+      prodInOrder = this.orders.find(obj => obj.id == id); // find product in order list
+      if (prodInOrder != undefined) {
+        prodInOrder.quantity++;
+      } else {
+        this.orders.push(prod); //add new a product to array
+      }
+    }
     this.num++;
     if (this.num == 1) {
-      // this.presentToastWithOptions();
-      this.isHaveProduct = true;
+      this.isHaveProduct = true; // turn on footer
     }
+    console.log(this.orders);
   }
 
   removeProduct(id) {
-    let prod = this.products.find(obj => obj.id == id);
-    if (prod.id == id) {
-      if (prod.quantity > 0) {
-        prod.quantity--;
+    let prodInOrder = this.orders.find(obj => obj.id == id);
+    if (prodInOrder.id == id) {
+      if (prodInOrder.quantity > 0) {
+        prodInOrder.quantity--;
+        if (prodInOrder.quantity == 0) {
+          const index = this.orders.indexOf(id, 0);
+          this.orders.splice(index, 1) // delete an array item in prodInOrder
+        }
         if (this.num > 0) {
           this.num--;
           if (this.num == 0) {
-            // this.toastController.dismiss();
-            this.isHaveProduct = false;
+            this.isHaveProduct = false; // turn off footer
           }
-        }
-      }
-    };
-
+        }//end if num
+      } //end if quantity
+    }// end if id
+    console.log(this.orders)
   }
 
   async openOrderModal() {
     const modal = await this.modalController.create({
       component: OrdermodalPage,
-      componentProps: { value: 123 }
+      componentProps: { products: this.orders }
     });
     return await modal.present();
   }

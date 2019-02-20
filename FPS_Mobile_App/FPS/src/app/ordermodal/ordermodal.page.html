@@ -5,5 +5,44 @@
 </ion-header>
 
 <ion-content padding>
-  {{value}}
+  <ion-item-group>
+    <!-- item -->
+    <ion-item *ngFor="let item of products">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="3">
+            <ion-thumbnail>
+              <img src="{{item.img}}">
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col size="6" class="prod-title">
+            <strong>{{item.name}}</strong>
+
+          </ion-col>
+          <ion-col size="3" class="prod-price">
+            <p>{{item.price}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="prod-price none-padding">
+
+            <p (click)="removeProduct(item.id)">
+              <ion-icon class="add-prod" name="remove-circle-outline"></ion-icon>
+            </p>
+          </ion-col>
+          <ion-col class="prod-price none-padding">
+            <ion-input disabled value="{{item.quantity}}"></ion-input>
+          </ion-col>
+          <ion-col class="prod-price none-padding">
+            <p (click)="addProduct(item.id)">
+              <ion-icon class="add-prod" name="add-circle-outline"></ion-icon>
+            </p>
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <!-- end item -->
+
+  </ion-item-group>
 </ion-content>
