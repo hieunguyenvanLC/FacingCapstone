@@ -17,4 +17,8 @@ public class AccountListController {
         model.addAttribute("page", "account");
         return "admin/shipper";
     }
+//    @GetMapping("/admin/order")
+//    public String showOrderList() {
+//        return "order";
+//    }
 }

@@ -51,13 +51,13 @@ public class LoginFrontController {
 //        return "admin/base";
 //    }
 
-    @GetMapping("/user")
-    public String user() {
-        return "admin/user";
-    }
-
-    @GetMapping("/userd")
-    public String userd() {
-        return "admin/user-detail";
-    }
+//    @GetMapping("/user")
+//    public String user() {
+//        return "admin/user";
+//    }
+//
+//    @GetMapping("/userd")
+//    public String userd() {
+//        return "admin/user-detail";
+//    }
 }

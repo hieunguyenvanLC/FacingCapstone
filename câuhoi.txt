@@ -1,0 +1,5 @@
+1. Order có bao nhiêu status chính ? 
+2. Store có bao nhiêu status chính?
+3. Shipper có bao nhiêu status chính? Hay ch? là active và deactive?
+
+4. Admin có quy?n cancel và delete order c?a khách hàng không ?
