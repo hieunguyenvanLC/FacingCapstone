@@ -1,5 +1,10 @@
-1. Order có bao nhiêu status chính ? 
-2. Store có bao nhiêu status chính?
-3. Shipper có bao nhiêu status chính? Hay ch? là active và deactive?
+1. Order có bao nhiêu status chính ? Cho Shppier,  Shipper nhan order, Cancel, Accept
+2. Store có bao nhiêu status chính? 2 
+Shipper= San sang Nhan Don Hang, Ko San Sang Nhan DFOn Hang, Dang chuyen Hang
 
-4. Admin có quy?n cancel và delete order c?a khách hàng không ?
+Hay ch? là active và deactive? -Account Status
+
+4. Admin có quy?n cancel order c?a khách hàng duoc, nhung luu lai nguoi cancel
+5. Admin co quyen xoa store khong ? khong can
+
+6. Shipper phai dang ky thi admin moi add new account cho shipper, form add acount shipper
