@@ -36,10 +36,10 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
-    @GetMapping("/admin/order")
-    public String showOrderList() {
-        return "order";
-    }
+//
+//    @GetMapping("/admin/order")
+//    public String showOrderList() {
+//        return "order";
+//    }
 
 }

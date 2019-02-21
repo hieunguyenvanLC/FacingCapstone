@@ -14,11 +14,12 @@ public class AccountListController {
 
     @GetMapping("/admin/shipper")
     public String showShipperList(Model model) {
-        model.addAttribute("page", "account");
+        model.addAttribute("page", "shipper");
         return "admin/shipper";
     }
-//    @GetMapping("/admin/order")
-//    public String showOrderList() {
-//        return "order";
-//    }
+    @GetMapping("/admin/order")
+    public String showOrderList(Model model) {
+        model.addAttribute("page", "order");
+        return "admin/order";
+    }
 }

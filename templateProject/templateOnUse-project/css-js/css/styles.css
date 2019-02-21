@@ -1,0 +1,20 @@
+.message {
+    /* border: 1px solid; */
+    font-weight: 600;
+    margin: 10px 0px;
+    padding: 10px 10px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    font-size: 12px;
+}
+
+.failure {
+    color: #E53935;
+    background-color: #FFCDD2;
+    /* background-image: url('../img/error-icon.svg'); */
+}
+
+section.dashboard-counts .row {
+    padding: 8px 10px;
+    margin: 0;
+}
