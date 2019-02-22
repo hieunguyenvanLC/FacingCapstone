@@ -1,0 +1,15 @@
+
+ion-grid{
+    padding: 0;
+    .prod-title{
+        font-size: 13px;
+    }
+    .prod-price{
+        color: green;
+        font-size: 13px;
+        p{
+            margin: 0;
+            text-align: right;
+        }
+    }
+}

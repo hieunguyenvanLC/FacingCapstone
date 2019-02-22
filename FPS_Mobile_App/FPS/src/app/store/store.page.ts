@@ -14,6 +14,7 @@ import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 })
 export class StorePage implements OnInit {
   num = 0;
+  total = 0;
   products = [
     {
       id: "AL1",
@@ -53,11 +54,11 @@ export class StorePage implements OnInit {
   ]
   orders = []
   isHaveProduct = false;
+  currentModal = null;
+
   constructor(
     private router: Router,
-    public toastController: ToastController,
     private modalController: ModalController,
-
   ) {
   }
 
@@ -68,14 +69,16 @@ export class StorePage implements OnInit {
 
   addProduct(id) {
     let prod = this.products.find(obj => obj.id == id); // find product in product list
-    let prodInOrder
+    let prodInOrder;
     if (prod.quantity == 0) {
       prod.quantity++;
+      this.total += parseInt(prod.price);
     }
     if (this.orders != []) {
       prodInOrder = this.orders.find(obj => obj.id == id); // find product in order list
       if (prodInOrder != undefined) {
         prodInOrder.quantity++;
+        this.total += parseInt(prod.price);
       } else {
         this.orders.push(prod); //add new a product to array
       }
@@ -92,6 +95,7 @@ export class StorePage implements OnInit {
     if (prodInOrder.id == id) {
       if (prodInOrder.quantity > 0) {
         prodInOrder.quantity--;
+        this.total -= parseInt(prodInOrder.price);  
         if (prodInOrder.quantity == 0) {
           const index = this.orders.indexOf(id, 0);
           this.orders.splice(index, 1) // delete an array item in prodInOrder
@@ -104,17 +108,20 @@ export class StorePage implements OnInit {
         }//end if num
       } //end if quantity
     }// end if id
-    console.log(this.orders)
+    console.log(this.orders);
   }
 
   async openOrderModal() {
-    const modal = await this.modalController.create({
+    await this.modalController.create({
+      animated: true,
       component: OrdermodalPage,
       componentProps: { products: this.orders }
+    }).then(modal => {
+      modal.present();
+      this.currentModal = modal;
     });
-    return await modal.present();
   }
-
+  
   backToHome() {
     this.router.navigateByUrl("home");
   }

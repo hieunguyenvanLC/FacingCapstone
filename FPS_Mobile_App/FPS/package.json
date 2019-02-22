@@ -39,6 +39,7 @@
     "core-js": "^2.5.4",
     "google-libphonenumber": "^3.2.2",
     "intl-tel-input": "^15.0.0",
+    "jquery": "^3.3.1",
     "ng4-intl-phone": "^1.2.1",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.29"

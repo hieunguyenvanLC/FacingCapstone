@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '../../../node_m
 import { AlertController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
+import * as $ from 'jquery';
+
 @Component({
   selector: 'app-registor',
   templateUrl: './registor.page.html',
@@ -11,23 +13,26 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 })
 export class RegistorPage implements OnInit {
 
-  phoneNumber : number;
+  phoneNumber: number;
+  password: string;
+  fullname: string;
 
-  
+  apiURL = "localhost:8080/";
 
-  
+
+
   constructor(
     public router: Router,
     public alertController: AlertController,
     //private camera: Camera 
   ) {
-    
+
 
   }
 
-  
-  ngOnInit() {
 
+  ngOnInit() {
+    console.log(this.apiURL);
   }
 
   backToLogin() {
@@ -46,9 +51,41 @@ export class RegistorPage implements OnInit {
           text: 'Skip',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
+          handler: () => {
+            //Create without image
+            console.log("in handle skip " + this.apiURL);
+            //start ajax
+            $.ajax({
+              type: 'GET',
+              url: this.apiURL + "any/api/csrf",
+              dataType: 'json',
+              success: function (csrf) {
+                //after get token
+                $.ajax({
+                  type: 'POST',
+                  url: this.apiURL + "any/api/account",
+                  data: {
+                    _csrf: csrf,
+                    phoneNumber: this.phoneNumber, 
+                    password: this.password, 
+                    fullName: this.fullname
+                  },
+                  dataType: 'json',
+                  success: function (response) {
+
+                  },
+                  error: function (response) {
+                    console.log(response);
+                  }
+                })
+              },
+              error: function (response) {
+              }
+            });
+            //End ajax
+
             this.router.navigateByUrl('login');
+
 
           }
         }, {
@@ -84,7 +121,7 @@ export class RegistorPage implements OnInit {
   //     // Handle error
   //    });
   // }
-  
+
   //end open camera
 
 }
