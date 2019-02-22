@@ -6,7 +6,7 @@ Hay ch? là active và deactive? -Account Status
 
 4. Admin có quy?n cancel order c?a khách hàng duoc, nhung luu lai nguoi cancel
 
-		Admin co quyen create order ? hay la edit order
+		Admin co quyen create order ? hay la edit order ?
 5. Admin co quyen xoa store khong ? khong can
 
 
