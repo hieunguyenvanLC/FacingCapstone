@@ -11,3 +11,13 @@ Hay ch? là active và deactive? -Account Status
 
 
 6. Shipper phai dang ky thi admin moi add new account cho shipper, form add acount shipper
+
+7.Product thi co can phai lam store khong ? hay phai lam 1 trang quan ly store rieng
+Neu co thi ?
+8. Xoa trong stroe thi xoa het trong product hay la null store
+
+Admin can phone  password ,ten,, email, anh, birthday, 
+ cmnd,
+ note, ngay cap
+
+Shipper day du thong
