@@ -1,10 +1,10 @@
 $(document).ready(function () {
     // $('body').bootstrapMaterialDesign();
     var accountTable = $('#account-table').DataTable({
-        "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-9'f<'filter-group status-group'>>>" +
+        "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-9'f<'filter-group status-group'><'filter-group active-group'>>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-        fnInitComplete: function(){
+        fnInitComplete: function () {
             $('div.status-group').html('<label>Status</label>\n' +
                 '<select class="form-control">\n' +
                 '  <option>Any</option>\n' +
@@ -13,6 +13,7 @@ $(document).ready(function () {
                 '  <option>Pending</option>\n' +
                 '  <option>Cancelled</option>\n' +
                 '</select>');
+
         }
     });
 
@@ -20,6 +21,8 @@ $(document).ready(function () {
         $(this).toggleClass('selected');
         $("#delete-sel").text("Delete (" + accountTable.rows('.selected').data().length + ")");
         $("#deactive-sel").text("Deactive (" + accountTable.rows('.selected').data().length + ")");
+        $("#cancel-sel").text("Cancel (" + accountTable.rows('.selected').data().length + ")");
+
     });
 
     var orderDetailTable = $("#order-detail-table").DataTable({});

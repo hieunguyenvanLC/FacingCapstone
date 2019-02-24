@@ -11,7 +11,11 @@ public class AccountListController {
         model.addAttribute("page", "account");
         return "admin/account";
     }
-
+    @GetMapping("/admin/admin")
+    public String showAdminList(Model model) {
+        model.addAttribute("page", "admin");
+        return "admin/adminPage";
+    }
     @GetMapping("/admin/shipper")
     public String showShipperList(Model model) {
         model.addAttribute("page", "shipper");
@@ -21,5 +25,10 @@ public class AccountListController {
     public String showOrderList(Model model) {
         model.addAttribute("page", "order");
         return "admin/order";
+    }
+    @GetMapping("/admin/store")
+    public String showProductList(Model model) {
+        model.addAttribute("page", "store");
+        return "admin/store";
     }
 }

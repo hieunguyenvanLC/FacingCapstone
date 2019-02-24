@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_dash_layout}" lang="en">
+
+<div class="content-inner" layout:fragment="content-section">
+    <header class="page-header d-flex">
+        <div class="flex-grow-1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active">Store Manage</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="table-responsive row bg-white has-shadow">
+                <div class="d-flex p-2">
+                    <div class="flex-grow-1">
+                    </div>
+                    <div>
+                        <button id="deactive-sel" class="btn btn-danger">Deactive (0)</button>
+                    </div>
+                    <div>
+                        <button id="delete-sel" class="btn btn-warning">Delete (0)</button>
+                    </div>
+                </div>
+                <table id="account-table" class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td data-toggle="modal" data-target="#add-edit-modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu</td>
+                        <td>83 Hồ Tùng Mậu</td>
+                        <td>Working</td>
+                        <td>❤</td>
+                        <td>
+                            <a href="#" class="btn btn-danger">Deactive</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- Modal-->
+                <div id="add-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" class="modal fade text-left">
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+</html>
