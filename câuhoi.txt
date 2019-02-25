@@ -21,3 +21,6 @@ Admin can phone  password ,ten,, email, anh, birthday,
  note, ngay cap
 
 Shipper day du thong
+
+
+Load tu server thi trong tron, cai ten ham de chay cai ham

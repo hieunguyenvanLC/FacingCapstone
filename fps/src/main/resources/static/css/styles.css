@@ -60,7 +60,7 @@ section.dashboard-counts .row {
     float: right;
     margin-left: 15px;
 }
-.form-group .
+
 
 /* Dialog */
 #order-detail-modal .modal-dialog .modal-content {
@@ -71,4 +71,7 @@ section.dashboard-counts .row {
     #order-detail-modal .modal-dialog {
         max-width: 700px;
     }
+    /*#store-detail-modal. modal-dialog{*/
+    /*max-width: 800px;*/
+    /*}*/
 }

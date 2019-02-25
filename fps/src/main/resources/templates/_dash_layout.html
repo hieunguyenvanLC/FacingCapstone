@@ -179,7 +179,7 @@
             </div>
             <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
             <ul class="list-unstyled">
-                <li th:classappend="${page.equals('home')} ? active : ''"><a href="/admin/"> <i class="icon-home"></i>Home</a>
+                <li th:classappend="${page.equals('home')} ? active : ''"><a href="/admin/home"> <i class="icon-home"></i>Home</a>
                 </li>
                 <li th:classappend="${page.equals('account')} ? active : ''"><a href="/admin/account"> <i
                         class="icon-padnote"></i>Account</a></li>
@@ -187,6 +187,8 @@
                         class="icon-bill"></i>Order</a></li>
                 <li th:classappend="${page.equals('store')} ? active : ''"><a href="/admin/store"> <i
                         class="icon-grid"></i>Store</a></li>
+                <li th:classappend="${page.equals('product')} ? active : ''"><a href="/admin/product"> <i
+                        class="icon-list"></i>Product</a></li>
                 <!--<li><a href="charts.html"> <i class="fa fa-bar-chart"></i>Charts </a></li>-->
                 <!--<li><a href="forms.html"> <i class="icon-padnote"></i>Forms </a></li>-->
                 <!--<li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i-->

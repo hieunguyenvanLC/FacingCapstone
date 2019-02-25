@@ -1,0 +1,181 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_dash_layout}" lang="en">
+
+<div class="content-inner" layout:fragment="content-section">
+    <header class="page-header d-flex">
+        <div class="flex-grow-1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active">Product Manage</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="table-responsive row bg-white has-shadow">
+                <div class="d-flex p-2">
+                    <div class="flex-grow-1">
+                        <button id="add-new" class="btn btn-primary" data-toggle="modal"
+                                data-target="#addnew-product-detail-modal">
+                            Add new
+                        </button>
+                    </div>
+                    <div>
+                        <button id="deactive-sel" class="btn btn-warning">Deactive (0)</button>
+                        <button id="delete-sel" class="btn btn-danger">Delete (0)</button>
+                    </div>
+                </div>
+
+                <table id="account-table" class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Store</th>
+                        <th>Price</th>
+                        <th>Rating</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td data-toggle="modal" data-target="#product-detail-modal">Milk Shake
+                        </td>
+                        <td data-toggle="modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu
+                        </td>
+                        <td>200</td>
+                        <td>❤❤❤</td>
+                        <td>
+                            <a href="#" class="btn btn-warning">Deactive</a>
+                            <a href="#" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Modal-->
+                <div id="product-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" class="modal fade text-left">
+                    <div role="document" class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 id="exampleModalLabelStore" class="modal-title"></h4>
+                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                                        aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <!--<p>Lorem ipsum dolor sit amet consectetur.</p>-->
+                                <form>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" placeholder="Name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Store</label>
+                                        <select name="store" class="form-control mb-3">
+                                            <option value="volvo">Volvo</option>
+                                            <option value="saab">Saab</option>
+                                            <option value="mercedes">Mercedes</option>
+                                            <option value="audi">Audi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Price</label>
+                                        <input type="text" placeholder="Price" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" placeholder="Description" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Note</label>
+                                        <input type="text" placeholder="Note" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="text-center">
+                                            <img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">
+                                        </div>
+                                        <!--<label for="exampleFormControlFile1">Example file input</label>-->
+                                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="actived-checkDetail" type="checkbox" value="" checked=""
+                                               class="checkbox-template">
+                                        <label for="actived-checkDetail">Is actived</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal-->
+                <div id="addnew-product-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" class="modal fade text-left">
+                    <div role="document" class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 id="exampleModalLabelStore1" class="modal-title"></h4>
+                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                                        aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <!--<p>Lorem ipsum dolor sit amet consectetur.</p>-->
+                                <form>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" placeholder="Name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Store</label>
+                                        <select name="store" class="form-control mb-3">
+                                            <option value="volvo">Volvo</option>
+                                            <option value="saab">Saab</option>
+                                            <option value="mercedes">Mercedes</option>
+                                            <option value="audi">Audi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Price</label>
+                                        <input type="text" placeholder="Price" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" placeholder="Description" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Note</label>
+                                        <input type="text" placeholder="Note" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="text-center">
+                                            <img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">
+                                        </div>
+                                        <!--<label for="exampleFormControlFile1">Example file input</label>-->
+                                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="actived-checkAdd" type="checkbox" value="" checked=""
+                                               class="checkbox-template">
+                                        <label for="actived-checkAdd">Is actived</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>

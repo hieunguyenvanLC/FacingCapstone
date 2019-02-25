@@ -27,8 +27,14 @@ public class AccountListController {
         return "admin/order";
     }
     @GetMapping("/admin/store")
-    public String showProductList(Model model) {
+    public String showStoreList(Model model) {
         model.addAttribute("page", "store");
         return "admin/store";
+    }
+
+    @GetMapping("/admin/product")
+    public String showProductList(Model model) {
+        model.addAttribute("page", "product");
+        return "admin/product";
     }
 }
