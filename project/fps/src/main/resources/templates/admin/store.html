@@ -1,0 +1,313 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_dash_layout}" lang="en">
+
+<div class="content-inner" layout:fragment="content-section">
+    <header class="page-header d-flex">
+        <div class="flex-grow-1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active">Store Manage</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="table-responsive row bg-white has-shadow">
+                <div class="d-flex p-2">
+                    <div class="flex-grow-1">
+                        <button id="add-new" class="btn btn-primary" data-toggle="modal"
+                                data-target="#addnew-store-detail-modal">
+                            Add new
+                        </button>
+                    </div>
+                    <div>
+                        <!--   <button id="deactive-sel" class="btn btn-warning">Deactive (0)</button>-->
+                        <button class="btn btn-warning">Deactive</button>
+                    </div>
+                </div>
+
+                <table id="store-table" class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <!-- Modal-->
+                <div id="addnew-store-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" class="modal fade text-left">
+                    <div role="document" class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 id="exampleModalLabelStore" class="modal-title"></h4>
+                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                                        aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <!--<p>Lorem ipsum dolor sit amet consectetur.</p>-->
+                                <form>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" placeholder="Name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Street</label>
+                                        <input type="text" placeholder="Street Address" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>District</label>
+                                        <select name="district" class="form-control mb-3">
+                                            <option value="1">District 1</option>
+                                            <option value="2">District 2</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <select name="city" class="form-control mb-3">
+                                            <option value="2">HCM</option>
+                                            <option value="1">HN</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" placeholder="Phone Number" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Create Day</label>
+                                        <!--<div class="input-group date-picker" data-provider="createDay">-->
+                                        <!--<input type="date" class="form-control" id="createDay">-->
+                                        <!--</div>-->
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Update Day</label>
+                                        <!--<div class="input-group date-picker" data-provider="updateDay">-->
+                                        <!--<input type="date" class="form-control" id="updateDay">-->
+                                        <!--</div>-->
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Delete Day</label>
+                                        <!--<div class="input-group date-picker" data-provider="deleteDay">-->
+                                        <!--<input type="date" class="form-control" id="deleteDay">-->
+                                        <!--</div>-->
+                                    </div>
+                                    <form>
+                                        <div class="form-group" style="text-align: center">
+                                            <div class="text-center">
+                                                <img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">
+                                            </div>
+
+                                            <!--<label for="exampleFormControlFile1">Example file input</label>-->
+                                            <input type="file" class="form-control-file"
+                                                   id="exampleFormControlFile1">
+
+                                        </div>
+                            </div>
+                            </form>
+                            <div class="form-group">
+                                <input id="actived-check" type="checkbox" value="" checked=""
+                                       class="checkbox-template">
+                                <label for="actived-check">Is actived</label>
+                            </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal-->
+            <div id="store-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true" class="modal fade text-left">
+                <div role="document" class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 id="exampleModalLabel" class="modal-title"></h4>
+                            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                                    aria-hidden="true">×</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="row row-eq-height">
+                                    <div class="col-sm padding-0">
+                                        <label>Images</label>
+                                        <div class="text-center">
+
+                                            <img src="/img/avatar-1.jpg" class="card-img"
+                                                 alt="Responsive image" style="width:400px;height:400px;">
+                                            <!--<label for="exampleFormControlFile1">Example file input</label>-->
+
+                                            <input type="file" class="form-control-file"
+                                                   id="imagesSelected" style="text-align: center">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row-eq-height">
+                                    <div class="col-sm padding-0">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" placeholder="Name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm padding-0">
+                                        <div class="form-group">
+                                            <label>Phone</label>
+                                            <input type="text" placeholder="Phone Number" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row-eq-height">
+                                    <div class="col-sm padding-0">
+                                        <div class="form-group">
+                                            <label>Street</label>
+                                            <input type="text" placeholder="Street Address" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm padding-0">
+                                        <div class="form-group">
+                                            <label>District</label>
+                                            <select name="district" class="form-control mb-3">
+                                                <option value="1">District 1</option>
+                                                <option value="2">District 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm padding-0">
+
+                                        <div class="form-group">
+                                            <label>City</label>
+                                            <select name="city" class="form-control mb-3">
+                                                <option value="2">HCM</option>
+                                                <option value="1">HN</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row-eq-height">
+                                    <div class="col-sm padding-0">
+                                        <label>Create Day</label>
+                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
+                                    </div>
+                                    <div class="col-sm padding-0">
+                                        <label>Update Day</label>
+                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
+                                    </div>
+                                    <div class="col-sm padding-0">
+                                        <label>Delete Day</label>
+                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label>Time Working</label>
+                                    <div class="col-sm-12 bg-white has-shadow">
+
+                                        <table>
+                                            <tr>
+                                                <th></th>
+                                                <th>Monday</th>
+                                                <th>Tuesday</th>
+                                                <th>Wednesday</th>
+                                                <th>Thursday</th>
+                                                <th>Friday</th>
+                                                <th>Saturday</th>
+                                                <th>Sunday</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: red">Open</td>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: red">Close</td>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                                <th>
+                                                    <input type="time">
+                                                </th>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 bg-white has-shadow">
+                                        <table id="product-store-table" class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Product Name</th>
+                                                <th>Price</th>
+                                                <!--<th>Amount</th>-->
+                                                <!--<th>Name</th>-->
+                                                <!--<th>Email</th>-->
+                                                <!--<th>Actions</th>-->
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</section>
+</div>
+</html>

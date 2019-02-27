@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_auth_layout}" lang="en">
+
+<div class="content" layout:fragment="content-section">
+    <div class="form-validate">
+        <div class="form-group">
+            <input id="txtPhone" type="text" class="input-material">
+            <label for="txtPhone" class="label-material">User Name</label>
+        </div>
+        <div class="form-group">
+            <input id="txtPass" type="password" class="input-material">
+            <label for="txtPass" class="label-material">Password</label>
+        </div>
+        <button id="login" type="submit" class="btn btn-primary" onclick="getToken()">Login</button>
+        <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+    </div>
+    <!--<small>Do not have an account?</small>-->
+    <!--<a href="/sign_up_page">Sign up</a>-->
+    <script>
+        var backendAPI = "http://localhost:8080/";
+
+        function getToken() {
+            $.ajax({
+                type: 'GET',
+                url: backendAPI + "any/api/csrf",
+                dataType: 'json',
+                success: function (response) {
+                    sendLogin(response);
+                },
+                error: function (response) {
+                }
+            })
+        }
+
+        function sendLogin(csrf) {
+            var txtPhone = $('#txtPhone');
+            var txtPassword = $('#txtPass');
+
+            $.ajax({
+                type: 'POST',
+                url: backendAPI + "login",
+                data: {_csrf: csrf, phoneNumber: txtPhone.val(), password: txtPassword.val()},
+                dataType: 'json',
+                success: function (response) {
+                    if (response === "ROLE_ADMIN") {
+                        document.location.href = "/adm/";
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+    </script>
+</div>
+
+
+</html>
