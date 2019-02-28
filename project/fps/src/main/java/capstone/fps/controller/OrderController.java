@@ -2,10 +2,14 @@ package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
 import capstone.fps.entity.FROrder;
-import capstone.fps.model.Response;
+import capstone.fps.model.*;
 import capstone.fps.service.OrderService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class OrderController extends AbstractController {
@@ -33,4 +37,30 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
 
+    @GetMapping(Fix.MAP_ANY + API + "s")
+    public String showOrderList() {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            List<MdlOrderSimple> frOrders = orderService.findall();
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrders);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.setResponse(Response.STATUS_NO_RESULT, Response.MESSAGE_NO_RESULT);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ANY + API)
+    public String getOrder(@RequestParam("id") Integer id) {
+        Response response = new Response<MdlOrderDetail>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            MdlOrderDetail order = orderService.getOrder(id);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, order);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.setResponse(Response.STATUS_NO_RESULT, Response.MESSAGE_NO_RESULT);
+        }
+        return gson.toJson(response);
+    }
 }
+

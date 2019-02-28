@@ -3,9 +3,13 @@ package capstone.fps.service;
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.entity.*;
+import capstone.fps.model.*;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +19,8 @@ public class OrderService {
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
+    private StoreRepo storeRepository;
+    private ShipperRepo shipperRepository;
 
     public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository) {
         this.districtRepository = districtRepository;
@@ -179,5 +185,52 @@ public class OrderService {
         orderRepository.save(frOrder);
         return frOrder;
 
+    }
+
+
+    public List<MdlOrderSimple> findall() {
+        List<FROrder> frOrderList = orderRepository.findAll();
+        List<MdlOrderSimple> orderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            MdlOrderSimple mdlOrder = new MdlOrderSimple();
+            mdlOrder.setId(frOrder.getId());
+            mdlOrder.setBookTime(frOrder.getBookTime());
+            mdlOrder.setCustomerName(frOrder.getAccount().getName());
+            mdlOrder.setShipperName(frOrder.getShipper().getAccount().getName());
+            mdlOrder.setTotalPrice(frOrder.getTotalPrice());
+            mdlOrder.setStatus(frOrder.getStatus());
+            orderList.add(mdlOrder);
+        }
+        return orderList;
+    }
+
+    public MdlOrderDetail getOrder(Integer id) {
+        MdlOrderDetail orderDetail = new MdlOrderDetail();
+        FROrder order = orderRepository.getOne(id);
+        orderDetail.setId(order.getId());
+        orderDetail.setBookTime(order.getBookTime());
+        orderDetail.setTotalPrice(order.getTotalPrice());
+        orderDetail.setStatus(order.getStatus());
+        orderDetail.setShipAddress(order.getShipAddress());
+        // get customer
+        MdlAccountSimple customer = new MdlAccountSimple();
+        customer.setId(order.getAccount().getId());
+        customer.setName(order.getAccount().getName());
+        orderDetail.setCustomer(customer);
+        // get ordered products
+        List<MdlOrderProductDetail> products = new ArrayList<MdlOrderProductDetail>();
+
+        for (FROrderDetail frProduct : order.getOrderDetailCollection()) {
+            MdlOrderProductDetail product = new MdlOrderProductDetail();
+            product.setId(frProduct.getProduct().getId());
+            product.setProductName(frProduct.getProduct().getProductName());
+            product.setUnitPrice(frProduct.getUnitPrice());
+            product.setQuantity(frProduct.getQuantity());
+            products.add(product);
+        }
+
+        orderDetail.setProducts(products);
+
+        return orderDetail;
     }
 }

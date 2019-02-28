@@ -10,6 +10,7 @@ import capstone.fps.repository.DistrictRepo;
 import capstone.fps.repository.StoreRepo;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,7 +35,7 @@ class StoreDis {
     }
 }
 
-@Controller
+@Service
 public class StoreService {
     private StoreRepo storeRepository;
     private DistrictRepo districtRepository;

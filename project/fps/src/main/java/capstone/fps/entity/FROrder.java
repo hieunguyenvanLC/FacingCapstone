@@ -41,6 +41,19 @@ public class FROrder {
     private Double longitude;
     @Column(name = "latitude")
     private Double latitude;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Collection<FROrderDetail> getOrderDetailCollection() {
+        return orderDetailCollection;
+    }
+
+    public void setOrderDetailCollection(Collection<FROrderDetail> orderDetailCollection) {
+        this.orderDetailCollection = orderDetailCollection;
+    }
+
     @Column(name = "customer_description", length = 300)
     private String customerDescription;
     @Column(name = "create_time")
