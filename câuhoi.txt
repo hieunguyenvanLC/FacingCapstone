@@ -14,7 +14,7 @@ Hay ch? là active và deactive? -Account Status
 
 7.Product thi co can phai lam store khong ? hay phai lam 1 trang quan ly store rieng
 Neu co thi ?
-8. Xoa trong stroe thi xoa het trong product hay la null store
+8. Xoa trong store thi xoa het trong product hay la null store
 
 Admin can phone  password ,ten,, email, anh, birthday, 
  cmnd,

@@ -22,11 +22,11 @@ public interface Fix {
     String MAP_API = "api/";
 
     /* Order status */
-    int ORD_NEW = 1;
-    int ORD_ASS = 2;
-    int ORD_BUY = 3;
-    int ORD_REV = 4;
-    int ORD_CXL = 5;
+    int ORD_NEW = 1;    //Status new
+    int ORD_ASS = 2;    // accepted by shipper (delivering),
+    int ORD_BUY = 3;    //waitting shipper
+    int ORD_REV = 4;    // success
+    int ORD_CXL = 5;    // cancel
 
     /* Role */
     String ROL_ADM = "ROLE_ADMIN";
@@ -37,7 +37,7 @@ public interface Fix {
     int ACC_NEW = 1;
     // Account info has been checked and approved
     int ACC_CHK = 2;
-    int ACC_BAN = 3;
+    int ACC_BAN = 3; //Deactive
 
     /* Product status */
     int PRO_NEW = 1;

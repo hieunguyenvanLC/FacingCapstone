@@ -21,12 +21,20 @@ public class OrderService {
     private ProductRepo productRepository;
     private StoreRepo storeRepository;
     private ShipperRepo shipperRepository;
+    private AccountRepo accountRepo;
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository) {
+    public OrderService(
+            DistrictRepo districtRepository,
+            OrderRepo orderRepository,
+            OrderDetailRepo orderDetailRepository,
+            ProductRepo productRepository,
+            AccountRepo accountRepo
+    ) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
+        this.accountRepo = accountRepo;
     }
 
 //    private FRStatus getStatus(String statName) {
@@ -62,7 +70,7 @@ public class OrderService {
         frOrder.setDeleteTime(time);
     }
 
-//    public FROrder createOrder(MdlOrderNew mdlOrder) {
+    //    public FROrder createOrder(MdlOrderNew mdlOrder) {
 //        FROrder frOrder = new FROrder();
 //        FRAccount account = null;
 //        if (account == null) {
@@ -108,22 +116,42 @@ public class OrderService {
 //        orderRepository.save(frOrder);
 //        return frOrder;
 //    }
-
-    public boolean cancelOrder(int orderId) {
+    public boolean cancelOrder(Integer orderId, Integer userId) {
+        boolean result = false;
         Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
-        if (!optionalFROrder.isPresent()) {
-            return true;
+        if (optionalFROrder.isPresent()) {
+            FROrder frOrder = optionalFROrder.get();
+            if (frOrder.getStatus() != Fix.ORD_REV && frOrder.getStatus() != Fix.ORD_CXL) {
+                try {
+                    FRAccount editor = this.accountRepo.getOne(userId);
+                    setUpdateTime(frOrder);
+                    frOrder.setStatus(Fix.ORD_CXL);
+                    frOrder.setEditor(editor);
+                    orderRepository.save(frOrder);
+                    result = true;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
-        FROrder frOrder = optionalFROrder.get();
-        //check cancelable
-        if (Fix.ORD_NEW != frOrder.getStatus()) {
-            return false;
-        }
-        setDeleteTime(frOrder);
-        frOrder.setStatus(Fix.ORD_CXL);
-        orderRepository.save(frOrder);
-        return true;
+
+        return result;
     }
+//    public boolean cancelOrder(int orderId) {
+//        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
+//        if (!optionalFROrder.isPresent()) {
+//            return true;
+//        }
+//        FROrder frOrder = optionalFROrder.get();
+//        //check cancelable
+//        if (Fix.ORD_NEW != frOrder.getStatus()) {
+//            return false;
+//        }
+//        setDeleteTime(frOrder);
+//        frOrder.setStatus(Fix.ORD_CXL);
+//        orderRepository.save(frOrder);
+//        return true;
+//    }
 
     public boolean assignOrder(int orderId) {
         Methods methods = new Methods();
@@ -144,7 +172,8 @@ public class OrderService {
         return true;
     }
 
-    public FROrder createOrder(String shipAddress, Integer districtId, String customerDescription, Integer[] proList, Integer[] quantityList) {
+    public FROrder createOrder(String shipAddress, Integer districtId, String customerDescription, Integer[]
+            proList, Integer[] quantityList) {
         FROrder frOrder = new FROrder();
         Methods methods = new Methods();
         FRAccount account = methods.getUser();
@@ -194,6 +223,7 @@ public class OrderService {
         for (FROrder frOrder : frOrderList) {
             MdlOrderSimple mdlOrder = new MdlOrderSimple();
             mdlOrder.setId(frOrder.getId());
+            mdlOrder.setOrderCode(frOrder.getOrderCode());
             mdlOrder.setBookTime(frOrder.getBookTime());
             mdlOrder.setCustomerName(frOrder.getAccount().getName());
             mdlOrder.setShipperName(frOrder.getShipper().getAccount().getName());
@@ -233,4 +263,6 @@ public class OrderService {
 
         return orderDetail;
     }
+
+
 }

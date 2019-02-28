@@ -15,6 +15,16 @@ public class MdlOrderSimple {
     private Double totalPrice;
     @Expose
     private Integer status;
+    @Expose
+    private String orderCode;
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
 
     public Integer getId() {
         return id;

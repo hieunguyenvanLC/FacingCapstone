@@ -1,6 +1,7 @@
 var storeTable = null;
 var shipperTable = null;
 var orderTable = null;
+var checkStatus = null;
 $(document).ready(function () {
     // $('body').bootstrapMaterialDesign();
     var accountTable = $('#account-table').DataTable({
@@ -34,7 +35,7 @@ $(document).ready(function () {
         dataType: "json",
         success: function (response) {
             // console.log(response);
-            response.data = response.data.map(function(item) {
+            response.data = response.data.map(function (item) {
                 item.bookTime = moment(item.bookTime).format('DD/MM/YYYY');
                 return item;
             });
@@ -55,8 +56,9 @@ $(document).ready(function () {
 
                     $('#order-table tbody button').click(function (ev) {
                         ev.stopPropagation(); // khong cho dialog hien len
-                        var data = storeTable.row($(this).parents('tr')).data();
-                        //  console.log(data);
+                        var data = orderTable.row($(this).parents('tr')).data();
+                        // console.log(data);
+                        cancelOrder(data.id, 1);
                         // https://stackoverflow.com/questions/5963669/whats-the-difference-between-event-stoppropagation-and-event-preventdefault
                         // goi api deactive store o day
                     });
@@ -65,7 +67,7 @@ $(document).ready(function () {
                     // $(row).attr('data-target', '#store-detail-modal');
                     // $(row).attr('data-toggle', 'modal');
 
-                    $(row).click(function(event) {
+                    $(row).click(function (event) {
                         $(row).toggleClass('selected');
                         // https://stackoverflow.com/questions/27064176/typeerror-modal-is-not-a-function-with-bootstrap-modal/28173513
                         event.preventDefault();
@@ -79,13 +81,14 @@ $(document).ready(function () {
                                 console.log(response1);
                                 $("#customer-info-text").html("<b>" + response1.data.customer.name + "</b>")
                                 // $("#address-info-text").html("<b>" + response1.data.shipper.address +"</b>")
+                                // checkStatus = $("#checkStatus").html(response1.data.order.status)
                                 productStoreTable = $('#order-detail-table').DataTable({
                                     "data": response1.data.products,
                                     "columnDefs": [
-                                        { "targets": 0, "data": "id" },
-                                        { "targets": 1, "data": "productName" },
-                                        { "targets": 2, "data": "unitPrice" },
-                                        { "targets": 3, "data": "quantity" }
+                                        {"targets": 0, "data": "id"},
+                                        {"targets": 1, "data": "productName"},
+                                        {"targets": 2, "data": "unitPrice"},
+                                        {"targets": 3, "data": "quantity"}
                                     ],
                                     fnInitComplete: function () { // khoi tao datatable hoan tat
                                         jQuery.noConflict();
@@ -100,9 +103,10 @@ $(document).ready(function () {
 
                     });
                 },
+                
                 "data": response.data,
                 "columnDefs": [
-                    {"targets": 0, "data": "id"},
+                    {"targets": 0, "data": "orderCode"},
                     {"targets": 1, "data": "bookTime"},
                     {"targets": 2, "data": "customerName"},
                     {"targets": 3, "data": "shipperName"},
@@ -111,7 +115,7 @@ $(document).ready(function () {
                     {
                         "targets": 6,
                         "data": null,
-                        "defaultContent": "<button class=\"btn btn-danger\">Cancel</button>"
+                        "defaultContent": "<button class=\"btn btn-danger\" onclick='' '>Cancel</button>"
                     }
                 ]
             });
@@ -120,6 +124,24 @@ $(document).ready(function () {
             console.log(err);
         }
     });
+
+    function cancelOrder(orderId, userId) {
+        $.ajax({
+            type:'POST',
+            url: "/adm/api/order/cancel",
+            dataType: 'json',
+            data: {
+              id: orderId,
+              userId: userId
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
 
 
     //Shipper table Get Data
@@ -222,6 +244,7 @@ $(document).ready(function () {
                 },
                 "data": response.data,
                 "columnDefs": [
+
                     {"targets": 0, "data": "id"},
                     {"targets": 1, "data": "name"},
                     {"targets": 2, "data": "address"},
@@ -241,4 +264,5 @@ $(document).ready(function () {
     });
 })
 ;
+
 

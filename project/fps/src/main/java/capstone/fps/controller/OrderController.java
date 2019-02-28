@@ -4,14 +4,15 @@ import capstone.fps.common.Fix;
 import capstone.fps.entity.FROrder;
 import capstone.fps.model.*;
 import capstone.fps.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class OrderController extends AbstractController {
 
     private static final String API = "/api/order";
@@ -62,5 +63,24 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+    @PostMapping(Fix.MAP_ADM + API + "/cancel") //    /any/api/order/cancel
+    public String cancelOrder(@RequestBody PayloadCancelOrder payload) {
+        // @RequestParam("id") Integer orderId, @RequestParam("userId") Integer userId
+        Integer orderId = 1;
+        Integer userId = 1;
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            boolean check = orderService.cancelOrder(orderId, userId);
+//            List<MdlOrderSimple> frOrders = orderService.findall();
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, check);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.setResponse(Response.STATUS_NO_RESULT, Response.MESSAGE_NO_RESULT);
+        }
+
+        return gson.toJson(response);
+    }
+
 }
 
