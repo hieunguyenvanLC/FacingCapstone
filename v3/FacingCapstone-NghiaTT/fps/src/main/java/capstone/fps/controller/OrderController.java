@@ -67,22 +67,20 @@ public class OrderController extends AbstractController {
     }
 
 
-//    @PostMapping(Fix.MAP_ADM + API + "/cancel") //    /any/api/order/cancel
-//    public String cancelOrder(@RequestBody PayloadCancelOrder payload) {
-//        // @RequestParam("id") Integer orderId, @RequestParam("userId") Integer userId
-//        Integer orderId = 1;
-//        Integer userId = 1;
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            boolean check = orderService.cancelOrder(orderId, userId);
-////            List<MdlOrderSimple> frOrders = orderService.findall();
-//            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, check);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            response.setResponse(Response.STATUS_NO_RESULT, Response.MESSAGE_NO_RESULT);
-//        }
-//
-//        return gson.toJson(response);
-//    }
+    @PostMapping(Fix.MAP_ADM + API + "/cancel") //    /any/api/order/cancel
+    public String cancelOrder(@RequestParam("id") Integer orderId, @RequestParam("userId") Integer userId) {
+        // @RequestParam("id") Integer orderId, @RequestParam("userId") Integer userId
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            boolean check = orderService.cancelOrder(orderId, userId);
+//            List<MdlOrderSimple> frOrders = orderService.findall();
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, check);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.setResponse(Response.STATUS_NO_RESULT, Response.MESSAGE_NO_RESULT);
+        }
+
+        return gson.toJson(response);
+    }
 
 }

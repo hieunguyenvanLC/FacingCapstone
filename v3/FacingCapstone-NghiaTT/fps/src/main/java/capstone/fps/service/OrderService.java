@@ -21,12 +21,14 @@ public class OrderService {
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
+    private AccountRepo accountRepository;
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
+        this.accountRepository = accountRepository;
     }
 
     private void setCreateTime(FROrder frOrder) {
@@ -176,25 +178,25 @@ public class OrderService {
         return orderDetail;
     }
 
-//    public boolean cancelOrder(Integer orderId, Integer userId) {
-//        boolean result = false;
-//        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
-//        if (optionalFROrder.isPresent()) {
-//            FROrder frOrder = optionalFROrder.get();
-//            if (frOrder.getStatus() != Fix.ORD_REV && frOrder.getStatus() != Fix.ORD_CXL) {
-//                try {
-//                    FRAccount editor = this.accountRepo.getOne(userId);
-//                    setUpdateTime(frOrder);
-//                    frOrder.setStatus(Fix.ORD_CXL);
-//                    frOrder.setEditor(editor);
-//                    orderRepository.save(frOrder);
-//                    result = true;
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        return result;
-//    }
+    public boolean cancelOrder(Integer orderId, Integer userId) {
+        boolean result = false;
+        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
+        if (optionalFROrder.isPresent()) {
+            FROrder frOrder = optionalFROrder.get();
+            if (frOrder.getStatus() != Fix.ORD_BUY.index && frOrder.getStatus() != Fix.ORD_CXL.index && frOrder.getStatus()!=Fix.ORD_COM.index) {
+                try {
+                    FRAccount editor = this.accountRepository.getOne(userId);
+                    setUpdateTime(frOrder);
+                    frOrder.setStatus(Fix.ORD_CXL.index);
+                    frOrder.setEditor(editor);
+                    orderRepository.save(frOrder);
+                    result = true;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        return result;
+    }
 }

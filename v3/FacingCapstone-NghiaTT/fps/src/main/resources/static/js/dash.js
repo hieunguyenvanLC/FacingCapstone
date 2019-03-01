@@ -29,6 +29,7 @@
 // });
 
 var orderTable = null;
+var productStoreTable = null;
 
 function fpsFormatDate(date) {
     var monthNames = [
@@ -122,6 +123,19 @@ $(document).ready(function () {
                                 $("#customer-info-text").html("<b>" + response1.data.customer.name + "</b>")
                                 // $("#address-info-text").html("<b>" + response1.data.shipper.address +"</b>")
                                 // checkStatus = $("#checkStatus").html(response1.data.order.status)
+
+
+                                //Opop up fix Modal
+                                // if ($.fn.dataTable.isDataTable('#order-detail-table')) {
+                                //     $('#order-detail-table').DataTable().destroy();
+                                // }
+                                // // productStoreTable = $('#order-detail-table').DataTable({
+
+
+                                if (productStoreTable) {
+                                    productStoreTable.destroy();
+                                }
+
                                 productStoreTable = $('#order-detail-table').DataTable({
                                     "data": response1.data.products,
                                     "columnDefs": [
@@ -131,7 +145,8 @@ $(document).ready(function () {
                                         {"targets": 3, "data": "quantity"}
                                     ],
                                     fnInitComplete: function () { // khoi tao datatable hoan tat
-                                        jQuery.noConflict();
+
+                                        // jQuery.noConflict();
                                         $('#order-detail-modal').modal('show');
                                     }
                                 });
@@ -152,6 +167,16 @@ $(document).ready(function () {
                     {"targets": 3, "data": "shipperName"},
                     {"targets": 4, "data": "totalPrice"},
                     {"targets": 5, "data": "status"},
+
+
+                    //         ,
+                    //         "render": function (data, type, row) {
+                    //     if ({data: "status"} === '1') {
+                    //         return 'New';
+                    //     }
+                    // }
+
+
                     {
                         "targets": 6,
                         "data": null,
