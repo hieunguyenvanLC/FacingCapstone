@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NavParams, ModalController } from '../../../node_modules/@ionic/angular';
+import { NavParams, ModalController } from 'node_modules/@ionic/angular';
 
 @Component({
   selector: 'app-ordermodal',

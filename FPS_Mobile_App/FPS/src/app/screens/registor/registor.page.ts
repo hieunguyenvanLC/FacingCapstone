@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
-import { FormGroup, FormControl, Validators, FormBuilder } from '../../../node_modules/@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { AccountService } from '../../services/account.service'
 
-import * as $ from 'jquery';
+//import * as $ from 'jquery';
 
 @Component({
   selector: 'app-registor',
@@ -12,18 +14,18 @@ import * as $ from 'jquery';
   styleUrls: ['./registor.page.scss'],
 })
 export class RegistorPage implements OnInit {
-
+data :any;
   phoneNumber: number;
   password: string;
   fullname: string;
 
-  apiURL = "localhost:8080/";
 
-
+  registerForm: FormGroup;
 
   constructor(
     public router: Router,
     public alertController: AlertController,
+    public accountService : AccountService,
     //private camera: Camera 
   ) {
 
@@ -32,7 +34,6 @@ export class RegistorPage implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.apiURL);
   }
 
   backToLogin() {
@@ -40,6 +41,7 @@ export class RegistorPage implements OnInit {
   }
 
   //Alert handler
+
 
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
@@ -53,36 +55,6 @@ export class RegistorPage implements OnInit {
           cssClass: 'secondary',
           handler: () => {
             //Create without image
-            console.log("in handle skip " + this.apiURL);
-            //start ajax
-            $.ajax({
-              type: 'GET',
-              url: this.apiURL + "any/api/csrf",
-              dataType: 'json',
-              success: function (csrf) {
-                //after get token
-                $.ajax({
-                  type: 'POST',
-                  url: this.apiURL + "any/api/account",
-                  data: {
-                    _csrf: csrf,
-                    phoneNumber: this.phoneNumber, 
-                    password: this.password, 
-                    fullName: this.fullname
-                  },
-                  dataType: 'json',
-                  success: function (response) {
-
-                  },
-                  error: function (response) {
-                    console.log(response);
-                  }
-                })
-              },
-              error: function (response) {
-              }
-            });
-            //End ajax
 
             this.router.navigateByUrl('login');
 
@@ -124,4 +96,13 @@ export class RegistorPage implements OnInit {
 
   //end open camera
 
+
+  onSubmit(){
+    this.accountService.get().subscribe(res => {
+      this.data = res;
+      console.log(res);
+  }),err=>{
+    console.log(err);
+  };
+  }
 }

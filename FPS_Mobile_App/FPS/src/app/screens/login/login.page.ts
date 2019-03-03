@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HttpClient } from '@angular/common/http';
-import * as $ from 'jquery';
+import { AccountService } from '../../services/account.service';
+// import * as $ from 'jquery';
 
 @Component({
   selector: 'app-login',
@@ -17,13 +18,13 @@ export class LoginPage implements OnInit {
 
   constructor(
     private router: Router,
+    private accountService : AccountService,
   ) { }
 
   ngOnInit() {
     this.phonenumber = "admin";
     this.password = "admin";
 
-    $('body').addClass('df');
   }
 
   async login() {

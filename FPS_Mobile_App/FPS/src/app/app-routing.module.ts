@@ -3,13 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'home', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'list', loadChildren: './list/list.module#ListPageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  { path: 'store', loadChildren: './store/store.module#StorePageModule' },
-  { path: 'registor', loadChildren: './registor/registor.module#RegistorPageModule' },
-  { path: 'order', loadChildren: './order/order.module#OrderPageModule' },
-  { path: 'ordermodal', loadChildren: './ordermodal/ordermodal.module#OrdermodalPageModule' }
+  { path: 'home', loadChildren: './screens/home/home.module#HomePageModule' },
+  { path: 'list', loadChildren: './screens/list/list.module#ListPageModule' },
+  { path: 'login', loadChildren: './screens/login/login.module#LoginPageModule' },
+  { path: 'store', loadChildren: './screens/store/store.module#StorePageModule' },
+  { path: 'registor', loadChildren: './screens/registor/registor.module#RegistorPageModule' },
+  { path: 'order', loadChildren: './screens/order/order.module#OrderPageModule' },
+  { path: 'ordermodal', loadChildren: './screens/ordermodal/ordermodal.module#OrdermodalPageModule' }
 ];
 
 @NgModule({

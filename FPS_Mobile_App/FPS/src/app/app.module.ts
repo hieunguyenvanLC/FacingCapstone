@@ -8,8 +8,12 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { OrdermodalPage } from './ordermodal/ordermodal.page';
-import { OrdermodalPageModule } from './ordermodal/ordermodal.module';
+import { OrdermodalPage } from './screens/ordermodal/ordermodal.page';
+import { OrdermodalPageModule } from './screens/ordermodal/ordermodal.module';
+
+import { AccountService } from './services/account.service';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,12 +22,14 @@ import { OrdermodalPageModule } from './ordermodal/ordermodal.module';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    OrdermodalPageModule
+    OrdermodalPageModule,
+    HttpClientModule,
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    AccountService,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy  }
   ],
   bootstrap: [AppComponent]
 })

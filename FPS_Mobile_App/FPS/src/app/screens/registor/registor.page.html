@@ -7,7 +7,6 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content class="bodyApp">
   <ion-grid>
     <!-- Phone Number -->
@@ -21,7 +20,6 @@
     <ion-row>
       <ion-col size="12" class="phoneRegion">
         <int-phone-prefix defaultCountry="vn" [(ngModel)]="phoneNumber"></int-phone-prefix>
-        <p>{{phoneNumber}}</p>
       </ion-col>
       
     </ion-row>
@@ -63,6 +61,6 @@
     <!-- End Fullname-->
   </ion-grid>
   <div padding class="item-center">
-    <ion-button color="primary" (click)="presentAlertConfirm()">Sign Up</ion-button>
+    <ion-button color="primary" (click)="onSubmit()" >Sign Up</ion-button>
   </div>
 </ion-content>
