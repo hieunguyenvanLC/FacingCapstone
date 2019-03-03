@@ -22,23 +22,29 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.phonenumber = "admin";
-    this.password = "admin";
+    this.phonenumber = "azx";
+    this.password = "zzz";
 
   }
 
   async login() {
-    console.log("phone is : " + this.phonenumber + " - " + "password is : " + this.password);
-    if (this.phonenumber == "admin" && this.password == "admin") {
+    var result =  this.accountService.sendLogin(this.phonenumber, this.password);
+    console.log(result);
+    if(result === "success"){
       this.router.navigateByUrl("home");
-    } else {
-      this.error = "Username or password is not correct !"
     }
+    // console.log("phone is : " + this.phonenumber + " - " + "password is : " + this.password);
+    // if (this.phonenumber == "admin" && this.password == "admin") {
+    //   this.router.navigateByUrl("home");
+    // } else {
+    //   this.error = "Username or password is not correct !"
+    // }
 
   }
 
   signUp() {
     this.router.navigateByUrl("registor");
+
   }
 
 }
