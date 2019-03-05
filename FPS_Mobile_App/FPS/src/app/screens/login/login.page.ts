@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { HttpClient } from '@angular/common/http';
 import { AccountService } from '../../services/account.service';
-// import * as $ from 'jquery';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-login',
@@ -22,25 +21,39 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.phonenumber = "azx";
-    this.password = "zzz";
+    this.phonenumber = '84924124412';
+    this.password = 'zzz';
 
   }
+
+  public result='';
 
   async login() {
-    var result =  this.accountService.sendLogin(this.phonenumber, this.password);
-    console.log(result);
-    if(result === "success"){
-      this.router.navigateByUrl("home");
-    }
-    // console.log("phone is : " + this.phonenumber + " - " + "password is : " + this.password);
-    // if (this.phonenumber == "admin" && this.password == "admin") {
-    //   this.router.navigateByUrl("home");
-    // } else {
-    //   this.error = "Username or password is not correct !"
-    // }
+    // var result = await this.accountService.sendLogin(this.phonenumber, this.password).then;
+    // this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
+    //     console.log(this.phonenumber +"  "+ this.password);
+    //
+    //   console.log(res);
+    //   }),err=>{
+    // console.log(err);
+    //   };
+    this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
+        console.log(this.phonenumber +"  "+ this.password);
+        let body = res.json();  // If response is a JSON use json()
+        if (body) {
+          if(body !== "Error"){
+            this.router.navigateByUrl("home");
+          }
+        } else {
+              return {};
+          }
+      console.log(res);
+      }),err=>{
+    console.log(err);
+      };;
 
   }
+
 
   signUp() {
     this.router.navigateByUrl("registor");

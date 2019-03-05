@@ -4,7 +4,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { AlertController } from '@ionic/angular';
 import { HttpClientModule } from '@angular/common/http';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { AccountService } from '../../services/account.service'
+import { AccountService } from '../../services/account.service';
+import { Account } from '../../models/account';
 
 //import * as $ from 'jquery';
 
@@ -26,7 +27,7 @@ data :any;
     public router: Router,
     public alertController: AlertController,
     public accountService : AccountService,
-    //private camera: Camera 
+    //private camera: Camera
   ) {
 
 
@@ -98,11 +99,12 @@ data :any;
 
 
   onSubmit(){
-    this.accountService.get().subscribe(res => {
+    let account: Account = new Account('09651427245','123','Nguyen Van Hieu');
+    this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname).subscribe((res:any) => {
       this.data = res;
       console.log(res);
-  }),err=>{
+      }),err=>{
     console.log(err);
-  };
-  }
+    };
+    }
 }

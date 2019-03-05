@@ -1,5 +1,5 @@
 {
-  "appId": "com.example.fps",
+  "appId": "io.ionic.starter",
   "appName": "FPS",
   "bundledWebRuntime": false,
   "webDir": "www"

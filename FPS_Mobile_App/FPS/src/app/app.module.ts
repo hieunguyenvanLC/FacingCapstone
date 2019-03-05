@@ -13,6 +13,7 @@ import { OrdermodalPageModule } from './screens/ordermodal/ordermodal.module';
 
 import { AccountService } from './services/account.service';
 import { HttpClientModule } from '@angular/common/http';
+import { HttpModule} from '@angular/http';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     OrdermodalPageModule,
     HttpClientModule,
+    HttpModule
   ],
   providers: [
     StatusBar,
