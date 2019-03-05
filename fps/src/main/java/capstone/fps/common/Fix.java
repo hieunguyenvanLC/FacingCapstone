@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface Fix {
 
-    //1 km ~ 0.02823
-    double DEGREE_PER_KM = 0.02823;
+    // ≈ 360 / 40 000km
+    double DEGREE_PER_KM = 0.09;
 
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
