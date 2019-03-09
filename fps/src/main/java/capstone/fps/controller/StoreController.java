@@ -17,7 +17,7 @@ import java.util.List;
 public class StoreController extends AbstractController {
 
     private StoreService storeService;
-    private static final String API = Fix.MAP_API + "store";
+    private static final String API = Fix.MAP_API + "/store";
 
     public StoreController(StoreService storeService) {
         this.storeService = storeService;

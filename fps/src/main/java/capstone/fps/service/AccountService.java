@@ -129,13 +129,13 @@ public class AccountService {
 
         FRShipper frShipper = new FRShipper();
         frShipper.setAccount(frAccount);
-        frShipper.setBikeRegistrationId(bikeRegId);
+        frShipper.setBikeRegId(bikeRegId);
         frShipper.setIntroduce(introduce);
         frShipper.setNationalIdFrontImage(natFrnt);
         frShipper.setNationalIdBackImage(natBack);
         frShipper.setSumRevenue(0D);
-        frShipper.setBikeRegistrationFrontImage(bikeRegFrnt);
-        frShipper.setBikeRegistrationBackImage(bikeRegBack);
+        frShipper.setBikeRegFront(bikeRegFrnt);
+        frShipper.setBikeRegBack(bikeRegBack);
         frShipper.setPriceLevel(priceLevelRepo.getOne(1));
         frShipper.setSource(sourceOptional.get());
         shipperRepo.save(frShipper);

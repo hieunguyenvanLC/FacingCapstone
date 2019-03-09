@@ -21,10 +21,8 @@ public class FRAccount implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Column(name = "phone_number")
     private String phone;
-
     @ManyToOne
     @JoinColumn(name = "FR_Role_id")
     private FRRole role;

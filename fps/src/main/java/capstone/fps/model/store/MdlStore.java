@@ -94,4 +94,14 @@ public class MdlStore {
         mdlStore.status = frStore.getStatus();
         return mdlStore;
     }
+
+    public MdlStore convertStoreNearBy(FRStore frStore) {
+        Methods methods = new Methods();
+        MdlStore mdlStore = new MdlStore();
+        mdlStore.id = frStore.getId();
+        mdlStore.name = frStore.getStoreName();
+        mdlStore.image = methods.bytesToBase64(frStore.getStoreImage());
+        mdlStore.address = frStore.getAddress() + " " + frStore.getDistrict().getName();
+        return mdlStore;
+    }
 }

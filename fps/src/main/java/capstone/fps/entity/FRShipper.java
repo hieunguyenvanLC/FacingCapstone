@@ -15,26 +15,28 @@ public class FRShipper implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "bike_registration_id", length = 100)
-    private String bikeRegistrationId;
     @Column(name = "introduce", length = 300)
     private String introduce;
+    @Column(name = "sum_revenue")
+    private Double sumRevenue;
     @Column(name = "national_id_front_image")
     private byte[] nationalIdFrontImage;
     @Column(name = "national_id_back_image")
     private byte[] nationalIdBackImage;
-    @Column(name = "sum_revenue")
-    private Double sumRevenue;
-    @ManyToOne
-    @JoinColumn(name = "FR_Source_id")
-    private FRSource source;
+    @Column(name = "bike_registration_id", length = 100)
+    private String bikeRegId;
+    @Column(name = "bike_registration_date")
+    private Long bikeRegDate;
     @Column(name = "bike_registration_front_image")
-    private byte[] bikeRegistrationFrontImage;
+    private byte[] bikeRegFront;
     @Column(name = "bike_registration_back_image")
-    private byte[] bikeRegistrationBackImage;
+    private byte[] bikeRegBack;
     @OneToOne
     @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
+    @ManyToOne
+    @JoinColumn(name = "FR_Source_id")
+    private FRSource source;
     @ManyToOne
     @JoinColumn(name = "FR_Price_Level_id")
     private FRPriceLevel priceLevel;
@@ -53,20 +55,20 @@ public class FRShipper implements Serializable {
         this.id = id;
     }
 
-    public String getBikeRegistrationId() {
-        return bikeRegistrationId;
-    }
-
-    public void setBikeRegistrationId(String bikeRegistrationId) {
-        this.bikeRegistrationId = bikeRegistrationId;
-    }
-
     public String getIntroduce() {
         return introduce;
     }
 
     public void setIntroduce(String introduce) {
         this.introduce = introduce;
+    }
+
+    public Double getSumRevenue() {
+        return sumRevenue;
+    }
+
+    public void setSumRevenue(Double sumRevenue) {
+        this.sumRevenue = sumRevenue;
     }
 
     public byte[] getNationalIdFrontImage() {
@@ -85,36 +87,36 @@ public class FRShipper implements Serializable {
         this.nationalIdBackImage = nationalIdBackImage;
     }
 
-    public Double getSumRevenue() {
-        return sumRevenue;
+    public String getBikeRegId() {
+        return bikeRegId;
     }
 
-    public void setSumRevenue(Double sumRevenue) {
-        this.sumRevenue = sumRevenue;
+    public void setBikeRegId(String bikeRegId) {
+        this.bikeRegId = bikeRegId;
     }
 
-    public FRSource getSource() {
-        return source;
+    public Long getBikeRegDate() {
+        return bikeRegDate;
     }
 
-    public void setSource(FRSource source) {
-        this.source = source;
+    public void setBikeRegDate(Long bikeRegDate) {
+        this.bikeRegDate = bikeRegDate;
     }
 
-    public byte[] getBikeRegistrationFrontImage() {
-        return bikeRegistrationFrontImage;
+    public byte[] getBikeRegFront() {
+        return bikeRegFront;
     }
 
-    public void setBikeRegistrationFrontImage(byte[] bikeRegistrationFrontImage) {
-        this.bikeRegistrationFrontImage = bikeRegistrationFrontImage;
+    public void setBikeRegFront(byte[] bikeRegFront) {
+        this.bikeRegFront = bikeRegFront;
     }
 
-    public byte[] getBikeRegistrationBackImage() {
-        return bikeRegistrationBackImage;
+    public byte[] getBikeRegBack() {
+        return bikeRegBack;
     }
 
-    public void setBikeRegistrationBackImage(byte[] bikeRegistrationBackImage) {
-        this.bikeRegistrationBackImage = bikeRegistrationBackImage;
+    public void setBikeRegBack(byte[] bikeRegBack) {
+        this.bikeRegBack = bikeRegBack;
     }
 
     public FRAccount getAccount() {
@@ -123,6 +125,14 @@ public class FRShipper implements Serializable {
 
     public void setAccount(FRAccount account) {
         this.account = account;
+    }
+
+    public FRSource getSource() {
+        return source;
+    }
+
+    public void setSource(FRSource source) {
+        this.source = source;
     }
 
     public FRPriceLevel getPriceLevel() {

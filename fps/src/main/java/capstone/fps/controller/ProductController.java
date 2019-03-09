@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 public class ProductController extends AbstractController {
 
-    private static final String API = Fix.MAP_API + "product";
+    private static final String API = Fix.MAP_API + "/product";
     private ProductService productService;
 
     public ProductController(ProductService productService) {

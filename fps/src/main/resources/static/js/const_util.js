@@ -3,7 +3,8 @@ function Stat(index, msg) {
     this.msg = msg;
 }
 
-var fpsBackEnd = "http://localhost:8080";
+// var fpsBackEnd = "http://localhost:8080";
+var fpsBackEnd = "http://10.82.137.209:8080";
 // var fpsApiCsrf = fpsBackEnd + "/any/api/csrf";
 var defaultImg= "/img/no_img.png";
 

@@ -156,14 +156,16 @@ public class StoreService {
 
 
     public List getStoreNearby(double longitude, double latitude) {
-        double dis2km = 2 * Fix.DEGREE_PER_KM;
-        double dis2kmNeg = -dis2km;
+        double dis5km = 5 * Fix.DEGREE_PER_KM;
+        double dis5kmNeg = -dis5km;
+        MdlStore mdlStore = new MdlStore();
         List<FRStore> frStoreList = storeRepository.findAll();
         List<StoreDis> storeDisList = new ArrayList<>();
+        List<MdlStore> mdlStoreList = new ArrayList<>();
         for (FRStore frStore : frStoreList) {
             double disLon = longitude - frStore.getLongitude();
             double disLat = latitude - frStore.getLatitude();
-            if (dis2kmNeg <= disLon && disLon < dis2km && dis2kmNeg <= disLat && disLat < dis2km) {
+            if (dis5kmNeg <= disLon && disLon < dis5km && dis5kmNeg <= disLat && disLat < dis5km) {
                 double dis = disLon * disLon + disLat * disLat;
                 StoreDis storeDis = new StoreDis(frStore, dis);
                 storeDisList.add(storeDis);
@@ -175,7 +177,11 @@ public class StoreService {
             }
             return -1;
         });
-        return null;
+        int size = Math.min(5, storeDisList.size());
+        for (int i = 0; i < size; i++) {
+            mdlStoreList.add(mdlStore.convertStoreNearBy(storeDisList.get(i).getStore()));
+        }
+        return mdlStoreList;
     }
 
 

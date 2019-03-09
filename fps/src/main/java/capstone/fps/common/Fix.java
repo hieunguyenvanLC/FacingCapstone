@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface Fix {
 
-    // ≈ 360 / 40 000km
+    //  360 / ≈40,000km
     double DEGREE_PER_KM = 0.09;
 
     String DEF_CURRENCY = "USD";
@@ -22,12 +22,12 @@ public interface Fix {
     String PAYPAL_MODE = "sandbox";
 
     /* API mapping */
-    String MAP_ANY = "/any/";
-    String MAP_LOG = "/log/";
-    String MAP_ADM = "/adm/";
-    String MAP_MEM = "/mem/";
-    String MAP_SHP = "/shp/";
-    String MAP_API = "api/";
+    String MAP_ANY = "/any";
+    String MAP_LOG = "/log";
+    String MAP_ADM = "/adm";
+    String MAP_MEM = "/mem";
+    String MAP_SHP = "/shp";
+    String MAP_API = "/api";
 
     /* Role */
     String ROL_ADM = "ROLE_ADMIN";

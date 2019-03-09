@@ -24,6 +24,7 @@
     <section class="dashboard-counts no-padding-bottom">
         <div class="container-fluid">
             <div class="table-responsive row bg-white has-shadow">
+
                 <div class="d-flex p-2">
                     <div class="flex-grow-1">
                         <button id="add-new" class="btn btn-primary" data-toggle="modal"
@@ -33,15 +34,15 @@
                     </div>
 
                 </div>
-
+                <!-- Table -->
                 <table id="shipper-table" class="table">
                     <thead>
                     <tr>
                         <th>Phone</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Sum Revenue</th>
                         <th>Status</th>
-                        <th>Note</th>
                     </tr>
                     </thead>
 
@@ -55,11 +56,11 @@
                     </tr>
                     </tbody>
                 </table>
-
-                <!-- Modal-->
+                <!-- Table End -->
+                <!-- Modal -->
                 <div id="fps-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                      aria-hidden="true" class="modal fade text-left">
-                    <div role="document" class="modal-dialog">
+                    <div role="document" class="modal-dialog" style="width: content-box;max-width: 1000px">
                         <div class="modal-content" style="max-width: 1000px">
                             <div class="modal-header">
                                 <h4 id="exampleModalLabel" class="modal-title"></h4>
@@ -67,233 +68,352 @@
                                         aria-hidden="true">×</span></button>
                             </div>
 
-                            <form class="modal-body">
+                            <div class="modal-body">
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-4 padding-0">
+                                        <div class="form-group">
+                                            <label>Phone</label>
+                                            <input type="text" placeholder="Phone" class="form-control" id="txtPhone">
+                                        </div>
+                                        <div class="form-group" id="divPassword">
+                                            <label>Password</label>
+                                            <input type="password" placeholder="Password" class="form-control"
+                                                   id="txtPassword">
+                                        </div>
+                                        <!--<div class="form-group" id="divSumRevenue">-->
+                                            <!--<label>Sum Revenue</label>-->
+                                            <!--<input type="text" placeholder="Sum Revenue" class="form-control"-->
+                                                   <!--id="txtSumRevenue">-->
+                                        <!--</div>-->
+                                        <div class="form-group">
+                                            <label>Full Name</label>
+                                            <input type="text" placeholder="Full Name" class="form-control"
+                                                   id="txtFullName">
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="cbbSource">Source</label>
+                                            <select id="cbbSource" class="form-control mb-3">
+                                                <option>1</option>
+                                                <option>2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 padding-0">
+                                        <div class="form-group">
+                                            <label for="dpDob">Date of Birth</label>
+                                            <input type="date" class="form-control" id="dpDob">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" placeholder="Email Address" class="form-control"
+                                                   id="txtEmail">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" placeholder="Note" class="form-control" id="txtNote">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cbbPriceLevel">Price Level</label>
+                                            <select id="cbbPriceLevel" class="form-control mb-3">
+                                                <option>1</option>
+                                                <option>2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 padding-0">
+                                        <div class="form-group">
+                                            <label>Portrait</label>
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="uplUserFace"
+                                                       onchange="uplUserFaceOnChange()">
+                                                <label class="custom-file-label" for="uplUserFace"
+                                                       style="border-radius: 0">Choose
+                                                    file</label>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <img src="/img/no_img.png" alt="portrait" id="imgUserFace">
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="row row-eq-height no-padding">
-                                    <div class="col-6 padding-0">
+                                    <div class="col-12 padding-0">
+                                        <div class="form-group">
+                                            <label>Introduce</label>
+                                            <input type="text" placeholder="Introduce" class="form-control"
+                                                   id="txtIntroduce">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row-eq-height no-padding" id="divStatus">
+                                    <div class="col-4 padding-0">
                                         <div class="form-group">
                                             <label>Extra Point</label>
-                                            <input type="text" placeholder="Extra Point" class="form-control">
+                                            <input type="text" placeholder="Extra Point" class="form-control"
+                                                   id="txtExtraPoint">
                                         </div>
                                     </div>
-                                    <div class="col-6 padding-0">
+                                    <div class="col-4 padding-0">
                                         <div class="form-group">
                                             <label>Report Point</label>
-                                            <input type="text" placeholder="Report Point" class="form-control">
+                                            <input type="text" placeholder="Report Point" class="form-control"
+                                                   id="txtReportPoint">
                                         </div>
+                                    </div>
+                                    <div class="col-4 padding-0">
+                                        <label for="cbbStatus">Status</label>
+                                        <select id="cbbStatus" class="form-control mb-3">
+                                            <option>1</option>
+                                            <option>2</option>
+                                        </select>
                                     </div>
                                 </div>
 
-
-
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-3 padding-0">
                                         <div class="form-group">
-                                            <label>Extra Point</label>
-                                            <input type="text" placeholder="Extra Point" class="form-control">
+                                            <label for="txtNatId" class="form-control-label">Nation ID Number</label>
+                                            <input type="text" class="form-control" id="txtNatId">
                                         </div>
-                                    </div>
-                                    <div class="col-sm padding-0">
                                         <div class="form-group">
-                                            <label>Report Point</label>
-                                            <input type="text" placeholder="Report Point" class="form-control">
+                                            <label class="form-control-label">Front</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="text" placeholder="Phone" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" placeholder="Password" class="form-control">
-                                </div>
-                                <!--<div class="form-group">-->
-                                <!--<label class="form-control-label">Role</label>-->
-                                <!--&lt;!&ndash;<div class="col-sm-9">&ndash;&gt;-->
-                                <!--<select name="role" class="form-control mb-3">-->
-                                <!--<option>Admin</option>-->
-                                <!--<option>Member</option>-->
-                                <!--</select>-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--</div>-->
-                                <div class="form-group">
-                                    <label>Full Name</label>
-                                    <input type="text" placeholder="Full Name" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Introduce</label>
-                                    <input type="text" placeholder="Introduce" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Note</label>
-                                    <input type="text" placeholder="Note" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Sum Revenue</label>
-                                    <input type="text" placeholder="Sum Revenue" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>BirthDay</label>
-                                    <div class="input-group date-picker" data-provider="datepicker">
-                                        <input type="date" class="form-control" id="3">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" placeholder="Email Address" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <div class="row row-eq-height">
-                                        <div class="col-sm padding-0">
-                                            <div class="form-group">
-                                                <label>Source Name</label>
-                                                <input type="text" placeholder="Source Name"
-                                                       class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Description</label>
-                                                <input type="text" placeholder="Description"
-                                                       class="form-control">
-                                            </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <label for="dpNatDate" class="form-control-label">Issue date</label>
+                                            <input type="date" class="form-control" id="dpNatDate">
                                         </div>
-                                        <div class="col-sm padding-0">
-                                            <div class="form-group">
-                                                <label class="form-control-label">Price Level</label>
-                                                <!--<div class="col-sm-9">-->
-                                                <select name="pricelevel" class="form-control mb-3">
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                </select>
-                                                <!--</div>-->
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Description</label>
-                                                <input type="text" placeholder="Description"
-                                                       class="form-control">
-                                            </div>
-                                            <!--<div class="form-group">-->
-                                            <!--<label>Price</label>-->
-                                            <!--<input type="text" placeholder="Description"-->
-                                            <!--class="form-control">-->
-                                            <!--</div>-->
+                                        <div class="form-group">
+                                            <label class="form-control-label">Back</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <label for="txtBikeRegId" class="form-control-label">Bike Register ID
+                                                Number</label>
+                                            <input type="text" class="form-control" id="txtBikeRegId">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label">Front</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <label for="dpBikeRegDate" class="form-control-label">Issue date</label>
+                                            <input type="date" class="form-control" id="dpBikeRegDate">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label">Back</label>
                                         </div>
                                     </div>
                                 </div>
 
-
-                                <div class="form-group">
-                                    <label>Nation Id Card</label>
-                                    <input type="text" placeholder="Nation Id Card Number" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Nation Id Create Day: </label>
-                                    <div class="input-group date-picker" data-provider="datepicker">
-                                        <input type="date" class="form-control" id="1">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nation Id Card Images: </label>
-                                    <div class="form-group">
-                                        <div class="row row-eq-height">
-                                            <div class="col-sm padding-0">
-                                                <label>Front</label>
-                                                <div class="text-center">
-                                                    <img src="/img/avatar-1.jpg" class="card-img"
-                                                         alt="Responsive image">
-                                                </div>
-                                                <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                                <input type="file" class="form-control-file"
-                                                       id="2">
-                                            </div>
-
-                                            <div class="col-sm padding-0">
-                                                <label>Back</label>
-                                                <div class="text-center">
-                                                    <img src="/img/avatar-1.jpg" class="card-img"
-                                                         alt="Responsive image">
-                                                </div>
-                                                <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                                <input type="file" class="form-control-file"
-                                                       id="4">
-                                            </div>
-
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <img id="imgNatFront" src="/img/no_img.png" class="card-img"
+                                                 alt="Responsive image">
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Bike Id Card</label>
-                                    <input type="text" placeholder="Bike Id Card Number" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Bike Id Create Day: </label>
-                                    <div class="input-group date-picker" data-provider="datepicker">
-                                        <input type="date" class="form-control" id="1">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Bike Id Card Images: </label>
-                                    <div class="form-group">
-                                        <div class="row row-eq-height">
-                                            <div class="col-sm padding-0">
-                                                <label>Front</label>
-                                                <div class="text-center">
-                                                    <img src="/img/avatar-1.jpg" class="card-img"
-                                                         alt="Responsive image">
-                                                </div>
-                                                <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                                <input type="file" class="form-control-file"
-                                                       id="2">
-                                            </div>
-
-                                            <div class="col-sm padding-0">
-                                                <label>Back</label>
-                                                <div class="text-center">
-                                                    <img src="/img/avatar-1.jpg" class="card-img"
-                                                         alt="Responsive image">
-                                                </div>
-                                                <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                                <input type="file" class="form-control-file"
-                                                       id="4">
-                                            </div>
-
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <img id="imgNatBack" src="/img/no_img.png" class="card-img"
+                                                 alt="Responsive image">
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Shipper Avatar</label>
-                                    <div class="text-center">
-                                        <img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <img id="imgBikeRegFront" src="/img/no_img.png" class="card-img"
+                                                 alt="Responsive image">
+                                        </div>
                                     </div>
-
-                                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group" style="padding-right: 10px">
+                                            <img id="imgBikeRegBack" src="/img/no_img.png" class="card-img"
+                                                 alt="Responsive image">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <input id="actived-checkDetail" type="checkbox" value="" checked=""
-                                           class="checkbox-template">
-                                    <label for="actived-checkDetail">Is actived</label>
+
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input id="uplNatFront" type="file" class="custom-file-input"
+                                                       onchange="uplNatFrontOnChange()">
+                                                <label for="uplNatFront" class="custom-file-label"
+                                                       style="border-radius: 0">Choose file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input id="uplNatBack" type="file" class="custom-file-input"
+                                                       onchange="uplNatBackOnChange()">
+                                                <label class="custom-file-label"
+                                                       style="border-radius: 0">Choose file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input id="uplBikeRegFront" type="file" class="custom-file-input"
+                                                       onchange="uplBikeRegFrontOnChange()">
+                                                <label class="custom-file-label"
+                                                       style="border-radius: 0">Choose file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 padding-0">
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input id="uplBikeRegBack" type="file" class="custom-file-input"
+                                                       onchange="uplBikeRegBackOnChange()">
+                                                <label class="custom-file-label"
+                                                       style="border-radius: 0">Choose file</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
                                     <button type="button" class="btn btn-primary">Save changes</button>
                                 </div>
-                            </form>
+                            </div>
                             <!--modalbody-->
                         </div>
                         <!--modal content-->
                     </div>
                 </div>
+                <!-- Modal End -->
             </div>
         </div>
 
     </section>
     <!--section-->
+
+    <script>
+
+        var txtPhone = document.getElementById("txtPhone");
+        var txtPassword = document.getElementById("txtPassword");
+        var txtSumRevenue = document.getElementById("txtSumRevenue");
+        var txtFullName = document.getElementById("txtFullName");
+        var cbbSource = document.getElementById("cbbSource");
+
+        var dpDob = document.getElementById("dpDob");
+        var txtEmail = document.getElementById("txtEmail");
+        var txtNote = document.getElementById("txtNote");
+        var cbbPriceLevel = document.getElementById("cbbPriceLevel");
+
+        var uplUserFace = document.getElementById("uplUserFace");
+        var imgUserFace = document.getElementById("imgUserFace");
+
+        var txtIntroduce = document.getElementById("txtIntroduce");
+
+        var txtExtraPoint = document.getElementById("txtExtraPoint");
+        var txtReportPoint = document.getElementById("txtReportPoint");
+        var cbbStatus = document.getElementById("cbbStatus");
+
+        var txtNatId = document.getElementById("txtNatId");
+        var dpNatDate = document.getElementById("dpNatDate");
+        var dpNatDate = document.getElementById("txtBikeRegId");
+        var dpNatDate = document.getElementById("dpBikeRegDate");
+
+        var imgNatFront = document.getElementById("imgNatFront");
+        var imgNatBack = document.getElementById("imgNatBack");
+        var imgBikeRegFront = document.getElementById("imgBikeRegFront");
+        var imgBikeRegBack = document.getElementById("imgBikeRegBack");
+
+        var uplNatFront = document.getElementById("uplNatFront");
+        var uplNatBack = document.getElementById("uplNatBack");
+        var uplBikeRegFront = document.getElementById("uplBikeRegFront");
+        var uplBikeRegBack = document.getElementById("uplBikeRegBack");
+
+        var divPassword = document.getElementById("divPassword");
+        var divSumRevenue = document.getElementById("divSumRevenue");
+        var divStatus = document.getElementById("divStatus");
+        var btnCloseModal = document.getElementById("btnCloseModal");
+        var tblBodyAcc = document.getElementById("tblBodyAcc");
+
+
+        var accList;
+        var accEdit;
+        var accEditPos = -1;
+        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "account";
+
+        function fpsFetchData() {
+            // getAccList();
+        }
+
+
+        function drawTblAccount() {
+            btnCloseModal.click();
+
+            var list = accList;
+            $('#account-table').DataTable().destroy();
+            var accountTable = $('#account-table').DataTable();
+            accountTable.clear().draw();
+            for (var i = 0; i < list.length; i++) {
+                var account = list[i];
+
+                accountTable.row.add([
+                    '<span data-target="#store-detail-modal" data-toggle="modal" onclick="getStoreDetail(' + i + ')" >' + account.phone + '</span>',
+                    account.name,
+                    account.email,
+                    account.sumRevenue,
+                    fpsGetStatMsg(accStatList, account.status)
+                ]).draw();
+            }
+        }
+
+
+        function getAccList() {
+            $.ajax({
+                type: 'GET',
+                url: fpsApiAcc + "/shp",
+                data: {},
+                dataType: 'json',
+                success: function (response) {
+                    accList = response.data;
+                    drawTblAccount();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+
+        function getAccDetail(pos) {
+            accEditPos = pos;
+            if (typeof accEditPos[pos].createTime === "undefined") {
+                $.ajax({
+                    type: 'GET',
+                    url: fpsApiAcc + "/shp/detail",
+                    data: {accId: accList[pos].id},
+                    dataType: 'json',
+                    success: function (response) {
+                        accList[pos] = response.data;
+                        accEdit = accList[pos];
+                        loadEditForm();
+                    },
+                    error: function (response) {
+                    }
+                })
+            } else {
+                accEdit = accList[pos];
+                loadEditForm();
+            }
+        }
+
+
+    </script>
 </div>
 
 </html>

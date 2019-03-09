@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class AccountController extends AbstractController {
 
-    private static final String API = Fix.MAP_API + "account";
+    private static final String API = Fix.MAP_API + "/account";
 
     private AccountService accountService;
 

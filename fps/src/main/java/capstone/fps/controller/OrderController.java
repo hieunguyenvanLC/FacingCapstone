@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class OrderController extends AbstractController {
 
-    private static final String API = "/api/order";
+    private static final String API = Fix.MAP_API + "/order";
     private OrderService orderService;
 
     public OrderController(OrderService orderService) {

@@ -60,13 +60,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(Fix.MAP_ADM + "**")
+                .antMatchers(Fix.MAP_ADM + "/**")
                 .hasRole("ADMIN")
-                .antMatchers(Fix.MAP_SHP + "**")
+                .antMatchers(Fix.MAP_SHP + "/**")
                 .hasRole("SHIPPER")
-                .antMatchers(Fix.MAP_MEM + "**")
+                .antMatchers(Fix.MAP_MEM + "/**")
                 .hasRole("MEMBER")
-                .antMatchers(Fix.MAP_LOG + "**")
+                .antMatchers(Fix.MAP_LOG + "/**")
                 .hasAnyRole("ADMIN", "MEMBER", "SHIPPER")
                 .and()
                 .formLogin()
