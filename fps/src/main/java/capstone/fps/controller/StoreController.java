@@ -28,7 +28,7 @@ public class StoreController extends AbstractController {
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             List<MdlStore> storeList = storeService.getStoreList();
-            response.setResponse(storeList.size(), Response.MESSAGE_SUCCESS, storeList);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, storeList);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -42,7 +42,6 @@ public class StoreController extends AbstractController {
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = storeService.getStoreDetailAdm(storeId);
-
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

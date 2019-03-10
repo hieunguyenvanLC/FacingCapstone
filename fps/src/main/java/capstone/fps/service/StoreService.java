@@ -32,22 +32,6 @@ public class StoreService {
     }
 
 
-    public FRDistrict getDIst(Integer distId) {
-        if (distId == null) {
-            return null;
-        }
-        Optional<FRDistrict> optional = districtRepository.findById(distId);
-        return optional.orElse(null);
-    }
-
-    public FRStore getStore(Integer storeId) {
-        if (storeId == null) {
-            return null;
-        }
-        Optional<FRStore> optional = storeRepository.findById(storeId);
-        return optional.orElse(null);
-    }
-
     // To do: set schedule
     public Response<MdlStore> createStore(String name, String phone, String address, Integer distId, Double longitude, Double latitude, MultipartFile storeImg, String note) {
         Methods methods = new Methods();
@@ -56,7 +40,7 @@ public class StoreService {
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         FRAccount account = methods.getUser();
 
-        FRDistrict frDistrict = getDIst(distId);
+        FRDistrict frDistrict = methods.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
@@ -113,12 +97,12 @@ public class StoreService {
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         FRAccount account = methods.getUser();
 
-        FRStore frStore = getStore(storeId);
+        FRStore frStore = methods.getStore(storeId, storeRepository);
         if (frStore == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find store");
             return response;
         }
-        FRDistrict frDistrict = getDIst(distId);
+        FRDistrict frDistrict = methods.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;

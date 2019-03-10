@@ -3,16 +3,14 @@ package capstone.fps.service;
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FROrderDetail;
-import capstone.fps.entity.FRProduct;
+import capstone.fps.entity.*;
 import capstone.fps.model.Response;
-import capstone.fps.repository.DistrictRepo;
-import capstone.fps.repository.OrderDetailRepo;
-import capstone.fps.repository.OrderRepo;
-import capstone.fps.repository.ProductRepo;
+import capstone.fps.model.order.MdlOrder;
+import capstone.fps.model.order.MdlOrderBuilder;
+import capstone.fps.model.store.MdlStore;
+import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +23,16 @@ public class OrderService {
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
+    private AccountRepo accountRepository;
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository) {
+
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
+        this.accountRepository = accountRepository;
     }
-
-
-    private void setUpdateTime(FROrder frOrder) {
-        Methods methods = new Methods();
-        long time = methods.getTimeNow();
-        frOrder.setUpdateTime(time);
-    }
-
 
 
     public boolean cancelOrder(int orderId) {
@@ -62,6 +55,7 @@ public class OrderService {
 
     public boolean assignOrder(int orderId) {
         Methods methods = new Methods();
+        long time = methods.getTimeNow();
         FRAccount account = methods.getUser();
         if (account.getShipper() == null) {
             // Something is wrong: none shipper is not suppose to be able to access this method
@@ -74,7 +68,7 @@ public class OrderService {
         FROrder frOrder = optionalFROrder.get();
         frOrder.setShipper(account.getShipper());
         frOrder.setStatus(Fix.ORD_ASS.index);
-        setUpdateTime(frOrder);
+        frOrder.setUpdateTime(time);
         orderRepository.save(frOrder);
         return true;
     }
@@ -180,7 +174,83 @@ public class OrderService {
         }
     }
 
-    public void notifyShipper(){
+    public void notifyShipper() {
+
+    }
+
+    public Response<List<MdlOrder>> getOrderList() {
+
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        List<FROrder> frOrderList = orderRepository.findAll();
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+
+    }
+
+    public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
+        Methods methods = new Methods();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = methods.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+    }
+
+    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String note) {
+        Methods methods = new Methods();
+        long time = methods.getTimeNow();
+        Validator valid = new Validator();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount currentUser = methods.getUser();
+
+        FROrder frOrder = methods.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        if (buyerFace != null) {
+            frOrder.setBuyerFace(methods.multipartToBytes(buyerFace));
+        }
+        if (bill != null) {
+            frOrder.setBill(methods.multipartToBytes(bill));
+        }
+        FRAccount shipper = methods.getAccountByPhone(shipperPhone, accountRepository);
+        if (shipper != null) {
+            frOrder.setShipper(shipper.getShipper());
+        }
+        if (longitude != null) {
+            frOrder.setLongitude(longitude);
+        }
+        if (latitude != null) {
+            frOrder.setLatitude(latitude);
+        }
+        if (totalPrice != null) {
+            frOrder.setTotalPrice(totalPrice);
+        }
+        if (shipperEarn != null) {
+            frOrder.setShipperEarn(shipperEarn);
+        }
+        frOrder.setUpdateTime(time);
+        frOrder.setNote(valid.nullProof(note));
+        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
+        frOrder.setEditor(currentUser);
+        orderRepository.save(frOrder);
+
+        MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+        return response;
+
 
     }
 }

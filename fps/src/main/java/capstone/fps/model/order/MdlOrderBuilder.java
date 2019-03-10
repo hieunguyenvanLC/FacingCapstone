@@ -1,7 +1,9 @@
 package capstone.fps.model.order;
 
+import capstone.fps.common.Methods;
 import capstone.fps.entity.FROrder;
 import capstone.fps.entity.FROrderDetail;
+import capstone.fps.entity.FRShipper;
 import capstone.fps.entity.FRStore;
 import capstone.fps.repository.OrderDetailRepo;
 
@@ -11,12 +13,18 @@ import java.util.List;
 public class MdlOrderBuilder {
 
     public MdlOrder buildFull(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+        Methods methods = new Methods();
         MdlOrder mdlOrder = new MdlOrder();
         mdlOrder.id = frOrder.getId();
         mdlOrder.buyerName = frOrder.getAccount().getName();
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
-        mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
-        mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
+        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
+        FRShipper shipper = frOrder.getShipper();
+        if (shipper != null) {
+            mdlOrder.shipperName = shipper.getAccount().getName();
+            mdlOrder.shipperPhone = shipper.getAccount().getPhone();
+        }
+        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.bookTime = frOrder.getBookTime();
@@ -47,5 +55,17 @@ public class MdlOrderBuilder {
         return mdlOrder;
     }
 
+
+    public MdlOrder buildAdminTableRow(FROrder frOrder) {
+        MdlOrder mdlOrder = new MdlOrder();
+        mdlOrder.id = frOrder.getId();
+        mdlOrder.buyerName = frOrder.getAccount().getName();
+        mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
+        mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.bookTime = frOrder.getBookTime();
+        mdlOrder.status = frOrder.getStatus();
+        return mdlOrder;
+    }
 
 }

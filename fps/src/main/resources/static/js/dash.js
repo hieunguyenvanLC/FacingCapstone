@@ -115,3 +115,11 @@ function fpsFormAppend(formData, paramName, paramValue) {
     }
 }
 
+function fpsFormAppend2(formData, paramName, paramValue, oldValue) {
+    if (typeof paramValue !== 'undefined' && paramValue !== "") {
+        if(typeof oldValue !== 'undefined' && paramValue == oldValue){
+            return;
+        }
+        formData.append(paramName, paramValue);
+    }
+}

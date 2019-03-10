@@ -1,6 +1,13 @@
 package capstone.fps.common;
 
 import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FRDistrict;
+import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FRStore;
+import capstone.fps.repository.AccountRepo;
+import capstone.fps.repository.DistrictRepo;
+import capstone.fps.repository.OrderRepo;
+import capstone.fps.repository.StoreRepo;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -13,10 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public final class Methods {
 
@@ -81,7 +85,7 @@ public final class Methods {
     }
 
     public String bytesToBase64(byte[] bytes) {
-        if(bytes == null){
+        if (bytes == null) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
@@ -90,7 +94,7 @@ public final class Methods {
         return sb.toString();
     }
 
-    public byte[] multipartToBytes(MultipartFile input){
+    public byte[] multipartToBytes(MultipartFile input) {
         if (input != null) {
             try {
                 return input.getBytes();
@@ -102,6 +106,43 @@ public final class Methods {
     }
 
 
+    public FRDistrict getDIst(Integer distId, DistrictRepo districtRepository) {
+        if (distId == null) {
+            return null;
+        }
+        Optional<FRDistrict> optional = districtRepository.findById(distId);
+        return optional.orElse(null);
+    }
 
+    public FRStore getStore(Integer storeId, StoreRepo storeRepository) {
+        if (storeId == null) {
+            return null;
+        }
+        Optional<FRStore> optional = storeRepository.findById(storeId);
+        return optional.orElse(null);
+    }
 
+    public FROrder getOrder(Integer orderId, OrderRepo orderRepository) {
+        if (orderId == null) {
+            return null;
+        }
+        Optional<FROrder> optional = orderRepository.findById(orderId);
+        return optional.orElse(null);
+    }
+
+    public FRAccount getAccount(Integer accId, AccountRepo accountRepository) {
+        if (accId == null) {
+            return null;
+        }
+        Optional<FRAccount> optional = accountRepository.findById(accId);
+        return optional.orElse(null);
+    }
+
+    public FRAccount getAccountByPhone(String phone, AccountRepo accountRepository) {
+        if (nullOrSpace(phone)) {
+            return null;
+        }
+        Optional<FRAccount> optional = accountRepository.findByPhone(phone);
+        return optional.orElse(null);
+    }
 }

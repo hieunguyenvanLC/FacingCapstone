@@ -22,6 +22,9 @@ public class MdlOrder {
     String buyerName;
 
     @Expose
+    String buyerFace;
+
+    @Expose
     String shipperPhone;
 
     @Expose
@@ -29,6 +32,9 @@ public class MdlOrder {
 
     @Expose
     String orderCode;
+
+    @Expose
+    String bill;
 
     @Expose
     Double totalPrice;

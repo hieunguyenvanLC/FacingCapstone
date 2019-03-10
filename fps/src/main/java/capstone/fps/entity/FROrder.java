@@ -22,6 +22,10 @@ public class FROrder {
     @ManyToOne
     @JoinColumn(name = "FR_Shipper_id")
     private FRShipper shipper;
+    @Column(name = "buyer_face")
+    private byte[] buyerFace;
+    @Column(name = "bill")
+    private byte[] bill;
     @Column(name = "order_code", length = 50)
     private String orderCode;
     @Column(name = "total_price")
@@ -234,5 +238,21 @@ public class FROrder {
 
     public void setEditor(FRAccount editor) {
         this.editor = editor;
+    }
+
+    public byte[] getBill() {
+        return bill;
+    }
+
+    public void setBill(byte[] bill) {
+        this.bill = bill;
+    }
+
+    public byte[] getBuyerFace() {
+        return buyerFace;
+    }
+
+    public void setBuyerFace(byte[] buyerFace) {
+        this.buyerFace = buyerFace;
     }
 }
