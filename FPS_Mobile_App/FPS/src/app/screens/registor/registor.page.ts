@@ -16,7 +16,7 @@ import { Account } from '../../models/account';
 })
 export class RegistorPage implements OnInit {
 data :any;
-  phoneNumber: number;
+  phoneNumber: string;
   password: string;
   fullname: string;
 
@@ -75,31 +75,8 @@ data :any;
     await alert.present();
   }
 
-  //end Aler handler
-
-  //Open Camera
-  // openCamera(){
-  //   const options: CameraOptions = {
-  //     quality: 100,
-  //     destinationType: this.camera.DestinationType.FILE_URI,
-  //     encodingType: this.camera.EncodingType.JPEG,
-  //     mediaType: this.camera.MediaType.PICTURE
-  //   }
-
-  //   this.camera.getPicture(options).then((imageData) => {
-  //     // imageData is either a base64 encoded string or a file URI
-  //     // If it's base64 (DATA_URL):
-  //     let base64Image = 'data:image/jpeg;base64,' + imageData;
-  //    }, (err) => {
-  //     // Handle error
-  //    });
-  // }
-
-  //end open camera
-
 
   onSubmit(){
-    let account: Account = new Account('09651427245','123','Nguyen Van Hieu');
     this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname).subscribe((res:any) => {
       this.data = res;
       console.log(res);

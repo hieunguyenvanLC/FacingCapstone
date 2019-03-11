@@ -125,5 +125,5 @@ export class StorePage implements OnInit {
   backToHome() {
     this.router.navigateByUrl("home");
   }
-
-}
+  
+} 

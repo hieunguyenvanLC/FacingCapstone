@@ -19,3 +19,6 @@ command line in project:
 -------------------------------
 Deploy on real device:
 ionic cordova build android --prod
+
+-------------------------------
+open -a Google\ Chrome --args --disable-web-security --user-data-dir

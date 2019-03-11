@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
+import { StoreService } from 'src/app/services/store.service';
+import { store } from '@angular/core/src/render3';
+import {Store} from 'src/app/models/store.model';
+import { TouchSequence } from 'selenium-webdriver';
+import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +17,25 @@ export class HomePage {
   };
 
   searchValue: string;
+  stores= [];
+
+  constructor(
+    private storeService : StoreService
+  ){
+
+  }
+
+  ngOnInit() {
+    this.storeService.getList().subscribe(
+      res => {
+        //this.stores = Array.prototype.slice.call(data.toString);
+        this.stores.push(res);
+        //console.log(this.stores);
+        console.log(this.stores[0].data);
+      }
+    )
+  }
+
 
   slidesDidLoad(slides: IonSlides) {
     slides.startAutoplay();
@@ -20,4 +44,12 @@ export class HomePage {
   search(event){
     console.log("search value: " + event.target.value);
   }
+  getStoreByid(id : string){
+    this.storeService.getStorebyid(id).subscribe(
+      res =>{
+
+      }
+    )
+  }
+
 }

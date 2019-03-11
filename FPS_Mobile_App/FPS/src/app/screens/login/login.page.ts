@@ -21,7 +21,7 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.phonenumber = '84924124412';
+    this.phonenumber = 'azx';
     this.password = 'zzz';
 
   }
@@ -29,16 +29,9 @@ export class LoginPage implements OnInit {
   public result='';
 
   async login() {
-    // var result = await this.accountService.sendLogin(this.phonenumber, this.password).then;
-    // this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
-    //     console.log(this.phonenumber +"  "+ this.password);
-    //
-    //   console.log(res);
-    //   }),err=>{
-    // console.log(err);
-    //   };
     this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
         console.log(this.phonenumber +"  "+ this.password);
+        console.log(res);
         let body = res.json();  // If response is a JSON use json()
         if (body) {
           if(body !== "Error"){

@@ -14,6 +14,7 @@ import { OrdermodalPageModule } from './screens/ordermodal/ordermodal.module';
 import { AccountService } from './services/account.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule} from '@angular/http';
+import { StoreService } from './services/store.service';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { HttpModule} from '@angular/http';
     StatusBar,
     SplashScreen,
     AccountService,
+    StoreService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy  }
   ],
   bootstrap: [AppComponent]

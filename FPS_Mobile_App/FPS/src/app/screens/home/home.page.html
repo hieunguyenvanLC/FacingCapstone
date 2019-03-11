@@ -11,8 +11,9 @@
 
 <ion-content>
   <!-- Default Searchbar -->
-<ion-searchbar ([ngModel])="searchValue" (change)="search($event)"></ion-searchbar>
-  <ion-slides #promotionSlides (ionSlidesDidLoad)="slidesDidLoad(promotionSlides)" class="slide-promotion" pager="true" [options]="slideOpts">
+  <ion-searchbar ([ngModel])="searchValue" (change)="search($event)"></ion-searchbar>
+  <ion-slides #promotionSlides (ionSlidesDidLoad)="slidesDidLoad(promotionSlides)" class="slide-promotion" pager="true"
+    [options]="slideOpts">
     <ion-slide>
       <img src="../../assets/image/slide1.jpg" />
     </ion-slide>
@@ -28,52 +29,55 @@
       <ion-label>You might like</ion-label>
     </ion-list-header>
     <ion-slides class="slide-product" pager="false" [options]="slideOpts">
-        <ion-slide>
-             <div class="card-drop" > <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-              <img src="../../assets/image/trasua1.jpg" class="card-drop__image" />
-              <div class="card-drop__content">
-                <h1 class="card-drop__content--title">
-                  Koi Thé - 223 Nguyễn văn Quá, Quận 12
-                </h1>
-                <div class="card-drop__content--body">
-                  <div class="card-drop__content--text">
-                    <p>55000</p>
-                  </div>
-                </div>
+      <ion-slide>
+        <div class="card-drop">
+          <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+          <img src="../../assets/image/trasua1.jpg" class="card-drop__image" />
+          <div class="card-drop__content">
+            <h1 class="card-drop__content--title">
+              Koi Thé - 223 Nguyễn văn Quá, Quận 12
+            </h1>
+            <div class="card-drop__content--body">
+              <div class="card-drop__content--text">
+                <p>55000</p>
               </div>
             </div>
-        </ion-slide>
-        <ion-slide>
-            <div class="card-drop" > <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-              <img src="../../assets/image/trasua2.png" class="card-drop__image" />
-              <div class="card-drop__content">
-                <h1 class="card-drop__content--title">
-                  Coffee house - 230 Quang Trung, Gò Vấp
-                </h1>
-                <div class="card-drop__content--body">
-                  <div class="card-drop__content--text">
-                    <p>45000</p>
-                  </div>
-                </div>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="card-drop">
+          <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+          <img src="../../assets/image/trasua2.png" class="card-drop__image" />
+          <div class="card-drop__content">
+            <h1 class="card-drop__content--title">
+              Coffee house - 230 Quang Trung, Gò Vấp
+            </h1>
+            <div class="card-drop__content--body">
+              <div class="card-drop__content--text">
+                <p>45000</p>
               </div>
             </div>
-        </ion-slide>
-        <ion-slide>
-            <div class="card-drop" > <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-              <img src="../../assets/image/trasua3.jpg" class="card-drop__image" />
-              <div class="card-drop__content">
-                <h1 class="card-drop__content--title">
-                  Name
-                </h1>
-                <div class="card-drop__content--body">
-                  <div class="card-drop__content--text">
-                    <p>Price</p>
-                  </div>
-                </div>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="card-drop">
+          <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+          <img src="../../assets/image/trasua3.jpg" class="card-drop__image" />
+          <div class="card-drop__content">
+            <h1 class="card-drop__content--title">
+              Name
+            </h1>
+            <div class="card-drop__content--body">
+              <div class="card-drop__content--text">
+                <p>Price</p>
               </div>
             </div>
-        </ion-slide>
-      </ion-slides>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slides>
     <!-- <ion-item href="https://ionicframework.com/docs/">
       <ion-icon slot="start" color="medium" name="book"></ion-icon>
       <ion-label>Ionic Documentation</ion-label>
@@ -91,37 +95,31 @@
       <ion-label>Theme Your App</ion-label>
     </ion-item> -->
     <ion-list-header>
-        <ion-label>Delivery for you</ion-label>
-      </ion-list-header>
-    <ion-item>
-        <div class="card-drop" > <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-          <img src="../../assets/image/trasua2.png" class="card-drop__image" />
-          <div class="card-drop__content">
-            <h1 class="card-drop__content--title">
-              Coffee house - 230 Quang Trung, Gò Vấp
-            </h1>
-            <div class="card-drop__content--body">
-              <div class="card-drop__content--text">
-                <p>Coffee</p>
-              </div>
+      <ion-label>Delivery for you</ion-label>
+    </ion-list-header>
+
+
+    <!-- ************************* -->
+    <!-- *** Start store list **** -->
+    <ion-item *ngFor="let item of stores[0].data" [routerLink]="['/store', item.id]">
+      <div class="card-drop">
+        <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+        <img src="../../assets/image/trasua2.png" class="card-drop__image" />
+        <div class="card-drop__content">
+          <h1 class="card-drop__content--title">
+            {{item.name}} - {{item.address}}
+          </h1>
+          <div class="card-drop__content--body">
+            <div class="card-drop__content--text">
+              <p>Coffee</p>
             </div>
           </div>
         </div>
+      </div>
     </ion-item>
-    <ion-item>
-        <div class="card-drop" > <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-          <img src="../../assets/image/trasua2.png" class="card-drop__image" />
-          <div class="card-drop__content">
-            <h1 class="card-drop__content--title">
-              Coffee house - 230 Quang Trung, Gò Vấp
-            </h1>
-            <div class="card-drop__content--body">
-              <div class="card-drop__content--text">
-                <p>Trà sữa</p>
-              </div>
-            </div>
-          </div>
-        </div>
-    </ion-item>
+
+
+    <!-- ************************* -->
+    <!-- *** End store list **** -->
   </ion-list>
 </ion-content>
