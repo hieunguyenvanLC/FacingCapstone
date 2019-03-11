@@ -63,35 +63,29 @@ public final class Methods {
         if (str.isEmpty()) {
             return true;
         }
-        if (str.trim().isEmpty()) {
-            return true;
-        }
-        return false;
+        return str.trim().isEmpty();
     }
 
 
-    public String handleImage(MultipartFile image) {
-        if (image != null) {
-            String fileName = image.getOriginalFilename();
-//            Files.createDirectories(rootLocation);
-            try {
-                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-                return fileName;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+//    public String handleImage(MultipartFile image) {
+//        if (image != null) {
+//            String fileName = image.getOriginalFilename();
+////            Files.createDirectories(rootLocation);
+//            try {
+//                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+//                return fileName;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return null;
+//    }
 
     public String bytesToBase64(byte[] bytes) {
         if (bytes == null) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("data:image/png;base64,");
-        sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false)));
-        return sb.toString();
+        return "data:image/png;base64," + StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false));
     }
 
     public byte[] multipartToBytes(MultipartFile input) {
@@ -106,43 +100,4 @@ public final class Methods {
     }
 
 
-    public FRDistrict getDIst(Integer distId, DistrictRepo districtRepository) {
-        if (distId == null) {
-            return null;
-        }
-        Optional<FRDistrict> optional = districtRepository.findById(distId);
-        return optional.orElse(null);
-    }
-
-    public FRStore getStore(Integer storeId, StoreRepo storeRepository) {
-        if (storeId == null) {
-            return null;
-        }
-        Optional<FRStore> optional = storeRepository.findById(storeId);
-        return optional.orElse(null);
-    }
-
-    public FROrder getOrder(Integer orderId, OrderRepo orderRepository) {
-        if (orderId == null) {
-            return null;
-        }
-        Optional<FROrder> optional = orderRepository.findById(orderId);
-        return optional.orElse(null);
-    }
-
-    public FRAccount getAccount(Integer accId, AccountRepo accountRepository) {
-        if (accId == null) {
-            return null;
-        }
-        Optional<FRAccount> optional = accountRepository.findById(accId);
-        return optional.orElse(null);
-    }
-
-    public FRAccount getAccountByPhone(String phone, AccountRepo accountRepository) {
-        if (nullOrSpace(phone)) {
-            return null;
-        }
-        Optional<FRAccount> optional = accountRepository.findByPhone(phone);
-        return optional.orElse(null);
-    }
 }

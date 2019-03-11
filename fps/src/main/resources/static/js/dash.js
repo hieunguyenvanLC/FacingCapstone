@@ -110,16 +110,19 @@ function fpsGetBase64(img, file) {
 }
 
 function fpsFormAppend(formData, paramName, paramValue) {
-    if (typeof paramValue !== 'undefined' && paramValue !== "") {
-        formData.append(paramName, paramValue);
+    if (typeof paramValue === 'undefined' || Number.isNaN(paramValue) || paramValue === "") {
+        return;
     }
+    formData.append(paramName, paramValue);
 }
 
-function fpsFormAppend2(formData, paramName, paramValue, oldValue) {
-    if (typeof paramValue !== 'undefined' && paramValue !== "") {
-        if(typeof oldValue !== 'undefined' && paramValue == oldValue){
-            return;
-        }
-        formData.append(paramName, paramValue);
+function fpsFormAppend2(formData, paramName, newValue, oldValue) {
+    if (typeof newValue === 'undefined' || Number.isNaN(newValue) || newValue === "") {
+
+        return;
     }
+    if (typeof oldValue !== 'undefined' && !Number.isNaN(oldValue) && newValue == oldValue) {
+        return;
+    }
+    formData.append(paramName, newValue);
 }

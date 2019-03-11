@@ -2,11 +2,13 @@ package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
 import capstone.fps.model.Response;
+import capstone.fps.model.account.MdlShipper;
 import capstone.fps.model.account.MdlAdmAccAdmGet;
 import capstone.fps.model.account.MdlAdmAccMemGet;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.List;
@@ -34,25 +36,6 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
 
-    @PostMapping(Fix.MAP_ADM + API + "/shp")
-    public String createAccountShipper(String phoneNumber, String password, String fullName, String email, String userImg, String natId, long natDate, long dob, String note, String bikeRegId, String introduce, String natFrnt, String natBack, String bikeRegFrnt, String bikeRegBack, int sourceId) {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            Base64.Decoder decoder = Base64.getDecoder();
-            byte[] userImgB = decoder.decode(userImg);
-            byte[] natFrontB = decoder.decode(natFrnt);
-            byte[] natBackB = decoder.decode(natBack);
-            byte[] bikeRegFrontB = decoder.decode(bikeRegFrnt);
-            byte[] bikeRegBackB = decoder.decode(bikeRegBack);
-            if (accountService.createAccountShipper(phoneNumber, password, fullName, email, userImgB, natId, natDate, dob, note, bikeRegId, introduce, natFrontB, natBackB, bikeRegFrontB, bikeRegBackB, sourceId)) {
-                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
 
     @PostMapping(Fix.MAP_ADM + API + "/adm")
     public String createAccountAdmin(String username, String password, String fullName, String email, String natId, long natDate, long dob, String note) {
@@ -92,6 +75,56 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
 
+    // Admin Web - Shipper
+    @PostMapping(Fix.MAP_ADM + API + "/shp")
+    public String createShipper(String phone, String password, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, String natId, long natDate, String bikeRegId, long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.createShipper(phone, password, name, sourceId, dob, email, note, priceLevelId, userFace, introduce, natId, natDate, bikeRegId, bikeRegDate, natFront, natBack, bikeRegFront, bikeRegBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_ADM + API + "/shp")
+    public String updateShipper(Integer accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateShipper(accId, phone, sumRevenue, name, sourceId, dob, email, note, priceLevelId, userFace, introduce, extraPoint, reportPoint, status, natId, natDate, bikeRegId, bikeRegDate, natFront, natBack, bikeRegFront, bikeRegBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+
+    @GetMapping(Fix.MAP_ADM + API + "/shp")
+    public String getShipperListAdm() {
+        Response<List<MdlShipper>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getShipperListAdm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ADM + API + "/shp/detail")
+    public String getShipperDetailAdm(Integer accId) {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getShipperDetailAdm(accId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Admin Web - Shipper - End
 
     @PutMapping(Fix.MAP_ADM + API + "/adm")
     public String editAccountAdmin(Integer accId, String fullName, String email, String natId, long natDate, long dob, String note) {
@@ -159,33 +192,4 @@ public class AccountController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
-//    @PutMapping(API + "/face")
-//    public String updateFace(@RequestParam MultipartFile faceImg) {
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//
-//            Profile profile = userService.findUserByUsername(profileModel.getAccountUser()).getProfileId();
-//            if (profile == null) {
-//                profile = new Profile();
-//            }
-//
-//            userService.handleImage(profileModel, avatar);
-//            LOGGER.info(profileModel.getAvatar());
-//            profile = profileTransformer.ProfileModelToEntity(profileModel, profile);
-//            profile = userService.saveProfile(profile);
-//
-//            account account = userService.findUserByUsername(profileModel.getAccountUser());
-//            account.setProfileId(profile);
-//            accountRepository.save(account);
-//
-//            response.setResponse(CoreConstant.STATUS_CODE_SUCCESS, CoreConstant.MESSAGE_SUCCESS);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            LOGGER.error(e.getMessage());
-//            response.setResponse(CoreConstant.STATUS_CODE_SERVER_ERROR, CoreConstant.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
-
 }

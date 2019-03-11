@@ -27,15 +27,15 @@
 
                 <div class="d-flex p-2">
                     <div class="flex-grow-1">
-                        <button id="add-new" class="btn btn-primary" data-toggle="modal"
-                                data-target="#add-edit-modal-shipper">
+                        <button class="btn btn-primary" data-toggle="modal"
+                                data-target="#fps-edit-modal" onclick="loadAddForm()">
                             Add new
                         </button>
                     </div>
 
                 </div>
                 <!-- Table -->
-                <table id="shipper-table" class="table">
+                <table id="account-table" class="table">
                     <thead>
                     <tr>
                         <th>Phone</th>
@@ -64,8 +64,8 @@
                         <div class="modal-content" style="max-width: 1000px">
                             <div class="modal-header">
                                 <h4 id="exampleModalLabel" class="modal-title"></h4>
-                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
-                                        aria-hidden="true">×</span></button>
+                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"
+                                        id="btnCloseModal"><span aria-hidden="true">×</span></button>
                             </div>
 
                             <div class="modal-body">
@@ -80,11 +80,11 @@
                                             <input type="password" placeholder="Password" class="form-control"
                                                    id="txtPassword">
                                         </div>
-                                        <!--<div class="form-group" id="divSumRevenue">-->
-                                            <!--<label>Sum Revenue</label>-->
-                                            <!--<input type="text" placeholder="Sum Revenue" class="form-control"-->
-                                                   <!--id="txtSumRevenue">-->
-                                        <!--</div>-->
+                                        <div class="form-group" id="divSumRevenue">
+                                            <label>Sum Revenue</label>
+                                            <input type="text" placeholder="Sum Revenue" class="form-control"
+                                                   id="txtSumRevenue">
+                                        </div>
                                         <div class="form-group">
                                             <label>Full Name</label>
                                             <input type="text" placeholder="Full Name" class="form-control"
@@ -94,7 +94,12 @@
                                         <div class="form-group">
                                             <label for="cbbSource">Source</label>
                                             <select id="cbbSource" class="form-control mb-3">
-                                                <option>1</option>
+                                                <option value="1" title="Facebook ads, Facebook homepage...">facebook
+                                                </option>
+                                                <option value="2" title="Articles about FPS">magazine</option>
+                                                <option value="3" title="From friends, family...">social</option>
+                                                <option value="4" title="">other</option>
+                                                <option value="5" title="Prefer not to say">none</option>
                                                 <option>2</option>
                                             </select>
                                         </div>
@@ -116,8 +121,9 @@
                                         <div class="form-group">
                                             <label for="cbbPriceLevel">Price Level</label>
                                             <select id="cbbPriceLevel" class="form-control mb-3">
-                                                <option>1</option>
-                                                <option>2</option>
+                                                <option value="1" title="Fresh recruited">0.6</option>
+                                                <option value="2" title="3 mth exp or 10mil earned">0.7</option>
+                                                <option value="3" title="2 years exp">0.8</option>
                                             </select>
                                         </div>
                                     </div>
@@ -128,8 +134,7 @@
                                                 <input type="file" class="custom-file-input" id="uplUserFace"
                                                        onchange="uplUserFaceOnChange()">
                                                 <label class="custom-file-label" for="uplUserFace"
-                                                       style="border-radius: 0">Choose
-                                                    file</label>
+                                                       style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
                                         <div class="text-center">
@@ -166,8 +171,6 @@
                                     <div class="col-4 padding-0">
                                         <label for="cbbStatus">Status</label>
                                         <select id="cbbStatus" class="form-control mb-3">
-                                            <option>1</option>
-                                            <option>2</option>
                                         </select>
                                     </div>
                                 </div>
@@ -245,7 +248,7 @@
                                             <div class="custom-file">
                                                 <input id="uplNatFront" type="file" class="custom-file-input"
                                                        onchange="uplNatFrontOnChange()">
-                                                <label for="uplNatFront" class="custom-file-label"
+                                                <label class="custom-file-label" for="uplNatFront"
                                                        style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
@@ -284,7 +287,7 @@
 
                                 <div class="modal-footer">
                                     <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-primary" onclick="sendAddEdit()">Save</button>
                                 </div>
                             </div>
                             <!--modalbody-->
@@ -323,8 +326,8 @@
 
         var txtNatId = document.getElementById("txtNatId");
         var dpNatDate = document.getElementById("dpNatDate");
-        var dpNatDate = document.getElementById("txtBikeRegId");
-        var dpNatDate = document.getElementById("dpBikeRegDate");
+        var txtBikeRegId = document.getElementById("txtBikeRegId");
+        var dpBikeRegDate = document.getElementById("dpBikeRegDate");
 
         var imgNatFront = document.getElementById("imgNatFront");
         var imgNatBack = document.getElementById("imgNatBack");
@@ -346,10 +349,11 @@
         var accList;
         var accEdit;
         var accEditPos = -1;
-        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account";
+        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account/shp";
 
         function fpsFetchData() {
-            // getAccList();
+            getAccList();
+            fpsSetCbbStatus(cbbStatus, accStatList);
         }
 
 
@@ -360,24 +364,26 @@
             $('#account-table').DataTable().destroy();
             var accountTable = $('#account-table').DataTable();
             accountTable.clear().draw();
+            console.log(1);
             for (var i = 0; i < list.length; i++) {
                 var account = list[i];
 
                 accountTable.row.add([
-                    '<span data-target="#store-detail-modal" data-toggle="modal" onclick="getStoreDetail(' + i + ')" >' + account.phone + '</span>',
+                    '<span data-target="#fps-edit-modal" data-toggle="modal" onclick="getAccDetail(' + i + ')" >' + account.phone + '</span>',
                     account.name,
                     account.email,
                     account.sumRevenue,
                     fpsGetStatMsg(accStatList, account.status)
                 ]).draw();
             }
+            console.log("end");
         }
 
 
         function getAccList() {
             $.ajax({
                 type: 'GET',
-                url: fpsApiAcc + "/shp",
+                url: fpsApiAcc,
                 data: {},
                 dataType: 'json',
                 success: function (response) {
@@ -392,10 +398,10 @@
 
         function getAccDetail(pos) {
             accEditPos = pos;
-            if (typeof accEditPos[pos].createTime === "undefined") {
+            if (typeof accList[pos].createTime === "undefined") {
                 $.ajax({
                     type: 'GET',
-                    url: fpsApiAcc + "/shp/detail",
+                    url: fpsApiAcc + "/detail",
                     data: {accId: accList[pos].id},
                     dataType: 'json',
                     success: function (response) {
@@ -412,6 +418,217 @@
             }
         }
 
+        function loadEditForm() {
+            divPassword.style.display = "none";
+            divSumRevenue.style.display = "block";
+            divStatus.style.display = "block";
+
+            txtPhone.value = accEdit.phone;
+
+            txtSumRevenue.value = accEdit.sumRevenue;
+            txtFullName.value = accEdit.name;
+            cbbSource.value = accEdit.sourceId;
+
+            dpDob.value = accEdit.dateOfBirth;
+            txtEmail.value = accEdit.email;
+            txtNote.value = accEdit.note;
+            cbbPriceLevel.value = accEdit.priceLevelId;
+
+            uplUserFace.value = "";
+            fpsSetImgSrc(imgUserFace, accEdit.userImage);
+
+            txtIntroduce.value = accEdit.introduce;
+
+            txtExtraPoint.value = accEdit.extraPoint;
+            txtReportPoint.value = accEdit.reportPoint;
+            cbbStatus.value = accEdit.status;
+
+            txtNatId.value = accEdit.natId;
+            dpNatDate.value = accEdit.natDate;
+            txtBikeRegId.value = accEdit.bikeRegId;
+            dpBikeRegDate.value = accEdit.bikeRegDate;
+
+            fpsSetImgSrc(imgNatFront, accEdit.natFront);
+            fpsSetImgSrc(imgNatBack, accEdit.natBack);
+            fpsSetImgSrc(imgBikeRegFront, accEdit.bikeRegFront);
+            fpsSetImgSrc(imgBikeRegBack, accEdit.bikeRegBack);
+
+            uplNatFront.value = "";
+            uplNatBack.value = "";
+            uplBikeRegFront.value = "";
+            uplBikeRegBack.value = "";
+
+
+        }
+
+
+        function loadAddForm() {
+            divPassword.style.display = "block";
+            divSumRevenue.style.display = "none";
+            divStatus.style.display = "none";
+            accEditPos = -1;
+
+            txtPhone.value = "";
+
+            txtSumRevenue.value = "";
+            txtFullName.value = "";
+            cbbSource.value = 2;
+
+            dpDob.value = "";
+            txtEmail.value = "";
+            txtNote.value = "";
+            cbbPriceLevel.value = 1;
+
+            uplUserFace.value = "";
+            fpsSetImgDefault(imgUserFace);
+
+            txtIntroduce.value = "";
+
+            txtExtraPoint.value = "";
+            txtReportPoint.value = "";
+            cbbStatus.value = 1;
+
+            txtNatId.value = "";
+            dpNatDate.value = "";
+            txtBikeRegId.value = "";
+            dpBikeRegDate.value = "";
+
+            fpsSetImgDefault(imgNatFront);
+            fpsSetImgDefault(imgNatBack);
+            fpsSetImgDefault(imgBikeRegFront);
+            fpsSetImgDefault(imgBikeRegBack);
+
+            uplNatFront.value = "";
+            uplNatBack.value = "";
+            uplBikeRegFront.value = "";
+            uplBikeRegBack.value = "";
+        }
+
+        function sendAddEdit() {
+            if (accEditPos < 0) {
+                sendAdd();
+            } else {
+                sendEdit();
+            }
+        }
+
+        function sendEdit() {
+
+            var formData = new FormData();
+            fpsFormAppend(formData, "accId", accEdit.id);
+            fpsFormAppend2(formData, "phone", txtPhone.value, accEdit.phone);
+            fpsFormAppend2(formData, "sumRevenue", txtSumRevenue.value, accEdit.sumRevenue);
+            fpsFormAppend2(formData, "name", txtFullName.value, accEdit.name);
+            fpsFormAppend2(formData, "sourceId", cbbSource.value, accEdit.sourceId);
+
+            fpsFormAppend2(formData, "dob", dpDob.valueAsNumber, accEdit.dateOfBirth);
+            fpsFormAppend2(formData, "email", txtEmail.value, accEdit.email);
+            fpsFormAppend2(formData, "note", txtNote.value, accEdit.note);
+            fpsFormAppend2(formData, "priceLevelId", cbbPriceLevel.value, accEdit.priceLevelId);
+
+            fpsFormAppend(formData, "userFace", uplUserFace.files[0]);
+            fpsFormAppend2(formData, "introduce", txtIntroduce.value, accEdit.introduce);
+
+            fpsFormAppend2(formData, "extraPoint", txtExtraPoint.value, accEdit.extraPoint);
+            fpsFormAppend2(formData, "reportPoint", txtReportPoint.value, accEdit.reportPoint);
+            fpsFormAppend2(formData, "status", cbbStatus.value, accEdit.status);
+
+            fpsFormAppend2(formData, "natId", txtNatId.value, accEdit.natId);
+            fpsFormAppend2(formData, "natDate", dpNatDate.valueAsNumber, accEdit.natDate);
+            fpsFormAppend2(formData, "bikeRegId", txtBikeRegId.value, accEdit.bikeRegId);
+            fpsFormAppend2(formData, "bikeRegDate", dpNatDate.valueAsNumber, accEdit.bikeRegDate);
+
+            fpsFormAppend(formData, "natFront", uplNatFront.files[0]);
+            fpsFormAppend(formData, "natBack", uplNatBack.files[0]);
+            fpsFormAppend(formData, "bikeRegFront", uplBikeRegFront.files[0]);
+            fpsFormAppend(formData, "bikeRegBack", uplBikeRegBack.files[0]);
+
+            $.ajax({
+                type: 'PUT',
+                url: fpsApiAcc,
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status_code === RESP_SUCCESS) {
+                        accList[accEditPos] = response.data;
+                        drawTblAccount();
+                    } else {
+                    }
+                },
+                error: function (response) {
+                    alert("Unable to Edit");
+                }
+            })
+        }
+
+
+        function sendAdd() {
+            var formData = new FormData();
+            fpsFormAppend(formData, "phone", txtPhone.value);
+            fpsFormAppend(formData, "password", txtPassword.value);
+            fpsFormAppend(formData, "name", txtFullName.value);
+            fpsFormAppend(formData, "sourceId", cbbSource.value);
+
+            fpsFormAppend(formData, "dob", dpDob.valueAsNumber);
+            fpsFormAppend(formData, "email", txtEmail.value);
+            fpsFormAppend(formData, "note", txtNote.value);
+            fpsFormAppend(formData, "priceLevelId", cbbPriceLevel.value);
+
+            fpsFormAppend(formData, "userFace", uplUserFace.files[0]);
+            fpsFormAppend(formData, "introduce", txtIntroduce.value);
+
+            fpsFormAppend(formData, "natId", txtNatId.value);
+            fpsFormAppend(formData, "natDate", dpNatDate.valueAsNumber);
+            fpsFormAppend(formData, "bikeRegId", txtBikeRegId.value);
+            fpsFormAppend(formData, "bikeRegDate", dpNatDate.valueAsNumber);
+
+            fpsFormAppend(formData, "natFront", uplNatFront.files[0]);
+            fpsFormAppend(formData, "natBack", uplNatBack.files[0]);
+            fpsFormAppend(formData, "bikeRegFront", uplBikeRegFront.files[0]);
+            fpsFormAppend(formData, "bikeRegBack", uplBikeRegBack.files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: fpsApiAcc,
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status_code === RESP_SUCCESS) {
+                        accList.push(response.data);
+                        drawTblAccount();
+                    } else {
+                    }
+                },
+                error: function (response) {
+                    alert("Unable to Edit");
+                }
+            })
+        }
+
+
+        function uplUserFaceOnChange() {
+            fpsSetImgFromInput(imgUserFace, uplUserFace);
+        }
+
+        function uplNatFrontOnChange() {
+            fpsSetImgFromInput(imgNatFront, uplNatFront);
+        }
+
+        function uplNatBackOnChange() {
+            fpsSetImgFromInput(imgNatBack, uplNatBack);
+        }
+
+        function uplBikeRegFrontOnChange() {
+            fpsSetImgFromInput(imgBikeRegFront, uplBikeRegFront);
+        }
+
+        function uplBikeRegBackOnChange() {
+            fpsSetImgFromInput(imgBikeRegBack, uplBikeRegBack);
+        }
 
     </script>
 </div>

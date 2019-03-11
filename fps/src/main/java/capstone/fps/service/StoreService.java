@@ -2,6 +2,7 @@ package capstone.fps.service;
 
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
+import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
 import capstone.fps.entity.FRAccount;
 import capstone.fps.entity.FRDistrict;
@@ -37,10 +38,13 @@ public class StoreService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
-        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount account = methods.getUser();
+        Repo repo = new Repo();
+        FRAccount currentUser = methods.getUser();
 
-        FRDistrict frDistrict = methods.getDIst(distId, districtRepository);
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+
+        FRDistrict frDistrict = repo.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
@@ -64,7 +68,7 @@ public class StoreService {
         frStore.setCreateTime(time);
         frStore.setNote(valid.nullProof(note));
         frStore.setStatus(Fix.STO_NEW.index);
-        frStore.setEditor(account);
+        frStore.setEditor(currentUser);
         storeRepository.save(frStore);
 
         MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
@@ -94,15 +98,17 @@ public class StoreService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
-        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount account = methods.getUser();
+        Repo repo = new Repo();
+        FRAccount currentUser = methods.getUser();
 
-        FRStore frStore = methods.getStore(storeId, storeRepository);
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FRStore frStore = repo.getStore(storeId, storeRepository);
         if (frStore == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find store");
             return response;
         }
-        FRDistrict frDistrict = methods.getDIst(distId, districtRepository);
+        FRDistrict frDistrict = repo.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
@@ -131,7 +137,7 @@ public class StoreService {
         frStore.setUpdateTime(time);
         frStore.setNote(valid.nullProof(note));
         frStore.setStatus(valid.checkUpdateStatus(frStore.getStatus(), status, Fix.STO_STAT_LIST));
-        frStore.setEditor(account);
+        frStore.setEditor(currentUser);
         storeRepository.save(frStore);
         MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);

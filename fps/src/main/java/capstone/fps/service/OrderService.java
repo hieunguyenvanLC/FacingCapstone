@@ -2,12 +2,15 @@ package capstone.fps.service;
 
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
+import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.*;
+import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FROrderDetail;
+import capstone.fps.entity.FRProduct;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
-import capstone.fps.model.store.MdlStore;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -140,8 +143,7 @@ public class OrderService {
     public Response memberCancelOrder(int orderId) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
-        Validator valid = new Validator();
-        FRAccount account = methods.getUser();
+        FRAccount currentUser = methods.getUser();
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
@@ -150,7 +152,7 @@ public class OrderService {
             return response;
         }
         FROrder frOrder = optionalFROrder.get();
-        if (frOrder.getAccount().getId() != account.getId()) {
+        if (!frOrder.getAccount().getId().equals(currentUser.getId())) {
             response.setResponse(Response.STATUS_FAIL, "Not your order");
             return response;
         }
@@ -195,9 +197,10 @@ public class OrderService {
 
     public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
         Methods methods = new Methods();
+        Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FROrder frOrder = methods.getOrder(orderId, orderRepository);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
@@ -210,11 +213,12 @@ public class OrderService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
+        Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         FRAccount currentUser = methods.getUser();
 
-        FROrder frOrder = methods.getOrder(orderId, orderRepository);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
@@ -225,7 +229,7 @@ public class OrderService {
         if (bill != null) {
             frOrder.setBill(methods.multipartToBytes(bill));
         }
-        FRAccount shipper = methods.getAccountByPhone(shipperPhone, accountRepository);
+        FRAccount shipper = repo.getAccountByPhone(shipperPhone, accountRepository);
         if (shipper != null) {
             frOrder.setShipper(shipper.getShipper());
         }

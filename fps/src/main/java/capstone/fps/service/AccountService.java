@@ -2,16 +2,17 @@ package capstone.fps.service;
 
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
+import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FRRole;
-import capstone.fps.entity.FRShipper;
-import capstone.fps.entity.FRSource;
+import capstone.fps.entity.*;
 import capstone.fps.model.Response;
+import capstone.fps.model.account.MdlShipper;
 import capstone.fps.model.account.MdlAdmAccMemGet;
 import capstone.fps.model.account.MdlAdmAccAdmGet;
+import capstone.fps.model.account.MdlShipperBuilder;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -74,73 +75,6 @@ public class AccountService {
         return response;
     }
 
-    public boolean createAccountShipper(String phone, String pass, String name, String email, byte[] userImg, String natId, long natDate, long dob, String note, String bikeRegId, String introduce, byte[] natFrnt, byte[] natBack, byte[] bikeRegFrnt, byte[] bikeRegBack, int sourceId) {
-        Methods methods = new Methods();
-        Validator valid = new Validator();
-
-        phone = valid.checkPhone(phone);
-        if (phone == null) {
-            return false;
-        }
-        name = valid.checkFullName(name);
-        if (name == null) {
-            return false;
-        }
-
-        natId = valid.checkNumber(natId);
-        if (natId == null) {
-            return false;
-        }
-        if (note == null) {
-            note = "";
-        }
-        if (methods.getAge(dob) < 18) {
-            return false;
-        }
-        bikeRegId = valid.checkNumber(bikeRegId);
-        if (bikeRegId == null) {
-            return false;
-        }
-        if (introduce == null) {
-            introduce = "";
-        }
-        Optional<FRSource> sourceOptional = sourceRepo.findById(sourceId);
-        if (!sourceOptional.isPresent()) {
-            return false;
-        }
-
-        FRAccount frAccount = new FRAccount();
-        frAccount.setPhone(phone);
-        frAccount.setRole(initRole(Fix.ROL_SHP));
-        frAccount.setPassword(methods.hashPass(pass));
-        frAccount.setName(name);
-        frAccount.setEmail(email);
-        frAccount.setExtraPoint(0);
-        frAccount.setReportPoint(0);
-        frAccount.setUserImage(userImg);
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
-        frAccount.setDateOfBirth(dob);
-        frAccount.setCreateTime(methods.getTimeNow());
-        frAccount.setNote(note);
-        frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-
-        FRShipper frShipper = new FRShipper();
-        frShipper.setAccount(frAccount);
-        frShipper.setBikeRegId(bikeRegId);
-        frShipper.setIntroduce(introduce);
-        frShipper.setNationalIdFrontImage(natFrnt);
-        frShipper.setNationalIdBackImage(natBack);
-        frShipper.setSumRevenue(0D);
-        frShipper.setBikeRegFront(bikeRegFrnt);
-        frShipper.setBikeRegBack(bikeRegBack);
-        frShipper.setPriceLevel(priceLevelRepo.getOne(1));
-        frShipper.setSource(sourceOptional.get());
-        shipperRepo.save(frShipper);
-        return true;
-    }
 
     public Response createAccountAdmin(String phone, String pass, String name, String email, String natId, long natDate, long dob, String note) {
         Methods methods = new Methods();
@@ -388,5 +322,189 @@ public class AccountService {
 
     }
 
+    // Web - Shipper - Begin
+    public Response<MdlShipper> createShipper(String phone, String password, String name, Integer sourceId, long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, String natId, long natDate, String bikeRegId, long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+        Methods methods = new Methods();
+        Validator valid = new Validator();
+        Repo repo = new Repo();
+        MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
+        phone = valid.checkPhone(phone);
+        if (phone == null) {
+            response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
+            return response;
+        }
+        name = valid.checkFullName(name);
+        if (name == null) {
+            response.setResponse(Response.STATUS_FAIL, "Please enter valid name");
+            return response;
+        }
+        FRSource frSource = repo.getSource(sourceId, sourceRepo);
+        if (frSource == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find source");
+            return response;
+        }
+        FRPriceLevel frPriceLevel = repo.getPriceLevel(priceLevelId, priceLevelRepo);
+        if (frPriceLevel == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find Price Level");
+            return response;
+        }
+
+        FRAccount frAccount = new FRAccount();
+        frAccount.setPhone(phone);
+        frAccount.setRole(initRole(Fix.ROL_SHP));
+        frAccount.setPassword(methods.hashPass(password));
+        frAccount.setName(name);
+        frAccount.setEmail(email);
+        frAccount.setExtraPoint(0);
+        frAccount.setReportPoint(0);
+        frAccount.setUserImage(methods.multipartToBytes(userFace));
+        frAccount.setNationalId(natId);
+        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setDateOfBirth(dob);
+        frAccount.setCreateTime(methods.getTimeNow());
+        frAccount.setNote(note);
+        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setEditor(methods.getUser());
+        accountRepo.save(frAccount);
+
+        FRShipper frShipper = new FRShipper();
+        frShipper.setAccount(frAccount);
+        frShipper.setBikeRegId(bikeRegId);
+        frShipper.setIntroduce(introduce);
+        frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
+        frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
+        frShipper.setSumRevenue(0D);
+        frShipper.setBikeRegFront(methods.multipartToBytes(bikeRegFront));
+        frShipper.setBikeRegBack(methods.multipartToBytes(bikeRegBack));
+        frShipper.setPriceLevel(frPriceLevel);
+        frShipper.setSource(frSource);
+        shipperRepo.save(frShipper);
+
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
+        return response;
+    }
+
+    public Response<MdlShipper> updateShipper(int accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+        Methods methods = new Methods();
+        long time = methods.getTimeNow();
+        Validator valid = new Validator();
+        Repo repo = new Repo();
+        FRAccount currentUser = methods.getUser();
+        MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FRAccount frAccount = repo.getAccount(accId, accountRepo);
+        if (frAccount == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+
+        phone = valid.checkPhone(phone);
+        if (phone != null) {
+            frAccount.setPhone(phone);
+        }
+        name = valid.checkFullName(name);
+        if (name != null) {
+            frAccount.setName(name);
+        }
+        if (email != null) {
+            frAccount.setEmail(email);
+        }
+        if (extraPoint != null) {
+            frAccount.setExtraPoint(extraPoint);
+        }
+        if (reportPoint != null) {
+            frAccount.setReportPoint(reportPoint);
+        }
+        if (userFace != null) {
+            frAccount.setUserImage(methods.multipartToBytes(userFace));
+        }
+        if (natId != null) {
+            frAccount.setNationalId(natId);
+        }
+        if (natDate != null) {
+            frAccount.setNationalIdCreatedDate(natDate);
+        }
+        if (dob != null) {
+            frAccount.setDateOfBirth(dob);
+        }
+        if (email != null) {
+            frAccount.setEmail(email);
+        }
+        frAccount.setUpdateTime(time);
+        frAccount.setNote(valid.nullProof(note));
+        frAccount.setStatus(valid.checkUpdateStatus(frAccount.getStatus(), status, Fix.ACC_STAT_LIST));
+        frAccount.setEditor(currentUser);
+        accountRepo.save(frAccount);
+
+
+        FRShipper frShipper = frAccount.getShipper();
+        if (bikeRegId != null) {
+            frShipper.setBikeRegId(bikeRegId);
+        }
+        if (introduce != null) {
+            frShipper.setIntroduce(introduce);
+        }
+        if (natFront != null) {
+            frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
+        }
+        if (natBack != null) {
+            frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
+        }
+        if (sumRevenue != null) {
+            frShipper.setSumRevenue(sumRevenue);
+        }
+        if (bikeRegFront != null) {
+            frShipper.setBikeRegFront(methods.multipartToBytes(bikeRegFront));
+        }
+        if (bikeRegBack != null) {
+            frShipper.setBikeRegBack(methods.multipartToBytes(bikeRegBack));
+        }
+        FRSource frSource = repo.getSource(sourceId, sourceRepo);
+        if (frSource != null) {
+            frShipper.setSource(frSource);
+        }
+        FRPriceLevel frPriceLevel = repo.getPriceLevel(priceLevelId, priceLevelRepo);
+        if (frPriceLevel != null) {
+            frShipper.setPriceLevel(frPriceLevel);
+        }
+        shipperRepo.save(frShipper);
+
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
+        return response;
+    }
+
+    public Response<List<MdlShipper>> getShipperListAdm() {
+        Response<List<MdlShipper>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
+        List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_SHP));
+        List<MdlShipper> accList = new ArrayList<>();
+        for (FRAccount frAccount : frAccountList) {
+            accList.add(shipperBuilder.buildTableRowAdm(frAccount));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
+        return response;
+    }
+
+    public Response<MdlShipper> getShipperDetailAdm(int accId) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
+
+        FRAccount frAccount = repo.getAccount(accId, accountRepo);
+        if (frAccount == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
+        return response;
+    }
+    // Web - Shipper - End
 }

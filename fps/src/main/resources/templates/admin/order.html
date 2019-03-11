@@ -31,7 +31,7 @@
                     </thead>
                     <tbody id="tblBodyOrder">
                     <tr>
-                        <th scope="row" data-target="#store-detail-modal" data-toggle="modal">1</th>
+                        <th scope="row" data-target="#edit-order-detail-modal" data-toggle="modal" onclick="loadEditForm()">1</th>
                         <td data-target="#store-detail-modal" data-toggle="modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu
                         </td>
                         <td data-target="#store-detail-modal" data-toggle="modal">83 Hồ Tùng Mậu</td>
@@ -55,43 +55,42 @@
                             </div>
 
                             <div class="modal-body">
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-4  padding-0">
                                         <label>Customer Face</label>
-                                        <div class="input-group" style="width: 256px;">
-                                            <div class="input-group-prepend">
-                                                    <span class="input-group-text"
-                                                          id="inputGroupFileAddon01">Upload</span>
-                                            </div>
+                                        <div class="input-group">
+                                            <!--<div class="input-group-prepend">-->
+                                            <!--<span class="input-group-text"-->
+                                            <!--id="inputGroupFileAddon01">Upload</span>-->
+                                            <!--</div>-->
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="uplBuyerFace"
                                                        onchange="uplStoreThumbOnChange()">
-                                                <label class="custom-file-label" for="uplBuyerFace" id="lblBuyerFace">Choose
-                                                    file</label>
+                                                <label class="custom-file-label" for="uplBuyerFace"
+                                                       style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
                                         <img id="imgBuyerFace" src="" alt="Buyer" style="width: 256px; height: 256px">
                                     </div>
 
-
-                                    <div class="col-sm padding-0">
+                                    <div class="col-4 padding-0">
                                         <label>Bill</label>
-                                        <div class="input-group" style="width: 256px;">
-                                            <div class="input-group-prepend">
-                                                    <span class="input-group-text"
-                                                          id="inputGroupFileAddon02">Upload</span>
-                                            </div>
+                                        <div class="input-group">
+                                            <!--<div class="input-group-prepend">-->
+                                            <!--<span class="input-group-text"-->
+                                            <!--id="inputGroupFileAddon02">Upload</span>-->
+                                            <!--</div>-->
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="uplBill"
                                                        onchange="uplStoreThumbOnChange()">
-                                                <label class="custom-file-label" for="uplBill" id="lblBill">Choose
-                                                    file</label>
+                                                <label class="custom-file-label" for="uplBill"
+                                                       style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
-                                        <img id="imgBill" src="" alt="Responsive image" style="width: 256px;">
+                                        <img id="imgBill" src="" alt="Responsive image">
                                     </div>
 
-                                    <div class="col-sm-auto padding-0">
+                                    <div class="col-4 padding-0">
 
                                         <div class="form-group">
                                             <label>Order ID</label>
@@ -130,7 +129,7 @@
                                 </div>
 
 
-                                <div class="row row-eq-height">
+                                <div class="row row-eq-height no-padding">
                                     <div class="col-4 padding-0">
                                         <div class="form-group">
                                             <label>Longitude</label>
@@ -238,6 +237,12 @@
         var orderEdit;
         var orderEditPos;
         var fpsApiOrd = fpsBackEnd + MAP_ADM + MAP_API + "/order";
+
+
+        function fpsFetchData() {
+            getOrderList();
+            fpsSetCbbStatus(cbbStatus, ORD_STAT_LIST);
+        }
 
 
         function drawTblOrder() {

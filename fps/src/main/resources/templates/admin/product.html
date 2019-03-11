@@ -88,8 +88,22 @@
                                     <div class="text-center">
                                         <img src="" class="card-img" alt="Responsive image" id="imgProIcon">
                                     </div>
-                                    <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                    <input type="file" class="form-control-file" id="uplProIcon">
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                                    <span class="input-group-text"
+                                                          id="inputGroupFileAddon01">Upload</span>
+                                        </div>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="uplProIcon"
+                                                   onchange="uplProIconOnChange()"
+                                                   aria-describedby="uplStoreThumb">
+                                            <label class="custom-file-label" for="uplProIcon" id="lblProIcon">Choose
+                                                file</label>
+                                        </div>
+                                    </div>
+
+
                                 </div>
                                 <div class="form-group">
                                     <label for="cbbStatus">Status</label>
@@ -138,7 +152,7 @@
 
             }
             getProList();
-            fpsSetCbbStatus(cbbStatus, proStatList);
+            fpsSetCbbStatus(cbbStatus, PRO_STAT_LIST);
         }
 
 
@@ -151,7 +165,7 @@
             for (var i = 0; i < list.length; i++) {
                 var product = list[i];
 
-                var statStr = fpsGetStatMsg(proStatList, product.status);
+                var statStr = fpsGetStatMsg(PRO_STAT_LIST, product.status);
                 accountTable.row.add([
                     '<span data-target="#product-detail-modal" data-toggle="modal" onclick="getProDetail(' + product.id + ')" >' + product.name + '</span>',
                     product.price,
@@ -340,6 +354,13 @@
                 }
             })
         }
+
+
+        function uplProIconOnChange() {
+            fpsSetImgFromInput(imgProIcon, uplProIcon);
+        }
+
+
 
     </script>
 </div>
