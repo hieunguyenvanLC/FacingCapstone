@@ -36,6 +36,16 @@ public class ProductController extends AbstractController {
         return gson.toJson(response);
     }
 
+    @PostMapping(Fix.MAP_ANY + Fix.MAP_API + "/check")
+    public String getCheck(String col, String row) {
+//        String col = "2";
+//        String row = "werw";
+        System.out.println(col + " ok " + row);
+        String s = col + " & " + row;
+        return s;
+    }
+
+
 //    @DeleteMapping(Fix.MAP_ADM + API)
 //    public String deactivateAccount(Integer accountId, String reason) {
 //        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -81,11 +91,13 @@ public class ProductController extends AbstractController {
     public String updateProduct(String proName, Integer proId, Double price, MultipartFile proImg, String description, String note, Integer status) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = productService.updateProduct(proId, proName , price, proImg, description, note, status);
+            response = productService.updateProduct(proId, proName, price, proImg, description, note, status);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
         }
         return gson.toJson(response);
     }
+
+
 }

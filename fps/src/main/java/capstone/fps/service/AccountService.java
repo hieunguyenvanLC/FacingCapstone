@@ -76,53 +76,6 @@ public class AccountService {
     }
 
 
-    public Response createAccountAdmin(String phone, String pass, String name, String email, String natId, long natDate, long dob, String note) {
-        Methods methods = new Methods();
-        Validator valid = new Validator();
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
-        phone = valid.checkUsername(phone);
-        if (phone == null) {
-            response.setResponse(Response.STATUS_FAIL, "Username invalid");
-            return response;
-        }
-        name = valid.checkFullName(name);
-        if (name == null) {
-            response.setResponse(Response.STATUS_FAIL, "name invalid");
-            return response;
-        }
-        natId = valid.checkNumber(natId);
-        if (natId == null) {
-            response.setResponse(Response.STATUS_FAIL, "NatId invalid");
-            return response;
-        }
-        if (note == null) {
-            note = "";
-        }
-        if (methods.getAge(dob) < 18) {
-            response.setResponse(Response.STATUS_FAIL, "Age invalid");
-            return response;
-        }
-
-        FRAccount frAccount = new FRAccount();
-        frAccount.setPhone(phone);
-        frAccount.setRole(initRole(Fix.ROL_ADM));
-        frAccount.setPassword(methods.hashPass(pass));
-        frAccount.setName(name);
-        frAccount.setEmail(email);
-        frAccount.setExtraPoint(0);
-        frAccount.setReportPoint(0);
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
-        frAccount.setDateOfBirth(dob);
-        frAccount.setCreateTime(methods.getTimeNow());
-        frAccount.setNote(note);
-        frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
-    }
 
     public Response editAccountMember(Integer accId, String name, String email, long dob, String note) {
         Methods methods = new Methods();
@@ -153,50 +106,38 @@ public class AccountService {
         return response;
     }
 
-    public Response editAccountAdmin(int accId, String name, String email, String natId, long natDate, long dob, String note) {
-        Methods methods = new Methods();
-        Validator valid = new Validator();
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        Optional<FRAccount> optional = accountRepo.findById(accId);
-        if (!optional.isPresent()) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find account");
-            return response;
-        }
-        FRAccount frAccount = optional.get();
-        if (!frAccount.getRole().getName().equals(Fix.ROL_ADM)) {
-            response.setResponse(Response.STATUS_FAIL, "Not a member");
-            return response;
-        }
-        name = valid.checkFullName(name);
-        if (name == null) {
-            response.setResponse(Response.STATUS_FAIL, "Name invalid");
-            return response;
-        }
-        natId = valid.checkNumber(natId);
-        if (natId == null) {
-            response.setResponse(Response.STATUS_FAIL, "NatId invalid");
-            return response;
-        }
-        if (note == null) {
-            note = "";
-        }
-        if (methods.getAge(dob) < 18) {
-            response.setResponse(Response.STATUS_FAIL, "Age invalid");
-            return response;
-        }
+    public List<MdlAdmAccMemGet> getListMember() {
+        Base64.Encoder encoder = Base64.getEncoder();
+        List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
+        List<MdlAdmAccMemGet> accList = new ArrayList<>();
+        for (FRAccount frAccount : frAccountList) {
+            MdlAdmAccMemGet acc = new MdlAdmAccMemGet();
 
-        frAccount.setName(name);
-        frAccount.setEmail(email);
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
-        frAccount.setDateOfBirth(dob);
-        frAccount.setUpdateTime(methods.getTimeNow());
-        frAccount.setNote(note);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
+            String userImg = null;
+            if (frAccount.getUserImage() != null) {
+                userImg = encoder.encodeToString(frAccount.getAvatar());
+            }
+            String editor = null;
+            if (frAccount.getEditor() != null) {
+                editor = frAccount.getEditor().getPhone();
+            }
+
+            acc.setId(frAccount.getId());
+            acc.setPhone(frAccount.getPhone());
+            acc.setName(frAccount.getName());
+            acc.setEmail(frAccount.getEmail());
+            acc.setUserImg(userImg);
+            acc.setDob(frAccount.getDateOfBirth());
+            acc.setCreateTime(frAccount.getCreateTime());
+            acc.setUpdateTime(frAccount.getUpdateTime());
+            acc.setDeleteTime(frAccount.getDeleteTime());
+            acc.setNote(frAccount.getNote());
+            acc.setStatus(frAccount.getStatus());
+            acc.setEditor(editor);
+            accList.add(acc);
+        }
+        return accList;
     }
 
 //    public boolean updateProfileMember(String phone, String pass, String name, String email, byte[] userImg, String natId, long natDate, long dob, String note) {
@@ -255,6 +196,101 @@ public class AccountService {
         return true;
     }
 
+    // Web - Admin - Begin
+    public Response createAccountAdmin(String phone, String pass, String name, String email, String natId, long natDate, long dob, String note) {
+        Methods methods = new Methods();
+        Validator valid = new Validator();
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        phone = valid.checkUsername(phone);
+        if (phone == null) {
+            response.setResponse(Response.STATUS_FAIL, "Username invalid");
+            return response;
+        }
+        name = valid.checkFullName(name);
+        if (name == null) {
+            response.setResponse(Response.STATUS_FAIL, "name invalid");
+            return response;
+        }
+        natId = valid.checkNumber(natId);
+        if (natId == null) {
+            response.setResponse(Response.STATUS_FAIL, "NatId invalid");
+            return response;
+        }
+        if (note == null) {
+            note = "";
+        }
+        if (methods.getAge(dob) < 18) {
+            response.setResponse(Response.STATUS_FAIL, "Age invalid");
+            return response;
+        }
+
+        FRAccount frAccount = new FRAccount();
+        frAccount.setPhone(phone);
+        frAccount.setRole(initRole(Fix.ROL_ADM));
+        frAccount.setPassword(methods.hashPass(pass));
+        frAccount.setName(name);
+        frAccount.setEmail(email);
+        frAccount.setExtraPoint(0);
+        frAccount.setReportPoint(0);
+        frAccount.setNationalId(natId);
+        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setDateOfBirth(dob);
+        frAccount.setCreateTime(methods.getTimeNow());
+        frAccount.setNote(note);
+        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setEditor(methods.getUser());
+        accountRepo.save(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
+    public Response editAccountAdmin(int accId, String name, String email, String natId, long natDate, long dob, String note) {
+        Methods methods = new Methods();
+        Validator valid = new Validator();
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        Optional<FRAccount> optional = accountRepo.findById(accId);
+        if (!optional.isPresent()) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+        FRAccount frAccount = optional.get();
+        if (!frAccount.getRole().getName().equals(Fix.ROL_ADM)) {
+            response.setResponse(Response.STATUS_FAIL, "Not a member");
+            return response;
+        }
+        name = valid.checkFullName(name);
+        if (name == null) {
+            response.setResponse(Response.STATUS_FAIL, "Name invalid");
+            return response;
+        }
+        natId = valid.checkNumber(natId);
+        if (natId == null) {
+            response.setResponse(Response.STATUS_FAIL, "NatId invalid");
+            return response;
+        }
+        if (note == null) {
+            note = "";
+        }
+        if (methods.getAge(dob) < 18) {
+            response.setResponse(Response.STATUS_FAIL, "Age invalid");
+            return response;
+        }
+
+        frAccount.setName(name);
+        frAccount.setEmail(email);
+        frAccount.setNationalId(natId);
+        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setDateOfBirth(dob);
+        frAccount.setUpdateTime(methods.getTimeNow());
+        frAccount.setNote(note);
+        frAccount.setEditor(methods.getUser());
+        accountRepo.save(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
     public List<MdlAdmAccAdmGet> getListAdmin() {
         Base64.Encoder encoder = Base64.getEncoder();
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_ADM));
@@ -288,39 +324,7 @@ public class AccountService {
         return admList;
     }
 
-    public List<MdlAdmAccMemGet> getListMember() {
-        Base64.Encoder encoder = Base64.getEncoder();
-        List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
-        List<MdlAdmAccMemGet> accList = new ArrayList<>();
-        for (FRAccount frAccount : frAccountList) {
-            MdlAdmAccMemGet acc = new MdlAdmAccMemGet();
-
-            String userImg = null;
-            if (frAccount.getUserImage() != null) {
-                userImg = encoder.encodeToString(frAccount.getAvatar());
-            }
-            String editor = null;
-            if (frAccount.getEditor() != null) {
-                editor = frAccount.getEditor().getPhone();
-            }
-
-            acc.setId(frAccount.getId());
-            acc.setPhone(frAccount.getPhone());
-            acc.setName(frAccount.getName());
-            acc.setEmail(frAccount.getEmail());
-            acc.setUserImg(userImg);
-            acc.setDob(frAccount.getDateOfBirth());
-            acc.setCreateTime(frAccount.getCreateTime());
-            acc.setUpdateTime(frAccount.getUpdateTime());
-            acc.setDeleteTime(frAccount.getDeleteTime());
-            acc.setNote(frAccount.getNote());
-            acc.setStatus(frAccount.getStatus());
-            acc.setEditor(editor);
-            accList.add(acc);
-        }
-        return accList;
-
-    }
+    // Web - Admin - End
 
     // Web - Shipper - Begin
     public Response<MdlShipper> createShipper(String phone, String password, String name, Integer sourceId, long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, String natId, long natDate, String bikeRegId, long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
@@ -372,6 +376,7 @@ public class AccountService {
         FRShipper frShipper = new FRShipper();
         frShipper.setAccount(frAccount);
         frShipper.setBikeRegId(bikeRegId);
+        frShipper.setBikeRegDate(bikeRegDate);
         frShipper.setIntroduce(valid.nullProof(introduce));
         frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
         frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
@@ -447,6 +452,9 @@ public class AccountService {
         if (bikeRegId != null) {
             frShipper.setBikeRegId(bikeRegId);
         }
+        if (bikeRegDate != null) {
+            frShipper.setBikeRegDate(bikeRegDate);
+        }
         if (introduce != null) {
             frShipper.setIntroduce(introduce);
         }
@@ -494,7 +502,6 @@ public class AccountService {
     }
 
     public Response<MdlShipper> getShipperDetailAdm(int accId) {
-        Methods methods = new Methods();
         Repo repo = new Repo();
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
