@@ -80,10 +80,9 @@ public class OrderService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
-
+        Repo repo = new Repo();
         FRAccount account = methods.getUser();
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
         if (account == null) {
             response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
             return response;
@@ -92,12 +91,19 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Product list error");
             return response;
         }
+
         List<FRProduct> frProducts = new ArrayList<>();
         for (int i = 0; i < proIdList.length; i++) {
-            Optional<FRProduct> optional = productRepository.findById(proIdList[i]);
-            if (optional.isPresent()) {
-
+            FRProduct frProduct = repo.getProduct(proIdList[i], productRepository);
+            if (frProduct == null) {
+                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proIdList[i]);
+                return response;
             }
+            if (quantityList[i] <= 0) {
+                response.setResponse(Response.STATUS_FAIL, "proId " + proIdList[i] + " has quantity " + quantityList[i]);
+                return response;
+            }
+            frProducts.add(frProduct);
         }
 
 
@@ -106,36 +112,27 @@ public class OrderService {
 
         frOrder.setLongitude(longitude);
         frOrder.setLatitude(latitude);
-
         frOrder.setCustomerDescription(valid.nullProof(customerDescription));
         frOrder.setCreateTime(time);
         frOrder.setNote("");
         frOrder.setStatus(Fix.ORD_NEW.index);
-
-
         orderRepository.save(frOrder);
         double total = 0d;
         for (int i = 0; i < proIdList.length; i++) {
-            //Check quantityList[i] == null ? shipperEarn ?
-            if (quantityList[i] >= 1) {
-                Optional<FRProduct> optional = productRepository.findById(proIdList[i]);
-                if (optional.isPresent()) {
-                    FROrderDetail frOrderDetail = new FROrderDetail();
-                    frOrderDetail.setOrder(frOrder);
-                    FRProduct frProduct = optional.get();
-                    frOrderDetail.setProduct(frProduct);
-                    frOrderDetail.setUnitPrice(frProduct.getPrice());
-                    frOrderDetail.setQuantity(quantityList[i]);
-                    orderDetailRepository.save(frOrderDetail);
-                    total += frProduct.getPrice() * quantityList[i];
-                }
-            }
+            FROrderDetail frOrderDetail = new FROrderDetail();
+            FRProduct frProduct = frProducts.get(i);
+            frOrderDetail.setOrder(frOrder);
+            frOrderDetail.setProduct(frProduct);
+            frOrderDetail.setUnitPrice(frProduct.getPrice());
+            frOrderDetail.setQuantity(quantityList[i]);
+            orderDetailRepository.save(frOrderDetail);
+            total += frProduct.getPrice() * quantityList[i];
         }
+
         frOrder.setTotalPrice(total);
         orderRepository.save(frOrder);
 
-
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
 
     }
@@ -209,7 +206,7 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String note) {
+    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -245,8 +242,13 @@ public class OrderService {
         if (shipperEarn != null) {
             frOrder.setShipperEarn(shipperEarn);
         }
+        if (customerDescription != null) {
+            frOrder.setCustomerDescription(valid.nullProof(customerDescription));
+        }
+        if (note != null) {
+            frOrder.setNote(valid.nullProof(note));
+        }
         frOrder.setUpdateTime(time);
-        frOrder.setNote(valid.nullProof(note));
         frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);

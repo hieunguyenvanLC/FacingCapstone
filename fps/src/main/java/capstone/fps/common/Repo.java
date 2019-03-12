@@ -64,4 +64,12 @@ public class Repo {
         return optional.orElse(null);
     }
 
+
+    public FRProduct getProduct(Integer proId, ProductRepo productRepository) {
+        if (proId == null) {
+            return null;
+        }
+        Optional<FRProduct> optional = productRepository.findById(proId);
+        return optional.orElse(null);
+    }
 }

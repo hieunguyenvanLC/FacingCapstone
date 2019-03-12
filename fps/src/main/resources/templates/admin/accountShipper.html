@@ -359,12 +359,10 @@
 
         function drawTblAccount() {
             btnCloseModal.click();
-
             var list = accList;
             $('#account-table').DataTable().destroy();
             var accountTable = $('#account-table').DataTable();
             accountTable.clear().draw();
-            console.log(1);
             for (var i = 0; i < list.length; i++) {
                 var account = list[i];
 
@@ -376,7 +374,6 @@
                     fpsGetStatMsg(accStatList, account.status)
                 ]).draw();
             }
-            console.log("end");
         }
 
 

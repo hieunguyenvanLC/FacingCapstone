@@ -122,12 +122,14 @@ public class ProductService {
                 return response;
             }
         }
-        frProduct.setDescription(valid.nullProof(description));
-        frProduct.setUpdateTime(time);
-        frProduct.setNote(valid.nullProof(note));
-        if (status != null) {
-            frProduct.setStatus(status);
+        if (description != null) {
+            frProduct.setDescription(valid.nullProof(description));
         }
+        if (note != null) {
+            frProduct.setNote(valid.nullProof(note));
+        }
+        frProduct.setUpdateTime(time);
+        frProduct.setStatus(valid.checkUpdateStatus(frProduct.getStatus(), status, Fix.PRO_STAT_LIST));
         frProduct.setEditor(methods.getUser());
         productRepository.save(frProduct);
 

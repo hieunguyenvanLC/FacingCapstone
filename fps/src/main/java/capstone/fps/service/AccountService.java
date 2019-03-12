@@ -364,7 +364,7 @@ public class AccountService {
         frAccount.setNationalIdCreatedDate(natDate);
         frAccount.setDateOfBirth(dob);
         frAccount.setCreateTime(methods.getTimeNow());
-        frAccount.setNote(note);
+        frAccount.setNote(valid.nullProof(note));
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(methods.getUser());
         accountRepo.save(frAccount);
@@ -372,7 +372,7 @@ public class AccountService {
         FRShipper frShipper = new FRShipper();
         frShipper.setAccount(frAccount);
         frShipper.setBikeRegId(bikeRegId);
-        frShipper.setIntroduce(introduce);
+        frShipper.setIntroduce(valid.nullProof(introduce));
         frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
         frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
         frShipper.setSumRevenue(0D);
@@ -382,7 +382,7 @@ public class AccountService {
         frShipper.setSource(frSource);
         shipperRepo.save(frShipper);
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo));
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }
@@ -434,8 +434,10 @@ public class AccountService {
         if (email != null) {
             frAccount.setEmail(email);
         }
+        if (note != null) {
+            frAccount.setNote(valid.nullProof(note));
+        }
         frAccount.setUpdateTime(time);
-        frAccount.setNote(valid.nullProof(note));
         frAccount.setStatus(valid.checkUpdateStatus(frAccount.getStatus(), status, Fix.ACC_STAT_LIST));
         frAccount.setEditor(currentUser);
         accountRepo.save(frAccount);
@@ -471,6 +473,7 @@ public class AccountService {
         if (frPriceLevel != null) {
             frShipper.setPriceLevel(frPriceLevel);
         }
+
         shipperRepo.save(frShipper);
 
         MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
