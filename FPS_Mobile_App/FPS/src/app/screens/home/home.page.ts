@@ -30,7 +30,6 @@ export class HomePage {
       res => {
         //this.stores = Array.prototype.slice.call(data.toString);
         this.stores.push(res);
-        //console.log(this.stores);
         console.log(this.stores[0].data);
       }
     )
@@ -44,12 +43,5 @@ export class HomePage {
   search(event){
     console.log("search value: " + event.target.value);
   }
-  getStoreByid(id : string){
-    this.storeService.getStorebyid(id).subscribe(
-      res =>{
-
-      }
-    )
-  }
-
+  
 }

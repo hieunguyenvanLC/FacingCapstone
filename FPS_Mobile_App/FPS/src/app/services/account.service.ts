@@ -56,7 +56,6 @@ export class AccountService {
     formData.append('phoneNumber', txtPhone);
     formData.append('password', txtPassword);
     formData.append('fullName', txtFullName);
-    // console.log(account);
     //return this.HttpClient.post(this.createApi , formData);
     console.log(formData);
     return this.apiHttpService.post("any/api/account",formData);

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import {
   ToastController,
   ModalController
 } from '@ionic/angular';
 import { OrdermodalPage } from '../ordermodal/ordermodal.page';
+import { StoreService } from 'src/app/services/store.service';
+import { Store } from './../../models/store.model';
 
 @Component({
   selector: 'app-store',
@@ -15,55 +17,63 @@ import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 export class StorePage implements OnInit {
   num = 0;
   total = 0;
-  products = [
-    {
-      id: "AL1",
-      img: "../../assets/image/trasua1.jpg",
-      name: "Trà sữa chân trâu đường đen - size M (500ml)",
-      price: "100000",
-      quantity: 0
-    },
-    {
-      id: "AL2",
-      img: "../../assets/image/trasua1.jpg",
-      name: "Trà sữa chân trâu đường đen - size L (750ml)",
-      price: "500000",
-      quantity: 0
-    },
-    {
-      id: "AL3",
-      img: "../../assets/image/trasua1.jpg",
-      name: "Trà sữa chân trâu đường đen - size XL (1050ml)",
-      price: "100000",
-      quantity: 0
-    },
-    {
-      id: "AL4",
-      img: "../../assets/image/trasua1.jpg",
-      name: "Trà sữa chân trâu đường đen - size XXL (1200ml)",
-      price: "100000",
-      quantity: 0
-    },
-    {
-      id: "AL5",
-      img: "../../assets/image/trasua1.jpg",
-      name: "Trà sữa chân trâu đường đen - size S (500ml)",
-      price: "100000",
-      quantity: 0
-    }
-  ]
+  products = []
   orders = []
   isHaveProduct = false;
   currentModal = null;
+  storeId: number;
+  store : Store[];
+
+  // {
+  //   id: "AL1",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size M (500ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL2",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size L (750ml)",
+  //   price: "500000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL3",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size XL (1050ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL4",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size XXL (1200ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL5",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size S (500ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // }
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private modalController: ModalController,
+    private storeService: StoreService,
   ) {
   }
 
   ngOnInit() {
-
+    this.activatedRoute.paramMap
+      .subscribe(param => {
+        this.storeId = parseInt(param.get('id'));
+        this.getStoreByid(this.storeId);
+      });
 
   }
 
@@ -95,7 +105,7 @@ export class StorePage implements OnInit {
     if (prodInOrder.id == id) {
       if (prodInOrder.quantity > 0) {
         prodInOrder.quantity--;
-        this.total -= parseInt(prodInOrder.price);  
+        this.total -= parseInt(prodInOrder.price);
         if (prodInOrder.quantity == 0) {
           const index = this.orders.indexOf(id, 0);
           this.orders.splice(index, 1) // delete an array item in prodInOrder
@@ -121,9 +131,21 @@ export class StorePage implements OnInit {
       this.currentModal = modal;
     });
   }
-  
+
   backToHome() {
     this.router.navigateByUrl("home");
   }
-  
+
+  getStoreByid(id: number) {
+    this.storeService.getStorebyid(id).subscribe(
+      res => {
+        this.products.push(res);
+        console.log(this.store);
+        console.log(this.products[0].data);
+        console.log(this.products[0].data.proList);
+      }
+    )
+  }
+
+
 } 

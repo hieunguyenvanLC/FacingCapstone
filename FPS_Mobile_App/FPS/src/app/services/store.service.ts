@@ -31,9 +31,9 @@ export class StoreService {
   }
 
   //get store by id
-  getStorebyid(id: string): Observable<any>{
+  getStorebyid(id: number){
     let headers = this.createHeader();
-    return this.httpClient.get<any>(this.storeUrl + id);
+    return this.httpClient.get(this.storeUrl + "/detail?storeId=" + id);
   }
 
 }
