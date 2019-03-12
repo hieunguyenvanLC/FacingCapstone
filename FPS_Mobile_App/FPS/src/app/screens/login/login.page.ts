@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     private router: Router,
-    private accountService : AccountService,
+    private accountService: AccountService,
   ) { }
 
   ngOnInit() {
@@ -26,24 +26,24 @@ export class LoginPage implements OnInit {
 
   }
 
-  public result='';
+  public result = '';
 
   async login() {
     this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
-        console.log(this.phonenumber +"  "+ this.password);
-        console.log(res);
-        let body = res.json();  // If response is a JSON use json()
-        if (body) {
-          if(body !== "Error"){
-            this.router.navigateByUrl("home");
-          }
-        } else {
-              return {};
-          }
+      console.log(this.phonenumber + "  " + this.password);
       console.log(res);
-      }),err=>{
-    console.log(err);
-      };;
+      let body = res.json();  // If response is a JSON use json()
+      if (body) {
+        if (body !== "Error") {
+          this.router.navigateByUrl("home");
+        }
+      } else {
+        this.error = "Wrong username or password";
+      }
+      console.log(res);
+    }), err => {
+      console.log(err);
+    };;
 
   }
 

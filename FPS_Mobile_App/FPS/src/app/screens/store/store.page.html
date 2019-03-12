@@ -9,15 +9,13 @@
 
 <ion-content class="no-scroll">
   <!-- Title Store -->
-  <ion-item *ngFor="let item of store">
   <div class="store" >
     <img class="store__img" src="../../assets/image/trasua3.jpg" />
-    <h1 class="store__title">{{item.name}} - {{item.address}}</h1>
+    <h1 class="store__title">{{products[0].data.name}} - {{products[0].data.address}}</h1>
     <div class="store__subtitle">
       Open time: 7:00 - 22:00
     </div>
   </div>
-</ion-item>
   <!-- End Title Store -->
 
   <!-- Product -->

@@ -1,10 +1,10 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start" (click)="dismissModal()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-buttons>
     <ion-title class="title-md hydrated">Cart</ion-title>
   </ion-toolbar>
-  <ion-buttons slot="end" class="sc-ion-buttons-md-h sc-ion-buttons-md-s hydrated">
-    <ion-button (click)="dismissModal()" class="button button-clear ion-activatable ion-focusable hydrated">Close</ion-button>
-  </ion-buttons>
 </ion-header>
 
 <ion-content padding>

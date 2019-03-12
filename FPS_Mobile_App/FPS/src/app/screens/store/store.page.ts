@@ -140,9 +140,8 @@ export class StorePage implements OnInit {
     this.storeService.getStorebyid(id).subscribe(
       res => {
         this.products.push(res);
-        console.log(this.store);
-        console.log(this.products[0].data);
-        console.log(this.products[0].data.proList);
+        // console.log(this.products[0].data);
+        // console.log(this.products[0].data.proList);
       }
     )
   }
