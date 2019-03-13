@@ -57,7 +57,7 @@ public class AccountController extends AbstractController {
             response.setResponse(admList.size(), Response.MESSAGE_SUCCESS, admList);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SERVER_ERROR);
         }
         return gson.toJson(response);
     }
@@ -67,7 +67,7 @@ public class AccountController extends AbstractController {
         Response<List<MdlAdmAccMemGet>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             List<MdlAdmAccMemGet> accList = accountService.getListMember();
-            response.setResponse(accList.size(), Response.MESSAGE_SUCCESS, accList);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
