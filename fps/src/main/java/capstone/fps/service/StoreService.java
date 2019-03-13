@@ -169,8 +169,9 @@ public class StoreService {
         return response;
     }
 
-    public List getStoreNearby(double longitude, double latitude) {
+    public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         double dis = 5 * Fix.DEGREE_PER_KM;
         double minLon = longitude - dis;
         double maxLon = longitude + dis;
@@ -196,7 +197,8 @@ public class StoreService {
         for (int i = 0; i < size; i++) {
             mdlStoreList.add(mdlStoreBuilder.buildStoreNearBy(storeDisList.get(i).getStore()));
         }
-        return mdlStoreList;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStoreList);
+        return response;
     }
 
 

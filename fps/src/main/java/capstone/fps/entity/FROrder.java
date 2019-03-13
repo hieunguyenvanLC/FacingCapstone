@@ -67,27 +67,6 @@ public class FROrder {
     public FROrder() {
     }
 
-    public FROrder(FRAccount account, FRShipper shipper, String orderCode, Double totalPrice, Long bookTime, Long receiveTime, Double shipperEarn, String shipAddress, FRDistrict district, Double longitude, Double latitude, String customerDescription, Long createTime, Long updateTime, Long deleteTime, String note, Integer status, FRAccount editor) {
-        this.account = account;
-        this.shipper = shipper;
-        this.orderCode = orderCode;
-        this.totalPrice = totalPrice;
-        this.bookTime = bookTime;
-        this.receiveTime = receiveTime;
-        this.shipperEarn = shipperEarn;
-        this.shipAddress = shipAddress;
-        this.district = district;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.customerDescription = customerDescription;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.deleteTime = deleteTime;
-        this.note = note;
-        this.status = status;
-        this.editor = editor;
-    }
-
     public Integer getId() {
         return id;
     }

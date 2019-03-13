@@ -38,14 +38,14 @@ function fpsFormatDate(date) {
 }
 
 
-function fpsShowMsg(msgStr) {
-    var lblMsg = document.getElementById("lblDisplayMsg");
+function fpsShowMsg(lblMsg, msgStr) {
+    // var lblMsg = document.getElementById("lblDisplayMsg");
     lblMsg.innerHTML = msgStr;
     lblMsg.style.display = 'inline-block';
 }
 
-function fpsHideMsg() {
-    var lblMsg = document.getElementById("lblDisplayMsg");
+function fpsHideMsg(lblMsg) {
+    // var lblMsg = document.getElementById("lblDisplayMsg");
     lblMsg.style.display = 'none';
 }
 

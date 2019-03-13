@@ -4,13 +4,12 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FROrderDetail;
-import capstone.fps.entity.FRProduct;
+import capstone.fps.entity.*;
 import capstone.fps.model.Response;
+import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
+import capstone.fps.model.order.MdlOrderDetail;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,66 +75,136 @@ public class OrderService {
         return true;
     }
 
-    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, Integer[] proIdList, Integer[] quantityList) {
+    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
         Repo repo = new Repo();
-        FRAccount account = methods.getUser();
+        FRAccount currentUser = methods.getUser();
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        if (account == null) {
+        if (currentUser == null) {
             response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
             return response;
         }
-        if (proIdList == null || quantityList == null || proIdList.length != quantityList.length) {
+        proListStr = valid.checkOrderProList(proListStr);
+        if (proListStr == null) {
             response.setResponse(Response.STATUS_FAIL, "Product list error");
             return response;
         }
 
-        List<FRProduct> frProducts = new ArrayList<>();
-        for (int i = 0; i < proIdList.length; i++) {
-            FRProduct frProduct = repo.getProduct(proIdList[i], productRepository);
+        String[] proList = proListStr.split("n");
+        List<MdlDetailCreate> detailList = new ArrayList<>();
+        double totalPrice = 0d;
+        for (String pro : proList) {
+            String[] detail = pro.split("x");
+            int proId = Integer.parseInt(detail[0]);
+            int quantity = Integer.parseInt(detail[1]);
+            FRProduct frProduct = repo.getProduct(proId, productRepository);
             if (frProduct == null) {
-                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proIdList[i]);
+                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proId);
                 return response;
             }
-            if (quantityList[i] <= 0) {
-                response.setResponse(Response.STATUS_FAIL, "proId " + proIdList[i] + " has quantity " + quantityList[i]);
+            if (quantity <= 0) {
+                response.setResponse(Response.STATUS_FAIL, "proId " + proId + " has quantity " + quantity);
                 return response;
             }
-            frProducts.add(frProduct);
+            detailList.add(new MdlDetailCreate(frProduct, quantity));
+            totalPrice += frProduct.getPrice() * quantity;
         }
-
-
+        FRStore store = detailList.get(0).getFrProduct().getStore();
         FROrder frOrder = new FROrder();
-        frOrder.setAccount(account);
 
+        frOrder.setAccount(currentUser);
+        frOrder.setShipper(null);
+        frOrder.setBuyerFace(null);
+        frOrder.setBill(null);
+        frOrder.setOrderCode(null);
+        frOrder.setTotalPrice(totalPrice);
+        frOrder.setBookTime(time);
+        frOrder.setReceiveTime(null);
+        frOrder.setShipperEarn(methods.caculateShpEarn(longitude, latitude, store.getLongitude(), store.getLatitude()));
+        frOrder.setShipAddress(null);
+        frOrder.setDistrict(null);
         frOrder.setLongitude(longitude);
         frOrder.setLatitude(latitude);
         frOrder.setCustomerDescription(valid.nullProof(customerDescription));
         frOrder.setCreateTime(time);
+        frOrder.setUpdateTime(null);
+        frOrder.setDeleteTime(null);
         frOrder.setNote("");
         frOrder.setStatus(Fix.ORD_NEW.index);
+        frOrder.setEditor(null);
         orderRepository.save(frOrder);
-        double total = 0d;
-        for (int i = 0; i < proIdList.length; i++) {
+
+        for (MdlDetailCreate detail : detailList) {
             FROrderDetail frOrderDetail = new FROrderDetail();
-            FRProduct frProduct = frProducts.get(i);
+            FRProduct frProduct = detail.getFrProduct();
             frOrderDetail.setOrder(frOrder);
             frOrderDetail.setProduct(frProduct);
             frOrderDetail.setUnitPrice(frProduct.getPrice());
-            frOrderDetail.setQuantity(quantityList[i]);
+            frOrderDetail.setQuantity(detail.getQuantity());
             orderDetailRepository.save(frOrderDetail);
-            total += frProduct.getPrice() * quantityList[i];
         }
-
-        frOrder.setTotalPrice(total);
-        orderRepository.save(frOrder);
-
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
-
     }
+
+//    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, Integer[] proIdList, Integer[] quantityList) {
+//        Methods methods = new Methods();
+//        long time = methods.getTimeNow();
+//        Validator valid = new Validator();
+//        Repo repo = new Repo();
+//        FRAccount account = methods.getUser();
+//        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        if (account == null) {
+//            response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
+//            return response;
+//        }
+//        if (proIdList == null || quantityList == null || proIdList.length != quantityList.length) {
+//            response.setResponse(Response.STATUS_FAIL, "Product list error");
+//            return response;
+//        }
+//        List<FRProduct> frProducts = new ArrayList<>();
+//        for (int i = 0; i < proIdList.length; i++) {
+//            FRProduct frProduct = repo.getProduct(proIdList[i], productRepository);
+//            if (frProduct == null) {
+//                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proIdList[i]);
+//                return response;
+//            }
+//            if (quantityList[i] <= 0) {
+//                response.setResponse(Response.STATUS_FAIL, "proId " + proIdList[i] + " has quantity " + quantityList[i]);
+//                return response;
+//            }
+//            frProducts.add(frProduct);
+//        }
+//        FROrder frOrder = new FROrder();
+//        frOrder.setAccount(account);
+//        frOrder.setLongitude(longitude);
+//        frOrder.setLatitude(latitude);
+//        frOrder.setCustomerDescription(valid.nullProof(customerDescription));
+//        frOrder.setCreateTime(time);
+//        frOrder.setNote("");
+//        frOrder.setStatus(Fix.ORD_NEW.index);
+//        orderRepository.save(frOrder);
+//        double total = 0d;
+//        for (int i = 0; i < proIdList.length; i++) {
+//            FROrderDetail frOrderDetail = new FROrderDetail();
+//            FRProduct frProduct = frProducts.get(i);
+//            frOrderDetail.setOrder(frOrder);
+//            frOrderDetail.setProduct(frProduct);
+//            frOrderDetail.setUnitPrice(frProduct.getPrice());
+//            frOrderDetail.setQuantity(quantityList[i]);
+//            orderDetailRepository.save(frOrderDetail);
+//            total += frProduct.getPrice() * quantityList[i];
+//        }
+//
+//        frOrder.setTotalPrice(total);
+//        orderRepository.save(frOrder);
+//
+//        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
+//        return response;
+//
+//    }
 
     public Response memberCancelOrder(int orderId) {
         Methods methods = new Methods();

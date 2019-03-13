@@ -134,7 +134,7 @@
                                 <!--</div>-->
                                 <!--</form>-->
                                 <div class="form-group">
-                                    <label id="txtErrorMsg" style="display: none;color: red"></label>
+                                    <label id="lblDisplayMsg" style="display: none;color: red"></label>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -169,6 +169,7 @@
         var txtDelete = document.getElementById("txtDelete");
         var txtEditor = document.getElementById("txtEditor");
 
+        var lblMsg = document.getElementById("lblDisplayMsg");
         function fpsFetchData() {
             getAdmList();
         }
@@ -192,7 +193,7 @@
                 }
 
                 accountTable.row.add([
-                    '<span data-toggle="modal" data-target="#add-edit-modal" onclick="loadEditForm(' + i + ')" >' + adm.username + '</span>',
+                    '<span data-toggle="modal" data-target="#add-edit-modal" onclick="loadEditForm(' + i + ')" >' + adm.phone + '</span>',
                     adm.name,
                     adm.email,
                     statStr,
@@ -236,18 +237,18 @@
             txtUpdate.style.display = 'none';
             txtDelete.style.display = 'none';
             txtEditor.style.display = 'none';
-            fpsHideMsg();
+            fpsHideMsg(lblMsg);
         }
 
         function loadEditForm(pos) {
             var acc = admList[pos];
-            $("#txtUsername").val(acc.username);
+            $("#txtUsername").val(acc.phone);
             $("#txtFullName").val(acc.name);
             $("#dpDob")[0].valueAsNumber = acc.dob;
 
             $("#txtEmail").val(acc.email);
-            $("#txtNatId").val(acc.nationalId);
-            $("#dpNatDate")[0].valueAsNumber = acc.natIdDate;
+            $("#txtNatId").val(acc.natId);
+            $("#dpNatDate")[0].valueAsNumber = acc.natDate;
 
             var createTime = new Date(acc.createTime);
             $("#txtCreate").html("Create: " + fpsFormatDate(createTime) + " " + createTime.toLocaleTimeString());
@@ -278,7 +279,7 @@
             accId = acc.id;
             document.getElementById("txtUsername").disabled = true;
             document.getElementById("divPass").style.display = 'none';
-            fpsHideMsg();
+            fpsHideMsg(lblMsg);
         }
 
         function checkAccId() {
@@ -315,7 +316,7 @@
                     if (response.status_code === RESP_SUCCESS) {
                         getAdmList();
                     } else {
-                        showErrorMsgCap(response.message);
+                        fpsShowMsg(lblMsg, response.message);
                     }
                 },
                 error: function (response) {
@@ -352,7 +353,7 @@
                     if (response.status_code === RESP_SUCCESS) {
                         getAdmList();
                     } else {
-                        showErrorMsgCap(response.message);
+                        fpsShowMsg(lblMsg, response.message);
                     }
                 },
                 error: function (response) {

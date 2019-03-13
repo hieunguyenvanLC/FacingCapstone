@@ -6,12 +6,10 @@ import capstone.fps.common.Validator;
 import capstone.fps.entity.FRProduct;
 import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
-import capstone.fps.model.product.MdlMemProBest;
 import capstone.fps.model.store.MdlProduct;
 import capstone.fps.model.store.MdlProductBuilder;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,23 +29,17 @@ public class ProductService {
         this.storeRepository = storeRepository;
     }
 
-    public List<MdlMemProBest> getBest5() {
+    public Response<List<MdlProduct>> getBest5() {
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
+        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRProduct> frProducts = productRepository.findAllByStatusOrderByRatingDesc(Fix.PRO_NEW.index);
         int size = Math.min(5, frProducts.size());
-        List<MdlMemProBest> mdlProBests = new ArrayList<>();
+        List<MdlProduct> mdlProducts = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            MdlMemProBest mdlPro = new MdlMemProBest();
-            FRProduct frPro = frProducts.get(i);
-            mdlPro.setId(frPro.getId());
-            mdlPro.setName(frPro.getProductName());
-            mdlPro.setPrice(frPro.getPrice());
-            mdlPro.setImage(Base64.encodeBase64String(frPro.getProductImage()));
-            FRStore frStore = frPro.getStore();
-            String address = (frStore.getAddress() + " " + frStore.getDistrict().getName()).trim();
-            mdlPro.setAddress(address);
-            mdlProBests.add(mdlPro);
+            mdlProducts.add(mdlProductBuilder.buildBig(frProducts.get(i)));
         }
-        return mdlProBests;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProducts);
+        return response;
     }
 
     public Response<MdlProduct> createProduct(String proName, Integer storeId, Double price, MultipartFile proImg, String description, String note) {

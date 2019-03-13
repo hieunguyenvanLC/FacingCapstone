@@ -14,6 +14,7 @@ public class MdlOrderBuilder {
 
     public MdlOrder buildFull(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
         Methods methods = new Methods();
+        MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
         MdlOrder mdlOrder = new MdlOrder();
         mdlOrder.id = frOrder.getId();
         mdlOrder.buyerName = frOrder.getAccount().getName();
@@ -48,7 +49,7 @@ public class MdlOrderBuilder {
 
         List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
         for (FROrderDetail frDetail : frOrderDetails) {
-            MdlOrderDetail mdlDetail = new MdlOrderDetail(frDetail);
+            MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildFull(frDetail);
             mdlDetailList.add(mdlDetail);
         }
         mdlOrder.detailList = mdlDetailList;

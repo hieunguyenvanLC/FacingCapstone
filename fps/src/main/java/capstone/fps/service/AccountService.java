@@ -6,10 +6,7 @@ import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
 import capstone.fps.entity.*;
 import capstone.fps.model.Response;
-import capstone.fps.model.account.MdlShipper;
-import capstone.fps.model.account.MdlAdmAccMemGet;
-import capstone.fps.model.account.MdlAdmAccAdmGet;
-import capstone.fps.model.account.MdlShipperBuilder;
+import capstone.fps.model.account.*;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,37 +104,16 @@ public class AccountService {
     }
 
 
-    public List<MdlAdmAccMemGet> getListMember() {
-        Base64.Encoder encoder = Base64.getEncoder();
+    public Response<List<MdlAccount>> getListMember() {
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
-        List<MdlAdmAccMemGet> accList = new ArrayList<>();
+        List<MdlAccount> accList = new ArrayList<>();
         for (FRAccount frAccount : frAccountList) {
-            MdlAdmAccMemGet acc = new MdlAdmAccMemGet();
-
-            String userImg = null;
-            if (frAccount.getUserImage() != null) {
-                userImg = encoder.encodeToString(frAccount.getAvatar());
-            }
-            String editor = null;
-            if (frAccount.getEditor() != null) {
-                editor = frAccount.getEditor().getPhone();
-            }
-
-            acc.setId(frAccount.getId());
-            acc.setPhone(frAccount.getPhone());
-            acc.setName(frAccount.getName());
-            acc.setEmail(frAccount.getEmail());
-            acc.setUserImg(userImg);
-            acc.setDob(frAccount.getDateOfBirth());
-            acc.setCreateTime(frAccount.getCreateTime());
-            acc.setUpdateTime(frAccount.getUpdateTime());
-            acc.setDeleteTime(frAccount.getDeleteTime());
-            acc.setNote(frAccount.getNote());
-            acc.setStatus(frAccount.getStatus());
-            acc.setEditor(editor);
-            accList.add(acc);
+            accList.add(mdlMemberBuilder.buildMemDetailAdm(frAccount));
         }
-        return accList;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
+        return response;
     }
 
 //    public boolean updateProfileMember(String phone, String pass, String name, String email, byte[] userImg, String natId, long natDate, long dob, String note) {
@@ -233,8 +209,8 @@ public class AccountService {
         frAccount.setEmail(email);
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setNatId(natId);
+        frAccount.setNatDate(natDate);
         frAccount.setDateOfBirth(dob);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote(note);
@@ -280,8 +256,8 @@ public class AccountService {
 
         frAccount.setName(name);
         frAccount.setEmail(email);
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setNatId(natId);
+        frAccount.setNatDate(natDate);
         frAccount.setDateOfBirth(dob);
         frAccount.setUpdateTime(methods.getTimeNow());
         frAccount.setNote(note);
@@ -291,37 +267,16 @@ public class AccountService {
         return response;
     }
 
-    public List<MdlAdmAccAdmGet> getListAdmin() {
-        Base64.Encoder encoder = Base64.getEncoder();
+    public  Response<List<MdlAccount>> getListAdmin() {
+        MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
+        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_ADM));
-        List<MdlAdmAccAdmGet> admList = new ArrayList<>();
+        List<MdlAccount> accList = new ArrayList<>();
         for (FRAccount frAccount : frAccountList) {
-            MdlAdmAccAdmGet adm = new MdlAdmAccAdmGet();
-            String avatar = null;
-            if (frAccount.getAvatar() != null) {
-                avatar = encoder.encodeToString(frAccount.getAvatar());
-            }
-            String editor = null;
-            if (frAccount.getEditor() != null) {
-                editor = frAccount.getEditor().getPhone();
-            }
-            adm.setId(frAccount.getId());
-            adm.setUsername(frAccount.getPhone());
-            adm.setName(frAccount.getName());
-            adm.setEmail(frAccount.getEmail());
-            adm.setAvatar(avatar);
-            adm.setNationalId(frAccount.getNationalId());
-            adm.setNatIdDate(frAccount.getNationalIdCreatedDate());
-            adm.setDob(frAccount.getDateOfBirth());
-            adm.setCreateTime(frAccount.getCreateTime());
-            adm.setUpdateTime(frAccount.getUpdateTime());
-            adm.setDeleteTime(frAccount.getDeleteTime());
-            adm.setNote(frAccount.getNote());
-            adm.setStatus(frAccount.getStatus());
-            adm.setEditor(editor);
-            admList.add(adm);
+            accList.add(mdlAdminBuilder.buildAdmDetail(frAccount));
         }
-        return admList;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
+        return response;
     }
 
     // Web - Admin - End
@@ -364,8 +319,8 @@ public class AccountService {
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
         frAccount.setUserImage(methods.multipartToBytes(userFace));
-        frAccount.setNationalId(natId);
-        frAccount.setNationalIdCreatedDate(natDate);
+        frAccount.setNatId(natId);
+        frAccount.setNatDate(natDate);
         frAccount.setDateOfBirth(dob);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote(valid.nullProof(note));
@@ -428,10 +383,10 @@ public class AccountService {
             frAccount.setUserImage(methods.multipartToBytes(userFace));
         }
         if (natId != null) {
-            frAccount.setNationalId(natId);
+            frAccount.setNatId(natId);
         }
         if (natDate != null) {
-            frAccount.setNationalIdCreatedDate(natDate);
+            frAccount.setNatDate(natDate);
         }
         if (dob != null) {
             frAccount.setDateOfBirth(dob);

@@ -1,29 +1,33 @@
-package capstone.fps.model.store;
+package capstone.fps.model.account;
 
 import com.google.gson.annotations.Expose;
 
+public class MdlAccount {
 
-public class MdlProduct {
     @Expose
     Integer id;
     @Expose
-    Integer storeId;
+    String phone;
     @Expose
-    String storeName;
+    String role;
     @Expose
-    String address;
+    String password;
     @Expose
     String name;
     @Expose
-    String image;
+    String email;
     @Expose
-    Double price;
+    Integer extraPoint;
     @Expose
-    String description;
+    Integer reportPoint;
     @Expose
-    Double rating;
+    String userImage;
     @Expose
-    Integer ratingCount;
+    String natId;
+    @Expose
+    Long natDate;
+    @Expose
+    Long dob;
     @Expose
     Long createTime;
     @Expose
@@ -36,6 +40,8 @@ public class MdlProduct {
     Integer status;
     @Expose
     String editor;
+    @Expose
+    String avatar;
 
 
 }

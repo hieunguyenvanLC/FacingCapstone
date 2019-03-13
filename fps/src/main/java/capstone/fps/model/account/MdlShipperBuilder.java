@@ -18,8 +18,8 @@ public class MdlShipperBuilder {
         mdlShipper.extraPoint = frAccount.getExtraPoint();
         mdlShipper.reportPoint = frAccount.getReportPoint();
         mdlShipper.userImage = methods.bytesToBase64(frAccount.getUserImage());
-        mdlShipper.natId = frAccount.getNationalId();
-        mdlShipper.natDate = frAccount.getNationalIdCreatedDate();
+        mdlShipper.natId = frAccount.getNatId();
+        mdlShipper.natDate = frAccount.getNatDate();
         mdlShipper.dateOfBirth = frAccount.getDateOfBirth();
         mdlShipper.createTime = frAccount.getCreateTime();
         mdlShipper.updateTime = frAccount.getUpdateTime();
@@ -41,10 +41,8 @@ public class MdlShipperBuilder {
     }
 
     public MdlShipper buildTableRowAdm(FRAccount frAccount){
-        Methods methods = new Methods();
         FRShipper frShipper = frAccount.getShipper();
         MdlShipper mdlShipper = new MdlShipper();
-
         mdlShipper.id = frAccount.getId();
         mdlShipper.phone = frAccount.getPhone();
         mdlShipper.name = frAccount.getName();

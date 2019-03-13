@@ -88,7 +88,7 @@
                                     <input type="text" placeholder="Note" class="form-control" id="txtNote">
                                 </div>
                                 <div class="form-group">
-                                    <label id="txtDisplayMsg" style="display: none;color: red"></label>
+                                    <label id="lblDisplayMsg" style="display: none;color: red"></label>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -109,6 +109,8 @@
         var accList;
         var accId = -1;
         var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account";
+
+        var lblMsg = document.getElementById("lblDisplayMsg");
 
         function fpsFetchData() {
             getAccList();
@@ -189,7 +191,7 @@
 
             $("#txtNote").val(acc.note);
             accId = acc.id;
-            hideErrorMsgCap();
+            fpsHideMsg(lblMsg);
         }
 
         function getTokenEdit() {
@@ -231,7 +233,7 @@
                     if (response.status_code === RESP_SUCCESS) {
                         getAccList();
                     } else {
-                        showErrorMsgCap(response.message);
+                        fpsShowMsg(lblMsg,response.message);
                     }
                 },
                 error: function (response) {

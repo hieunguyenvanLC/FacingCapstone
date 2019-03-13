@@ -5,7 +5,6 @@ import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
 import capstone.fps.service.StoreService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -78,8 +77,7 @@ public class StoreController extends AbstractController {
     public String getStoreNearby(double longitude, double latitude) {
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            List<MdlStore> storeList = storeService.getStoreNearby(longitude, latitude);
-            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, storeList);
+            response = storeService.getStoreNearby(longitude, latitude);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

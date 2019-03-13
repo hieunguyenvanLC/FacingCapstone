@@ -12,7 +12,7 @@ public class MdlStore {
     @Expose
     String address;
     @Expose
-    int distId;
+    Integer distId;
     @Expose
     String distStr;
     @Expose

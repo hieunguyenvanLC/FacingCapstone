@@ -2,15 +2,16 @@ package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
 import capstone.fps.model.Response;
+import capstone.fps.model.account.MdlAccount;
 import capstone.fps.model.account.MdlShipper;
-import capstone.fps.model.account.MdlAdmAccAdmGet;
-import capstone.fps.model.account.MdlAdmAccMemGet;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -51,10 +52,9 @@ public class AccountController extends AbstractController {
 
     @GetMapping(Fix.MAP_ADM + API + "/adm")
     public String getAccountAdminList() {
-        Response<List<MdlAdmAccAdmGet>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            List<MdlAdmAccAdmGet> admList = accountService.getListAdmin();
-            response.setResponse(admList.size(), Response.MESSAGE_SUCCESS, admList);
+            response = accountService.getListAdmin();
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SERVER_ERROR);
@@ -64,10 +64,9 @@ public class AccountController extends AbstractController {
 
     @GetMapping(Fix.MAP_ADM + API + "/mem")
     public String getAccountMemberList() {
-        Response<List<MdlAdmAccMemGet>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            List<MdlAdmAccMemGet> accList = accountService.getListMember();
-            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
+            response = accountService.getListMember();
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

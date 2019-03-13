@@ -1,10 +1,8 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.entity.FROrder;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
-import capstone.fps.model.store.MdlStore;
 import capstone.fps.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,12 +24,26 @@ public class OrderController extends AbstractController {
     }
 
     @PostMapping(Fix.MAP_MEM + API)
-    public String createOrder(Double longitude, Double latitude, String customerDescription, String productList, String quantityList) {
+    public String createOrder(Double longitude, Double latitude, String customerDescription, String proList) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            Integer[] productListObj = gson.fromJson(productList, Integer[].class);
-            Integer[] quantityListObj = gson.fromJson(quantityList, Integer[].class);
-            response = orderService.createOrder(longitude, latitude, customerDescription, productListObj, quantityListObj);
+//            Integer[] productListObj = gson.fromJson(productList, Integer[].class);
+//            Integer[] quantityListObj = gson.fromJson(quantityList, Integer[].class);
+//
+
+//            String[] proStr = productList.split("x");
+//            Integer[] productListObj = new Integer[proStr.length];
+//            for (int i = 0; i < proStr.length; i++) {
+//                productListObj[i] = Integer.parseInt(proStr[i]);
+//            }
+//
+//            String[] quantityListStr = quantityList.split("x");
+//            Integer[] quantityListObj = new Integer[quantityListStr.length];
+//            for (int i = 0; i < quantityListStr.length; i++) {
+//                quantityListObj[i] = Integer.parseInt(quantityListStr[i]);
+//            }
+
+            response = orderService.createOrder(longitude, latitude, customerDescription, proList);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
