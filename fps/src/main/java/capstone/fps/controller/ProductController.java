@@ -1,10 +1,14 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.config.WebConfig;
+import capstone.fps.model.AppData;
 import capstone.fps.model.product.MdlMemProBest;
 import capstone.fps.model.Response;
 import capstone.fps.model.product.MdlProduct;
 import capstone.fps.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +22,9 @@ public class ProductController extends AbstractController {
 
     private static final String API = Fix.MAP_API + "/product";
     private ProductService productService;
+
+    @Autowired
+    AppData appData;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -36,12 +43,19 @@ public class ProductController extends AbstractController {
         return gson.toJson(response);
     }
 
-    @PostMapping(Fix.MAP_ANY + Fix.MAP_API + "/check")
+    @GetMapping(Fix.MAP_ANY + Fix.MAP_API + "/check")
     public String getCheck(String col, String row) {
 //        String col = "2";
 //        String row = "werw";
-        System.out.println(col + " ok " + row);
-        String s = col + " & " + row;
+
+
+        if (col.equals("1")) {
+            appData.dataStr = row;
+        }
+
+
+        System.out.println(col + " ok " + appData.dataStr);
+        String s = col + " & " + appData.dataStr;
         return s;
     }
 

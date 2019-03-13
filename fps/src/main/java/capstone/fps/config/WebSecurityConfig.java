@@ -1,6 +1,7 @@
 package capstone.fps.config;
 
 import capstone.fps.common.Fix;
+import capstone.fps.model.Response;
 import capstone.fps.service.LoginService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -95,19 +96,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-//                switch (role) {
-//                    case Fix.ROL_ADM:
-//                        response.sendRedirect("/admin");
-//                        return;
-//                    case Fix.ROL_MEM:
-//                        response.sendRedirect("/api/index");
-//                        return;
-//
-//                    default:
-//                        response.sendRedirect("/access_denied");
-//                }
-                Gson gson = new GsonBuilder().create();
-                response.getWriter().append(gson.toJson(role));
+                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
+                response.getWriter().append(gson.toJson(responseObj));
             }
         };
     }
@@ -116,8 +108,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationFailureHandler() {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL, "Error");
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
-                response.getWriter().append(gson.toJson("Error"));
+                response.getWriter().append(gson.toJson(responseObj));
             }
         };
     }
