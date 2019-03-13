@@ -121,11 +121,12 @@
             data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
             dataType: 'json',
             success: function (response) {
-                if (response === ROL_ADM) {
+                var roleStr = response.data;
+                if (roleStr === ROL_ADM) {
                     document.location.href = "/adm/";
-                } else if (response === ROL_MEM || response === ROL_SHP) {
+                } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
                     fpsShowMsg("Unable to access")
-                } else if (response === "Error") {
+                } else if (roleStr === "Error") {
                     fpsShowMsg("Wrong username or password");
                 } else {
                     fpsShowMsg("Error when login");
