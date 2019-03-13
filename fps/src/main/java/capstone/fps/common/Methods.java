@@ -102,17 +102,18 @@ public final class Methods {
 
     public double caculateShpEarn(double buyerLon, double buyerLat, double storeLon, double storeLat) {
         double price = 14000;
-        double dis = ((buyerLon - storeLon) * (buyerLon - storeLon) + (buyerLat - storeLat) * (buyerLat - storeLat)) * 40000 / 360;
-        if (dis > 0) {
-            price += dis * 1000;
+        double dis = Math.sqrt((buyerLon - storeLon) * (buyerLon - storeLon) + (buyerLat - storeLat) * (buyerLat - storeLat)) * 40000 / 360;
+        int kms = (int) Math.ceil(dis);
+        if (kms > 0) {
+            price += kms * 1000;
         }
-        dis -= 5;
-        if (dis > 0) {
-            price += dis * 1000;
+        kms -= 5;
+        if (kms > 0) {
+            price += kms * 1000;
         }
-        dis -= 5;
-        if (dis > 0) {
-            price += dis * 1000;
+        kms -= 5;
+        if (kms > 0) {
+            price += kms * 1000;
         }
         return price;
     }
