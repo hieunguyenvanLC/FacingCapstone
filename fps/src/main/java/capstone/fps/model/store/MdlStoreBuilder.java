@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MdlStoreBuilder {
 
-    public List<MdlProduct> getProInSto(FRStore frStore, ProductRepo productRepository) {
+    private List<MdlProduct> getProInSto(FRStore frStore, ProductRepo productRepository) {
         List<FRProduct> frProductList = productRepository.findAllByStoreAndStatusNotOrderByUpdateTimeDesc(frStore, Fix.PRO_HID.index);
         List<MdlProduct> proList = new ArrayList<>();
         MdlProduct mdlPro = new MdlProduct();
@@ -63,8 +63,6 @@ public class MdlStoreBuilder {
         mdlStore.name = frStore.getStoreName();
         mdlStore.image = methods.bytesToBase64(frStore.getStoreImage());
         mdlStore.address = frStore.getAddress() + " " + frStore.getDistrict().getName();
-        mdlStore.longitude = frStore.getLongitude();
-        mdlStore.latitude = frStore.getLatitude();
         return mdlStore;
     }
 }

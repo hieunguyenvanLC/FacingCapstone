@@ -9,6 +9,7 @@ import capstone.fps.entity.FRDistrict;
 import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
+import capstone.fps.model.store.MdlStoreBuilder;
 import capstone.fps.model.store.StoreDis;
 import capstone.fps.repository.DistrictRepo;
 import capstone.fps.repository.ProductRepo;
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class StoreService {
@@ -40,7 +41,7 @@ public class StoreService {
         Validator valid = new Validator();
         Repo repo = new Repo();
         FRAccount currentUser = methods.getUser();
-
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
 
@@ -71,7 +72,7 @@ public class StoreService {
         frStore.setEditor(currentUser);
         storeRepository.save(frStore);
 
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
@@ -99,6 +100,7 @@ public class StoreService {
         long time = methods.getTimeNow();
         Validator valid = new Validator();
         Repo repo = new Repo();
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         FRAccount currentUser = methods.getUser();
 
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -139,65 +141,66 @@ public class StoreService {
         frStore.setStatus(valid.checkUpdateStatus(frStore.getStatus(), status, Fix.STO_STAT_LIST));
         frStore.setEditor(currentUser);
         storeRepository.save(frStore);
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
 
 
     public List getStoreNearby(double longitude, double latitude) {
-        double dis5km = 5 * Fix.DEGREE_PER_KM;
-        double dis5kmNeg = -dis5km;
-        MdlStore mdlStore = new MdlStore();
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        double dis = 5 * Fix.DEGREE_PER_KM;
+        double minLon = longitude - dis;
+        double maxLon = longitude + dis;
+        double minLat = latitude - dis;
+        double maxLat = latitude + dis;
         List<FRStore> frStoreList = storeRepository.findAll();
-        List<StoreDis> storeDisList = new ArrayList<>();
         List<MdlStore> mdlStoreList = new ArrayList<>();
+        List<StoreDis> storeDisList = new ArrayList<>();
         for (FRStore frStore : frStoreList) {
-            double disLon = longitude - frStore.getLongitude();
-            double disLat = latitude - frStore.getLatitude();
-            if (dis5kmNeg <= disLon && disLon < dis5km && dis5kmNeg <= disLat && disLat < dis5km) {
-                double dis = disLon * disLon + disLat * disLat;
-                StoreDis storeDis = new StoreDis(frStore, dis);
-                storeDisList.add(storeDis);
+            if (minLon <= frStore.getLongitude() && frStore.getLongitude() < maxLon && minLat <= frStore.getLatitude() && frStore.getLatitude() < maxLat) {
+                double disLon = frStore.getLongitude() - longitude;
+                double disLat = frStore.getLatitude() - latitude;
+                storeDisList.add(new StoreDis(disLon * disLon + disLat * disLat, frStore));
             }
         }
-        storeDisList.sort((o1, o2) -> {
-            if (o1.getDis() > o2.getDis()) {
-                return 1;
+        storeDisList.sort(new Comparator<StoreDis>() {
+            @Override
+            public int compare(StoreDis o1, StoreDis o2) {
+                if (o1.getDis() > o2.getDis()) {
+                    return 1;
+                }
+                return -1;
             }
-            return -1;
         });
         int size = Math.min(5, storeDisList.size());
         for (int i = 0; i < size; i++) {
-            mdlStoreList.add(mdlStore.convertStoreNearBy(storeDisList.get(i).getStore()));
+            mdlStoreList.add(mdlStoreBuilder.buildStoreNearBy(storeDisList.get(i).getStore()));
         }
         return mdlStoreList;
     }
 
 
     public List<MdlStore> getStoreList() {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         List<FRStore> frStoreList = storeRepository.findAll();
         List<MdlStore> mdlStoreList = new ArrayList<>();
-        MdlStore mdlStore = new MdlStore();
         for (FRStore frStore : frStoreList) {
-            mdlStoreList.add(mdlStore.convertTableRow(frStore));
+            mdlStoreList.add(mdlStoreBuilder.buildTableRowAdm(frStore));
         }
         return mdlStoreList;
     }
 
     public Response<MdlStore> getStoreDetailAdm(Integer storeId) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Repo repo = new Repo();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        if (storeId == null) {
+        FRStore frStore = repo.getStore(storeId, storeRepository);
+        if (frStore == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find store");
             return response;
         }
-        Optional<FRStore> optional = storeRepository.findById(storeId);
-        if (!optional.isPresent()) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find store");
-            return response;
-        }
-        FRStore frStore = optional.get();
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }

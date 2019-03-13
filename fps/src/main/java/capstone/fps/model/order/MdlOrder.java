@@ -1,13 +1,8 @@
 package capstone.fps.model.order;
 
 import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FRDistrict;
-import capstone.fps.entity.FRShipper;
 import com.google.gson.annotations.Expose;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.List;
 
 public class MdlOrder {
@@ -86,9 +81,5 @@ public class MdlOrder {
 
     @Expose
     List<MdlOrderDetail> detailList;
-
-    public MdlOrder() {
-    }
-
 
 }

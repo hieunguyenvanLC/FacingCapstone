@@ -3,19 +3,19 @@ package capstone.fps.model.store;
 import capstone.fps.entity.FRStore;
 
 public class StoreDis {
+    private double dis;
     private FRStore store;
-    private Double dis;
 
-    public StoreDis(FRStore store, Double dis) {
-        this.store = store;
+    public StoreDis(double dis, FRStore store) {
         this.dis = dis;
+        this.store = store;
+    }
+
+    public double getDis() {
+        return dis;
     }
 
     public FRStore getStore() {
         return store;
-    }
-
-    public Double getDis() {
-        return dis;
     }
 }
