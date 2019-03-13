@@ -4,7 +4,6 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.entity.FRProduct;
 import capstone.fps.entity.FRStore;
-import capstone.fps.model.product.MdlProduct;
 import capstone.fps.repository.ProductRepo;
 
 import java.util.ArrayList;
@@ -15,9 +14,9 @@ public class MdlStoreBuilder {
     private List<MdlProduct> getProInSto(FRStore frStore, ProductRepo productRepository) {
         List<FRProduct> frProductList = productRepository.findAllByStoreAndStatusNotOrderByUpdateTimeDesc(frStore, Fix.PRO_HID.index);
         List<MdlProduct> proList = new ArrayList<>();
-        MdlProduct mdlPro = new MdlProduct();
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
         for (FRProduct frProduct : frProductList) {
-            proList.add(mdlPro.convertProInSto(frProduct));
+            proList.add(mdlProductBuilder.buildProInSto(frProduct));
         }
         return proList;
     }
@@ -63,6 +62,28 @@ public class MdlStoreBuilder {
         mdlStore.name = frStore.getStoreName();
         mdlStore.image = methods.bytesToBase64(frStore.getStoreImage());
         mdlStore.address = frStore.getAddress() + " " + frStore.getDistrict().getName();
+        return mdlStore;
+    }
+
+    public MdlStore buildDetailMember(FRStore frStore, ProductRepo productRepository) {
+        Methods methods = new Methods();
+        MdlStore mdlStore = new MdlStore();
+        mdlStore.id = frStore.getId();
+        mdlStore.name = frStore.getStoreName();
+        mdlStore.address = frStore.getAddress();
+        mdlStore.distStr = frStore.getDistrict().getName();
+        mdlStore.longitude = frStore.getLongitude();
+        mdlStore.latitude = frStore.getLatitude();
+        mdlStore.image = methods.bytesToBase64(frStore.getStoreImage());
+        mdlStore.phone = frStore.getPhone();
+
+        List<FRProduct> frProductList = productRepository.findAllByStoreAndStatusNotOrderByUpdateTimeDesc(frStore, Fix.PRO_HID.index);
+        List<MdlProduct> proList = new ArrayList<>();
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
+        for (FRProduct frProduct : frProductList) {
+            proList.add(mdlProductBuilder.buildProInStoMem(frProduct));
+        }
+        mdlStore.proList = proList;
         return mdlStore;
     }
 }

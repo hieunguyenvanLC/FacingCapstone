@@ -87,6 +87,18 @@ public class StoreController extends AbstractController {
         return gson.toJson(response);
     }
 
+    @GetMapping(Fix.MAP_MEM + API + "/detail")
+    public String getStoreDetailMem(Integer storeId) {
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = storeService.getStoreDetailMem(storeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
 //    @DeleteMapping(Fix.MAP_ADM + API)
 //    public String deactivateStore(Integer storeId, String reason) {
 //        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);

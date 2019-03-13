@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -146,41 +145,6 @@ public class StoreService {
         return response;
     }
 
-
-    public List getStoreNearby(double longitude, double latitude) {
-        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
-        double dis = 5 * Fix.DEGREE_PER_KM;
-        double minLon = longitude - dis;
-        double maxLon = longitude + dis;
-        double minLat = latitude - dis;
-        double maxLat = latitude + dis;
-        List<FRStore> frStoreList = storeRepository.findAll();
-        List<MdlStore> mdlStoreList = new ArrayList<>();
-        List<StoreDis> storeDisList = new ArrayList<>();
-        for (FRStore frStore : frStoreList) {
-            if (minLon <= frStore.getLongitude() && frStore.getLongitude() < maxLon && minLat <= frStore.getLatitude() && frStore.getLatitude() < maxLat) {
-                double disLon = frStore.getLongitude() - longitude;
-                double disLat = frStore.getLatitude() - latitude;
-                storeDisList.add(new StoreDis(disLon * disLon + disLat * disLat, frStore));
-            }
-        }
-        storeDisList.sort(new Comparator<StoreDis>() {
-            @Override
-            public int compare(StoreDis o1, StoreDis o2) {
-                if (o1.getDis() > o2.getDis()) {
-                    return 1;
-                }
-                return -1;
-            }
-        });
-        int size = Math.min(5, storeDisList.size());
-        for (int i = 0; i < size; i++) {
-            mdlStoreList.add(mdlStoreBuilder.buildStoreNearBy(storeDisList.get(i).getStore()));
-        }
-        return mdlStoreList;
-    }
-
-
     public List<MdlStore> getStoreList() {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         List<FRStore> frStoreList = storeRepository.findAll();
@@ -201,6 +165,51 @@ public class StoreService {
             return response;
         }
         MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
+        return response;
+    }
+
+    public List getStoreNearby(double longitude, double latitude) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        double dis = 5 * Fix.DEGREE_PER_KM;
+        double minLon = longitude - dis;
+        double maxLon = longitude + dis;
+        double minLat = latitude - dis;
+        double maxLat = latitude + dis;
+        List<FRStore> frStoreList = storeRepository.findAll();
+        List<MdlStore> mdlStoreList = new ArrayList<>();
+        List<StoreDis> storeDisList = new ArrayList<>();
+        for (FRStore frStore : frStoreList) {
+            if (minLon <= frStore.getLongitude() && frStore.getLongitude() < maxLon && minLat <= frStore.getLatitude() && frStore.getLatitude() < maxLat) {
+                double disLon = frStore.getLongitude() - longitude;
+                double disLat = frStore.getLatitude() - latitude;
+                storeDisList.add(new StoreDis(disLon * disLon + disLat * disLat, frStore));
+            }
+        }
+        storeDisList.sort((o1, o2) -> {
+            if (o1.getDis() > o2.getDis()) {
+                return 1;
+            }
+            return -1;
+        });
+        int size = Math.min(5, storeDisList.size());
+        for (int i = 0; i < size; i++) {
+            mdlStoreList.add(mdlStoreBuilder.buildStoreNearBy(storeDisList.get(i).getStore()));
+        }
+        return mdlStoreList;
+    }
+
+
+    public Response<MdlStore> getStoreDetailMem(Integer storeId) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Repo repo = new Repo();
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRStore frStore = repo.getStore(storeId, storeRepository);
+        if (frStore == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find store");
+            return response;
+        }
+        MdlStore mdlStore = mdlStoreBuilder.buildDetailMember(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }

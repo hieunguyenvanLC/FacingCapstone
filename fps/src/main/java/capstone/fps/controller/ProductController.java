@@ -1,14 +1,12 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.config.WebConfig;
 import capstone.fps.model.AppData;
 import capstone.fps.model.product.MdlMemProBest;
 import capstone.fps.model.Response;
-import capstone.fps.model.product.MdlProduct;
+import capstone.fps.model.store.MdlProduct;
 import capstone.fps.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

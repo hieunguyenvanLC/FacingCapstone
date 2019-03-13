@@ -2,29 +2,24 @@ package capstone.fps.model.store;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.List;
 
-public class MdlStore {
+public class MdlProduct {
     @Expose
     Integer id;
     @Expose
+    int storeId;
+    @Expose
+    String storeName;
+    @Expose
     String name;
-    @Expose
-    String address;
-    @Expose
-    int distId;
-    @Expose
-    String distStr;
-    @Expose
-    Double longitude;
-    @Expose
-    Double latitude;
     @Expose
     String image;
     @Expose
-    Double rating;
+    Double price;
     @Expose
-    String phone;
+    String description;
+    @Expose
+    Double rating;
     @Expose
     Integer ratingCount;
     @Expose
@@ -39,7 +34,6 @@ public class MdlStore {
     Integer status;
     @Expose
     String editor;
-    @Expose
-    List<MdlProduct> proList;
+
 
 }

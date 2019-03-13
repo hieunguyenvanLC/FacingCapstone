@@ -7,7 +7,8 @@ import capstone.fps.entity.FRProduct;
 import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.product.MdlMemProBest;
-import capstone.fps.model.product.MdlProduct;
+import capstone.fps.model.store.MdlProduct;
+import capstone.fps.model.store.MdlProductBuilder;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -53,6 +54,7 @@ public class ProductService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
         Response<MdlProduct> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         Optional<FRStore> frStoreOptional = storeRepository.findById(storeId);
@@ -84,7 +86,7 @@ public class ProductService {
         frProduct.setEditor(methods.getUser());
         productRepository.save(frProduct);
 
-        MdlProduct mdlProduct = new MdlProduct().convertBig(frProduct);
+        MdlProduct mdlProduct = mdlProductBuilder.buildBig(frProduct);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProduct);
         return response;
     }
@@ -94,6 +96,7 @@ public class ProductService {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
         Response<MdlProduct> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         if (proId == null) {
@@ -133,12 +136,13 @@ public class ProductService {
         frProduct.setEditor(methods.getUser());
         productRepository.save(frProduct);
 
-        MdlProduct mdlProduct = new MdlProduct().convertBig(frProduct);
+        MdlProduct mdlProduct = mdlProductBuilder.buildBig(frProduct);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProduct);
         return response;
     }
 
     public List<MdlProduct> getProList(Integer storeId) {
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
         List<MdlProduct> mdlProducts = new ArrayList<>();
         List<FRProduct> frProductList;
         if (storeId != null) {
@@ -151,9 +155,9 @@ public class ProductService {
         } else {
             frProductList = productRepository.findAll();
         }
-        MdlProduct mdlProduct = new MdlProduct();
+
         for (FRProduct frProduct : frProductList) {
-            mdlProducts.add(mdlProduct.convertBig(frProduct));
+            mdlProducts.add(mdlProductBuilder.buildBig(frProduct));
         }
         return mdlProducts;
     }
