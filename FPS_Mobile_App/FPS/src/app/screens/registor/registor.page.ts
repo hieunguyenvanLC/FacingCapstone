@@ -77,6 +77,7 @@ data :any;
 
 
   onSubmit(){
+    this.phoneNumber = this.phoneNumber.replace("+", "");
     this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname).subscribe((res:any) => {
       this.data = res;
       console.log(res);

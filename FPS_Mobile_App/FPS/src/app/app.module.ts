@@ -15,6 +15,7 @@ import { AccountService } from './services/account.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule} from '@angular/http';
 import { StoreService } from './services/store.service';
+import { Constant } from './common/constant';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { StoreService } from './services/store.service';
     SplashScreen,
     AccountService,
     StoreService,
+    Constant,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy  }
   ],
   bootstrap: [AppComponent]

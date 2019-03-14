@@ -10,7 +10,7 @@
 <ion-content class="no-scroll">
   <!-- Title Store -->
   <div class="store" >
-    <img class="store__img" src="../../assets/image/trasua3.jpg" />
+    <img class="store__img" src="{{products[0].data.image}}" />
     <h1 class="store__title">{{products[0].data.name}} - {{products[0].data.address}}</h1>
     <div class="store__subtitle">
       Open time: 7:00 - 22:00
@@ -27,12 +27,11 @@
         <ion-row>
           <ion-col size="3">
             <ion-thumbnail>
-              <img src="">
+              <img src="{{item.image}}">
             </ion-thumbnail>
           </ion-col>
           <ion-col size="6" class="prod-title">
             <strong>{{item.name}}</strong>
-
           </ion-col>
           <ion-col size="3" class="prod-price">
             <p>{{item.price}}</p>

@@ -104,7 +104,8 @@
     <ion-item *ngFor="let item of stores[0].data" [routerLink]="['/store', item.id]">
       <div class="card-drop">
         <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-        <img src="../../assets/image/trasua2.png" class="card-drop__image" />
+        <!-- data:image/jpeg;base64, -->
+        <img src="{{item.image}}" class="card-drop__image" />
         <div class="card-drop__content">
           <h1 class="card-drop__content--title">
             {{item.name}} - {{item.address}}

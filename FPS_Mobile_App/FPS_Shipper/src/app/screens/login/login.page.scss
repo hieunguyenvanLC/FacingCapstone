@@ -1,0 +1,26 @@
+ion-content{
+    text-align: center;
+    --background: white !important;
+    
+    .login-title {
+      margin: 30% 0 1% 0;
+      width: 100%;
+  
+      img {
+        width: 50%;
+        height: 100%;
+        object-fit: contain;
+      }
+  
+      ion-label {
+        font-family: Roboto;
+        font-size: 20px;
+      }
+    }
+
+    .error-text{
+      font-size: 13px;
+      color: red;
+    }
+    
+}

@@ -23,6 +23,7 @@ export class StorePage implements OnInit {
   currentModal = null;
   storeId: number;
   store : Store[];
+  quantity = 1;
 
   // {
   //   id: "AL1",
@@ -78,17 +79,20 @@ export class StorePage implements OnInit {
   }
 
   addProduct(id) {
-    let prod = this.products.find(obj => obj.id == id); // find product in product list
+    let prod = this.products[0].data.proList.find(obj => obj.id == id); // find product in product list
+    // console.log(prod);
     let prodInOrder;
     if (prod.quantity == 0) {
       prod.quantity++;
       this.total += parseInt(prod.price);
+      prod.total = prod.quantity * prod.price;
     }
     if (this.orders != []) {
       prodInOrder = this.orders.find(obj => obj.id == id); // find product in order list
       if (prodInOrder != undefined) {
         prodInOrder.quantity++;
         this.total += parseInt(prod.price);
+        prodInOrder.total = prodInOrder.quantity * prodInOrder.price;
       } else {
         this.orders.push(prod); //add new a product to array
       }
@@ -106,6 +110,7 @@ export class StorePage implements OnInit {
       if (prodInOrder.quantity > 0) {
         prodInOrder.quantity--;
         this.total -= parseInt(prodInOrder.price);
+        prodInOrder.total = prodInOrder.quantity * prodInOrder.price;
         if (prodInOrder.quantity == 0) {
           const index = this.orders.indexOf(id, 0);
           this.orders.splice(index, 1) // delete an array item in prodInOrder
@@ -125,7 +130,10 @@ export class StorePage implements OnInit {
     await this.modalController.create({
       animated: true,
       component: OrdermodalPage,
-      componentProps: { products: this.orders }
+      componentProps: { 
+                        products: this.orders,
+                        subTotal: this.total,
+                      }
     }).then(modal => {
       modal.present();
       this.currentModal = modal;
@@ -140,8 +148,12 @@ export class StorePage implements OnInit {
     this.storeService.getStorebyid(id).subscribe(
       res => {
         this.products.push(res);
-        // console.log(this.products[0].data);
+        console.log(this.products[0].data);
         // console.log(this.products[0].data.proList);
+        this.products[0].data.proList.forEach(element => {
+          element["quantity"] = 0;
+          element["total"] = 0;
+        });
       }
     )
   }

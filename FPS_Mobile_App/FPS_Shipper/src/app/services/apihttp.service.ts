@@ -1,49 +1,54 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Constant } from './../common/constant';
 @Injectable({
   providedIn: 'root'
 })
 export class ApihttpService {
+  apiUrl = "http://localhost:8080/";
   constructor(
-    private http: HttpClient,
-    private constant: Constant,
+    private http: HttpClient
   ) {   }
 
   
   createHeader() {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json',});
+    let token = localStorage.getItem('token');
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': '' + token + '' });
     return headers
   }
 
   put(url, data){
     let headers = this.createHeader();
-    return this.http.put(this.constant.APIURL + url, data);
+    return this.http.put(this.apiUrl + url, data, {
+      headers: headers
+    });
   }
 
   get(url){
     let headers = this.createHeader();
-    return this.http.get(this.constant.APIURL + url);
+    return this.http.get(this.apiUrl + url, {
+      headers: headers
+    });
   }
-  // , {
-  //   headers: headers
-  // }
 
   post(url, data){
     let headers = this.createHeader();
     console.log(data);
-    return this.http.post(this.constant.APIURL + url, data);
+    return this.http.post(this.apiUrl + url, data);
   }
 
   delete(url): Observable<any> {
     let headers = this.createHeader();
-    return this.http.delete(this.constant.APIURL + url);
+    return this.http.delete(this.apiUrl + url, {
+      headers: headers
+    });
   }
 
   deletes(url, data): Observable<any> {
     let headers = this.createHeader();
-    return this.http.post(this.constant.APIURL + url, data);
+    return this.http.post(this.apiUrl + url, data, {
+      headers: headers
+    });
   }
 }
 

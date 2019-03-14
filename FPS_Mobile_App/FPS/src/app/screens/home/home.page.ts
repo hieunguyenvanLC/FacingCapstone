@@ -18,6 +18,8 @@ export class HomePage {
 
   searchValue: string;
   stores= [];
+  longitude = 106.67927390539103;
+  latitude = 10.82767617410066;
 
   constructor(
     private storeService : StoreService
@@ -26,10 +28,11 @@ export class HomePage {
   }
 
   ngOnInit() {
-    this.storeService.getList().subscribe(
+    this.storeService.getList(this.longitude, this.latitude).subscribe(
       res => {
         //this.stores = Array.prototype.slice.call(data.toString);
         this.stores.push(res);
+        console.log(res);
         console.log(this.stores[0].data);
       }
     )

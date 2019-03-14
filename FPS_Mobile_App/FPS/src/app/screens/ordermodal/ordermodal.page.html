@@ -7,10 +7,17 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+  <div style="padding: 5px">
+    Delivery to
+    <p class="primary-text">Khu Phần mềm Quang Trung</p>
+    Your order from <strong>The Alley - 11 Quang Trung</strong>
+  </div>
+  <br>
+  <!-- item group -->
   <ion-item-group>
     <!-- item -->
-    <ion-item *ngFor="let item of products">
+    <ion-item no-padding *ngFor="let item of products">
       <ion-grid>
         <ion-row>
           <ion-col size="3">
@@ -18,34 +25,53 @@
               <img src="{{item.img}}">
             </ion-thumbnail>
           </ion-col>
-          <ion-col size="6" class="prod-title">
+          <ion-col size="4" class="prod-title">
             <strong>{{item.name}}</strong>
 
+          </ion-col>
+          <ion-col size="2" class="prod-price none-padding">
+            <p>{{item.quantity}}</p>
           </ion-col>
           <ion-col size="3" class="prod-price">
             <p>{{item.price}}</p>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col class="prod-price none-padding">
-
-            <p (click)="removeProduct(item.id)">
-              <ion-icon class="add-prod" name="remove-circle-outline"></ion-icon>
-            </p>
-          </ion-col>
-          <ion-col class="prod-price none-padding">
-            <ion-input disabled value="{{item.quantity}}"></ion-input>
-          </ion-col>
-          <ion-col class="prod-price none-padding">
-            <p (click)="addProduct(item.id)">
-              <ion-icon class="add-prod" name="add-circle-outline"></ion-icon>
-            </p>
-          </ion-col>
-
-        </ion-row>
       </ion-grid>
     </ion-item>
     <!-- end item -->
-
   </ion-item-group>
+  <!-- end item group -->
+
+  <!-- <ion-item> -->
+    <br>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="9">
+          Subtotal
+        </ion-col>
+        <ion-col size="3">
+          {{subTotal}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="9">
+          Delivery fees
+        </ion-col>
+        <ion-col size="3">
+          {{deliveryFees}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  <!-- </ion-item> -->
+  <ion-grid>
+      <br>
+      <ion-row>
+          <ion-col size="9">
+            Total
+          </ion-col>
+          <ion-col size="3">
+            {{total}}
+          </ion-col>
+        </ion-row>
+  </ion-grid>
 </ion-content>
