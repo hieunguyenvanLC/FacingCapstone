@@ -34,6 +34,85 @@
     <small>Already have an account?</small>
     <a href="/login" class="signup">Login</a>
 
-</div>
 
+    <input type="text" id="txtUsername" value=""/><br/>
+    <input type="text" id="txtPassword" value=""/><br/>
+    <input type="text" id="txtMatch" value=""/><br/>
+    <input type="text" id="txtCol" value=""/><br/>
+    <input type="text" id="txtRow" value=""/><br/>
+    <input type="text" id="txtMsg" value=""/><br/>
+    <input type="text" id="txtOppMove" value=""/><br/>
+    <button type="button" onclick="login()">Login</button>
+    <br/>
+    <button type="button" onclick="move()">Move</button>
+    <br/>
+    <button type="button" onclick="quit()">Quit</button>
+    <br/>
+
+</div>
+<script>
+    var txtUsername = document.getElementById("txtUsername");
+    var txtPassword = document.getElementById("txtPassword");
+    var txtMatch = document.getElementById("txtMatch");
+    var txtCol = document.getElementById("txtCol");
+    var txtRow = document.getElementById("txtRow");
+
+    var fpsBackEnd = "http://localhost:8080";
+
+    function login() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/login",
+            data: {username: txtUsername.value, password: txtPassword.value},
+            daaType: 'json',
+            success: function (response) {
+                txtMatch.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function start() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/api/log/match",
+            data: {},
+            daaType: 'json',
+            success: function (response) {
+                txtMatch.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function move() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/api/log/match",
+            data: {id: txtMatch.value, col: txtCol.value, row: txtRow.value},
+            daaType: 'json',
+            success: function (response) {
+                txtMatch.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function quit() {
+        $.ajax({
+            type: 'DELETE',
+            url: fpsBackEnd + "/api/log/match",
+            data: {id: txtMatch.value},
+            daaType: 'json',
+            success: function (response) {
+                txtMatch.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+</script>
 </html>
