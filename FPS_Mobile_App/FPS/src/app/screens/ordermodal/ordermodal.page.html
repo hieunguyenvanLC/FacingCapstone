@@ -11,7 +11,7 @@
   <div style="padding: 5px">
     Delivery to
     <p class="primary-text">Khu Phần mềm Quang Trung</p>
-    Your order from <strong>The Alley - 11 Quang Trung</strong>
+    Your order from <strong>{{addressStore}}</strong>
   </div>
   <br>
   <!-- item group -->
@@ -75,3 +75,7 @@
         </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-footer class="footer">
+  <ion-button expand="full" (click)="checkout()">Check out</ion-button>
+</ion-footer>

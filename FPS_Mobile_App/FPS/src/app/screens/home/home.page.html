@@ -101,7 +101,7 @@
 
     <!-- ************************* -->
     <!-- *** Start store list **** -->
-    <ion-item *ngFor="let item of stores[0].data" [routerLink]="['/store', item.id]">
+    <ion-item *ngFor="let item of stores" [routerLink]="['/store', item.id]">
       <div class="card-drop">
         <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
         <!-- data:image/jpeg;base64, -->

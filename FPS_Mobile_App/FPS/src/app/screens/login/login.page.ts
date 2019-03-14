@@ -21,7 +21,8 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.phonenumber = 'azx';
+    // this.phonenumber = 'azx';
+    this.phonenumber = '222';
     this.password = 'zzz';
 
   }

@@ -132,6 +132,9 @@ export class StorePage implements OnInit {
       component: OrdermodalPage,
       componentProps: { 
                         products: this.orders,
+                        latitudeStore: this.products[0].data.latitude,
+                        longitudeStore: this.products[0].data.longitude,
+                        addressStore: this.products[0].data.address+ ", " + this.products[0].data.distStr,
                         subTotal: this.total,
                       }
     }).then(modal => {

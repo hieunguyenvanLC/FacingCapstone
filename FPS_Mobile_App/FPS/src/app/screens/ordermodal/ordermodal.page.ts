@@ -11,6 +11,9 @@ export class OrdermodalPage implements OnInit {
   //"value" passed in componentProps
   @Input() products: any;
   @Input() subTotal: any;
+  @Input() latitudeStore: any;
+  @Input() longitudeStore: any;
+  @Input() addressStore: any;
 
   deliveryFees : number ;
   total : number;
@@ -28,5 +31,9 @@ export class OrdermodalPage implements OnInit {
   }
   dismissModal() {
     this.modalController.dismiss();
+  }
+
+  checkout(){
+    
   }
 }

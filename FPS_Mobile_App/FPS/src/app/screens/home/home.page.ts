@@ -17,7 +17,8 @@ export class HomePage {
   };
 
   searchValue: string;
-  stores= [];
+  storesObj= [];
+  stores = [];
   longitude = 106.67927390539103;
   latitude = 10.82767617410066;
 
@@ -31,9 +32,14 @@ export class HomePage {
     this.storeService.getList(this.longitude, this.latitude).subscribe(
       res => {
         //this.stores = Array.prototype.slice.call(data.toString);
-        this.stores.push(res);
+        //console.log(res[0].data);
+        this.storesObj.push(res);
         console.log(res);
-        console.log(this.stores[0].data);
+        console.log(this.storesObj[0].data);
+        this.storesObj[0].data.forEach(element => {
+          this.stores.push(element);
+        });
+        console.log(this.stores);
       }
     )
   }

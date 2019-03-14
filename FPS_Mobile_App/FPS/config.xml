@@ -3,7 +3,7 @@
     <name>FPS</name>
     <description>FPT Capstone project</description>
     <author email="d2fwind@gmail.com" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://192.168.43.247:8101" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
