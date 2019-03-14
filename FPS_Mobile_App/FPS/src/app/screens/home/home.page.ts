@@ -29,6 +29,7 @@ export class HomePage {
   }
 
   ngOnInit() {
+    console.log("da tao");
     this.storeService.getList(this.longitude, this.latitude).subscribe(
       res => {
         //this.stores = Array.prototype.slice.call(data.toString);

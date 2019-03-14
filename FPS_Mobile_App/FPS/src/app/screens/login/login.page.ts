@@ -35,14 +35,16 @@ export class LoginPage implements OnInit {
       this.account.push(res);
       if (this.account) {
         if (this.account[0].data !== "Error") {
+          console.log("vo home")
           this.router.navigateByUrl("home");
         }
       } else {
         this.error = "Wrong username or password";
       }
     }), err => {
-      console.log(err);
+      // console.log(err);
     };;
+    
 
   }
 
