@@ -24,13 +24,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
+@RestController
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -59,7 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http    .csrf().disable()
+
                 .authorizeRequests()
                 .antMatchers(Fix.MAP_ADM + "/**")
                 .hasRole("ADMIN")
@@ -71,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyRole("ADMIN", "MEMBER", "SHIPPER")
                 .and()
                 .formLogin()
-                .loginPage("/loginPage")
+//                .loginPage("/loginPage")
                 .loginProcessingUrl("/login")
                 .usernameParameter("phoneNumber")
                 .passwordParameter("password")
@@ -87,8 +94,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutSuccessUrl("/loginPage")
                 .and()
-                .csrf().disable()
-                .cors().disable();
+                .cors().and().rememberMe();
+
     }
 
     private AuthenticationSuccessHandler loginSuccessHandler() {
@@ -104,6 +111,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8100"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","OPTIONS","PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type","Access-Control-Allow-Credentials"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+         return source;
+         }
+
 
     private AuthenticationFailureHandler loginFailureHandler() {
         return new AuthenticationFailureHandler() {

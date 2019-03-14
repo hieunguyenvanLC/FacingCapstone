@@ -5,6 +5,7 @@ import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
 import capstone.fps.service.StoreService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -71,6 +72,7 @@ public class StoreController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
 
 
     @GetMapping(Fix.MAP_MEM + API)

@@ -15,12 +15,13 @@ import capstone.fps.repository.DistrictRepo;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@Service
 public class StoreService {
     private StoreRepo storeRepository;
     private DistrictRepo districtRepository;
