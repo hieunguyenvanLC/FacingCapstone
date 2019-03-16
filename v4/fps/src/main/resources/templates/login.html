@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FPS</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="/css/fontastic.css">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>Dashboard</h1>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <!--<form id="frmLogin">-->
+                                <div class="form-validate">
+                                    <div class="form-group">
+                                        <label id="lblDisplayMsg" class="label-material"
+                                               style="display: none;color: red"></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-material">User Name</label>
+                                        <input title="username" id="txtPhone" type="text" class="input-material">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-material">Password</label>
+                                        <input title="password" id="txtPass" type="password" class="input-material">
+                                    </div>
+                                    <button id="login" type="submit" class="btn btn-primary" onclick="sendLogin()">Login
+                                    </button>
+                                    <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+                                </div>
+                            <!--</form>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript files-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/popper.js/umd/popper.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendor/jquery.cookie/jquery.cookie.js"></script>
+<script src="/vendor/chart.js/Chart.min.js"></script>
+<script src="/vendor/jquery-validation/jquery.validate.min.js"></script>
+<!-- Main File-->
+<script src="/js/front.js"></script>
+<script src="/js/const_util.js"></script>
+<script src="/js/dash.js"></script>
+<script>
+
+    var input = document.getElementById("txtPass");
+    input.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendLogin();
+        }
+    });
+
+    // function getToken() {
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: backendAPI + "any/api/csrf",
+    //         dataType: 'json',
+    //         success: function (response) {
+    //             sendLogin(response);
+    //         },
+    //         error: function (response) {
+    //         }
+    //     })
+    // }
+
+
+    function sendLogin() {
+        // ev.preventDefault();
+
+        var txtPhone = $('#txtPhone');
+        var txtPassword = $('#txtPass');
+        var message = document.getElementById('lblDisplayMsg');
+
+        // $.post(fpsBackEnd + "/login", $('#frmLogin').serialize(), function (response) {
+        //     var roleStr = response.data;
+        //     if (roleStr === ROL_ADM) {
+        //         document.location.href = "/adm/";
+        //     } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
+        //         fpsShowMsg(message, "Unable to access")
+        //     } else if (roleStr === "Error") {
+        //         fpsShowMsg(message, "Wrong username or password");
+        //     } else {
+        //         fpsShowMsg(message, "Error when login");
+        //     }
+        // }).fail(function () {
+        //     fpsShowMsg(message, "Error when login");
+        // });
+
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/login",
+            data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
+            dataType: 'json',
+            success: function (response) {
+                var roleStr = response.data;
+                if (roleStr === ROL_ADM) {
+                    document.location.href = "/adm/";
+                } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
+                    fpsShowMsg(message, "Unable to access")
+                } else if (roleStr === "Error") {
+                    fpsShowMsg(message, "Wrong username or password");
+                } else {
+                    fpsShowMsg(message, "Error when login");
+                }
+            },
+            error: function () {
+                // console.log(response);
+                fpsShowMsg(message, "Error when login");
+            }
+        })
+    }
+</script>
+</body>
+</html>

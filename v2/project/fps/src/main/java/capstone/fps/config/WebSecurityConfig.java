@@ -87,7 +87,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutSuccessUrl("/loginPage")
                 .and()
-                .csrf();
+                .csrf()
+                .and().rememberMe();
     }
 
     private AuthenticationSuccessHandler loginSuccessHandler() {
