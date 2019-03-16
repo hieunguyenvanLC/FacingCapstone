@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule} from '@angular/http';
 import { StoreService } from './services/store.service';
 import { Constant } from './common/constant';
+import { OrderService } from './services/order.service';
 
 
 @NgModule({
@@ -32,8 +33,11 @@ import { Constant } from './common/constant';
   providers: [
     StatusBar,
     SplashScreen,
+
     AccountService,
     StoreService,
+    OrderService,
+
     Constant,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy  }
   ],

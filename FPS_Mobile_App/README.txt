@@ -22,3 +22,8 @@ ionic cordova build android --prod
 
 -------------------------------
 open -a Google\ Chrome --args --disable-web-security --user-data-dir
+
+-------------------------------
+set up firebase
+ionic cordova plugin add cordova-plugin-firebase
+npm install @ionic-native/firebase

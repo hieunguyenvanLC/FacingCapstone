@@ -18,4 +18,5 @@ export class Constant {
     public LOGIN = "/login";
     public SIGNUP = "/account";
     public STORE = "/store";
+    public ORDER = "/order";
 }
