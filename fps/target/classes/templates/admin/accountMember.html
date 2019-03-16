@@ -1,0 +1,307 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_dash_layout}" lang="en">
+
+<div class="content-inner" layout:fragment="content-section">
+
+    <header class="page-header d-flex">
+        <div class="flex-grow-1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/adm/account/mem">User</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/adm/account/shp">Shipper</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/adm/account/adm">Admin</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="table-responsive row bg-white has-shadow">
+                <!--<div class="d-flex p-2">-->
+                <!--<div class="flex-grow-1">-->
+                <!--&lt;!&ndash;<button id="add-new" class="btn btn-primary" data-toggle="modal" data-target="#add-edit-modal">&ndash;&gt;-->
+                <!--&lt;!&ndash;Add new&ndash;&gt;-->
+                <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                <!--</div>-->
+                <!--<div>-->
+                <!--<button id="deactive-sel" class="btn btn-danger">Deactive (0)</button>-->
+                <!--</div>-->
+                <!--</div>-->
+
+                <table id="account-table" class="table">
+                    <thead>
+                    <tr>
+                        <th>Phone</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th style="width: 10%">Status</th>
+                        <th>Note</th>
+                        <th style="width: 10%">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblBodyAcc">
+                </table>
+
+                <!-- Modal-->
+                <div id="add-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" class="modal fade text-left">
+                    <div role="document" class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 id="exampleModalLabel" class="modal-title"></h4>
+                                <button id="btnCloseModal" type="button" data-dismiss="modal" aria-label="Close"
+                                        class="close"><span
+                                        aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="txtUsername">Phone</label>
+                                    <input type="text" class="form-control" disabled id="txtUsername">
+                                </div>
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" placeholder="Full Name" class="form-control" id="txtFullName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date of Birth</label>
+                                    <div class="input-group date-picker" data-provider="dpDob">
+                                        <input type="date" class="form-control" id="dpDob">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" placeholder="Email" class="form-control" id="txtEmail">
+                                </div>
+                                <div class="form-group">
+                                    <label id="txtCreate">Note</label>
+                                    <label id="txtUpdate">Note</label>
+                                    <label id="txtDelete">Note</label>
+                                    <label id="txtEditor">Note</label>
+                                    <label>Note</label>
+                                    <input type="text" placeholder="Note" class="form-control" id="txtNote">
+                                </div>
+                                <div class="form-group">
+                                    <label id="lblDisplayMsg" style="display: none;color: red"></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="sendEdit()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+
+    <script>
+        var accList;
+        var accId = -1;
+        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account";
+
+        var lblMsg = document.getElementById("lblDisplayMsg");
+
+        function fpsFetchData() {
+            getAccList();
+        }
+
+
+        function getAccList() {
+            document.getElementById("btnCloseModal").click();
+            $.ajax({
+                type: 'GET',
+                url: fpsApiAcc + "/mem",
+                data: {},
+                dataType: 'json',
+                success: function (response) {
+                    var list = response.data;
+                    accList = list;
+                    $('#account-table').DataTable().destroy();
+                    var accountTable = $('#account-table').DataTable();
+                    accountTable.clear().draw();
+                    for (var i = 0; i < list.length; i++) {
+                        var acc = list[i];
+                        if (typeof acc.email === 'undefined') {
+                            acc.email = "";
+                        }
+                        var statStr = ACC_NEW.msg;
+                        var btnOnOff = '<button class="btn btn btn-danger" style="margin-top: 0;margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-radius: 0" onclick="getTokenDel(' + acc.id + ')">👎</button>';
+
+                        if (acc.status === ACC_BAN.index) {
+                            statStr = ACC_BAN.msg;
+                            btnOnOff = '<button class="btn btn btn-success" style="margin-top: 0;margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-radius: 0" onclick="getTokenActivate(' + acc.id + ')">👍</button>';
+                        }
+
+                        accountTable.row.add([
+                            '<span data-toggle="modal" data-target="#add-edit-modal" onclick="loadEditForm(' + i + ')" >' + acc.phone + '</span>',
+                            acc.name,
+                            acc.email,
+                            statStr,
+                            acc.note,
+                            btnOnOff
+                        ]).draw();
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+
+        function loadEditForm(pos) {
+            var acc = accList[pos];
+            $("#txtUsername").val(acc.phone);
+            $("#txtFullName").val(acc.name);
+            $("#dpDob")[0].valueAsNumber = acc.dob;
+            $("#txtEmail").val(acc.email);
+
+            var createTime = new Date(acc.createTime);
+            $("#txtCreate").html("Create: " + fpsFormatDate(createTime) + " " + createTime.toLocaleTimeString());
+            if (typeof acc.updateTime === 'undefined') {
+                document.getElementById("txtUpdate").style.display = 'none';
+            } else {
+                var updateTime = new Date(acc.updateTime);
+                $("#txtUpdate").html("Update: " + fpsFormatDate(updateTime) + " " + updateTime.toLocaleTimeString());
+                document.getElementById("txtUpdate").style.display = 'block';
+            }
+            if (typeof acc.deleteTime === 'undefined') {
+                document.getElementById("txtDelete").style.display = 'none';
+            } else {
+                var deleteTime = new Date(acc.deleteTime);
+                $("#txtDelete").html("Deactivate: " + fpsFormatDate(deleteTime) + " " + deleteTime.toLocaleTimeString());
+                document.getElementById("txtDelete").style.display = 'block';
+            }
+            if (typeof acc.editor === 'undefined') {
+                document.getElementById("txtEditor").style.display = 'none';
+            } else {
+                $("#txtEditor").html("Editor: " + acc.editor);
+                document.getElementById("txtEditor").style.display = 'block';
+            }
+
+            $("#txtNote").val(acc.note);
+            accId = acc.id;
+            fpsHideMsg(lblMsg);
+        }
+
+        function getTokenEdit() {
+            $.ajax({
+                type: 'GET',
+                url: fpsApiCsrf,
+                dataType: 'json',
+                success: function (response) {
+                    if (accId > 0) {
+                        sendEdit(response);
+                    } else {
+                        sendAdd(response);
+                    }
+
+                },
+                error: function (response) {
+                }
+            })
+        }
+
+        function sendEdit(csrf) {
+            var fullName = $("#txtFullName").val();
+            var dob = $("#dpDob")[0].valueAsNumber;
+            var email = $("#txtEmail").val();
+            var note = $("#txtNote").val();
+            $.ajax({
+                type: 'PUT',
+                url: fpsApiAcc + "/mem",
+                data: {
+                    _csrf: csrf,
+                    accId: accId,
+                    fullName: fullName,
+                    email: email,
+                    dob: dob,
+                    note: note
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status_code === RESP_SUCCESS) {
+                        getAccList();
+                    } else {
+                        fpsShowMsg(lblMsg,response.message);
+                    }
+                },
+                error: function (response) {
+                    alert("Unable to Edit");
+                }
+            })
+        }
+
+        function getTokenDel(accId) {
+            $.ajax({
+                type: 'GET',
+                url: fpsApiCsrf,
+                dataType: 'json',
+                success: function (response) {
+                    sendDel(response, accId);
+                },
+                error: function (response) {
+                }
+            })
+        }
+
+        function sendDel(csrf, accId) {
+            var reason = "";
+
+            $.ajax({
+                type: 'DELETE',
+                url: fpsApiAcc,
+                data: {_csrf: csrf, accountId: accId, reason: reason},
+                dataType: 'json',
+                success: function (response) {
+                    getAccList();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+
+        function getTokenActivate(accId) {
+            $.ajax({
+                type: 'GET',
+                url: fpsApiCsrf,
+                dataType: 'json',
+                success: function (response) {
+                    sendActivate(response, accId);
+                },
+                error: function (response) {
+                }
+            })
+        }
+
+        function sendActivate(csrf, accId) {
+            var reason = "";
+
+            $.ajax({
+                type: 'PUT',
+                url: fpsApiAcc + "/activate",
+                data: {_csrf: csrf, accountId: accId, reason: reason},
+                dataType: 'json',
+                success: function (response) {
+                    getAccList();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+    </script>
+</div>
+
+</html>
