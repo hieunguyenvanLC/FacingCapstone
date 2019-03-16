@@ -1,7 +1,11 @@
 package capstone.fps.config;
 
 import capstone.fps.common.Fix;
+import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
+import capstone.fps.model.account.MdlAccount;
+import capstone.fps.repository.AccountRepo;
+import capstone.fps.service.AccountService;
 import capstone.fps.service.LoginService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,11 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,10 +48,14 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
+    private AccountService accountService;
+
+
 
     @Autowired
-    public WebSecurityConfig(LoginService loginService) {
+    public WebSecurityConfig(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;
+        this.accountService = accountService;
     }
 
     @Autowired
@@ -104,10 +114,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+                String phoneNumber = authentication.getName();
+
+                FRAccount account = accountService.findByPhone(phoneNumber);
+
+                List<String> result = new ArrayList<>();
+                result.add("Role: "+ role);
+                result.add("Account ID: " + account.getId());
+
+
+                Response<List<String>> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
                 response.getWriter().append(gson.toJson(responseObj));
+                System.out.println("Result: " + result.toString());
             }
         };
     }
@@ -116,7 +136,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8100"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8100", "http://192.168.1.125:8100"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","OPTIONS","PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type","Access-Control-Allow-Credentials"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

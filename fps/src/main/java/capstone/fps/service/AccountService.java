@@ -8,6 +8,7 @@ import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
 import capstone.fps.repository.*;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,9 @@ public class AccountService {
         this.shipperRepo = shipperRepo;
     }
 
+
+
+
     private FRRole initRole(String name) {
         Optional<FRRole> optional;
         optional = roleRepo.findByName(name);
@@ -44,6 +48,15 @@ public class AccountService {
         roleRepo.save(role);
         optional = roleRepo.findByName(name);
         return optional.orElse(null);
+    }
+
+    // find User detail by phone
+    public FRAccount findByPhone(String phone) {
+        Optional<FRAccount> optional = accountRepo.findByPhone(phone);
+        if (!optional.isPresent()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return optional.get();
     }
 
     public Response createAccountMember(String phone, String pass, String name) {
