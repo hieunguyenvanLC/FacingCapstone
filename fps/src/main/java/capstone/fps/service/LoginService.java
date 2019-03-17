@@ -20,13 +20,7 @@ public class LoginService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
-    public FRAccount findByPhone(String phone) {
-        Optional<FRAccount> optional = accountRepository.findByPhone(phone);
-        if (!optional.isPresent()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return optional.get();
-    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

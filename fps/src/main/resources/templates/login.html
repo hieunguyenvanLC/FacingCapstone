@@ -128,7 +128,15 @@
             data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
             dataType: 'json',
             success: function (response) {
-                var roleStr = response.data;
+                var roleStr, accountID;
+
+                for (var i = 0; i < response.data.length; i++) {
+                    if (i == response.data.length - 1){
+                        accountID = response.data[i].replace("Account ID: ","");
+                    }else{
+                        roleStr = response.data[i].replace("Role: ", "");
+                    }
+                }
                 if (roleStr === ROL_ADM) {
                     document.location.href = "/adm/";
                 } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
