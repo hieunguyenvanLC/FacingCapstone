@@ -63,7 +63,7 @@
                                     <input title="password" id="txtPass" type="password" class="input-material">
                                 </div>
                                 <div class="form-group">
-                                    <label id="lblMsg"></label>
+                                    <label id="lblMsg" style="color: red"></label>
 
                                 </div>
                                 <button id="login" type="submit" class="btn btn-primary" onclick="sendLogin()">Login
@@ -92,7 +92,7 @@
 <script src="/js/const_util.js"></script>
 <script src="/js/dash.js"></script>
 <script>
-
+    var lblMsg = document.getElementById("lblMsg");
 
     var input = document.getElementById("txtPass");
     input.addEventListener("keyup", function (event) {
@@ -101,7 +101,6 @@
             sendLogin();
         }
     });
-
 
 
     // function getToken() {
@@ -131,20 +130,20 @@
                 var roleStr, accountID;
 
                 for (var i = 0; i < response.data.length; i++) {
-                    if (i == response.data.length - 1){
-                        accountID = response.data[i].replace("Account ID: ","");
-                    }else{
+                    if (i == response.data.length - 1) {
+                        accountID = response.data[i].replace("Account ID: ", "");
+                    } else {
                         roleStr = response.data[i].replace("Role: ", "");
                     }
                 }
                 if (roleStr === ROL_ADM) {
                     document.location.href = "/adm/";
                 } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
-                    fpsShowMsg("Unable to access")
+                    fpsShowMsg(lblMsg, "Unable to access")
                 } else if (roleStr === "Error") {
-                    fpsShowMsg("Wrong username or password");
+                    fpsShowMsg(lblMsg, "Wrong username or password");
                 } else {
-                    fpsShowMsg("Error when login");
+                    fpsShowMsg(lblMsg, "Error when login");
                 }
             },
             error: function () {
