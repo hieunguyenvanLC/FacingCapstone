@@ -53,6 +53,9 @@ export class OrdermodalPage implements OnInit {
 
 
     }
-    this.orderService.createOrder(this.longutudeCus, this.latitudeCus,  "", this.prodList).subscribe();
+    this.orderService.createOrder(this.longutudeCus, this.latitudeCus,  "", this.prodList)
+                     .subscribe(data => {
+                       console.log(data);
+                     });
   }
 }
