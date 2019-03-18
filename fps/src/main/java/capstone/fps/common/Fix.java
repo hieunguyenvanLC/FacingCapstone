@@ -14,8 +14,8 @@ public interface Fix {
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
-    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
-
+//    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
+    Path IMG_DIR_PATH = Paths.get("../../faces/").toAbsolutePath().normalize();
 
     String PAYPAL_CLIENT_ID = "Ae-WAkmVpZzdf5yYCDsw712GLWeT1RMqWTwirxkRRFnEEvMWKKxvpcn6WW7k2tv6Ck7RmRDEPLLUdJ0F";
     String PAYPAL_CLIENT_SECRET = "EAbfxREiU06k1rVeIbql1kC0zNc0_-3Yw6JY0hpMCMjT3VLd4PQj_eJuvop4xINX6OJProI3f6F3B2Nn";

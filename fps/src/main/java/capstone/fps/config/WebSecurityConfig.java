@@ -51,7 +51,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AccountService accountService;
 
 
-
     @Autowired
     public WebSecurityConfig(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;
@@ -75,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .csrf().disable()
+        http.csrf().disable()
 
                 .authorizeRequests()
                 .antMatchers(Fix.MAP_ADM + "/**")
@@ -114,20 +113,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-                String phoneNumber = authentication.getName();
+                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+//                String phoneNumber = authentication.getName();
 
-                FRAccount account = accountService.findByPhone(phoneNumber);
+//                FRAccount account = accountService.findByPhone(phoneNumber);
 
-                List<String> result = new ArrayList<>();
-                result.add("Role: "+ role);
-                result.add("Account ID: " + account.getId());
+//                List<String> result = new ArrayList<>();
+//                result.add("Role: " + role);
+//                result.add("Account ID: " + account.getId());
 
 
-                Response<List<String>> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+//                Response<List<String>> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
                 response.getWriter().append(gson.toJson(responseObj));
-                System.out.println("Result: " + result.toString());
+//                System.out.println("Result: " + result.toString());
             }
         };
     }
@@ -136,14 +137,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8100", "http://localhost"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","OPTIONS","PUT", "DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type","Access-Control-Allow-Credentials"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Access-Control-Allow-Credentials"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-         return source;
-         }
+        return source;
+    }
 
 
     private AuthenticationFailureHandler loginFailureHandler() {

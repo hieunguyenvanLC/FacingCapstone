@@ -35,8 +35,6 @@ public class AccountService {
     }
 
 
-
-
     private FRRole initRole(String name) {
         Optional<FRRole> optional;
         optional = roleRepo.findByName(name);
@@ -50,14 +48,14 @@ public class AccountService {
         return optional.orElse(null);
     }
 
-    // find User detail by phone
-    public FRAccount findByPhone(String phone) {
-        Optional<FRAccount> optional = accountRepo.findByPhone(phone);
-        if (!optional.isPresent()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return optional.get();
-    }
+//    // find User detail by phone
+//    public FRAccount findByPhone(String phone) {
+//        Optional<FRAccount> optional = accountRepo.findByPhone(phone);
+//        if (!optional.isPresent()) {
+//            throw new UsernameNotFoundException("User not found");
+//        }
+//        return optional.get();
+//    }
 
     public Response createAccountMember(String phone, String pass, String name) {
         Methods methods = new Methods();
@@ -86,6 +84,22 @@ public class AccountService {
     }
 
 
+    public Response editProfileMember(String name, String email, long dob, String note) {
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+
+        currentUser.setName(name.trim());
+        currentUser.setEmail(email.trim());
+        currentUser.setDateOfBirth(dob);
+        currentUser.setUpdateTime(methods.getTimeNow());
+
+        currentUser.setEditor(methods.getUser());
+        accountRepo.save(currentUser);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
 
     public Response editAccountMember(Integer accId, String name, String email, long dob, String note) {
         Methods methods = new Methods();
@@ -280,7 +294,7 @@ public class AccountService {
         return response;
     }
 
-    public  Response<List<MdlAccount>> getListAdmin() {
+    public Response<List<MdlAccount>> getListAdmin() {
         MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
         Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_ADM));
@@ -485,4 +499,41 @@ public class AccountService {
         return response;
     }
     // Web - Shipper - End
+
+    // Mobile Mem - Profile - Begin
+    public Response<MdlAccount> getMemberDetailMem() {
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+
+        MdlAccount mdlAccount = mdlMemberBuilder.buildMemDetailMem(currentUser);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAccount);
+        return response;
+    }
+
+
+    public Response<MdlAccount> updateMemberDetailMem(String name, String email, Long dob) {
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        if (name != null) {
+            currentUser.setName(name.trim());
+        }
+        if (email != null) {
+            currentUser.setEmail(email.trim());
+        }
+        if (dob != null) {
+            currentUser.setDateOfBirth(dob);
+        }
+        currentUser.setUpdateTime(methods.getTimeNow());
+        currentUser.setEditor(currentUser);
+        accountRepo.save(currentUser);
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+        MdlAccount mdlAccount = mdlMemberBuilder.buildMemDetailMem(currentUser);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAccount);
+        return response;
+    }
+    // Mobile Mem - Profile - End
 }

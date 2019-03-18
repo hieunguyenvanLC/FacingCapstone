@@ -24,11 +24,6 @@ public class AccountController extends AbstractController {
 
     private AccountService accountService;
 
-    public FRAccount LogedAccount(String phoneNumber){
-        return  accountService.findByPhone(phoneNumber);
-
-    }
-
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
@@ -199,4 +194,31 @@ public class AccountController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+    // Mobile Mem - Profile - Begin
+    @GetMapping(Fix.MAP_MEM + API + "/detail")
+    public String getMemberDetailMem() {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getMemberDetailMem();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_MEM + API )
+    public String updateMemberDetailMem(String name, String email, Long dob) {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateMemberDetailMem(name, email, dob);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    // Mobile Mem - Profile - End
 }

@@ -118,10 +118,9 @@ function fpsFormAppend(formData, paramName, paramValue) {
 
 function fpsFormAppend2(formData, paramName, newValue, oldValue) {
     if (typeof newValue === 'undefined' || Number.isNaN(newValue) || newValue === "") {
-
         return;
     }
-    if (typeof oldValue !== 'undefined' && !Number.isNaN(oldValue) && newValue == oldValue) {
+    if (newValue == oldValue) {
         return;
     }
     formData.append(paramName, newValue);
