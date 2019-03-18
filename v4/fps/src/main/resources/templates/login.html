@@ -46,26 +46,31 @@
                 <div class="col-lg-6 bg-white">
                     <div class="form d-flex align-items-center">
                         <div class="content">
-                            <!--<form id="frmLogin">-->
-                                <div class="form-validate">
-                                    <div class="form-group">
-                                        <label id="lblDisplayMsg" class="label-material"
-                                               style="display: none;color: red"></label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label-material">User Name</label>
-                                        <input title="username" id="txtPhone" type="text" class="input-material">
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label-material">Password</label>
-                                        <input title="password" id="txtPass" type="password" class="input-material">
-                                    </div>
-                                    <button id="login" type="submit" class="btn btn-primary" onclick="sendLogin()">Login
-                                    </button>
-                                    <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+
+                            <div class="form-validate">
+                                <div class="form-group">
+                                    <label id="lblDisplayMsg" class="label-material"
+                                           style="display: none;color: red"></label>
                                 </div>
-                            <!--</form>-->
+                                <div class="form-group">
+                                    <label class="label-material">User Name</label>
+                                    <input title="username" id="txtPhone" type="text" class="input-material">
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="label-material">Password</label>
+                                    <input title="password" id="txtPass" type="password" class="input-material">
+                                </div>
+                                <div class="form-group">
+                                    <label id="lblMsg" style="color: red"></label>
+
+                                </div>
+                                <button id="login" type="submit" class="btn btn-primary" onclick="sendLogin()">Login
+                                </button>
+                                <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -87,6 +92,7 @@
 <script src="/js/const_util.js"></script>
 <script src="/js/dash.js"></script>
 <script>
+    var lblMsg = document.getElementById("lblMsg");
 
     var input = document.getElementById("txtPass");
     input.addEventListener("keyup", function (event) {
@@ -95,6 +101,7 @@
             sendLogin();
         }
     });
+
 
     // function getToken() {
     //     $.ajax({
@@ -111,26 +118,8 @@
 
 
     function sendLogin() {
-        // ev.preventDefault();
-
         var txtPhone = $('#txtPhone');
         var txtPassword = $('#txtPass');
-        var message = document.getElementById('lblDisplayMsg');
-
-        // $.post(fpsBackEnd + "/login", $('#frmLogin').serialize(), function (response) {
-        //     var roleStr = response.data;
-        //     if (roleStr === ROL_ADM) {
-        //         document.location.href = "/adm/";
-        //     } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
-        //         fpsShowMsg(message, "Unable to access")
-        //     } else if (roleStr === "Error") {
-        //         fpsShowMsg(message, "Wrong username or password");
-        //     } else {
-        //         fpsShowMsg(message, "Error when login");
-        //     }
-        // }).fail(function () {
-        //     fpsShowMsg(message, "Error when login");
-        // });
 
         $.ajax({
             type: 'POST',
@@ -138,20 +127,28 @@
             data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
             dataType: 'json',
             success: function (response) {
-                var roleStr = response.data;
+                var roleStr, accountID;
+
+                for (var i = 0; i < response.data.length; i++) {
+                    if (i == response.data.length - 1) {
+                        accountID = response.data[i].replace("Account ID: ", "");
+                    } else {
+                        roleStr = response.data[i].replace("Role: ", "");
+                    }
+                }
                 if (roleStr === ROL_ADM) {
                     document.location.href = "/adm/";
                 } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
-                    fpsShowMsg(message, "Unable to access")
+                    fpsShowMsg(lblMsg, "Unable to access")
                 } else if (roleStr === "Error") {
-                    fpsShowMsg(message, "Wrong username or password");
+                    fpsShowMsg(lblMsg, "Wrong username or password");
                 } else {
-                    fpsShowMsg(message, "Error when login");
+                    fpsShowMsg(lblMsg, "Error when login");
                 }
             },
             error: function () {
                 // console.log(response);
-                fpsShowMsg(message, "Error when login");
+                fpsShowMsg("Error when login");
             }
         })
     }

@@ -38,24 +38,36 @@ public class HomeService {
         return this.accountRepo.countByRoleAndStatus(role, 1);
     }
 
-    public int countNewCus(int month, int year) {
+    //    public int countNewCus(int month, int year) {
+//        FRRole role = this.roleRepo.findById(2).get();
+//        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
+//        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
+//        return this.accountRepo.countByRoleAndStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(role, 1, start, end);
+//    }
+    public int countNewCus() {
         FRRole role = this.roleRepo.findById(2).get();
-        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
-        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
-        return this.accountRepo.countByRoleAndStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(role, 1, start, end);
+        return this.accountRepo.countByRoleAndStatus(role, 1);
+    }
+//
+//    public int countNewStore(int month, int year) {
+//        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
+//        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
+//        return this.storeRepo.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(1, start, end);
+//    }
+
+    public int countNewStore() {
+        return this.storeRepo.countByStatus(1);
     }
 
-    public int countNewStore(int month, int year) {
-        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
-        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
-        return this.storeRepo.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(1, start, end);
+    //    public int countNewOrder(int month, int year) {
+//        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
+//        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
+//        return this.orderRepository.countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+//    }
+    public int countNewOrder() {
+        return this.orderRepository.countAllBy();
     }
 
-    public int countNewOrder(int month, int year) {
-        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
-        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
-        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
-    }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);

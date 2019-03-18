@@ -17,7 +17,7 @@ public interface OrderRepo extends JpaRepository<FROrder, Integer> {
 //    @Query("SELECT COUNT(o) FROM fr_order as o WHERE o.status = 4 AND o.create_time >= ")
 //    public Integer countOrderByStatusAndCreateTime(@Param("timestamp") Integer timestamp);
 
-    public Integer countByStatusAndCreateTimeGreaterThanEqual(Integer status, Long timestamp);
+    public Integer countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(Integer status, Long start, Long end);
 
     public Integer countByStatus(Integer status);
 

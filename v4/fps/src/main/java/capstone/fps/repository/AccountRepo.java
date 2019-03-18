@@ -15,4 +15,11 @@ public interface AccountRepo extends JpaRepository<FRAccount, Integer> {
     Optional<FRAccount> findByPhone(String phone);
 
     List<FRAccount> findAllByRole(FRRole role);
+
+    int countByRoleAndStatus(FRRole role, int status);
+
+//    int countByRoleAndStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(FRRole role, int status, long start, long end);
+
 }
+
+

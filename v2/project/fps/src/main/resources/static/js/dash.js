@@ -262,7 +262,23 @@ $(document).ready(function () {
             console.log(err);
         }
     });
-})
-;
+
+    $.ajax({
+        url: "/any/api/report/summary?mon=3&year=2019",
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            console.log(response.data);
+            var summary = response.data;
+            $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
+            $("#lbNewCus").html("<strong>" + summary.newCustomerCount + "</strong>");
+            $("#lbNewStores").html("<strong>" + summary.newStoreCount + "</strong>");
+            $("#lbNewOrder").html("<strong>" + summary.newOrderCount + "</strong>");
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+});
 
 

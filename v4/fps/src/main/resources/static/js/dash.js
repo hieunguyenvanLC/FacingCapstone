@@ -1,4 +1,5 @@
-// $(document).ready(function () {
+
+$(document).ready(function () {
 //     // $('body').bootstrapMaterialDesign();
 //     var accountTable = $('#account-table').DataTable({
 //         "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-9'f<'filter-group status-group'><'filter-group active-group'>>>" +
@@ -26,7 +27,24 @@
 //     });
 //
 //     var orderDetailTable = $("#order-detail-table").DataTable({});
-// });
+
+    $.ajax({
+        url: "/any/api/report/summary?mon=3&year=2019",
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            console.log(response.data);
+            var summary = response.data;
+            $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
+            $("#lbNewCus").html("<strong>" + summary.newCustomerCount + "</strong>");
+            $("#lbNewStores").html("<strong>" + summary.newStoreCount + "</strong>");
+            $("#lbNewOrder").html("<strong>" + summary.newOrderCount + "</strong>");
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+});
 
 
 function fpsFormatDate(date) {

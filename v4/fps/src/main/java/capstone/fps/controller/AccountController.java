@@ -1,10 +1,12 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.MdlAccount;
 import capstone.fps.model.account.MdlShipper;
 import capstone.fps.service.AccountService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AccountController extends AbstractController {
@@ -20,6 +23,11 @@ public class AccountController extends AbstractController {
     private static final String API = Fix.MAP_API + "/account";
 
     private AccountService accountService;
+
+    public FRAccount LogedAccount(String phoneNumber){
+        return  accountService.findByPhone(phoneNumber);
+
+    }
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;

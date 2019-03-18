@@ -12,4 +12,12 @@ import java.util.Optional;
 public interface OrderRepo extends JpaRepository<FROrder, Integer> {
 
     List<FROrder> findAllByAccountAndStatusIn(FRAccount account, int[] status);
+
+    public Integer countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(Integer status, Long start, Long end);
+
+    public Integer countByStatus(Integer status);
+
+    public Integer countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(Long start, Long end);
+
+    public Integer countAllBy();
 }
