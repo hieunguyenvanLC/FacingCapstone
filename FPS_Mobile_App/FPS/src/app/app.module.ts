@@ -18,6 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 
 import { Constant } from './common/constant';
+<<<<<<< HEAD
 import { OrderService } from './services/order.service';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -30,6 +31,8 @@ var firebaseConfig = {
   storageBucket: "fpscustomer-project.appspot.com",
   messagingSenderId: "276178642720"
 };
+=======
+>>>>>>> parent of 65592e8... create order from customer - thangdp
 
 import { Firebase } from '@ionic-native/firebase';
 import { FirebasecloudmessengerService } from './services/firebasecloudmessenger.service'
@@ -52,7 +55,10 @@ import { FirebasecloudmessengerService } from './services/firebasecloudmessenger
     SplashScreen,
     AccountService,
     StoreService,
+<<<<<<< HEAD
     OrderService,
+=======
+>>>>>>> parent of 65592e8... create order from customer - thangdp
     Constant,
     FirebasecloudmessengerService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

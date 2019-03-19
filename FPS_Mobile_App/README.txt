@@ -21,6 +21,7 @@ Deploy on real device:
 ionic cordova build android --prod
 
 -------------------------------
+<<<<<<< HEAD
 open -a Google\ Chrome --args --disable-web-security --user-data-dir
 
 -------------------------------
@@ -30,3 +31,6 @@ open -a Google\ Chrome --args --disable-web-security --user-data-dir
 
 for fireBase:
 npm install firebase angularfire2
+=======
+open -a Google\ Chrome --args --disable-web-security --user-data-dir
+>>>>>>> parent of 65592e8... create order from customer - thangdp

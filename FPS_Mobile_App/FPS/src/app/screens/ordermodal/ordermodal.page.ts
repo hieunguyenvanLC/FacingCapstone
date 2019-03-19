@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavParams, ModalController } from 'node_modules/@ionic/angular';
-import { OrderService } from 'src/app/services/order.service';
 
 @Component({
   selector: 'app-ordermodal',
@@ -8,7 +7,7 @@ import { OrderService } from 'src/app/services/order.service';
   styleUrls: ['./ordermodal.page.scss'],
 })
 export class OrdermodalPage implements OnInit {
-
+  
   //"value" passed in componentProps
   @Input() products: any;
   @Input() subTotal: any;
@@ -16,19 +15,13 @@ export class OrdermodalPage implements OnInit {
   @Input() longitudeStore: any;
   @Input() addressStore: any;
 
-  longutudeCus = "106.67927390539103";
-  latitudeCus = "10.82767617410066";
-  prodList= "";
-
-  deliveryFees: number;
-  total: number;
+  deliveryFees : number ;
+  total : number;
 
 
-  constructor(
+  constructor (
     private navParams: NavParams,
-    private modalController: ModalController,
-    private orderService : OrderService,
-
+    private modalController: ModalController
   ) {
     // componentProps can also be accessed at construction time using NavParams
   }
@@ -40,6 +33,7 @@ export class OrdermodalPage implements OnInit {
     this.modalController.dismiss();
   }
 
+<<<<<<< HEAD
   checkout() {
     for (let i = 0; i < this.products.length; i++) {
       const element = this.products[i];
@@ -57,5 +51,9 @@ export class OrdermodalPage implements OnInit {
                      .subscribe(data => {
                        console.log(data);
                      });
+=======
+  checkout(){
+    
+>>>>>>> parent of 65592e8... create order from customer - thangdp
   }
 }
