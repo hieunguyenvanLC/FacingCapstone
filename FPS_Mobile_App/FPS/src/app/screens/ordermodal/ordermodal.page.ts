@@ -33,8 +33,7 @@ export class OrdermodalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
   checkout() {
     for (let i = 0; i < this.products.length; i++) {
       const element = this.products[i];
@@ -52,13 +51,9 @@ export class OrdermodalPage implements OnInit {
                      .subscribe(data => {
                        console.log(data);
                      });
-=======
-  checkout(){
+
+
     
->>>>>>> parent of 65592e8... create order from customer - thangdp
-=======
-  checkout(){
-    
->>>>>>> parent of 65592e8... create order from customer - thangdp
+
   }
 }

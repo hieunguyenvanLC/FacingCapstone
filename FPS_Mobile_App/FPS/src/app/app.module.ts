@@ -18,27 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 
 import { Constant } from './common/constant';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { OrderService } from './services/order.service';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFirestoreModule } from 'angularfire2/firestore';
 
-var firebaseConfig = {
-  apiKey: "AIzaSyColKpNZnt8yHEHeQlPVRf-jTYy2j9UvnY",
-  authDomain: "fpscustomer-project.firebaseapp.com",
-  databaseURL: "https://fpscustomer-project.firebaseio.com",
-  projectId: "fpscustomer-project",
-  storageBucket: "fpscustomer-project.appspot.com",
-  messagingSenderId: "276178642720"
-};
-=======
->>>>>>> parent of 65592e8... create order from customer - thangdp
-=======
->>>>>>> parent of 65592e8... create order from customer - thangdp
 
-import { Firebase } from '@ionic-native/firebase';
-import { FirebasecloudmessengerService } from './services/firebasecloudmessenger.service'
 
 @NgModule({
   declarations: [AppComponent],
@@ -50,23 +31,16 @@ import { FirebasecloudmessengerService } from './services/firebasecloudmessenger
     OrdermodalPageModule,
     HttpClientModule,
     HttpModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule,
+
   ],
   providers: [
     StatusBar,
     SplashScreen,
     AccountService,
     StoreService,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    OrderService,
-=======
->>>>>>> parent of 65592e8... create order from customer - thangdp
-=======
->>>>>>> parent of 65592e8... create order from customer - thangdp
+
     Constant,
-    FirebasecloudmessengerService,
+
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
