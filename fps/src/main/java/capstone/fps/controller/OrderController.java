@@ -101,4 +101,33 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
 
+    // Mobile Shipper - Queue - Begin
+
+    @DeleteMapping(Fix.MAP_SHP + API)
+    public String cancelQueue() {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.stopQueue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+
+    @GetMapping(Fix.MAP_SHP + API)
+    public String startQueue(Double longitude, Double latitude) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.autoAssign(longitude, latitude);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    // Mobile Shipper - Queue - Begin
+
 }

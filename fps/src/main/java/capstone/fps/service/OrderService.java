@@ -9,12 +9,13 @@ import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
-import capstone.fps.model.order.MdlOrderDetail;
+import capstone.fps.model.ordermatch.*;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,14 +27,18 @@ public class OrderService {
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
+    private OrderMap orderMap;
+    private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, OrderMap orderMap, ShipperWait shipperWait) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
+        this.orderMap = orderMap;
+        this.shipperWait = shipperWait;
     }
 
 
@@ -111,7 +116,7 @@ public class OrderService {
             detailList.add(new MdlDetailCreate(frProduct, quantity));
             totalPrice += frProduct.getPrice() * quantity;
         }
-        FRStore store = detailList.get(0).getFrProduct().getStore();
+
         FROrder frOrder = new FROrder();
 
         frOrder.setAccount(currentUser);
@@ -122,7 +127,7 @@ public class OrderService {
         frOrder.setTotalPrice(totalPrice);
         frOrder.setBookTime(time);
         frOrder.setReceiveTime(null);
-        frOrder.setShipperEarn(methods.caculateShpEarn(longitude, latitude, store.getLongitude(), store.getLatitude()));
+        frOrder.setShipperEarn(null);
         frOrder.setShipAddress(null);
         frOrder.setDistrict(null);
         frOrder.setLongitude(longitude);
@@ -145,6 +150,9 @@ public class OrderService {
             frOrderDetail.setQuantity(detail.getQuantity());
             orderDetailRepository.save(frOrderDetail);
         }
+
+        orderMap.addOrder(frOrder, orderDetailRepository);
+
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
     }
@@ -325,7 +333,91 @@ public class OrderService {
         MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
         return response;
-
-
     }
+
+
+    // Mobile Shipper - Matching - Begin
+//    private OrderStat checkOrder(int layerNo, int col, int row) {
+//
+//    }
+
+
+    public Response<MdlOrder> autoAssign(double longitude, double latitude) {
+        int col = orderMap.convertLon(longitude);
+        int row = orderMap.convertLat(latitude);
+        Methods methods = new Methods();
+        long waitTime = methods.getTimeNow() + (3 * 60 * 1000);
+        Validator valid = new Validator();
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount currentUser = methods.getUser();
+        int accId = currentUser.getId();
+
+        shipperWait.setCancel(false);
+
+        while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
+            for (int layerNo = 0; layerNo <= 4; layerNo++) {
+                ArrayList<Delta> layer = (ArrayList<Delta>) orderMap.getLayer(layerNo).clone();
+                Collections.shuffle(layer);
+                for (Delta delta : layer) {
+                    int colNode = col + delta.col;
+                    int rowNode = row + delta.row;
+                    List<OrderStat> node = orderMap.getNode(colNode, rowNode).getStatList();
+                    if (node.size() > 0) {
+                        for (OrderStat order : node) {
+                            boolean claimable = true;
+                            if (order.isCancel() || order.getLockBy() != 0) {
+                                claimable = false;
+                            }
+                            if (claimable) {
+                                order.setLockBy(accId);
+                            }
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if (order.isCancel() || order.getLockBy() != accId) {
+                                claimable = false;
+                            }
+                            if (claimable) {
+                                orderMap.removeOrder(order, colNode, rowNode);
+                                FROrder frOrder = order.getFrOrder();
+                                frOrder.setShipper(currentUser.getShipper());
+                                frOrder.setShipperEarn(methods.caculateShpEarn(frOrder, orderDetailRepository, longitude, latitude));
+
+                                MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+                                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+                                return response;
+                            }
+
+                        }
+                    }
+                }
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (shipperWait.isCancel()) {
+            response.setResponse(Response.STATUS_SUCCESS, "cancel");
+            return response;
+        } else {
+            response.setResponse(Response.STATUS_SUCCESS, "time out");
+            return response;
+        }
+    }
+
+    public Response<MdlOrder> stopQueue() {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        shipperWait.setCancel(true);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
+    // Mobile Shipper - Matching - End
 }

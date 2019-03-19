@@ -1,13 +1,7 @@
 package capstone.fps.common;
 
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FRDistrict;
-import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FRStore;
-import capstone.fps.repository.AccountRepo;
-import capstone.fps.repository.DistrictRepo;
-import capstone.fps.repository.OrderRepo;
-import capstone.fps.repository.StoreRepo;
+import capstone.fps.entity.*;
+import capstone.fps.repository.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -100,9 +94,20 @@ public final class Methods {
     }
 
 
-    public double caculateShpEarn(double buyerLon, double buyerLat, double storeLon, double storeLat) {
-        double price = 14000;
+    public double caculateShpEarn(FROrder frOrder, OrderDetailRepo orderDetailRepo, double shipperLon, double shipperLat) {
+
+        double buyerLon = frOrder.getLongitude();
+        double buyerLat = frOrder.getLatitude();
+        List<FROrderDetail> orderDetails = orderDetailRepo.findAllByOrder(frOrder);
+        FRStore store = orderDetails.get(0).getProduct().getStore();
+        double storeLon = store.getLongitude();
+        double storeLat = store.getLatitude();
+
+        // GG API
         double dis = Math.sqrt((buyerLon - storeLon) * (buyerLon - storeLon) + (buyerLat - storeLat) * (buyerLat - storeLat)) * 40000 / 360;
+
+
+        double price = 14000;
         int kms = (int) Math.ceil(dis);
         if (kms > 0) {
             price += kms * 1000;

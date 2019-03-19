@@ -219,6 +219,5 @@ public class AccountController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
     // Mobile Mem - Profile - End
 }

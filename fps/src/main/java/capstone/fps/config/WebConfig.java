@@ -1,6 +1,7 @@
 package capstone.fps.config;
 
-import capstone.fps.model.AppData;
+import capstone.fps.model.ordermatch.OrderMap;
+import capstone.fps.model.ordermatch.ShipperWait;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -11,8 +12,15 @@ public class WebConfig {
 
     @Bean
     @Scope(value = WebApplicationContext.SCOPE_APPLICATION)
-    public AppData pref() {
-        return new AppData();
+    public OrderMap initQueue() {
+        return new OrderMap();
     }
+
+
+    @Bean
+    @Scope("singleton")
+    public ShipperWait shipperWait() {
+        return new ShipperWait();
+    };
 
 }

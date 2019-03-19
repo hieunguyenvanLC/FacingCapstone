@@ -9,7 +9,7 @@ import java.util.List;
 public interface Fix {
 
     //  360 / ≈40,000km
-    double DEGREE_PER_KM = 0.09;
+    double DEGREE_PER_KM = 0.009;
 
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
@@ -62,4 +62,7 @@ public interface Fix {
     Stat STO_NEW = new Stat(1, "new");
     Stat STO_HID = new Stat(2, "hidden");
     Stat[] STO_STAT_LIST = {STO_NEW, STO_HID};
+
+
+
 }
