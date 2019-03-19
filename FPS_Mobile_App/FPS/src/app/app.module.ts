@@ -19,6 +19,7 @@ import { HttpModule } from '@angular/http';
 
 import { Constant } from './common/constant';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { OrderService } from './services/order.service';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -31,6 +32,8 @@ var firebaseConfig = {
   storageBucket: "fpscustomer-project.appspot.com",
   messagingSenderId: "276178642720"
 };
+=======
+>>>>>>> parent of 65592e8... create order from customer - thangdp
 =======
 >>>>>>> parent of 65592e8... create order from customer - thangdp
 
@@ -56,7 +59,10 @@ import { FirebasecloudmessengerService } from './services/firebasecloudmessenger
     AccountService,
     StoreService,
 <<<<<<< HEAD
+<<<<<<< HEAD
     OrderService,
+=======
+>>>>>>> parent of 65592e8... create order from customer - thangdp
 =======
 >>>>>>> parent of 65592e8... create order from customer - thangdp
     Constant,
