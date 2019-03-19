@@ -20,4 +20,7 @@ public interface OrderRepo extends JpaRepository<FROrder, Integer> {
     public Integer countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(Long start, Long end);
 
     public Integer countAllBy();
+
+    List<FROrder> findAllByStatus(Integer status);
+
 }

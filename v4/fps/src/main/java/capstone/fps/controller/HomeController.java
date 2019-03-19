@@ -23,16 +23,22 @@ public class HomeController extends AbstractController {
         MdlReportSummary summary = new MdlReportSummary();
         Response response = new Response<MdlReportSummary>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        summary.setShipperCount(this.homeService.countShipper());
+        summary.setShipperCount(this.homeService.countShipper()); //Count All Shipper
 //        summary.setNewCustomerCount(this.homeService.countNewCus(mon, year));
-        summary.setCustomerCount(this.homeService.countCus());
+        summary.setCustomerCount(this.homeService.countCus());  //Count All Customer
 //        summary.setNewOrderCount(this.homeService.countNewOrder(mon, year));
-        summary.setOrderCount(this.homeService.countOrder());
+        summary.setOrderCount(this.homeService.countOrder());   //Count All Order
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
-        summary.setStoreCount(this.homeService.countStore());
-        summary.setOrderCountBy(this.homeService.countOrderBy(mon, year, day));
+        summary.setStoreCount(this.homeService.countStore());   //Count All Store
 
-        summary.setOrderCancelBy(this.homeService.countOrderCancelby(mon, year, day));
+
+        summary.setOrderCountBy(this.homeService.countOrderBy(mon, year, day)); //Count Order With Day Month Year
+
+        summary.setOrderCancelBy(this.homeService.countOrderCancelBy(mon, year, day));   //Count Order Cancel With Day Month Year
+
+        summary.setOrderSuccessBy(this.homeService.countOrderSuccessBy(mon, year, day));  //Count Order Success With Day Month Year
+
+
         response.setResponse(Response.STATUS_SUCCESS, "", summary);
         return gson.toJson(response);
     }

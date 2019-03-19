@@ -1,11 +1,13 @@
 package capstone.fps.service;
 
+import capstone.fps.entity.FROrder;
 import capstone.fps.entity.FRRole;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 @Service
 public class HomeService {
@@ -15,8 +17,10 @@ public class HomeService {
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private StoreRepo storeRepo;
+    private ProductRepo productRepo;
 
     public HomeService(
+            ProductRepo productRepo,
             ShipperRepo shipperRepo,
             AccountRepo accountRepo,
             RoleRepo roleRepo,
@@ -24,6 +28,7 @@ public class HomeService {
             OrderRepo orderRepository,
             OrderDetailRepo orderDetailRepository
     ) {
+        this.productRepo = productRepo;
         this.shipperRepo = shipperRepo;
         this.accountRepo = accountRepo;
         this.roleRepo = roleRepo;
@@ -31,6 +36,12 @@ public class HomeService {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
     }
+
+//    public int soldProductBy(int month, int year, int day) {
+//        List<FROrder> orderList = this.orderRepository.findAllByStatus(4);
+//
+//        return
+//    }
 
     public int countShipper() {
         FRRole role = this.roleRepo.findById(3).get();
@@ -69,16 +80,24 @@ public class HomeService {
 
     public int countOrderBy(int month, int year, int day) {
         long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day+1, 0, 0, 0);
+        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
         return this.orderRepository.countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
     }
 
-    public int countOrderCancelby(int month, int year, int day){
+    public int countOrderCancelBy(int month, int year, int day) {
         int status;
         long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day+1, 0, 0, 0);
-        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start,end);
+        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(5, start, end);
     }
+
+    public int countOrderSuccessBy(int month, int year, int day) {
+        int status;
+        long start = this.dateToUnix(year, month, day, 0, 0, 0);
+        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
+    }
+
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);
