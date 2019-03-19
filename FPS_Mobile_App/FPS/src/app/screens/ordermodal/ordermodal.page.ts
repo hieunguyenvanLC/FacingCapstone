@@ -39,18 +39,18 @@ export class OrdermodalPage implements OnInit {
       const element = this.products[i];
       if (element != undefined) {
         if (i == this.products.length - 1) {
-          this.prodList += element.id + "x" + element.quantity;
+          //this.prodList += element.id + "x" + element.quantity;
         } else {
-          this.prodList += element.id + "x" + element.quantity + "n";
+          //this.prodList += element.id + "x" + element.quantity + "n";
         }
       }
 
 
     }
-    this.orderService.createOrder(this.longutudeCus, this.latitudeCus,  "", this.prodList)
-                     .subscribe(data => {
-                       console.log(data);
-                     });
+    // this.orderService.createOrder(this.longutudeCus, this.latitudeCus,  "", this.prodList)
+    //                  .subscribe(data => {
+    //                    console.log(data);
+    //                  });
 
 
     

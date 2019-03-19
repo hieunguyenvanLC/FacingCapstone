@@ -85,7 +85,7 @@
     <plugin name="cordova-plugin-camera" spec="4.0.3" />
     <allow-navigation href="http://192.168.100.79:8100" sessionid="4295a62c" />
     <allow-navigation href="http://192.168.43.247:8101" sessionid="d28ff63e" />
+    <plugin name="cordova-plugin-firebase" spec="2.0.5" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
-    <plugin name="cordova-plugin-firebase" spec="2.0.5" />
 </widget>
