@@ -23,11 +23,13 @@ data :any;
 
   registerForm: FormGroup;
 
+  myphoto : any;
+
   constructor(
     public router: Router,
     public alertController: AlertController,
     public accountService : AccountService,
-    //private camera: Camera
+    private camera: Camera
   ) {
 
 
@@ -67,6 +69,7 @@ data :any;
             console.log('Confirm Okay ' + this.phoneNumber);
             //this.openCamera();
             //this.router.navigateByUrl('home');
+            this.takePhoto();
           }
         }
       ]
@@ -84,5 +87,22 @@ data :any;
       }),err=>{
     console.log(err);
     };
+    }
+
+    takePhoto() {
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE
+      }
+  
+      this.camera.getPicture(options).then((imageData) => {
+        // imageData is either a base64 encoded string or a file URI
+        // If it's base64 (DATA_URL):
+        this.myphoto = 'data:image/jpeg;base64,' + imageData;
+      }, (err) => {
+        // Handle error
+      });
     }
 }
