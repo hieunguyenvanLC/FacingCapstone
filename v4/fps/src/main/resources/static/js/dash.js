@@ -36,9 +36,9 @@ $(document).ready(function () {
             console.log(response.data);
             var summary = response.data;
             $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
-            $("#lbNewCus").html("<strong>" + summary.newCustomerCount + "</strong>");
-            $("#lbNewStores").html("<strong>" + summary.newStoreCount + "</strong>");
-            $("#lbNewOrder").html("<strong>" + summary.newOrderCount + "</strong>");
+            $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
+            $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
+            $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
         },
         error: function (err) {
             console.log(err);

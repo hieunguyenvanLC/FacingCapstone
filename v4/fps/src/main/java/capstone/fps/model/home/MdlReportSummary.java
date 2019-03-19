@@ -4,9 +4,34 @@ import com.google.gson.annotations.Expose;
 
 public class MdlReportSummary {
     @Expose
-    private int shipperCount;
+    private int shipperCount; //Count all shipper
     @Expose
-    private int newCustomerCount;
+    private int CustomerCount; //count all customer
+    @Expose
+    private int StoreCount; //count all store
+    @Expose
+    private int OrderCount; // count all order
+    @Expose
+    private int orderCountBy; //count order with day month year
+    @Expose
+    private int orderCancelBy; //Count order cancel with day month year
+
+
+    public int getOrderCancelBy() {
+        return orderCancelBy;
+    }
+
+    public void setOrderCancelBy(int orderCancelBy) {
+        this.orderCancelBy = orderCancelBy;
+    }
+
+    public int getOrderCountBy() {
+        return orderCountBy;
+    }
+
+    public void setOrderCountBy(int orderCountBy) {
+        this.orderCountBy = orderCountBy;
+    }
 
     public int getShipperCount() {
         return shipperCount;
@@ -16,32 +41,27 @@ public class MdlReportSummary {
         this.shipperCount = shipperCount;
     }
 
-    public int getNewCustomerCount() {
-        return newCustomerCount;
+    public int getCustomerCount() {
+        return CustomerCount;
     }
 
-    public void setNewCustomerCount(int newCustomerCount) {
-        this.newCustomerCount = newCustomerCount;
+    public void setCustomerCount(int customerCount) {
+        CustomerCount = customerCount;
     }
 
-    public int getNewStoreCount() {
-        return newStoreCount;
+    public int getStoreCount() {
+        return StoreCount;
     }
 
-    public void setNewStoreCount(int newStoreCount) {
-        this.newStoreCount = newStoreCount;
+    public void setStoreCount(int storeCount) {
+        StoreCount = storeCount;
     }
 
-    public int getNewOrderCount() {
-        return newOrderCount;
+    public int getOrderCount() {
+        return OrderCount;
     }
 
-    public void setNewOrderCount(int newOrderCount) {
-        this.newOrderCount = newOrderCount;
+    public void setOrderCount(int orderCount) {
+        OrderCount = orderCount;
     }
-
-    @Expose
-    private int newStoreCount;
-    @Expose
-    private int newOrderCount;
 }

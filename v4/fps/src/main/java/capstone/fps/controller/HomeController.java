@@ -19,18 +19,20 @@ public class HomeController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_ANY + API + "/summary")
-    public String showSummaryReport(@RequestParam("mon") Integer mon, @RequestParam("year") Integer year) {
+    public String showSummaryReport(@RequestParam("mon") Integer mon, @RequestParam("year") Integer year, @RequestParam("day") Integer day) {
         MdlReportSummary summary = new MdlReportSummary();
         Response response = new Response<MdlReportSummary>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        summary.setShipperCount(this.homeService.countNewShipper());
+        summary.setShipperCount(this.homeService.countShipper());
 //        summary.setNewCustomerCount(this.homeService.countNewCus(mon, year));
-        summary.setNewCustomerCount(this.homeService.countNewCus());
+        summary.setCustomerCount(this.homeService.countCus());
 //        summary.setNewOrderCount(this.homeService.countNewOrder(mon, year));
-        summary.setNewOrderCount(this.homeService.countNewOrder());
+        summary.setOrderCount(this.homeService.countOrder());
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
-        summary.setNewStoreCount(this.homeService.countNewStore());
+        summary.setStoreCount(this.homeService.countStore());
+        summary.setOrderCountBy(this.homeService.countOrderBy(mon, year, day));
 
+        summary.setOrderCancelBy(this.homeService.countOrderCancelby(mon, year, day));
         response.setResponse(Response.STATUS_SUCCESS, "", summary);
         return gson.toJson(response);
     }
