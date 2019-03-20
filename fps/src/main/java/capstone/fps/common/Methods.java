@@ -79,7 +79,7 @@ public final class Methods {
         if (bytes == null) {
             return null;
         }
-        return "data:image/png;base64," + StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false));
+        return "data:image/jpg;base64," + StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false));
     }
 
     public byte[] multipartToBytes(MultipartFile input) {

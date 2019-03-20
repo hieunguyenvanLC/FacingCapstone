@@ -49,56 +49,65 @@ public class AccountService {
         return optional.orElse(null);
     }
 
-//    // find User detail by phone
-//    public FRAccount findByPhone(String phone) {
-//        Optional<FRAccount> optional = accountRepo.findByPhone(phone);
-//        if (!optional.isPresent()) {
-//            throw new UsernameNotFoundException("User not found");
+//    public boolean banAccount(Integer accountId, String reason) {
+//        Methods methods = new Methods();
+//
+//        if (accountId == null) {
+//            return false;
 //        }
-//        return optional.get();
+//        if (methods.getUser().getId().equals(accountId)) {
+//            return false;
+//        }
+//        Optional<FRAccount> optional = accountRepo.findById(accountId);
+//        if (!optional.isPresent()) {
+//            return false;
+//        }
+//        if (methods.nullOrSpace(reason)) {
+//            reason = "";
+//        }
+//
+//        FRAccount frAccount = optional.get();
+//        frAccount.setDeleteTime(methods.getTimeNow());
+//        frAccount.setStatus(Fix.ACC_BAN.index);
+//        frAccount.setNote(reason);
+//        frAccount.setEditor(methods.getUser());
+//        accountRepo.save(frAccount);
+//        return true;
+//    }
+//
+//    public boolean activateAccount(Integer accountId, String reason) {
+//        Methods methods = new Methods();
+//
+//        if (accountId == null) {
+//            return false;
+//        }
+//        Optional<FRAccount> optional = accountRepo.findById(accountId);
+//        if (!optional.isPresent()) {
+//            return false;
+//        }
+//        if (methods.nullOrSpace(reason)) {
+//            reason = "";
+//        }
+//
+//        FRAccount frAccount = optional.get();
+//        frAccount.setUpdateTime(methods.getTimeNow());
+//        frAccount.setStatus(Fix.ACC_NEW.index);
+//        frAccount.setNote(reason);
+//        frAccount.setEditor(methods.getUser());
+//        accountRepo.save(frAccount);
+//        return true;
 //    }
 
-    public Response createAccountMember(String phone, String pass, String name) {
-        Methods methods = new Methods();
-        Validator valid = new Validator();
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
-        phone = valid.checkPhone(phone);
-        if (phone == null) {
-            response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
-            return response;
+    // Web Admin - Member - Begin
+    public Response<List<MdlAccount>> getListMember() {
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
+        List<MdlAccount> accList = new ArrayList<>();
+        for (FRAccount frAccount : frAccountList) {
+            accList.add(mdlMemberBuilder.buildMemDetailAdm(frAccount));
         }
-
-        FRAccount frAccount = new FRAccount();
-        frAccount.setPhone(phone);
-        frAccount.setRole(initRole(Fix.ROL_MEM));
-        frAccount.setPassword(methods.hashPass(pass));
-        frAccount.setName(name);
-        frAccount.setExtraPoint(0);
-        frAccount.setReportPoint(0);
-        frAccount.setCreateTime(methods.getTimeNow());
-        frAccount.setNote("");
-        frAccount.setStatus(Fix.ACC_NEW.index);
-        accountRepo.save(frAccount);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
-    }
-
-
-    public Response editProfileMember(String name, String email, long dob, String note) {
-        Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
-
-        currentUser.setName(name.trim());
-        currentUser.setEmail(email.trim());
-        currentUser.setDateOfBirth(dob);
-        currentUser.setUpdateTime(methods.getTimeNow());
-
-        currentUser.setEditor(methods.getUser());
-        accountRepo.save(currentUser);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
         return response;
     }
 
@@ -130,75 +139,8 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
+    // Web Admin - Member - End
 
-
-    public Response<List<MdlAccount>> getListMember() {
-        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
-        List<MdlAccount> accList = new ArrayList<>();
-        for (FRAccount frAccount : frAccountList) {
-            accList.add(mdlMemberBuilder.buildMemDetailAdm(frAccount));
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
-        return response;
-    }
-
-//    public boolean updateProfileMember(String phone, String pass, String name, String email, byte[] userImg, String natId, long natDate, long dob, String note) {
-//        Methods methods = new Methods();
-//        Validator valid = new Validator();
-//
-//        return false;
-//    }
-
-    public boolean banAccount(Integer accountId, String reason) {
-        Methods methods = new Methods();
-
-        if (accountId == null) {
-            return false;
-        }
-        if (methods.getUser().getId().equals(accountId)) {
-            return false;
-        }
-        Optional<FRAccount> optional = accountRepo.findById(accountId);
-        if (!optional.isPresent()) {
-            return false;
-        }
-        if (methods.nullOrSpace(reason)) {
-            reason = "";
-        }
-
-        FRAccount frAccount = optional.get();
-        frAccount.setDeleteTime(methods.getTimeNow());
-        frAccount.setStatus(Fix.ACC_BAN.index);
-        frAccount.setNote(reason);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        return true;
-    }
-
-    public boolean activateAccount(Integer accountId, String reason) {
-        Methods methods = new Methods();
-
-        if (accountId == null) {
-            return false;
-        }
-        Optional<FRAccount> optional = accountRepo.findById(accountId);
-        if (!optional.isPresent()) {
-            return false;
-        }
-        if (methods.nullOrSpace(reason)) {
-            reason = "";
-        }
-
-        FRAccount frAccount = optional.get();
-        frAccount.setUpdateTime(methods.getTimeNow());
-        frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setNote(reason);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        return true;
-    }
 
     // Web - Admin - Begin
     public Response createAccountAdmin(String phone, String pass, String name, String email, String natId, long natDate, long dob, String note) {
@@ -306,8 +248,8 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
         return response;
     }
-
     // Web - Admin - End
+
 
     // Web - Shipper - Begin
     public Response<MdlShipper> createShipper(String phone, String password, String name, Integer sourceId, long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, String natId, long natDate, String bikeRegId, long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
@@ -501,6 +443,43 @@ public class AccountService {
     }
     // Web - Shipper - End
 
+    // Mobile Member - Register - Begin
+    public Response createAccountMember(String phone, String pass, String name, MultipartFile face) {
+        Methods methods = new Methods();
+        Validator valid = new Validator();
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        phone = valid.checkPhone(phone);
+        if (phone == null) {
+            response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
+            return response;
+        }
+
+        FRAccount frAccount = new FRAccount();
+        frAccount.setPhone(phone);
+        frAccount.setRole(initRole(Fix.ROL_MEM));
+        frAccount.setPassword(methods.hashPass(pass));
+        frAccount.setName(name);
+        frAccount.setEmail("");
+        frAccount.setExtraPoint(0);
+        frAccount.setReportPoint(0);
+        frAccount.setUserImage(methods.multipartToBytes(face));
+        frAccount.setNatId(null);
+        frAccount.setNatDate(null);
+        frAccount.setDateOfBirth(null);
+        frAccount.setCreateTime(methods.getTimeNow());
+        frAccount.setNote("");
+        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setEditor(null);
+        accountRepo.save(frAccount);
+        // train here
+
+
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+    // Mobile Member - Register - End
+
     // Mobile Mem - Profile - Begin
     public Response<MdlAccount> getMemberDetailMem() {
         Methods methods = new Methods();
@@ -512,7 +491,6 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAccount);
         return response;
     }
-
 
     public Response<MdlAccount> updateMemberDetailMem(String name, String email, Long dob) {
         Methods methods = new Methods();
@@ -543,18 +521,12 @@ public class AccountService {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         if (face != null) {
-            try {
-                currentUser.setUserImage(face.getBytes());
-            } catch (IOException e) {
-                response.setResponse(Response.STATUS_FAIL, "Cant read img");
-                e.printStackTrace();
-                return response;
-            }
+            currentUser.setUserImage(methods.multipartToBytes(face));
         }
+        accountRepo.save(currentUser);
         // train here
 
         
-        accountRepo.save(currentUser);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
