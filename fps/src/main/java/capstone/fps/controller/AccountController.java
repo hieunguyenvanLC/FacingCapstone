@@ -198,7 +198,7 @@ public class AccountController extends AbstractController {
     // Mobile Mem - Profile - Begin
     @GetMapping(Fix.MAP_MEM + API + "/detail")
     public String getMemberDetailMem() {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getMemberDetailMem();
         } catch (Exception e) {
@@ -210,9 +210,21 @@ public class AccountController extends AbstractController {
 
     @PutMapping(Fix.MAP_MEM + API )
     public String updateMemberDetailMem(String name, String email, Long dob) {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateMemberDetailMem(name, email, dob);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_MEM + API+ "/face" )
+    public String updateMemberDetailMem(MultipartFile face) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateMemberFaceMem(face);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -533,6 +534,28 @@ public class AccountService {
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
         MdlAccount mdlAccount = mdlMemberBuilder.buildMemDetailMem(currentUser);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAccount);
+        return response;
+    }
+
+    public Response<String> updateMemberFaceMem(MultipartFile face) {
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        if (face != null) {
+            try {
+                currentUser.setUserImage(face.getBytes());
+            } catch (IOException e) {
+                response.setResponse(Response.STATUS_FAIL, "Cant read img");
+                e.printStackTrace();
+                return response;
+            }
+        }
+        // train here
+
+        
+        accountRepo.save(currentUser);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
     // Mobile Mem - Profile - End
