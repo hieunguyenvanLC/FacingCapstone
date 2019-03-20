@@ -6,6 +6,7 @@ import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -98,8 +99,27 @@ public class HomeService {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
     }
 
+    public Integer sumProductByOrder(int month, int year, int day) {
+        long start = this.dateToUnix(year, month, day, 0, 0, 0);
+        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+        return this.orderRepository.sumSoldProduct(1, start, end);
+    }
+
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
+        YearMonth yearMonthObject = YearMonth.of(year, month);
+        Integer daysInMonth = yearMonthObject.lengthOfMonth();
+
+        if (days > daysInMonth) {
+            days = 1;
+            if (month == 12) {
+                month = 1;
+                year++;
+            } else {
+                month++;
+            }
+        }
+
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);
         return dateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }

@@ -2,6 +2,8 @@ package capstone.fps.model.home;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 public class MdlReportSummary {
     @Expose
     private int shipperCount; //Count all shipper
@@ -12,44 +14,85 @@ public class MdlReportSummary {
     @Expose
     private int OrderCount; // count all order
     @Expose
-    private int orderCountBy; //count order with day month year
+    private List<Integer> orders;
     @Expose
-    private int orderCancelBy; //Count order cancel with day month year
+    private List<Integer> canceledOrders;
     @Expose
-    private int orderSuccessBy;  //Count order success with day month year
+    private List<Integer> successOrders;
     @Expose
-    private int soldProductBy;  //Count product sold with day month year
+    private List<String> labels;
+//    @Expose
+//    private int orderCountBy; //count order with day month year
+//    @Expose
+//    private int orderCancelBy; //Count order cancel with day month year
+//    @Expose
+//    private int orderSuccessBy;  //Count order success with day month year
+//    @Expose
+//    private int soldProductBy;  //Count product sold with day month year
 
-    public int getSoldProductBy() {
-        return soldProductBy;
+//    public int getSoldProductBy() {
+//        return soldProductBy;
+//    }
+//
+//    public void setSoldProductBy(int soldProductBy) {
+//        this.soldProductBy = soldProductBy;
+//    }
+//
+//    public int getOrderSuccessBy() {
+//        return orderSuccessBy;
+//    }
+//
+//    public void setOrderSuccessBy(int orderSuccessBy) {
+//        this.orderSuccessBy = orderSuccessBy;
+//    }
+//
+//    public int getOrderCancelBy() {
+//        return orderCancelBy;
+//    }
+//
+//    public void setOrderCancelBy(int orderCancelBy) {
+//        this.orderCancelBy = orderCancelBy;
+//    }
+//
+//    public int getOrderCountBy() {
+//        return orderCountBy;
+//    }
+//
+//    public void setOrderCountBy(int orderCountBy) {
+//        this.orderCountBy = orderCountBy;
+//    }
+
+
+    public List<Integer> getOrders() {
+        return orders;
     }
 
-    public void setSoldProductBy(int soldProductBy) {
-        this.soldProductBy = soldProductBy;
+    public void setOrders(List<Integer> orders) {
+        this.orders = orders;
     }
 
-    public int getOrderSuccessBy() {
-        return orderSuccessBy;
+    public List<Integer> getCanceledOrders() {
+        return canceledOrders;
     }
 
-    public void setOrderSuccessBy(int orderSuccessBy) {
-        this.orderSuccessBy = orderSuccessBy;
+    public void setCanceledOrders(List<Integer> canceledOrders) {
+        this.canceledOrders = canceledOrders;
     }
 
-    public int getOrderCancelBy() {
-        return orderCancelBy;
+    public List<Integer> getSuccessOrders() {
+        return successOrders;
     }
 
-    public void setOrderCancelBy(int orderCancelBy) {
-        this.orderCancelBy = orderCancelBy;
+    public void setSuccessOrders(List<Integer> successOrders) {
+        this.successOrders = successOrders;
     }
 
-    public int getOrderCountBy() {
-        return orderCountBy;
+    public List<String> getLabels() {
+        return labels;
     }
 
-    public void setOrderCountBy(int orderCountBy) {
-        this.orderCountBy = orderCountBy;
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
     }
 
     public int getShipperCount() {

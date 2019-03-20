@@ -1,3 +1,4 @@
+var barChartExample;
 
 $(document).ready(function () {
 //     // $('body').bootstrapMaterialDesign();
@@ -39,6 +40,57 @@ $(document).ready(function () {
             $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
             $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
             $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
+
+            var BARCHARTEXMPLE = $('#barChartExample');
+            barChartExample = new Chart(BARCHARTEXMPLE, {
+                type: 'bar',
+                options: {
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                color: '#eee'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            gridLines: {
+                                color: '#eee'
+                            }
+                        }]
+                    },
+                    onClick: handleBarClick
+                },
+                data: {
+                    labels: summary.labels,
+                    datasets: [
+                        {
+                            label: "Orders",
+                            backgroundColor: 'rgba(255, 119, 119, 0.94)',
+                            hoverBackgroundColor: 'rgba(255, 119, 119, 0.94)',
+                            borderColor: 'rgba(255, 119, 119, 0.94)',
+                            borderWidth: 1,
+                            data: summary.orders,
+                        },
+                        {
+                            label: "Canceled Orders",
+                            backgroundColor: 'rgba(76, 162, 205, 0.85)',
+                            hoverBackgroundColor: 'rgba(76, 162, 205, 0.85)',
+                            borderColor: 'rgba(76, 162, 205, 0.85)',
+                            borderWidth: 1,
+                            data: summary.canceledOrders,
+                        },
+                        {
+                            label: "Success Orders",
+                            backgroundColor: '#3eb579',
+                            hoverBackgroundColor: '#3eb579',
+                            borderColor: '#3eb579',
+                            borderWidth: 1,
+                            data: summary.successOrders,
+                        }
+                    ]
+                }
+            });
         },
         error: function (err) {
             console.log(err);
@@ -46,6 +98,38 @@ $(document).ready(function () {
     });
 });
 
+function handleBarClick(evt) {
+    var activeElement = barChartExample.getElementAtEvent(evt);
+
+    if (!activeElement.length) {
+        $("#valOrderCnt").html("--");
+        $("#valCanceledOrderCnt").html("--");
+        $("#valSuccessOrderCnt").html("--");
+        $("#valRateOrder").html("--");
+        $("#valSoldProductCnt").html("--");
+        return;
+    }
+
+    var day = activeElement[0]._model.label;
+
+    $.ajax({
+        url: "/any/api/report/summaryDetail?year=2019&mon=3&day=" + day,
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            var detail = response.data;
+            console.log(detail);
+            $("#valOrderCnt").html(detail.orderCountBy);
+            $("#valCanceledOrderCnt").html(detail.orderCancelBy);
+            $("#valSuccessOrderCnt").html(detail.orderSuccessBy);
+            $("#valRateOrder").html((1.0 * detail.orderSuccessBy / detail.orderCountBy).toFixed(2) + '%');
+            $("#valSoldProductCnt").html(detail.soldProductBy);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
 
 function fpsFormatDate(date) {
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
