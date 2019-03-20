@@ -4,21 +4,25 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.*;
+import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FROrderDetail;
+import capstone.fps.entity.FRProduct;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
-import capstone.fps.model.ordermatch.*;
+import capstone.fps.model.ordermatch.Delta;
+import capstone.fps.model.ordermatch.OrderMap;
+import capstone.fps.model.ordermatch.OrderStat;
+import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -314,6 +318,20 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getStatus());
         return response;
     }
+
+    public Response<MdlOrder> getOrderDetailMem(Integer orderId) {
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Repo repo = new Repo();
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+    }
+
 
     public Response<MdlOrder> cancelOrderMem(int orderId, int col, int row) {
         Methods methods = new Methods();

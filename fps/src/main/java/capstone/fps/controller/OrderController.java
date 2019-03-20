@@ -86,6 +86,18 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
 
+    @GetMapping(Fix.MAP_MEM + API + "/detail")
+    public String getOrderDetailMem(Integer orderId) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderDetailMem(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
     @DeleteMapping(Fix.MAP_MEM + API)
     public String cancelOrderMem(Integer orderId, Integer col, Integer row) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -111,7 +123,6 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
 
     @GetMapping(Fix.MAP_SHP + API)
     public String startQueue(Double longitude, Double latitude) {
