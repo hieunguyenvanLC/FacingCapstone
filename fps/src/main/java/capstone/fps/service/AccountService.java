@@ -35,7 +35,6 @@ public class AccountService {
         this.shipperRepo = shipperRepo;
     }
 
-
     private FRRole initRole(String name) {
         Optional<FRRole> optional;
         optional = roleRepo.findByName(name);
@@ -49,54 +48,54 @@ public class AccountService {
         return optional.orElse(null);
     }
 
-//    public boolean banAccount(Integer accountId, String reason) {
-//        Methods methods = new Methods();
-//
-//        if (accountId == null) {
-//            return false;
-//        }
-//        if (methods.getUser().getId().equals(accountId)) {
-//            return false;
-//        }
-//        Optional<FRAccount> optional = accountRepo.findById(accountId);
-//        if (!optional.isPresent()) {
-//            return false;
-//        }
-//        if (methods.nullOrSpace(reason)) {
-//            reason = "";
-//        }
-//
-//        FRAccount frAccount = optional.get();
-//        frAccount.setDeleteTime(methods.getTimeNow());
-//        frAccount.setStatus(Fix.ACC_BAN.index);
-//        frAccount.setNote(reason);
-//        frAccount.setEditor(methods.getUser());
-//        accountRepo.save(frAccount);
-//        return true;
-//    }
-//
-//    public boolean activateAccount(Integer accountId, String reason) {
-//        Methods methods = new Methods();
-//
-//        if (accountId == null) {
-//            return false;
-//        }
-//        Optional<FRAccount> optional = accountRepo.findById(accountId);
-//        if (!optional.isPresent()) {
-//            return false;
-//        }
-//        if (methods.nullOrSpace(reason)) {
-//            reason = "";
-//        }
-//
-//        FRAccount frAccount = optional.get();
-//        frAccount.setUpdateTime(methods.getTimeNow());
-//        frAccount.setStatus(Fix.ACC_NEW.index);
-//        frAccount.setNote(reason);
-//        frAccount.setEditor(methods.getUser());
-//        accountRepo.save(frAccount);
-//        return true;
-//    }
+    public boolean banAccount(Integer accountId, String reason) {
+        Methods methods = new Methods();
+
+        if (accountId == null) {
+            return false;
+        }
+        if (methods.getUser().getId().equals(accountId)) {
+            return false;
+        }
+        Optional<FRAccount> optional = accountRepo.findById(accountId);
+        if (!optional.isPresent()) {
+            return false;
+        }
+        if (methods.nullOrSpace(reason)) {
+            reason = "";
+        }
+
+        FRAccount frAccount = optional.get();
+        frAccount.setDeleteTime(methods.getTimeNow());
+        frAccount.setStatus(Fix.ACC_BAN.index);
+        frAccount.setNote(reason);
+        frAccount.setEditor(methods.getUser());
+        accountRepo.save(frAccount);
+        return true;
+    }
+
+    public boolean activateAccount(Integer accountId, String reason) {
+        Methods methods = new Methods();
+
+        if (accountId == null) {
+            return false;
+        }
+        Optional<FRAccount> optional = accountRepo.findById(accountId);
+        if (!optional.isPresent()) {
+            return false;
+        }
+        if (methods.nullOrSpace(reason)) {
+            reason = "";
+        }
+
+        FRAccount frAccount = optional.get();
+        frAccount.setUpdateTime(methods.getTimeNow());
+        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setNote(reason);
+        frAccount.setEditor(methods.getUser());
+        accountRepo.save(frAccount);
+        return true;
+    }
 
     // Web Admin - Member - Begin
     public Response<List<MdlAccount>> getListMember() {
@@ -526,7 +525,7 @@ public class AccountService {
         accountRepo.save(currentUser);
         // train here
 
-        
+
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }

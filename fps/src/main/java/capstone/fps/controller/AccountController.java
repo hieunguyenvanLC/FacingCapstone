@@ -29,6 +29,34 @@ public class AccountController extends AbstractController {
     }
 
 
+    @DeleteMapping(Fix.MAP_ADM + API)
+    public String deactivateAccount(Integer accountId, String reason) {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            if (accountService.banAccount(accountId, reason)) {
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_ADM + API + "/activate")
+    public String activateAccount(Integer accountId, String reason) {
+        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            if (accountService.activateAccount(accountId, reason)) {
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
     // Admin Web - Member - Begin
     @GetMapping(Fix.MAP_ADM + API + "/mem")
     public String getAccountMemberList() {
@@ -144,34 +172,6 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
     // Admin Web - Admin - End
-
-//    @DeleteMapping(Fix.MAP_ADM + API)
-//    public String deactivateAccount(Integer accountId, String reason) {
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            if (accountService.banAccount(accountId, reason)) {
-//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
-//
-//    @PutMapping(Fix.MAP_ADM + API + "/activate")
-//    public String activateAccount(Integer accountId, String reason) {
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            if (accountService.activateAccount(accountId, reason)) {
-//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
 
 
     // Mobile Mem - Register - Begin
