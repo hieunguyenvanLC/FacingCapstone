@@ -61,6 +61,10 @@
     <!-- End Fullname-->
   </ion-grid>
   <div padding class="item-center">
-    <ion-button color="primary" (click)="onSubmit()" >Sign Up</ion-button>
+    <ion-button color="primary" (click)="presentAlertConfirm()" >Take picture</ion-button>
+  </div>
+  <img src="{{ myPhoto }}">
+  <div padding class="item-center">
+    <ion-button color="primary" (click)="onSubmit()">Sign Up</ion-button>
   </div>
 </ion-content>

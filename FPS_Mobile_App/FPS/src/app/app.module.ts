@@ -22,6 +22,11 @@ import { OrderService } from './services/order.service';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+
+import { Camera } from '@ionic-native/camera/ngx';
+
 var firebaseConfig = {
   apiKey: "AIzaSyColKpNZnt8yHEHeQlPVRf-jTYy2j9UvnY",
   authDomain: "fpscustomer-project.firebaseapp.com",
@@ -33,6 +38,8 @@ var firebaseConfig = {
 
 import { Firebase } from '@ionic-native/firebase';
 import { FirebasecloudmessengerService } from './services/firebasecloudmessenger.service'
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LoadingService } from './services/loading.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,6 +62,11 @@ import { FirebasecloudmessengerService } from './services/firebasecloudmessenger
     OrderService,
     Constant,
     FirebasecloudmessengerService,
+    Geolocation,
+    NativeGeocoder,
+    NativeStorage,
+    Camera,
+    LoadingService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -28,15 +28,30 @@ export class AccountService {
     return this.apiHttpService.post(this.constant.LOGIN, formData);
   }
 
-  sendcreate( txtPhone, txtPassword, txtFullName ): Observable<any> {
+  sendcreate( txtPhone, txtPassword, txtFullName, image ): Observable<any> {
     // var headers = new Headers();
     // headers.append("Content-Type", "application/json; chartset=utf-8");
     let formData :FormData = new FormData();
     formData.append('phoneNumber', txtPhone);
     formData.append('password', txtPassword);
     formData.append('fullName', txtFullName);
+    formData.append('face', image);
     //return this.HttpClient.post(this.createApi , formData);
-    return this.apiHttpService.post(this.constant.MAP_ANY + this.constant.MAP_API + this.constant.SIGNUP,formData);
+    return this.apiHttpService.post(this.constant.MAP_ANY + this.constant.MAP_API + this.constant.ACCOUNT,formData);
+  }
+
+  updateImageMember(image){
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API +
+                                   this.constant.ACCOUNT +
+                                   "/face", image);
+  }
+
+  getDetailUser(){
+    return this.apiHttpService.get(this.constant.MAP_MEM +
+                                   this.constant.MAP_API +
+                                   this.constant.ACCOUNT +
+                                   "/detail");
   }
 
 }

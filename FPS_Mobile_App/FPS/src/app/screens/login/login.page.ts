@@ -4,6 +4,7 @@ import { AccountService } from '../../services/account.service';
 import { Firebase } from '@ionic-native/firebase/ngx'
 import { ToastController } from '@ionic/angular';
 import { element } from '../../../../node_modules/protractor';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginPage implements OnInit {
     private accountService: AccountService,
     private firebase: Firebase,
     private toastCtrl : ToastController,
+    private nativeStorage: NativeStorage,
   ) { }
 
   ngOnInit() {
@@ -53,27 +55,32 @@ export class LoginPage implements OnInit {
   async login() {
     this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
       //console.log(this.phonenumber + "  " + this.password);
-      console.log(res.toString());
+      console.log(res);
       //let body = res.json();  // If response is a JSON use json()
       this.account.push(res);
-      console.log(this.account[0].data.length);
-      let role;
-      let accountID;
+      console.log(this.account[0].data);
+      console.log(this.account[0].status_code);
       
-      for (let index = 0; index < this.account[0].data.length; index++) {
-        const element = this.account[0].data[index];
-        if (index === this.account[0].data.length -1){
-          accountID = element.replace("Account ID: ", "");
-        }else{
-          role = element.replace("Role: ", "");
-        }
+      // let role;
+      // let accountID;
+      
+      // for (let index = 0; index < this.account[0].data.length; index++) {
+      //   const element = this.account[0].data[index];
+      //   if (index === this.account[0].data.length -1){
+      //     accountID = element.replace("Account ID: ", "");
+      //   }else{
+      //     role = element.replace("Role: ", "");
+      //   }
         
-      }
-      console.log("role : " + role + "// ID :" + accountID);
+      // }
+      // console.log("role : " + role + "// ID :" + accountID);
       if (this.account) {
-        if (role === "ROLE_MEMBER") {
+        //if (role === "ROLE_MEMBER"){
+        if (this.account[0].data === "ROLE_MEMBER") {
           //console.log("vo home")
+          this.nativeStorage.setItem("MYACCOUNT", {phoneNumber: this.phonenumber, role: this.account[0].data})
           this.router.navigateByUrl("home");
+
         }else{
           this.error = "Wrong username or password";
         }
@@ -82,7 +89,7 @@ export class LoginPage implements OnInit {
       }
     }), err => {
       console.log(err);
-    };;
+    };
 
 
   }

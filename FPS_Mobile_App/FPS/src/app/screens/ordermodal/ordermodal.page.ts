@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavParams, ModalController } from 'node_modules/@ionic/angular';
 import { OrderService } from 'src/app/services/order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ordermodal',
@@ -18,7 +19,7 @@ export class OrdermodalPage implements OnInit {
 
   longutudeCus = "106.67927390539103";
   latitudeCus = "10.82767617410066";
-  prodList= "";
+  prodList = "";
 
   deliveryFees: number;
   total: number;
@@ -27,8 +28,8 @@ export class OrdermodalPage implements OnInit {
   constructor(
     private navParams: NavParams,
     private modalController: ModalController,
-    private orderService : OrderService,
-
+    private orderService: OrderService,
+    public router: Router,
   ) {
     // componentProps can also be accessed at construction time using NavParams
   }
@@ -53,9 +54,12 @@ export class OrdermodalPage implements OnInit {
 
 
     }
-    this.orderService.createOrder(this.longutudeCus, this.latitudeCus,  "", this.prodList)
-                     .subscribe(data => {
-                       console.log(data);
-                     });
+    //this.router.navigateByUrl("order");
+    this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
+      .subscribe(data => {
+        console.log(data);
+      });
+
+    
   }
 }

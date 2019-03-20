@@ -30,3 +30,21 @@ open -a Google\ Chrome --args --disable-web-security --user-data-dir
 
 for fireBase:
 npm install firebase angularfire2
+
+-------------------------------
+
+Geolocation:
+ionic cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="To locate you"
+npm install --save @ionic-native/geolocation@beta
+
+Geocoder:
+ionic cordova plugin add cordova-plugin-nativegeocoder
+npm install --save @ionic-native/native-geocoder@beta
+
+typescript google-maps:
+npm install @types/google-maps --save
+
+native-storage:
+ionic cordova plugin add cordova-plugin-nativestorage
+npm install @ionic-native/native-storage
+

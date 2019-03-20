@@ -10,7 +10,8 @@ const routes: Routes = [
   { path: 'store/:id', loadChildren: './screens/store/store.module#StorePageModule' },
   { path: 'registor', loadChildren: './screens/registor/registor.module#RegistorPageModule' },
   { path: 'order', loadChildren: './screens/order/order.module#OrderPageModule' },
-  { path: 'ordermodal', loadChildren: './screens/ordermodal/ordermodal.module#OrdermodalPageModule' }
+  { path: 'ordermodal', loadChildren: './screens/ordermodal/ordermodal.module#OrdermodalPageModule' },
+  { path: 'profile', loadChildren: './screens/profile/profile.module#ProfilePageModule' }
 ];
 
 @NgModule({

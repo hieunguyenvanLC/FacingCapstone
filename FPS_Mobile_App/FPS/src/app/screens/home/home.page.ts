@@ -5,6 +5,7 @@ import { store } from '@angular/core/src/render3';
 import {Store} from 'src/app/models/store.model';
 import { TouchSequence } from 'selenium-webdriver';
 import { Http } from '@angular/http';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-home',
@@ -22,8 +23,11 @@ export class HomePage {
   longitude = 106.67927390539103;
   latitude = 10.82767617410066;
 
+  myAccount : any;
+
   constructor(
-    private storeService : StoreService
+    private storeService : StoreService,
+    private nativeStorage: NativeStorage,
   ){
 
   }
@@ -43,6 +47,14 @@ export class HomePage {
         console.log(this.stores);
       }
     )
+    console.log("MYACCOUNT");
+    this.nativeStorage.getItem("MYACCOUNT").then(data => {
+      this.myAccount.push(data);
+    });
+    
+    console.log(this.myAccount.phoneNumber);
+    console.log(this.nativeStorage.getItem("MYACCOUNT"));
+    console.log("--MYACCOUNT--");
   }
 
 
