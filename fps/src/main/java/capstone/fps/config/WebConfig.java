@@ -12,7 +12,7 @@ public class WebConfig {
 
     @Bean
     @Scope(value = WebApplicationContext.SCOPE_APPLICATION)
-    public OrderMap initQueue() {
+    public OrderMap pref() {
         return new OrderMap();
     }
 

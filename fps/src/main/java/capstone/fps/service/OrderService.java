@@ -11,6 +11,7 @@ import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
 import capstone.fps.model.ordermatch.*;
 import capstone.fps.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,18 +28,19 @@ public class OrderService {
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
+    @Autowired
     private OrderMap orderMap;
+    @Autowired
     private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, OrderMap orderMap, ShipperWait shipperWait) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
-        this.orderMap = orderMap;
-        this.shipperWait = shipperWait;
+
     }
 
 
@@ -299,46 +301,61 @@ public class OrderService {
         return response;
     }
 
-
-    public Response<Integer> memberCancelOrder(int orderId) {
-        Methods methods = new Methods();
-        long time = methods.getTimeNow();
-        FRAccount currentUser = methods.getUser();
+    public Response<Integer> getOrderStatusMem(Integer orderId) {
+        Repo repo = new Repo();
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
-        if (!optionalFROrder.isPresent()) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order " + orderId);
-            return response;
-        }
-        FROrder frOrder = optionalFROrder.get();
-        if (!frOrder.getAccount().getId().equals(currentUser.getId())) {
-            response.setResponse(Response.STATUS_FAIL, "Not your order");
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
 
-        if (frOrder.getStatus() == Fix.ORD_NEW.index) {
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getStatus());
+        return response;
+    }
+
+    public Response<MdlOrder> cancelOrderMem(int orderId, int col, int row) {
+        Methods methods = new Methods();
+        long time = methods.getTimeNow();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Repo repo = new Repo();
+
+
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+
+        List<OrderStat> statList = orderMap.getNode(col, row).getStatList();
+        OrderStat myOrderStat = null;
+        for (OrderStat orderStat : statList) {
+            if (orderId == orderStat.getFrOrder().getId()) {
+                orderStat.setCancel(true);
+                myOrderStat = orderStat;
+                statList.remove(orderStat);
+                break;
+            }
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (myOrderStat.getLockBy() == 0) {
             frOrder.setDeleteTime(time);
             frOrder.setStatus(Fix.ORD_CXL.index);
             orderRepository.save(frOrder);
-            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-            return response;
-        } else if (frOrder.getStatus() == Fix.ORD_ASS.index) {
-            notifyShipper();
-            frOrder.setDeleteTime(time);
-            frOrder.setStatus(Fix.ORD_CXL.index);
-            orderRepository.save(frOrder);
-            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-            return response;
-        } else {
-            response.setResponse(Response.STATUS_FAIL, "Order already on deli");
-            return response;
         }
+
+        frOrder = repo.getOrder(orderId, orderRepository);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
     }
 
-    private void notifyShipper() {
-
-    }
     // Mobile Member - Order Booking - End
 
 
@@ -384,7 +401,7 @@ public class OrderService {
                                 orderMap.removeOrder(order, colNode, rowNode);
                                 FROrder frOrder = order.getFrOrder();
                                 frOrder.setShipper(currentUser.getShipper());
-                                frOrder.setShipperEarn(methods.caculateShpEarn(frOrder, orderDetailRepository, longitude, latitude));
+                                frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
                                 frOrder.setStatus(Fix.ORD_ASS.index);
                                 MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
@@ -417,6 +434,5 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
-
     // Mobile Shipper - Order Matching - End
 }

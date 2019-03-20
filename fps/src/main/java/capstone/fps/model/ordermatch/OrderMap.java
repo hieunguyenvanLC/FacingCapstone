@@ -4,9 +4,7 @@ import capstone.fps.entity.FROrder;
 import capstone.fps.entity.FROrderDetail;
 import capstone.fps.entity.FRStore;
 import capstone.fps.repository.OrderDetailRepo;
-import capstone.fps.repository.OrderRepo;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class OrderMap {
     public OrderMap() {
         this.map = new OrderNode[1483][732];
         for (int i = 0; i < 1483; i++) {
-            for (int j = 0; j < 732; i++) {
+            for (int j = 0; j < 732; j++) {
                 map[i][j] = new OrderNode();
             }
         }
@@ -146,7 +144,7 @@ public class OrderMap {
         int row = convertLat(store.getLatitude());
 
 
-        OrderStat orderStat = new OrderStat(frOrder);
+        OrderStat orderStat = new OrderStat(frOrder, store.getLongitude(), store.getLatitude());
         map[row][col].getStatList().add(orderStat);
         return orderStat;
 

@@ -94,14 +94,7 @@ public final class Methods {
     }
 
 
-    public double caculateShpEarn(FROrder frOrder, OrderDetailRepo orderDetailRepo, double shipperLon, double shipperLat) {
-
-        double buyerLon = frOrder.getLongitude();
-        double buyerLat = frOrder.getLatitude();
-        List<FROrderDetail> orderDetails = orderDetailRepo.findAllByOrder(frOrder);
-        FRStore store = orderDetails.get(0).getProduct().getStore();
-        double storeLon = store.getLongitude();
-        double storeLat = store.getLatitude();
+    public double caculateShpEarn(double buyerLon, double buyerLat, double storeLon, double storeLat, double shipperLon, double shipperLat) {
 
         // GG API
         double dis = Math.sqrt((buyerLon - storeLon) * (buyerLon - storeLon) + (buyerLat - storeLat) * (buyerLat - storeLat)) * 40000 / 360;

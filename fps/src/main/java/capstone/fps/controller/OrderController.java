@@ -23,49 +23,9 @@ public class OrderController extends AbstractController {
         this.orderService = orderService;
     }
 
-    @PostMapping(Fix.MAP_MEM + API)
-    public String createOrder(Double longitude, Double latitude, String customerDescription, String proList) {
-        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-//            Integer[] productListObj = gson.fromJson(productList, Integer[].class);
-//            Integer[] quantityListObj = gson.fromJson(quantityList, Integer[].class);
-//
-
-//            String[] proStr = productList.split("x");
-//            Integer[] productListObj = new Integer[proStr.length];
-//            for (int i = 0; i < proStr.length; i++) {
-//                productListObj[i] = Integer.parseInt(proStr[i]);
-//            }
-//
-//            String[] quantityListStr = quantityList.split("x");
-//            Integer[] quantityListObj = new Integer[quantityListStr.length];
-//            for (int i = 0; i < quantityListStr.length; i++) {
-//                quantityListObj[i] = Integer.parseInt(quantityListStr[i]);
-//            }
-
-            response = orderService.createOrder(longitude, latitude, customerDescription, proList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
-
-    @DeleteMapping(Fix.MAP_MEM + API)
-    public String memberCancelOrder(Integer orderId) {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            response = orderService.memberCancelOrder(orderId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
-
-
+    // Web Admin - Order - Begin
     @GetMapping(Fix.MAP_ADM + API)
-    public String getOrderList() {
+    public String getOrderListAdm() {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = orderService.getOrderList();
@@ -75,7 +35,6 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
 
     @GetMapping(Fix.MAP_ADM + API + "/detail")
     public String getOrderDetailAdm(Integer orderId) {
@@ -100,9 +59,47 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
+    // Web Admin - Order - End
+
+    // Mobile Member - Order Booking - Begin
+    @PostMapping(Fix.MAP_MEM + API)
+    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList) {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.createOrder(longitude, latitude, customerDescription, proList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_MEM + API + "/stat")
+    public String getOrderStatusMem(Integer orderId) {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderStatusMem(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @DeleteMapping(Fix.MAP_MEM + API)
+    public String cancelOrderMem(Integer orderId, Integer col, Integer row) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.cancelOrderMem(orderId, col, row);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Order Booking - End
 
     // Mobile Shipper - Queue - Begin
-
     @DeleteMapping(Fix.MAP_SHP + API)
     public String cancelQueue() {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -127,7 +124,6 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
     // Mobile Shipper - Queue - Begin
 
 }
