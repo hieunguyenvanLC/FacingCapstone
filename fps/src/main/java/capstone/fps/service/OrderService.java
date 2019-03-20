@@ -42,44 +42,186 @@ public class OrderService {
     }
 
 
-    public boolean cancelOrder(int orderId) {
-        Methods methods = new Methods();
-        long time = methods.getTimeNow();
-        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
-        if (!optionalFROrder.isPresent()) {
-            return true;
+//    public boolean cancelOrderAdmin(int orderId) {
+//        Methods methods = new Methods();
+//        long time = methods.getTimeNow();
+//        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
+//        if (!optionalFROrder.isPresent()) {
+//            return true;
+//        }
+//        FROrder frOrder = optionalFROrder.get();
+//        //check cancelable
+//        if (Fix.ORD_NEW.index != frOrder.getStatus()) {
+//            return false;
+//        }
+//        frOrder.setDeleteTime(time);
+//        frOrder.setStatus(Fix.ORD_CXL.index);
+//        orderRepository.save(frOrder);
+//        return true;
+//    }
+
+//    public boolean assignOrder(int orderId) {
+//        Methods methods = new Methods();
+//        long time = methods.getTimeNow();
+//        FRAccount account = methods.getUser();
+//        if (account.getShipper() == null) {
+//            // Something is wrong: none shipper is not suppose to be able to access this method
+//            return false;
+//        }
+//        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
+//        if (!optionalFROrder.isPresent()) {
+//            return false;
+//        }
+//        FROrder frOrder = optionalFROrder.get();
+//        frOrder.setShipper(account.getShipper());
+//        frOrder.setStatus(Fix.ORD_ASS.index);
+//        frOrder.setUpdateTime(time);
+//        orderRepository.save(frOrder);
+//        return true;
+//    }
+
+//    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, Integer[] proIdList, Integer[] quantityList) {
+//        Methods methods = new Methods();
+//        long time = methods.getTimeNow();
+//        Validator valid = new Validator();
+//        Repo repo = new Repo();
+//        FRAccount account = methods.getUser();
+//        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        if (account == null) {
+//            response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
+//            return response;
+//        }
+//        if (proIdList == null || quantityList == null || proIdList.length != quantityList.length) {
+//            response.setResponse(Response.STATUS_FAIL, "Product list error");
+//            return response;
+//        }
+//        List<FRProduct> frProducts = new ArrayList<>();
+//        for (int i = 0; i < proIdList.length; i++) {
+//            FRProduct frProduct = repo.getProduct(proIdList[i], productRepository);
+//            if (frProduct == null) {
+//                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proIdList[i]);
+//                return response;
+//            }
+//            if (quantityList[i] <= 0) {
+//                response.setResponse(Response.STATUS_FAIL, "proId " + proIdList[i] + " has quantity " + quantityList[i]);
+//                return response;
+//            }
+//            frProducts.add(frProduct);
+//        }
+//        FROrder frOrder = new FROrder();
+//        frOrder.setAccount(account);
+//        frOrder.setLongitude(longitude);
+//        frOrder.setLatitude(latitude);
+//        frOrder.setCustomerDescription(valid.nullProof(customerDescription));
+//        frOrder.setCreateTime(time);
+//        frOrder.setNote("");
+//        frOrder.setStatus(Fix.ORD_NEW.index);
+//        orderRepository.save(frOrder);
+//        double total = 0d;
+//        for (int i = 0; i < proIdList.length; i++) {
+//            FROrderDetail frOrderDetail = new FROrderDetail();
+//            FRProduct frProduct = frProducts.get(i);
+//            frOrderDetail.setOrder(frOrder);
+//            frOrderDetail.setProduct(frProduct);
+//            frOrderDetail.setUnitPrice(frProduct.getPrice());
+//            frOrderDetail.setQuantity(quantityList[i]);
+//            orderDetailRepository.save(frOrderDetail);
+//            total += frProduct.getPrice() * quantityList[i];
+//        }
+//
+//        frOrder.setTotalPrice(total);
+//        orderRepository.save(frOrder);
+//
+//        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
+//        return response;
+//
+//    }
+
+
+    // Web Admin - Order - Begin
+    public Response<List<MdlOrder>> getOrderList() {
+
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        List<FROrder> frOrderList = orderRepository.findAll();
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder));
         }
-        FROrder frOrder = optionalFROrder.get();
-        //check cancelable
-        if (Fix.ORD_NEW.index != frOrder.getStatus()) {
-            return false;
-        }
-        frOrder.setDeleteTime(time);
-        frOrder.setStatus(Fix.ORD_CXL.index);
-        orderRepository.save(frOrder);
-        return true;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+
     }
 
-    public boolean assignOrder(int orderId) {
+    public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+    }
+
+    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
-        FRAccount account = methods.getUser();
-        if (account.getShipper() == null) {
-            // Something is wrong: none shipper is not suppose to be able to access this method
-            return false;
+        Validator valid = new Validator();
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount currentUser = methods.getUser();
+
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
         }
-        Optional<FROrder> optionalFROrder = orderRepository.findById(orderId);
-        if (!optionalFROrder.isPresent()) {
-            return false;
+        if (buyerFace != null) {
+            frOrder.setBuyerFace(methods.multipartToBytes(buyerFace));
         }
-        FROrder frOrder = optionalFROrder.get();
-        frOrder.setShipper(account.getShipper());
-        frOrder.setStatus(Fix.ORD_ASS.index);
+        if (bill != null) {
+            frOrder.setBill(methods.multipartToBytes(bill));
+        }
+        FRAccount shipper = repo.getAccountByPhone(shipperPhone, accountRepository);
+        if (shipper != null) {
+            frOrder.setShipper(shipper.getShipper());
+        }
+        if (longitude != null) {
+            frOrder.setLongitude(longitude);
+        }
+        if (latitude != null) {
+            frOrder.setLatitude(latitude);
+        }
+        if (totalPrice != null) {
+            frOrder.setTotalPrice(totalPrice);
+        }
+        if (shipperEarn != null) {
+            frOrder.setShipperEarn(shipperEarn);
+        }
+        if (customerDescription != null) {
+            frOrder.setCustomerDescription(valid.nullProof(customerDescription));
+        }
+        if (note != null) {
+            frOrder.setNote(valid.nullProof(note));
+        }
         frOrder.setUpdateTime(time);
+        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
+        frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
-        return true;
-    }
 
+        MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+        return response;
+    }
+    // Web Admin - Order - Begin
+
+
+    // Mobile Member - Order Booking - Begin
     public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -157,64 +299,8 @@ public class OrderService {
         return response;
     }
 
-//    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, Integer[] proIdList, Integer[] quantityList) {
-//        Methods methods = new Methods();
-//        long time = methods.getTimeNow();
-//        Validator valid = new Validator();
-//        Repo repo = new Repo();
-//        FRAccount account = methods.getUser();
-//        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        if (account == null) {
-//            response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
-//            return response;
-//        }
-//        if (proIdList == null || quantityList == null || proIdList.length != quantityList.length) {
-//            response.setResponse(Response.STATUS_FAIL, "Product list error");
-//            return response;
-//        }
-//        List<FRProduct> frProducts = new ArrayList<>();
-//        for (int i = 0; i < proIdList.length; i++) {
-//            FRProduct frProduct = repo.getProduct(proIdList[i], productRepository);
-//            if (frProduct == null) {
-//                response.setResponse(Response.STATUS_FAIL, "Cant find proId " + proIdList[i]);
-//                return response;
-//            }
-//            if (quantityList[i] <= 0) {
-//                response.setResponse(Response.STATUS_FAIL, "proId " + proIdList[i] + " has quantity " + quantityList[i]);
-//                return response;
-//            }
-//            frProducts.add(frProduct);
-//        }
-//        FROrder frOrder = new FROrder();
-//        frOrder.setAccount(account);
-//        frOrder.setLongitude(longitude);
-//        frOrder.setLatitude(latitude);
-//        frOrder.setCustomerDescription(valid.nullProof(customerDescription));
-//        frOrder.setCreateTime(time);
-//        frOrder.setNote("");
-//        frOrder.setStatus(Fix.ORD_NEW.index);
-//        orderRepository.save(frOrder);
-//        double total = 0d;
-//        for (int i = 0; i < proIdList.length; i++) {
-//            FROrderDetail frOrderDetail = new FROrderDetail();
-//            FRProduct frProduct = frProducts.get(i);
-//            frOrderDetail.setOrder(frOrder);
-//            frOrderDetail.setProduct(frProduct);
-//            frOrderDetail.setUnitPrice(frProduct.getPrice());
-//            frOrderDetail.setQuantity(quantityList[i]);
-//            orderDetailRepository.save(frOrderDetail);
-//            total += frProduct.getPrice() * quantityList[i];
-//        }
-//
-//        frOrder.setTotalPrice(total);
-//        orderRepository.save(frOrder);
-//
-//        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
-//        return response;
-//
-//    }
 
-    public Response memberCancelOrder(int orderId) {
+    public Response<Integer> memberCancelOrder(int orderId) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         FRAccount currentUser = methods.getUser();
@@ -250,105 +336,18 @@ public class OrderService {
         }
     }
 
-    public void notifyShipper() {
+    private void notifyShipper() {
 
     }
-
-    public Response<List<MdlOrder>> getOrderList() {
-
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
-        List<FROrder> frOrderList = orderRepository.findAll();
-        List<MdlOrder> mdlOrderList = new ArrayList<>();
-        for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder));
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
-        return response;
-
-    }
-
-    public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
-        Methods methods = new Methods();
-        Repo repo = new Repo();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
-        return response;
-    }
-
-    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
-        Methods methods = new Methods();
-        long time = methods.getTimeNow();
-        Validator valid = new Validator();
-        Repo repo = new Repo();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount currentUser = methods.getUser();
-
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        if (buyerFace != null) {
-            frOrder.setBuyerFace(methods.multipartToBytes(buyerFace));
-        }
-        if (bill != null) {
-            frOrder.setBill(methods.multipartToBytes(bill));
-        }
-        FRAccount shipper = repo.getAccountByPhone(shipperPhone, accountRepository);
-        if (shipper != null) {
-            frOrder.setShipper(shipper.getShipper());
-        }
-        if (longitude != null) {
-            frOrder.setLongitude(longitude);
-        }
-        if (latitude != null) {
-            frOrder.setLatitude(latitude);
-        }
-        if (totalPrice != null) {
-            frOrder.setTotalPrice(totalPrice);
-        }
-        if (shipperEarn != null) {
-            frOrder.setShipperEarn(shipperEarn);
-        }
-        if (customerDescription != null) {
-            frOrder.setCustomerDescription(valid.nullProof(customerDescription));
-        }
-        if (note != null) {
-            frOrder.setNote(valid.nullProof(note));
-        }
-        frOrder.setUpdateTime(time);
-        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
-        frOrder.setEditor(currentUser);
-        orderRepository.save(frOrder);
-
-        MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
-        return response;
-    }
+    // Mobile Member - Order Booking - End
 
 
-    // Mobile Shipper - Matching - Begin
-//    private OrderStat checkOrder(int layerNo, int col, int row) {
-//
-//    }
-
-
+    // Mobile Shipper - Order Matching - Begin
     public Response<MdlOrder> autoAssign(double longitude, double latitude) {
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         Methods methods = new Methods();
         long waitTime = methods.getTimeNow() + (3 * 60 * 1000);
-        Validator valid = new Validator();
-        Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         FRAccount currentUser = methods.getUser();
@@ -358,8 +357,8 @@ public class OrderService {
 
         while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
             for (int layerNo = 0; layerNo <= 4; layerNo++) {
-                ArrayList<Delta> layer = (ArrayList<Delta>) orderMap.getLayer(layerNo).clone();
-                Collections.shuffle(layer);
+                ArrayList<Delta> layer = orderMap.getLayer(layerNo);
+//                Collections.shuffle(layer);
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
                     int rowNode = row + delta.row;
@@ -386,7 +385,7 @@ public class OrderService {
                                 FROrder frOrder = order.getFrOrder();
                                 frOrder.setShipper(currentUser.getShipper());
                                 frOrder.setShipperEarn(methods.caculateShpEarn(frOrder, orderDetailRepository, longitude, latitude));
-
+                                frOrder.setStatus(Fix.ORD_ASS.index);
                                 MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                 return response;
@@ -412,12 +411,12 @@ public class OrderService {
         }
     }
 
-    public Response<MdlOrder> stopQueue() {
+    public Response stopQueue() {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         shipperWait.setCancel(true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
 
-    // Mobile Shipper - Matching - End
+    // Mobile Shipper - Order Matching - End
 }
