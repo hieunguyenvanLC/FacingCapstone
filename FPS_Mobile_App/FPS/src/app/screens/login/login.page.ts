@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from '../../services/account.service';
-import { Firebase } from '@ionic-native/firebase/ngx'
 import { ToastController } from '@ionic/angular';
 import { element } from '../../../../node_modules/protractor';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
@@ -21,7 +20,6 @@ export class LoginPage implements OnInit {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private firebase: Firebase,
     private toastCtrl : ToastController,
     private nativeStorage: NativeStorage,
   ) { }

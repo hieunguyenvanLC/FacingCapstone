@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavParams, ModalController } from 'node_modules/@ionic/angular';
-import { OrderService } from 'src/app/services/order.service';
+import { OrderService } from '../../services/order.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -57,7 +57,7 @@ export class OrdermodalPage implements OnInit {
     //this.router.navigateByUrl("order");
     this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
       .subscribe(data => {
-        console.log(data);
+        console.log(data[0].data);
       });
 
     

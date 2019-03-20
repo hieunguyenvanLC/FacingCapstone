@@ -51,15 +51,14 @@ import { LoadingService } from './services/loading.service';
     OrdermodalPageModule,
     HttpClientModule,
     HttpModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule,
+
   ],
   providers: [
     StatusBar,
     SplashScreen,
     AccountService,
     StoreService,
-    OrderService,
+
     Constant,
     FirebasecloudmessengerService,
     Geolocation,
@@ -67,6 +66,7 @@ import { LoadingService } from './services/loading.service';
     NativeStorage,
     Camera,
     LoadingService,
+    OrderService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
