@@ -157,12 +157,12 @@ public class OrderMap {
 
 
     public int convertLon(double longitude) {
-        int col = ((int) longitude) * 100 - 732;
+        int col = (int) (longitude * 100) - 10214;
         return col;
     }
 
     public int convertLat(double latitude) {
-        int row = ((int) latitude) * 100 - 1483;
+        int row = (int) (latitude * 100) - 856;
         return row;
     }
 

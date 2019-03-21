@@ -400,32 +400,26 @@ public class OrderService {
                     List<OrderStat> node = orderMap.getNode(colNode, rowNode).getStatList();
                     if (node.size() > 0) {
                         for (OrderStat order : node) {
-                            boolean claimable = true;
-                            if (order.isCancel() || order.getLockBy() != 0) {
-                                claimable = false;
-                            }
-                            if (claimable) {
-                                order.setLockBy(accId);
-                            }
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (order.isCancel() || order.getLockBy() != accId) {
-                                claimable = false;
-                            }
-                            if (claimable) {
-                                orderMap.removeOrder(order, colNode, rowNode);
-                                FROrder frOrder = order.getFrOrder();
-                                frOrder.setShipper(currentUser.getShipper());
-                                frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
-                                frOrder.setStatus(Fix.ORD_ASS.index);
-                                MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
-                                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
-                                return response;
-                            }
+                            if (!order.isCancel() && order.getLockBy() == 0) {
 
+                                order.setLockBy(accId);
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                if (!order.isCancel() && order.getLockBy() == accId) {
+                                    orderMap.removeOrder(order, colNode, rowNode);
+                                    FROrder frOrder = order.getFrOrder();
+                                    frOrder.setShipper(currentUser.getShipper());
+                                    frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
+                                    frOrder.setStatus(Fix.ORD_ASS.index);
+                                    MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+                                    response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+                                    return response;
+                                }
+
+                            }
                         }
                     }
                 }
