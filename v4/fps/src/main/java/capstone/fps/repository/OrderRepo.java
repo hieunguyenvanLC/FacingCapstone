@@ -27,4 +27,16 @@ public interface OrderRepo extends JpaRepository<FROrder, Integer> {
 
     @Query(value = "SELECT SUM(od.quantity) FROM fr_order AS o JOIN fr_order_detail AS od ON o.id = od.FR_Order_id WHERE o.status = :stt AND o.create_time >= :start AND o.create_time < :end", nativeQuery = true)
     public Integer sumSoldProduct(@Param("stt") Integer status, @Param("start") Long start, @Param("end") Long end);
+
+    public List<FROrder> findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(Integer status, Long start, Long end);
+
+    @Query(value = "SELECT SUM(o.shipper_earn) FROM fr_order AS o WHERE o.status = :stt AND o.create_time >= :start AND o.create_time < :end", nativeQuery = true)
+    public Integer sumTotalAmount(@Param("stt") Integer status, @Param("start") Long start, @Param("end") Long end);
+
+    @Query(value = "select sum(o.shipper_earn * sp.price) " +
+            "from (fr_order as o join fr_shipper as s on (o.FR_Shipper_id = s.id and o.status = :stt and o.create_time >= :start and o.create_time < :end)) " +
+            "join fr_price_level as sp on s.FR_Price_Level_id = sp.id", nativeQuery = true)
+    public Integer sumShipperEarn(@Param("stt") Integer status, @Param("start") Long start, @Param("end") Long end);
+
+
 }

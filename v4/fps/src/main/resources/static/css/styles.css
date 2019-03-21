@@ -80,3 +80,11 @@ section.dashboard-counts .row {
         max-width: 900px;
     }
 }
+
+/* Char */
+.char-filter {
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-flow: row; /* Safari 6.1+ */
+    display: flex;
+    flex-flow: row;
+}

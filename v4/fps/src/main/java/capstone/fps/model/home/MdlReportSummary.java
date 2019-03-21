@@ -13,14 +13,14 @@ public class MdlReportSummary {
     private int StoreCount; //count all store
     @Expose
     private int OrderCount; // count all order
-    @Expose
-    private List<Integer> orders;
-    @Expose
-    private List<Integer> canceledOrders;
-    @Expose
-    private List<Integer> successOrders;
-    @Expose
-    private List<String> labels;
+//    @Expose
+//    private List<Integer> orders;
+//    @Expose
+//    private List<Integer> canceledOrders;
+//    @Expose
+//    private List<Integer> successOrders;
+//    @Expose
+//    private List<String> labels;
 //    @Expose
 //    private int orderCountBy; //count order with day month year
 //    @Expose
@@ -63,37 +63,37 @@ public class MdlReportSummary {
 //    }
 
 
-    public List<Integer> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Integer> orders) {
-        this.orders = orders;
-    }
-
-    public List<Integer> getCanceledOrders() {
-        return canceledOrders;
-    }
-
-    public void setCanceledOrders(List<Integer> canceledOrders) {
-        this.canceledOrders = canceledOrders;
-    }
-
-    public List<Integer> getSuccessOrders() {
-        return successOrders;
-    }
-
-    public void setSuccessOrders(List<Integer> successOrders) {
-        this.successOrders = successOrders;
-    }
-
-    public List<String> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
-    }
+//    public List<Integer> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(List<Integer> orders) {
+//        this.orders = orders;
+//    }
+//
+//    public List<Integer> getCanceledOrders() {
+//        return canceledOrders;
+//    }
+//
+//    public void setCanceledOrders(List<Integer> canceledOrders) {
+//        this.canceledOrders = canceledOrders;
+//    }
+//
+//    public List<Integer> getSuccessOrders() {
+//        return successOrders;
+//    }
+//
+//    public void setSuccessOrders(List<Integer> successOrders) {
+//        this.successOrders = successOrders;
+//    }
+//
+//    public List<String> getLabels() {
+//        return labels;
+//    }
+//
+//    public void setLabels(List<String> labels) {
+//        this.labels = labels;
+//    }
 
     public int getShipperCount() {
         return shipperCount;

@@ -79,32 +79,33 @@ public class HomeService {
         return this.orderRepository.countAllBy();
     }
 
-    public int countOrderBy(int month, int year, int day) {
-        long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+    public int countOrderBy(Long start, Long end) {
         return this.orderRepository.countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
     }
 
-    public int countOrderCancelBy(int month, int year, int day) {
-        int status;
-        long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+    public int countOrderCancelBy(Long start, Long end) {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(5, start, end);
     }
 
-    public int countOrderSuccessBy(int month, int year, int day) {
-        int status;
-        long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
+    public int countOrderSuccessBy(Long start, Long end) {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
     }
 
-    public Integer sumProductByOrder(int month, int year, int day) {
-        long start = this.dateToUnix(year, month, day, 0, 0, 0);
-        long end = this.dateToUnix(year, month, day + 1, 0, 0, 0);
-        return this.orderRepository.sumSoldProduct(1, start, end);
+    public Integer sumProductByOrder(Long start, Long end) {
+        return this.orderRepository.sumSoldProduct(1, start, end); // doi status = 4
     }
 
+    public Integer sumTotalAmount(Long start, Long end) {
+        return this.orderRepository.sumTotalAmount(1, start, end); // doi status = 4
+    }
+
+    public Integer sumShipperEarn(Long start, Long end) {
+        return this.orderRepository.sumShipperEarn(1, start, end); // doi status = 4
+    }
+
+    public List<FROrder> getOrderList(Integer status, Long start, Long end) {
+        return this.orderRepository.findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
+    }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
         YearMonth yearMonthObject = YearMonth.of(year, month);
