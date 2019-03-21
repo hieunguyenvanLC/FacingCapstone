@@ -453,6 +453,8 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
             return response;
         }
+        methods.handleImage(face);
+
 
         FRAccount frAccount = new FRAccount();
         frAccount.setPhone(phone);

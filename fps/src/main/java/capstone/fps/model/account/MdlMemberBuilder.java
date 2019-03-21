@@ -34,11 +34,13 @@ public class MdlMemberBuilder {
 
 
     public MdlAccount buildMemDetailAdm(FRAccount frAccount) {
+        Methods methods = new Methods();
         MdlAccount mdlAccount = new MdlAccount();
         mdlAccount.id = frAccount.getId();
         mdlAccount.phone = frAccount.getPhone();
         mdlAccount.name = frAccount.getName();
         mdlAccount.email = frAccount.getEmail();
+        mdlAccount.userImage = methods.bytesToBase64(frAccount.getUserImage());
         mdlAccount.dob = frAccount.getDateOfBirth();
         mdlAccount.createTime = frAccount.getCreateTime();
         mdlAccount.note = frAccount.getNote();
