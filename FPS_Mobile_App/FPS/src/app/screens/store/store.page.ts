@@ -8,6 +8,7 @@ import {
 import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 import { StoreService } from 'src/app/services/store.service';
 import { Store } from './../../models/store.model';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-store',
@@ -24,6 +25,7 @@ export class StorePage implements OnInit {
   storeId: number;
   store : Store[];
   quantity = 1;
+  status_code = 0;
 
   // {
   //   id: "AL1",
@@ -66,16 +68,24 @@ export class StorePage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private storeService: StoreService,
+    private loading : LoadingService,
   ) {
   }
 
   ngOnInit() {
+    this.loading.present().then( () => {
+      this.getStoreDetail();
+    })
+    
+
+  }
+
+  getStoreDetail(){
     this.activatedRoute.paramMap
       .subscribe(param => {
         this.storeId = parseInt(param.get('id'));
         this.getStoreByid(this.storeId);
       });
-
   }
 
   addProduct(id) {
@@ -152,11 +162,27 @@ export class StorePage implements OnInit {
       res => {
         this.products.push(res);
         console.log(this.products[0].data);
+
+        this.status_code = this.products[0].status_code;
+
         // console.log(this.products[0].data.proList);
         this.products[0].data.proList.forEach(element => {
+          //add 2 attribute into product detail
           element["quantity"] = 0;
           element["total"] = 0;
         });
+      }, error => {
+        console.log(error);
+      }, () => {
+        if (this.status_code === 1){
+          //handle if success loading component will dismiss
+
+          //wait more 2s for fill object to html
+          setTimeout(() => this.loading.dismiss(), 2000);
+          
+        }else{
+          //handle error
+        }
       }
     )
   }

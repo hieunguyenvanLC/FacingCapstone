@@ -1,6 +1,6 @@
 export class Constant {
-    public APIURL = "http://localhost:8080";
-    //public APIURL = "http://192.168.100.163:8080";
+    //public APIURL = "http://localhost:8080";
+    public APIURL = "http://192.168.100.63:8080";
 
     // MAPPING API
     public MAP_ANY = "/any";

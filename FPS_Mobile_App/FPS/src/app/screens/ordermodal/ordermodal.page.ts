@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NavParams, ModalController } from 'node_modules/@ionic/angular';
+import { NavParams, ModalController, ToastController } from 'node_modules/@ionic/angular';
 import { OrderService } from '../../services/order.service';
 import { Router } from '@angular/router';
 
@@ -24,12 +24,17 @@ export class OrdermodalPage implements OnInit {
   deliveryFees: number;
   total: number;
 
+  temp = [];
+
+  orderId: number;
+
 
   constructor(
     private navParams: NavParams,
     private modalController: ModalController,
     private orderService: OrderService,
     public router: Router,
+    public toastController: ToastController,
   ) {
     // componentProps can also be accessed at construction time using NavParams
   }
@@ -42,6 +47,7 @@ export class OrdermodalPage implements OnInit {
   }
 
   checkout() {
+    //custo
     for (let i = 0; i < this.products.length; i++) {
       const element = this.products[i];
       if (element != undefined) {
@@ -57,9 +63,58 @@ export class OrdermodalPage implements OnInit {
     //this.router.navigateByUrl("order");
     this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
       .subscribe(data => {
-        console.log(data[0].data);
+        console.log(data);
+        console.log("in create order ----");
+        this.temp.push(data);
+
+        //if not success, toast for error
+        if (this.temp[0].message !== "Success") {
+          this.presentToast("Error check out ! Try again !");
+        } else {
+          //handle success api create order
+          this.presentToast("Order success ! Finding shipper...");
+          console.log(this.temp[0].data);
+          this.orderId = this.temp[0].data;
+
+          console.log(this.orderId);
+          this.router.navigateByUrl("order");
+        }
+
+        console.log("--end create order");
       });
 
-    
+    //get user status
+    if (this.orderId) {
+      this.orderService.getOrderStatus(this.orderId).subscribe(res => {
+        if (!this.temp) {
+          console.log("in !temp");
+          this.temp = [];
+          this.temp.push(res);
+          console.log(this.temp[0].data);
+        }
+      });
+    }
+
+  }
+
+  //for loading finding shipper
+  async presentLoading() {
+    const loadingController = document.querySelector('ion-loading-controller');
+    await loadingController.componentOnReady();
+
+    const loadingElement = await loadingController.create({
+      message: 'Finding shipper...',
+      duration: 2000,
+    });
+    loadingElement.present();
+  }
+
+  //toast for notification
+  async presentToast(myMessage) {
+    const toast = await this.toastController.create({
+      message: myMessage,
+      duration: 2000
+    });
+    toast.present();
   }
 }

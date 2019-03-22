@@ -20,4 +20,11 @@ export class OrderService {
                               this.constant.MAP_API +
                               this.constant.ORDER, formData);
   }
+
+  getOrderStatus(orderID){
+    return this.apihttp.get( this.constant.MAP_MEM +
+                             this.constant.MAP_API +
+                             this.constant.ORDER +
+                             "/detail?orderId=" + orderID);
+  }
 }

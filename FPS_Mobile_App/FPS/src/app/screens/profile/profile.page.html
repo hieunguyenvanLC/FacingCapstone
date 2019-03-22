@@ -10,7 +10,7 @@
 <ion-content class="profile">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
-      <img src="../../../assets/image/slide1.jpg">
+      <img src="{{ userDetail[0].data.avatar }}">
       <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
       <h2 margin-bottom>Extra point: {{ userDetail[0].data.extraPoint }}</h2>
       <ion-button icon-left color="light">

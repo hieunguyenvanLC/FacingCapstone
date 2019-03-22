@@ -16,7 +16,7 @@ export class Constant {
 
     // Page
     public LOGIN = "/login";
-    public SIGNUP = "/account";
+    public ACCOUNT = "/account";
     public STORE = "/store";
     public ORDER = "/order";
 }

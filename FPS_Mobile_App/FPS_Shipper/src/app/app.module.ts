@@ -14,6 +14,9 @@ import { HttpModule} from '@angular/http';
 import { Constant } from './common/constant';
 
 import { AccountService } from './services/account.service';
+import { OrderService } from './services/order.service';
+import { LoadingService } from './services/loading.service';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -31,6 +34,8 @@ import { AccountService } from './services/account.service';
     Constant,
 
     AccountService,
+    OrderService,
+    LoadingService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

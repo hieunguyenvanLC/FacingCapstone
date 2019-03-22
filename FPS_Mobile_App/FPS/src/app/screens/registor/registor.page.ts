@@ -15,7 +15,7 @@ import { Account } from '../../models/account';
   styleUrls: ['./registor.page.scss'],
 })
 export class RegistorPage implements OnInit {
-  data= [];
+  data = [];
   phoneNumber: string;
   password: string;
   fullname: string;
@@ -24,9 +24,14 @@ export class RegistorPage implements OnInit {
   registerForm: FormGroup;
 
   myPhoto: any;
-  myPhotoBinary: any;
+  myPhotoBinary: string;
 
   resArr = [];
+
+  file: any;
+
+  BASE64_MARKER = ';base64,';
+  array: any;
 
   constructor(
     public router: Router,
@@ -34,6 +39,8 @@ export class RegistorPage implements OnInit {
     public accountService: AccountService,
     private camera: Camera
   ) {
+    this.password = "123";
+    this.fullname = "thangdp";
 
 
   }
@@ -70,7 +77,7 @@ export class RegistorPage implements OnInit {
 
         //   }
         // },
-         {
+        {
           text: 'Okay',
           handler: () => {
             console.log('Confirm Okay ' + this.phoneNumber);
@@ -88,50 +95,72 @@ export class RegistorPage implements OnInit {
             //     console.log(err);
             //   };
             // }
-            
 
 
 
-            
 
-        }
+
+
+          }
         }
       ]
-  });
+    });
 
     await alert.present();
   }
 
 
-onSubmit() {
-  this.phoneNumber = this.phoneNumber.replace("+", "");
-  this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary).subscribe((res: any) => {
-    this.data.push(res);
-    console.log(this.data[0].status_code);
-  }), err => {
-    console.log(err);
-  };
-}
-
-
-
-takePhoto() {
-  const options: CameraOptions = {
-    quality: 100,
-    destinationType: this.camera.DestinationType.DATA_URL,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE
+  onSubmit() {
+    this.phoneNumber = this.phoneNumber.replace("+", "");
+    console.log(this.myPhotoBinary);
+    this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary).subscribe((res: any) => {
+      this.data.push(res);
+      console.log(this.data[0].status_code);
+    }), err => {
+      console.log(err);
+    };
   }
 
-  this.camera.getPicture(options).then((imageData) => {
-    // imageData is either a base64 encoded string or a file URI
-    // If it's base64 (DATA_URL):
 
-    this.myPhoto = 'data:image/jpeg;base64,' + imageData;
-    this.myPhotoBinary = new Blob([imageData], {type: 'image/png'});
-    console.log(this.myPhotoBinary);
-  }, (err) => {
-    console.log("error at takephoto :" + err)
-  });
-}
+
+  takePhoto() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      //sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      
+      
+      this.myPhoto = 'data:image/jpeg;base64,' + imageData;
+      this.myPhotoBinary =  imageData;
+      
+    //   let byteNumbers = new Array(imageData.length);
+
+    // for (var i = 0; i < imageData.length; i++) 
+    //     byteNumbers[i] = imageData.charCodeAt(i);
+    
+    // let byteArray = new Uint8Array(byteNumbers);
+
+    // this.myPhotoBinary  = new Blob([byteArray], {type: 'image/jpeg'});
+      //this.myPhotoBinary = new Blob([imageData], { type: 'image/jpg' });
+      // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
+      console.log(imageData);
+      console.log(this.myPhotoBinary);
+    }, (err) => {
+      console.log("error at takephoto :" + err)
+    });
+  }
+
+  changeListener($event): void {
+    this.file = $event.target.files[0];
+    console.log(this.file);
+  }
 }

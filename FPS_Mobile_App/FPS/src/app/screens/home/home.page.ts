@@ -49,7 +49,7 @@ export class HomePage {
     )
     console.log("MYACCOUNT");
     this.nativeStorage.getItem("MYACCOUNT").then(data => {
-      this.myAccount.push(data);
+      
     });
     
     console.log(this.myAccount.phoneNumber);

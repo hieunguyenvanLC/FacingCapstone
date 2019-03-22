@@ -5,13 +5,27 @@ import {
   ElementRef
 } from '@angular/core';
 
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import {
-  NativeGeocoder,
-  NativeGeocoderReverseResult,
-  NativeGeocoderOptions
-} from '@ionic-native/native-geocoder/ngx';
+// import { Geolocation } from '@ionic-native/geolocation/ngx';
+// import {
+//   NativeGeocoder,
+//   NativeGeocoderReverseResult,
+//   NativeGeocoderOptions
+// } from '@ionic-native/native-geocoder/ngx';
 import { Router } from '@angular/router';
+import {
+  GoogleMaps,
+  GoogleMap,
+  MyLocation,
+  Marker,
+  GoogleMapsAnimation,
+  GoogleMapsEvent,
+  Environment,
+  GoogleMapOptions,
+} from '@ionic-native/google-maps';
+import { Platform, ToastController, LoadingController } from '@ionic/angular';
+
+
+
 
 @Component({
   selector: 'app-order',
@@ -21,20 +35,126 @@ import { Router } from '@angular/router';
 export class OrderPage implements OnInit {
 
   @ViewChild('map') mapElement: ElementRef;
-  map: any;
-  address: string;
+  map: GoogleMap;
+  loading: any;
+  //address: string;
 
   constructor(
-    private geolocation: Geolocation,
-    private nativeGeocoder: NativeGeocoder,
+    //private geolocation: Geolocation,
+    //private nativeGeocoder: NativeGeocoder,
     public router: Router,
     // public googleMaps: GoogleMaps,
+    //private platform : Platform,
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController,
   ) { }
 
   ngOnInit() {
-    //this.loadMap();
+    // this.loadMap();
+    //await this.platform.ready();
+    console.log("anfasda")
+    this.loadMap();
   }
 
+  loadMap() {
+    // this.map = GoogleMaps.create('map_canvas', {
+    //   camera: {
+    //     target: {
+    //       lat: 43.0741704,
+    //       lng: -89.3809802
+    //     },
+    //     zoom: 18,
+    //     tilt: 30
+    //   }
+    // });
+
+    // Environment.setEnv({
+    //   'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyASMHVlLhJr78esAqJVglJU67r-SD-VBNQ'
+    // });
+
+    let mapOptions: GoogleMapOptions = {
+      camera: {
+        target: {
+          lat: 43.0741904,
+          lng: -89.3809802
+        },
+        zoom: 18,
+        tilt: 30
+      }
+    };
+
+    this.map = GoogleMaps.create('map', mapOptions);
+
+    let marker: Marker = this.map.addMarkerSync({
+      title: 'Ionic',
+      icon: 'blue',
+      animation: 'DROP',
+      position: {
+        lat: 43.0741904,
+        lng: -89.3809802
+      }
+    });
+    marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+      alert('clicked');
+    });
+    
+  }
+
+
+
+
+  // async onButtonClick() {
+  //   this.map.clear();
+
+  //   this.loading = await this.loadingCtrl.create({
+  //     message: 'Please wait...'
+  //   });
+  //   await this.loading.present();
+
+  //   // Get the location of you
+  //   this.map.getMyLocation().then((location: MyLocation) => {
+  //     this.loading.dismiss();
+  //     console.log(JSON.stringify(location, null ,2));
+
+  //     // Move the map camera to the location with animation
+  //     this.map.animateCamera({
+  //       target: location.latLng,
+  //       zoom: 17,
+  //       tilt: 30
+  //     });
+
+  //     // add a marker
+  //     let marker: Marker = this.map.addMarkerSync({
+  //       title: '@ionic-native/google-maps plugin!',
+  //       snippet: 'This plugin is awesome!',
+  //       position: location.latLng,
+  //       animation: GoogleMapsAnimation.BOUNCE
+  //     });
+
+  //     // show the infoWindow
+  //     marker.showInfoWindow();
+
+  //     // If clicked it, display the alert
+  //     marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+  //       this.showToast('clicked!');
+  //     });
+  //   })
+  //   .catch(err => {
+  //     this.loading.dismiss();
+  //     this.showToast(err.error_message);
+  //   });
+  // }
+
+  // async showToast(message: string) {
+  //   let toast = await this.toastCtrl.create({
+  //     message: message,
+  //     duration: 2000,
+  //     position: 'middle'
+  //   });
+
+  //   toast.present();
+  // }
+  /*------------------
   // loadMap() {
   //   this.geolocation.getCurrentPosition().then((resp) => {
   //     let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -109,4 +229,7 @@ export class OrderPage implements OnInit {
   //     });
 
   // }
+  */
+
+  
 }
