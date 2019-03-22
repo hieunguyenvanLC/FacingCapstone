@@ -82,6 +82,13 @@ public final class Methods {
         return "data:image/jpg;base64," + StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false));
     }
 
+    public byte[] base64ToBytes(String base64) {
+        if (base64 == null) {
+            return null;
+        }
+        return Base64.decodeBase64(base64);
+    }
+
     public byte[] multipartToBytes(MultipartFile input) {
         if (input != null) {
             try {

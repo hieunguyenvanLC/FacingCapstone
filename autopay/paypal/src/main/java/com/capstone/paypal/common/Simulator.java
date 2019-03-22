@@ -15,13 +15,76 @@ public class Simulator {
     public final Robot robot;
     public final Clipboard clipboard;
 
+    static {
+        System.setProperty("java.awt.headless", "false");
+    }
+
     public Simulator() throws AWTException {
         this.robot = new Robot();
         this.clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     }
 
-    static {
-        System.setProperty("java.awt.headless", "false");
+    public class PixelColor {
+        public int id;
+        public int xFrom;
+        public int yFrom;
+        public int xTo;
+        public int yTo;
+        public int redMin;
+        public int redMax;
+        public int greenMin;
+        public int greenMax;
+        public int blueMin;
+        public int blueMax;
+
+        public PixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {
+            this.id = id;
+            this.xFrom = xFrom;
+            this.yFrom = yFrom;
+            this.xTo = xTo;
+            this.yTo = yTo;
+            Color colorObj = new Color(color);
+            int red = (color >> 16) & 0xFF;
+            int green = (color >> 8) & 0xFF;
+            int blue = (color >> 0) & 0xFF;
+            this.redMin = Math.max(0, red - delta);
+            this.redMax = Math.min(0xFF, red + delta);
+            this.greenMin = Math.max(0, green - delta);
+            this.greenMax = Math.min(0xFF, green + delta);
+            this.blueMin = Math.max(0, blue - delta);
+            this.blueMax = Math.min(0xFF, blue + delta);
+        }
+    }
+
+
+    public PixelColor createPixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {
+        return new PixelColor(id, xFrom, yFrom, xTo, yTo, color, delta);
+    }
+
+    public int waitForMultiPixel(PixelColor... pixelColors) throws InterruptedException {
+        int dxMax;
+        int dyMax;
+        int red;
+        int green;
+        int blue;
+        while (true) {
+            for (PixelColor p : pixelColors) {
+                dxMax = p.xTo - p.xFrom;
+                dyMax = p.yTo - p.yFrom;
+                for (int dx = 0; dx <= dxMax; dx++) {
+                    for (int dy = 0; dy <= dyMax; dy++) {
+                        Color color = robot.getPixelColor(p.xFrom + dx, p.yFrom + dy);
+                        red = color.getRed();
+                        green = color.getGreen();
+                        blue = color.getBlue();
+                        if (p.redMin <= red && red <= p.redMax && p.greenMin <= green && green <= p.greenMax && p.blueMin <= blue && blue <= p.greenMax) {
+                            return p.id;
+                        }
+                    }
+                }
+            }
+            delay(50l);
+        }
     }
 
     public void delay(long milisecs) {
@@ -51,7 +114,7 @@ public class Simulator {
     }
 
 
-    public void waitForColor(int x, int y, int rgb) throws InterruptedException {
+    public void waitForPixel(int x, int y, int rgb) throws InterruptedException {
         while (true) {
             if (rgb == robot.getPixelColor(x, y).getRGB()) {
                 return;

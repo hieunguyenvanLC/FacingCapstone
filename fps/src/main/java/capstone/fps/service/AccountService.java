@@ -443,7 +443,7 @@ public class AccountService {
     // Web - Shipper - End
 
     // Mobile Member - Register - Begin
-    public Response createAccountMember(String phone, String pass, String name, MultipartFile face) {
+    public Response createAccountMember(String phone, String pass, String name, String face) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -453,7 +453,6 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
             return response;
         }
-        methods.handleImage(face);
 
 
         FRAccount frAccount = new FRAccount();
@@ -464,7 +463,7 @@ public class AccountService {
         frAccount.setEmail("");
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setUserImage(methods.multipartToBytes(face));
+        frAccount.setUserImage(methods.base64ToBytes(face));
         frAccount.setNatId(null);
         frAccount.setNatDate(null);
         frAccount.setDateOfBirth(null);

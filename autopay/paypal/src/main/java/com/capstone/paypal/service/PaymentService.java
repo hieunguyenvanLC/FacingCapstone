@@ -79,19 +79,27 @@ public class PaymentService {
 
 
         int billDarkBlue = 0xFF002069;
-
         int loginDarkBlue = 0xFF003087;
 
 
         Simulator s = null;
+
+
         try {
             s = new Simulator();
+
+            Simulator.PixelColor loginMark = s.createPixelColor(1, 870,260, 900,290, loginDarkBlue, 5);
+            Simulator.PixelColor billMark = s.createPixelColor(1, 870,260, 900,290, loginDarkBlue, 5);
+
 
             s.clickInBox(200, 500, 10, 10);
 
 
+
+
+
             // logout
-            s.waitForColor(585, 232, billDarkBlue);
+            s.waitForPixel(585, 232, billDarkBlue);
             s.delayRandomShort();
             s.type('\t');
             s.delayRandomShort();
@@ -100,7 +108,7 @@ public class PaymentService {
             s.type('\n');
 
             // login
-            s.waitForColor(880, 267, loginDarkBlue);
+            s.waitForPixel(880, 267, loginDarkBlue);
             s.delayRandomShort();
             s.type('\t');
             s.delayRandomShort();
@@ -113,7 +121,7 @@ public class PaymentService {
             s.moveAndClickInBox(860, 550, 120, 30);
 
             // confirm bill
-            s.waitForColor(585, 232, billDarkBlue);
+            s.waitForPixel(585, 232, billDarkBlue);
             s.delayRandomMedium();
             s.delay(1000);
             s.moveAndClickInBox(650, 840, 200, 30);
