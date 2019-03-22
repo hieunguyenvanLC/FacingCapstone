@@ -51,7 +51,7 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
 
-    @DeleteMapping(Fix.MAP_MEM + API)
+    @DeleteMapping(Fix.MAP_ADM + API)
     public String memberCancelOrder(Integer orderId) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
