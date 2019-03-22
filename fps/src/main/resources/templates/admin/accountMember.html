@@ -79,6 +79,22 @@
                                     <label>Email</label>
                                     <input type="email" placeholder="Email" class="form-control" id="txtEmail">
                                 </div>
+
+
+                                <div class="form-group">
+                                    <label>Customer Face</label>
+                                    <div class="text-center">
+                                        <img src="/img/no_img.png" alt="portrait" id="imgUserFace">
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="uplUserFace"
+                                               onchange="uplUserFaceOnChange()">
+                                        <label class="custom-file-label" for="uplUserFace"
+                                               style="border-radius: 0">Choose file</label>
+                                    </div>
+                                </div>
+
+
                                 <div class="form-group">
                                     <label id="txtCreate">Note</label>
                                     <label id="txtUpdate">Note</label>
@@ -109,6 +125,10 @@
         var accList;
         var accId = -1;
         var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account";
+
+        var uplUserFace = document.getElementById("uplUserFace");
+        var imgUserFace = document.getElementById("imgUserFace");
+
 
         var lblMsg = document.getElementById("lblDisplayMsg");
 
@@ -164,7 +184,10 @@
             $("#txtUsername").val(acc.phone);
             $("#txtFullName").val(acc.name);
             $("#dpDob")[0].valueAsNumber = acc.dob;
-            $("#txtEmail").val(acc.email);
+            $("#txtEmail").val(acc.email)
+
+            uplUserFace.value = "";
+            fpsSetImgSrc(imgUserFace, accEdit.userImage);
 
             var createTime = new Date(acc.createTime);
             $("#txtCreate").html("Create: " + fpsFormatDate(createTime) + " " + createTime.toLocaleTimeString());
@@ -233,7 +256,7 @@
                     if (response.status_code === RESP_SUCCESS) {
                         getAccList();
                     } else {
-                        fpsShowMsg(lblMsg,response.message);
+                        fpsShowMsg(lblMsg, response.message);
                     }
                 },
                 error: function (response) {
@@ -300,6 +323,10 @@
                     console.log(response);
                 }
             })
+        }
+
+        function uplUserFaceOnChange() {
+            fpsSetImgFromInput(imgUserFace, uplUserFace);
         }
     </script>
 </div>
