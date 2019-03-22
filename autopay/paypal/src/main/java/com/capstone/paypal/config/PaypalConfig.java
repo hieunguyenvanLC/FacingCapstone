@@ -12,17 +12,17 @@ import java.util.Map;
 @Configuration
 public class PaypalConfig {
 
-    @Bean
-    public Map<String, String> paypalSdkConfig() {
-        Map<String, String> sdkConfig = new HashMap<>();
-        sdkConfig.put("mode", Fix.PAYPAL_MODE);
-        return sdkConfig;
-    }
-
-    @Bean
-    public OAuthTokenCredential authTokenCredential() {
-        return new OAuthTokenCredential(Fix.PAYPAL_CLIENT_ID, Fix.PAYPAL_CLIENT_SECRET, paypalSdkConfig());
-    }
+//    @Bean
+//    public Map<String, String> paypalSdkConfig() {
+//        Map<String, String> sdkConfig = new HashMap<>();
+//        sdkConfig.put("mode", Fix.PAYPAL_MODE);
+//        return sdkConfig;
+//    }
+//
+//    @Bean
+//    public OAuthTokenCredential authTokenCredential() {
+//        return new OAuthTokenCredential(Fix.PAYPAL_CLIENT_ID, Fix.PAYPAL_CLIENT_SECRET, paypalSdkConfig());
+//    }
 
     @Bean
     public APIContext apiContext() {

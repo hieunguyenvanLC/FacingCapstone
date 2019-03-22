@@ -48,6 +48,7 @@ public class WebPageController {
 
     @GetMapping(URL_PAYPAL_CANCEL)
     public String cancelPay() {
+        PaymentService.paymentResult = 2;
         return "cancel";
     }
 
@@ -56,6 +57,7 @@ public class WebPageController {
         try {
             Payment payment = paymentService.executePayment(paymentId, payerId);
             if (payment.getState().equals("approved")) {
+                PaymentService.paymentResult = 1;
                 return "success";
             }
         } catch (PayPalRESTException e) {

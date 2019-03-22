@@ -1,13 +1,17 @@
 package com.capstone.paypal.service;
 
 import com.capstone.paypal.common.Fix;
+import com.capstone.paypal.common.Simulator;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class PaymentService {
@@ -15,6 +19,7 @@ public class PaymentService {
 
     private static String descriptionStr = "basis test";
     private static double orderPrice = 1.23;
+    public static int paymentResult;
 
 
     private APIContext apiContext;
@@ -67,10 +72,62 @@ public class PaymentService {
 //        return payment;
 //    }
 
-    public String receivePaymentInput(double price, String description) {
+    public String receivePaymentInput(String username, String password, double price, String description) {
+        paymentResult = 0;
         orderPrice = price;
         descriptionStr = description;
-        return null;
+
+
+        int billDarkBlue = 0xFF002069;
+
+        int loginDarkBlue = 0xFF003087;
+
+
+        Simulator s = null;
+        try {
+            s = new Simulator();
+
+            s.clickInBox(200, 500, 10, 10);
+
+
+            // logout
+            s.waitForColor(585, 232, billDarkBlue);
+            s.delayRandomShort();
+            s.type('\t');
+            s.delayRandomShort();
+            s.type('\t');
+            s.delayRandomShort();
+            s.type('\n');
+
+            // login
+            s.waitForColor(880, 267, loginDarkBlue);
+            s.delayRandomShort();
+            s.type('\t');
+            s.delayRandomShort();
+            s.copyParseString(username);
+            s.delayRandomMedium();
+            s.type('\t');
+            s.delayRandomMedium();
+            s.copyParseString(password);
+            s.delay(1000);
+            s.moveAndClickInBox(860, 550, 120, 30);
+
+            // confirm bill
+            s.waitForColor(585, 232, billDarkBlue);
+            s.delayRandomMedium();
+            s.delay(1000);
+            s.moveAndClickInBox(650, 840, 200, 30);
+
+
+        } catch (AWTException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return paymentResult + "";
     }
 
     public String initPayment(String cancelUrl, String successUrl) {
