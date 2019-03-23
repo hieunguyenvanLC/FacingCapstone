@@ -2,9 +2,11 @@ package com.capstone.paypal.service;
 
 import com.capstone.paypal.common.Fix;
 import com.capstone.paypal.common.Simulator;
+import com.capstone.paypal.model.PaymentData;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -15,10 +17,12 @@ import java.util.List;
 public class PaymentService {
 
 
-    private static String descriptionStr = "basis test";
-    private static String orderPrice = "1.23";
-    public static int paymentResult;
+//    private static String descriptionStr = "basis test";
+//    private static String orderPrice = "1.23";
+//    public static int paymentResult;
 
+    @Autowired
+    private PaymentData paymentData;
 
     private APIContext apiContext;
 
@@ -71,9 +75,13 @@ public class PaymentService {
 //    }
 
     public String receivePaymentInput(String username, String password, String price, String description) {
-        paymentResult = 0;
-        orderPrice = price;
-        descriptionStr = description;
+
+        paymentData.setResult("0");
+        paymentData.setPrice(price);
+        paymentData.setDescription(description);
+//        paymentResult = 0;
+//        orderPrice = price;
+//        descriptionStr = description;
 
 
         int billDarkBlue = 0xFF002069;
@@ -138,7 +146,6 @@ public class PaymentService {
             }
 
 
-
 //            // logout
 //            s.waitForPixel(585, 232, billDarkBlue);
 //            s.delayRandomShort();
@@ -191,19 +198,19 @@ public class PaymentService {
 //        Set payment details
             Details details = new Details();
             details.setShipping("0");
-            details.setSubtotal(orderPrice);
+            details.setSubtotal(paymentData.getPrice());
             details.setTax("0");
 //        Payment amount
             Amount amount = new Amount();
             amount.setCurrency(Fix.DEF_CURRENCY);
 //        Total must be equal to sum of shipping, tax and subtotal.
-            amount.setTotal(orderPrice);
+            amount.setTotal(paymentData.getPrice());
             amount.setDetails(details);
 
 // Transaction information
             Transaction transaction = new Transaction();
             transaction.setAmount(amount);
-            transaction.setDescription(descriptionStr);
+            transaction.setDescription(paymentData.getDescription());
 
 // Add transaction to a list
             List<Transaction> transactions = new ArrayList<>();

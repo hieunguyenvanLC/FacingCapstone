@@ -16,8 +16,6 @@ public class WebPageController {
     private static final String URL_PAYPAL_SUCCESS = Fix.MAP_PAY + "/success";
     private static final String URL_PAYPAL_CANCEL = Fix.MAP_PAY + "/cancel";
     private final PaymentService paymentService;
-    @Autowired
-    private PaymentData paymentData;
 
     public WebPageController(PaymentService paymentService) {
         this.paymentService = paymentService;
@@ -52,7 +50,6 @@ public class WebPageController {
 
     @GetMapping(URL_PAYPAL_CANCEL)
     public String cancelPay() {
-        PaymentService.paymentResult = 2;
         return "cancel";
     }
 
@@ -61,7 +58,6 @@ public class WebPageController {
         try {
             Payment payment = paymentService.executePayment(paymentId, payerId);
             if (payment.getState().equals("approved")) {
-                PaymentService.paymentResult = 1;
                 return "success";
             }
         } catch (PayPalRESTException e) {

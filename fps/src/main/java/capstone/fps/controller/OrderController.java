@@ -139,7 +139,7 @@ public class OrderController extends AbstractController {
 
 
     // Mobile Shipper - Checkout - Begin
-    @PutMapping(Fix.MAP_SHP + API + "/checkout")
+    @PutMapping(Fix.MAP_ANY + API + "/checkout")
     public String checkout(Integer orderId, String face) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {

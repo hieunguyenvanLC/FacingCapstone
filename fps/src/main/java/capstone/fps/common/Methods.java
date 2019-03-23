@@ -10,7 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
@@ -120,6 +123,30 @@ public final class Methods {
             price += kms * 1000;
         }
         return price;
+    }
+
+    // Converting InputStream to String
+    public static String readStream(InputStream in) {
+        BufferedReader reader = null;
+        StringBuilder response = new StringBuilder();
+        try {
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response.toString();
     }
 
 }

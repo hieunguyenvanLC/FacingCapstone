@@ -12,7 +12,7 @@ public interface Fix {
     String MAP_PAY = "/pay";
 
 
-    String LOCAL_URL = "http://localhost:8080";
+    String LOCAL_URL = "http://localhost:8084" ;
     String DEF_CURRENCY = "USD";
     Double DEF_TAX_RATE = 0.1D;
 

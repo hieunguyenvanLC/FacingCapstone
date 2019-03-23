@@ -11,10 +11,12 @@ public interface Fix {
     //  360 / ≈40,000km
     double DEGREE_PER_KM = 0.009;
 
+
+    double usd = 23199.50D;
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
-    String PAY_SERVER_URL = "http://192.168.100.127:8080/";
+    String PAY_SERVER_URL = "http://192.168.100.127:8084/";
 
 
     Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
@@ -65,7 +67,6 @@ public interface Fix {
     Stat STO_NEW = new Stat(1, "new");
     Stat STO_HID = new Stat(2, "hidden");
     Stat[] STO_STAT_LIST = {STO_NEW, STO_HID};
-
 
 
 }
