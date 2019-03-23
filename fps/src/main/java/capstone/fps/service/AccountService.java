@@ -484,14 +484,14 @@ public class AccountService {
         receiveMemberRepo.save(frReceiveMember);
 
         String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
-        String jpgName = "\\p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
+        String jpgName = "p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
 
 
         File directory = new File(folderName);
         if (!directory.exists()) {
             directory.mkdir();
         }
-        File jpgFile = new File(folderName + jpgName);
+        File jpgFile = new File(folderName + "/" + jpgName);
 
         ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
         try {
@@ -509,7 +509,7 @@ public class AccountService {
         return response;
     }
 
-    public  void trainningFaceRecognise(MultipartFile face) throws IOException {
+    public void trainningFaceRecognise(MultipartFile face) throws IOException {
         CommandPrompt commandPrompt = new CommandPrompt();
 
         InputStream in = new ByteArrayInputStream(face.getBytes());
@@ -521,7 +521,7 @@ public class AccountService {
     }
 //        String
 
-        // Mobile Member - Register - End
+    // Mobile Member - Register - End
 
     // Mobile Mem - Profile - Begin
     public Response<MdlAccount> getMemberDetailMem() {
