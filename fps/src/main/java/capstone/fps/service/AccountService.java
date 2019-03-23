@@ -5,7 +5,6 @@ import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
 import capstone.fps.repository.*;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +26,15 @@ public class AccountService {
     private SourceRepo sourceRepo;
     private PriceLevelRepo priceLevelRepo;
     private ShipperRepo shipperRepo;
+    private ReceiveMemberRepo receiveMemberRepo;
 
-    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo) {
+    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo, ReceiveMemberRepo receiveMemberRepo) {
         this.accountRepo = accountRepo;
         this.roleRepo = roleRepo;
         this.sourceRepo = sourceRepo;
         this.priceLevelRepo = priceLevelRepo;
         this.shipperRepo = shipperRepo;
+        this.receiveMemberRepo = receiveMemberRepo;
     }
 
     private FRRole initRole(String name) {
@@ -481,7 +481,9 @@ public class AccountService {
         frReceiveMember.setName("default");
         frReceiveMember.setFace(faceBytes);
         frReceiveMember.setAccount(frAccount);
-        String folderName = Fix.FACE_FOLDER + "fps" + frAccount.getId();
+        receiveMemberRepo.save(frReceiveMember);
+
+        String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
         String jpgName = "\\p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
 
 
