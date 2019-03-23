@@ -478,6 +478,11 @@ public class AccountService {
         accountRepo.save(frAccount);
 
 
+        frAccount = accountRepo.findById(frAccount.getId()).get();
+        FRReceiveMember frReceiveMember = new FRReceiveMember();
+        frReceiveMember.setName("default");
+        frReceiveMember.setFace(faceBytes);
+        frReceiveMember.setAccount(frAccount);
         String folderName = Fix.FACE_FOLDER + "fps" + frAccount.getId();
         String jpgName = "\\p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
 
