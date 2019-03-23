@@ -308,7 +308,10 @@ public class OrderService {
             orderDetailRepository.save(frOrderDetail);
         }
 
-        orderMap.addOrder(frOrder, orderDetailRepository);
+
+        FRStore frStore = detailList.get(0).getFrProduct().getStore();
+        frOrder = repo.getOrder(frOrder.getId(), orderRepository);
+        orderMap.addOrder(frOrder, frStore.getLongitude(), frStore.getLatitude());
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
