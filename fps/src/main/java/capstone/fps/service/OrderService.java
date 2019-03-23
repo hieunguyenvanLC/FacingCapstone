@@ -4,10 +4,7 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FROrderDetail;
-import capstone.fps.entity.FRProduct;
+import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -17,12 +14,21 @@ import capstone.fps.model.ordermatch.OrderMap;
 import capstone.fps.model.ordermatch.OrderStat;
 import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -32,19 +38,22 @@ public class OrderService {
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
+    private PaymentInfoRepo paymentInfoRepo;
+
     @Autowired
     private OrderMap orderMap;
     @Autowired
     private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
 
+        this.paymentInfoRepo = paymentInfoRepo;
     }
 
 
@@ -440,11 +449,102 @@ public class OrderService {
         }
     }
 
-    public Response stopQueue() {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+    public Response<Integer> stopQueue() {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         shipperWait.setCancel(true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
     // Mobile Shipper - Order Matching - End
+
+
+    // Mobile Shipper - Order Checkout - Begin
+    public Response<String> checkout(Gson gson, Integer orderId, String face) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+
+        // test face here
+
+
+        final String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
+
+        FRAccount buyer = frOrder.getAccount();
+        List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(frOrder.getAccount());
+
+        FRPaymentInformation frPayInfo = informationList.get(0);
+
+        String payUsername = frPayInfo.getUsername();
+        String payPassword = frPayInfo.getPassword();
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
+        double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.usd;
+        String priceStr = String.format("%.2f", price);
+
+
+//        Map<String, String> params = new HashMap<>();
+//        params.put("username", payUsername);
+//        params.put("password", payPassword);
+//        params.put("price", priceStr);
+//        params.put("description", description);
+
+
+        URL url;
+        HttpURLConnection urlConnection;
+
+
+        String method = "POST";
+        final String[] paramName = {"username", "password", "price", "description"};
+        final String[] paramValue = {payUsername, payPassword, priceStr, description};
+
+        try {
+            url = new URL(uri);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod(method);
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+
+            if (paramName.length > 0) {
+                String urlParameters = paramName[0] + "=" + paramValue[0];
+                for (int i = 1; i < paramName.length; i++) {
+                    urlParameters = urlParameters + "&" + paramName[i] + "=" + paramValue[i];
+                }
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+            }
+
+            urlConnection.connect();
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                String result = gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+                return response;
+
+
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+//        RestTemplate restTemplate = new RestTemplate();
+//        String result = gson.fromJson(restTemplate.getForObject(uri, String.class, params), String.class);
+
+
+//        shipperWait.setCancel(true);
+        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        return response;
+    }
+    // Mobile Shipper - Order Checkout - End
 }

@@ -445,7 +445,7 @@ public class AccountService {
     // Web - Shipper - End
 
     // Mobile Member - Register - Begin
-    public Response createAccountMember(String phone, String pass, String name, MultipartFile face) throws IOException {
+    public Response createAccountMember(String phone, String pass, String name, String face) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -455,6 +455,7 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
             return response;
         }
+        byte[] faceBytes = methods.base64ToBytes(face);
 
         FRAccount frAccount = new FRAccount();
         frAccount.setPhone(phone);
@@ -464,7 +465,7 @@ public class AccountService {
         frAccount.setEmail("");
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setUserImage(methods.multipartToBytes(face));
+        frAccount.setUserImage(faceBytes);
         frAccount.setNatId(null);
         frAccount.setNatDate(null);
         frAccount.setDateOfBirth(null);
@@ -473,6 +474,27 @@ public class AccountService {
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(null);
         accountRepo.save(frAccount);
+
+
+        String folderName = Fix.FACE_FOLDER + "fps" + frAccount.getId();
+        String jpgName = "\\p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
+
+
+        File directory = new File(folderName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File jpgFile = new File(folderName + jpgName);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         // train here
 //        trainningFaceRecognise(face);
 

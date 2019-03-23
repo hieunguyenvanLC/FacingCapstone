@@ -114,7 +114,7 @@ public class OrderController extends AbstractController {
     // Mobile Shipper - Queue - Begin
     @DeleteMapping(Fix.MAP_SHP + API)
     public String cancelQueue() {
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = orderService.stopQueue();
         } catch (Exception e) {
@@ -137,4 +137,18 @@ public class OrderController extends AbstractController {
     }
     // Mobile Shipper - Queue - Begin
 
+
+    // Mobile Shipper - Checkout - Begin
+    @PutMapping(Fix.MAP_ANY + API + "/checkout")
+    public String checkout(Integer orderId, String face) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.checkout(gson, orderId, face);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - Checkout - End
 }

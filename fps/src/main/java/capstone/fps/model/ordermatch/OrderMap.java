@@ -121,7 +121,7 @@ public class OrderMap {
     public ArrayList<Delta> getLayer(int layer) {
         switch (layer) {
             case 0:
-                return layer1;
+                return layer0;
             case 1:
                 return layer1;
             case 2:
