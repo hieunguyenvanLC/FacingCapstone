@@ -24,7 +24,7 @@ public interface Fix {
 //    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
 //    Path IMG_DIR_PATH = Paths.get("../../faces/").toAbsolutePath().normalize();
 
-    String FACE_FOLDER = "D:\\Jar\\";
+    String FACE_FOLDER = "/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/fps ";
     String DEF_IMG_TYPE = "jpg";
 
     String PAYPAL_CLIENT_ID = "Ae-WAkmVpZzdf5yYCDsw712GLWeT1RMqWTwirxkRRFnEEvMWKKxvpcn6WW7k2tv6Ck7RmRDEPLLUdJ0F";
