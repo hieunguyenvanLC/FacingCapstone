@@ -16,7 +16,7 @@ public class PaymentController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_API + Fix.MAP_PAY + "/input")
-    public String receivePaymentInput(String username, String password, double price, String description) {
+    public String receivePaymentInput(String username, String password, String price, String description) {
         try {
             return gson.toJson(paymentService.receivePaymentInput(username, password, price, description));
         } catch (Exception e) {

@@ -4,10 +4,7 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.FRAccount;
-import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FROrderDetail;
-import capstone.fps.entity.FRProduct;
+import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -17,12 +14,16 @@ import capstone.fps.model.ordermatch.OrderMap;
 import capstone.fps.model.ordermatch.OrderStat;
 import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -32,19 +33,22 @@ public class OrderService {
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
+    private PaymentInfoRepo paymentInfoRepo;
+
     @Autowired
     private OrderMap orderMap;
     @Autowired
     private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
 
+        this.paymentInfoRepo = paymentInfoRepo;
     }
 
 
@@ -440,11 +444,56 @@ public class OrderService {
         }
     }
 
-    public Response stopQueue() {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+    public Response<Integer> stopQueue() {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         shipperWait.setCancel(true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
     // Mobile Shipper - Order Matching - End
+
+
+    // Mobile Shipper - Order Checkout - Begin
+    public Response<String> checkout(Gson gson, Integer orderId, String face) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+
+        // test face here
+
+
+        final String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
+
+        FRAccount buyer = frOrder.getAccount();
+        List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(frOrder.getAccount());
+
+        FRPaymentInformation frPayInfo = informationList.get(0);
+
+        String payUsername = frPayInfo.getUsername();
+        String payPassword = frPayInfo.getPassword();
+        String description = "Account " + buyer + " pay for order " + frOrder.getId();
+        String priceStr = String.format("%.2f", frOrder.getTotalPrice() + frOrder.getShipperEarn());
+
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("username", payUsername);
+        params.put("password", payPassword);
+        params.put("price", priceStr);
+        params.put("description", description);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String result = gson.fromJson(restTemplate.getForObject(uri, String.class, params), String.class);
+
+
+        shipperWait.setCancel(true);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+        return response;
+    }
+    // Mobile Shipper - Order Checkout - End
 }

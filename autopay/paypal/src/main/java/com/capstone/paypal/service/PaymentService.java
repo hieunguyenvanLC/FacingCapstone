@@ -8,17 +8,15 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class PaymentService {
 
 
     private static String descriptionStr = "basis test";
-    private static double orderPrice = 1.23;
+    private static String orderPrice = "1.23";
     public static int paymentResult;
 
 
@@ -72,79 +70,115 @@ public class PaymentService {
 //        return payment;
 //    }
 
-    public String receivePaymentInput(String username, String password, double price, String description) {
+    public String receivePaymentInput(String username, String password, String price, String description) {
         paymentResult = 0;
         orderPrice = price;
         descriptionStr = description;
 
 
         int billDarkBlue = 0xFF002069;
+
+        int billLightBlue = 0xFF7F86DD;
+
         int loginDarkBlue = 0xFF003087;
+        int logFailPink = 0xFFFFF7F7;
 
-
-        Simulator s = null;
-
+        int logFailRed = 0xFFC72E2E;
 
         try {
-            s = new Simulator();
+            Simulator s = new Simulator();
 
-            Simulator.PixelColor loginMark = s.createPixelColor(1, 870,260, 900,290, loginDarkBlue, 5);
-            Simulator.PixelColor billMark = s.createPixelColor(1, 870,260, 900,290, loginDarkBlue, 5);
-
+            Simulator.PixelColor pixLog = s.createPixelColor(1, 880, 267, 880, 267, loginDarkBlue, 1);
+            Simulator.PixelColor pixBil = s.createPixelColor(2, 585, 232, 585, 232, billDarkBlue, 1);
+//            Simulator.PixelColor pixBil = s.createPixelColor(2, 1150, 320, 1150, 320, billLightBlue, 1);
+            Simulator.PixelColor pixErr = s.createPixelColor(3, 764, 391, 764, 391, logFailRed, 1);
 
             s.clickInBox(200, 500, 10, 10);
+            int id = s.waitForMultiPixel(pixLog, pixBil);
+            System.out.println("step 1 - " + id);
+            if (id == pixBil.id) {
+                // logout
+                s.delayRandomShort();
+                s.type('\t');
+                s.delayRandomShort();
+                s.type('\t');
+                s.delayRandomShort();
+                s.type('\n');
+
+                s.waitForPixel(880, 267, loginDarkBlue);
+            }
+            if (true) {
+                // login
+                s.delayRandomShort();
+                s.type('\t');
+                s.delayRandomShort();
+                s.copyParseString(username);
+                s.delayRandomMedium();
+                s.type('\t');
+                s.delayRandomMedium();
+                s.copyParseString(password);
+                s.delay(1000);
+                s.moveAndClickInBox(860, 550, 120, 30);
+
+                id = s.waitForMultiPixel(pixErr, pixBil);
+                System.out.println("step 2 - " + id);
+
+                if (id == pixBil.id) {
+                    // confirm bill
+                    s.delayRandomMedium();
+                    s.delay(2000);
+                    s.moveAndClickInBox(650, 840, 200, 30);
+                    return "1";
+                } else {
+                    s.clickInBox(1500, 50, 0, 0);
+                    s.copyParseString(Fix.LOCAL_URL);
+                    s.type('\n');
+                    return "2";
+                }
+            }
 
 
 
+//            // logout
+//            s.waitForPixel(585, 232, billDarkBlue);
+//            s.delayRandomShort();
+//            s.type('\t');
+//            s.delayRandomShort();
+//            s.type('\t');
+//            s.delayRandomShort();
+//            s.type('\n');
+//
+//            // login
+//            s.waitForPixel(880, 267, loginDarkBlue);
+//            s.delayRandomShort();
+//            s.type('\t');
+//            s.delayRandomShort();
+//            s.copyParseString(username);
+//            s.delayRandomMedium();
+//            s.type('\t');
+//            s.delayRandomMedium();
+//            s.copyParseString(password);
+//            s.delay(1000);
+//            s.moveAndClickInBox(860, 550, 120, 30);
+//
+//            // confirm bill
+//            s.waitForPixel(585, 232, billDarkBlue);
+//            s.delayRandomMedium();
+//            s.delay(1000);
+//            s.moveAndClickInBox(650, 840, 200, 30);
 
 
-            // logout
-            s.waitForPixel(585, 232, billDarkBlue);
-            s.delayRandomShort();
-            s.type('\t');
-            s.delayRandomShort();
-            s.type('\t');
-            s.delayRandomShort();
-            s.type('\n');
-
-            // login
-            s.waitForPixel(880, 267, loginDarkBlue);
-            s.delayRandomShort();
-            s.type('\t');
-            s.delayRandomShort();
-            s.copyParseString(username);
-            s.delayRandomMedium();
-            s.type('\t');
-            s.delayRandomMedium();
-            s.copyParseString(password);
-            s.delay(1000);
-            s.moveAndClickInBox(860, 550, 120, 30);
-
-            // confirm bill
-            s.waitForPixel(585, 232, billDarkBlue);
-            s.delayRandomMedium();
-            s.delay(1000);
-            s.moveAndClickInBox(650, 840, 200, 30);
-
-
-        } catch (AWTException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (AWTException | InterruptedException e) {
             e.printStackTrace();
         }
 
 
-
-        return paymentResult + "";
+        return "0s";
     }
 
     public String initPayment(String cancelUrl, String successUrl) {
         try {
 
-//            Payment payment = createPayment(cancelUrl, successUrl);
-
-
-            String priceStr = String.format("%.2f", orderPrice);
 //        Set payer details
             Payer payer = new Payer();
             payer.setPaymentMethod("paypal");
@@ -157,13 +191,13 @@ public class PaymentService {
 //        Set payment details
             Details details = new Details();
             details.setShipping("0");
-            details.setSubtotal(priceStr);
+            details.setSubtotal(orderPrice);
             details.setTax("0");
 //        Payment amount
             Amount amount = new Amount();
             amount.setCurrency(Fix.DEF_CURRENCY);
 //        Total must be equal to sum of shipping, tax and subtotal.
-            amount.setTotal(priceStr);
+            amount.setTotal(orderPrice);
             amount.setDetails(details);
 
 // Transaction information

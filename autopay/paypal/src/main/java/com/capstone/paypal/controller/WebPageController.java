@@ -1,9 +1,11 @@
 package com.capstone.paypal.controller;
 
 import com.capstone.paypal.common.Fix;
+import com.capstone.paypal.model.PaymentData;
 import com.capstone.paypal.service.PaymentService;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +16,8 @@ public class WebPageController {
     private static final String URL_PAYPAL_SUCCESS = Fix.MAP_PAY + "/success";
     private static final String URL_PAYPAL_CANCEL = Fix.MAP_PAY + "/cancel";
     private final PaymentService paymentService;
+    @Autowired
+    private PaymentData paymentData;
 
     public WebPageController(PaymentService paymentService) {
         this.paymentService = paymentService;

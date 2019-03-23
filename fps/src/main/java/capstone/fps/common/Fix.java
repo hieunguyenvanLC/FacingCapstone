@@ -14,6 +14,9 @@ public interface Fix {
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
+    String PAY_SERVER_URL = "http://192.168.100.127:8080/";
+
+
     Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
 //    Path IMG_DIR_PATH = Paths.get("../../faces/").toAbsolutePath().normalize();
 

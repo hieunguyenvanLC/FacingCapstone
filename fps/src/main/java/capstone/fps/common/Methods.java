@@ -1,15 +1,14 @@
 package capstone.fps.common;
 
-import capstone.fps.entity.*;
-import capstone.fps.repository.*;
+import capstone.fps.entity.FRAccount;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.nio.file.Files;

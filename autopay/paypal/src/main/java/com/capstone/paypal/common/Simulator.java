@@ -43,16 +43,15 @@ public class Simulator {
             this.yFrom = yFrom;
             this.xTo = xTo;
             this.yTo = yTo;
-            Color colorObj = new Color(color);
             int red = (color >> 16) & 0xFF;
             int green = (color >> 8) & 0xFF;
             int blue = (color >> 0) & 0xFF;
             this.redMin = Math.max(0, red - delta);
-            this.redMax = Math.min(0xFF, red + delta);
+            this.redMax = Math.min(255, red + delta);
             this.greenMin = Math.max(0, green - delta);
-            this.greenMax = Math.min(0xFF, green + delta);
+            this.greenMax = Math.min(255, green + delta);
             this.blueMin = Math.max(0, blue - delta);
-            this.blueMax = Math.min(0xFF, blue + delta);
+            this.blueMax = Math.min(255, blue + delta);
         }
     }
 
@@ -67,27 +66,36 @@ public class Simulator {
         int red;
         int green;
         int blue;
+        int x;
+        int y;
+
         while (true) {
             for (PixelColor p : pixelColors) {
                 dxMax = p.xTo - p.xFrom;
                 dyMax = p.yTo - p.yFrom;
                 for (int dx = 0; dx <= dxMax; dx++) {
                     for (int dy = 0; dy <= dyMax; dy++) {
-                        Color color = robot.getPixelColor(p.xFrom + dx, p.yFrom + dy);
+                        x = p.xFrom + dx;
+                        y = p.yFrom + dy;
+
+                        Color color = robot.getPixelColor(x, y);
+                        System.out.println("color " + p.id + " - " + x + " - " + y + " - " + color.toString());
                         red = color.getRed();
                         green = color.getGreen();
                         blue = color.getBlue();
-                        if (p.redMin <= red && red <= p.redMax && p.greenMin <= green && green <= p.greenMax && p.blueMin <= blue && blue <= p.greenMax) {
+                        if (p.redMin <= red && red <= p.redMax && p.greenMin <= green && green <= p.greenMax && p.blueMin <= blue && blue <= p.blueMax) {
+                            System.out.println("found at" + x + " - " + y);
                             return p.id;
                         }
                     }
                 }
             }
-            delay(50l);
+            System.out.println("end loop");
+            delay(50);
         }
     }
 
-    public void delay(long milisecs) {
+    public void delay(int milisecs) {
         try {
             Thread.sleep(milisecs);
         } catch (InterruptedException e) {
@@ -119,7 +127,7 @@ public class Simulator {
             if (rgb == robot.getPixelColor(x, y).getRGB()) {
                 return;
             } else {
-                delay(50l);
+                delay(50);
             }
         }
     }
@@ -130,11 +138,11 @@ public class Simulator {
         int y = y0 + ran.nextInt(dy + 1);
 
         robot.mouseMove(x, y);
-        delay(10l);
+        delay(10);
         robot.mouseMove(x, y);
-        delay(10l);
+        delay(10);
         robot.mousePress(InputEvent.BUTTON1_MASK);
-        delay(10l);
+        delay(10);
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
@@ -147,7 +155,7 @@ public class Simulator {
         double xt = p.x;
         double yt = p.y;
         for (int i = (int) jump; i > 0; i--) {
-            delay(10l);
+            delay(10);
             xt += dx;
             yt += dy;
             robot.mouseMove((int) Math.round(xt), (int) Math.round(yt));
@@ -191,7 +199,7 @@ public class Simulator {
             if (new Date().getTime() >= timeMax) {
                 return null;
             } else {
-                delay(50l);
+                delay(50);
             }
         }
     }
