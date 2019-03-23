@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -453,7 +457,7 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
             return response;
         }
-
+        byte[] faceBytes = methods.base64ToBytes(face);
 
         FRAccount frAccount = new FRAccount();
         frAccount.setPhone(phone);
@@ -463,7 +467,7 @@ public class AccountService {
         frAccount.setEmail("");
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setUserImage(methods.base64ToBytes(face));
+        frAccount.setUserImage(faceBytes);
         frAccount.setNatId(null);
         frAccount.setNatDate(null);
         frAccount.setDateOfBirth(null);
@@ -472,6 +476,27 @@ public class AccountService {
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(null);
         accountRepo.save(frAccount);
+
+
+        String folderName = Fix.FACE_FOLDER + "fps" + frAccount.getId();
+        String jpgName = "\\p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
+
+
+        File directory = new File(folderName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File jpgFile = new File(folderName + jpgName);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         // train here
 
 

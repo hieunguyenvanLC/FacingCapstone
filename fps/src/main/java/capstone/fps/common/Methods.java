@@ -63,19 +63,19 @@ public final class Methods {
     }
 
 
-    public String handleImage(MultipartFile image) {
-        if (image != null) {
-            String fileName = image.getOriginalFilename();
-//            Files.createDirectories(rootLocation);
-            try {
-                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-                return fileName;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+//    public String handleImage(MultipartFile image) {
+//        if (image != null) {
+//            String fileName = image.getOriginalFilename();
+////            Files.createDirectories(rootLocation);
+//            try {
+//                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+//                return fileName;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return null;
+//    }
 
     public String bytesToBase64(byte[] bytes) {
         if (bytes == null) {
