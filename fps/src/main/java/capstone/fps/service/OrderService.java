@@ -423,6 +423,7 @@ public class OrderService {
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
                                     frOrder.setStatus(Fix.ORD_ASS.index);
+                                    orderRepository.save(frOrder);
                                     MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
