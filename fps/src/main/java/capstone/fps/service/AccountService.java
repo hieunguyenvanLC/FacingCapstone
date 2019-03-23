@@ -1,9 +1,6 @@
 package capstone.fps.service;
 
-import capstone.fps.common.Fix;
-import capstone.fps.common.Methods;
-import capstone.fps.common.Repo;
-import capstone.fps.common.Validator;
+import capstone.fps.common.*;
 import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
@@ -17,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -503,12 +501,25 @@ public class AccountService {
 
 
         // train here
-
+//        trainningFaceRecognise(face);
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
-    // Mobile Member - Register - End
+
+    public  void trainningFaceRecognise(MultipartFile face) throws IOException {
+        CommandPrompt commandPrompt = new CommandPrompt();
+
+        InputStream in = new ByteArrayInputStream(face.getBytes());
+
+        BufferedImage image = ImageIO.read(in);
+//        Path file = Paths.get();
+        File outputFile = new File("/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/test/Vladimir_Putin/hieu.jpeg");
+        ImageIO.write(image, "png", outputFile);
+    }
+//        String
+
+        // Mobile Member - Register - End
 
     // Mobile Mem - Profile - Begin
     public Response<MdlAccount> getMemberDetailMem() {
