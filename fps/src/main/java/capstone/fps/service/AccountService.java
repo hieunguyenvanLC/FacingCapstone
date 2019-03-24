@@ -466,7 +466,7 @@ public class AccountService {
         frAccount.setEmail("");
         frAccount.setExtraPoint(0);
         frAccount.setReportPoint(0);
-        frAccount.setUserImage(faceBytes);
+        frAccount.setUserImage(null);
         frAccount.setNatId(null);
         frAccount.setNatDate(null);
         frAccount.setDateOfBirth(null);
@@ -559,18 +559,27 @@ public class AccountService {
         return response;
     }
 
-    public Response<String> updateMemberFaceMem(MultipartFile face) {
+    public Response<String> updateMemberFaceMem(Integer revMemId, String face) {
         Methods methods = new Methods();
+        Repo repo = new Repo();
         FRAccount currentUser = methods.getUser();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
+        FRReceiveMember frReceiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
+        if (frReceiveMember == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find member");
+            return response;
+        }
+        byte[] faceBytes = null;
         if (face != null) {
-            currentUser.setUserImage(methods.multipartToBytes(face));
+            faceBytes = methods.base64ToBytes(face);
+            frReceiveMember.setFace(faceBytes);
+
+
+            // train here
+
         }
         accountRepo.save(currentUser);
-        // train here
-
-
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
