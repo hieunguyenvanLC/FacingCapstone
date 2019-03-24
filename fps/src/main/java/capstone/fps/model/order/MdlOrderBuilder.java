@@ -44,6 +44,7 @@ public class MdlOrderBuilder {
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         FRStore store = frOrderDetails.get(0).getProduct().getStore();
         mdlOrder.storeName = store.getStoreName();
+        mdlOrder.storeAddress = store.getAddress() + " " + store.getDistrict().getName();
         mdlOrder.storeLongitude = store.getLongitude();
         mdlOrder.storeLatitude = store.getLatitude();
 
