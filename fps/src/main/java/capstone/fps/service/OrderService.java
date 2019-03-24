@@ -308,7 +308,10 @@ public class OrderService {
             orderDetailRepository.save(frOrderDetail);
         }
 
-        orderMap.addOrder(frOrder, orderDetailRepository);
+
+        FRStore frStore = detailList.get(0).getFrProduct().getStore();
+        frOrder = repo.getOrder(frOrder.getId(), orderRepository);
+        orderMap.addOrder(frOrder, frStore.getLongitude(), frStore.getLatitude());
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
@@ -423,6 +426,7 @@ public class OrderService {
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
                                     frOrder.setStatus(Fix.ORD_ASS.index);
+                                    orderRepository.save(frOrder);
                                     MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
@@ -471,6 +475,8 @@ public class OrderService {
         }
 
         // test face here
+
+
 
 
         final String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";

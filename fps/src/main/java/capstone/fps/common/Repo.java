@@ -72,4 +72,12 @@ public class Repo {
         Optional<FRProduct> optional = productRepository.findById(proId);
         return optional.orElse(null);
     }
+
+    public FRReceiveMember getReceiveMember(Integer revId, ReceiveMemberRepo receiveMemberRepo) {
+        if (revId == null) {
+            return null;
+        }
+        Optional<FRReceiveMember> optional = receiveMemberRepo.findById(revId);
+        return optional.orElse(null);
+    }
 }

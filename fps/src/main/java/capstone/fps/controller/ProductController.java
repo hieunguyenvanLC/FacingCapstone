@@ -22,32 +22,8 @@ public class ProductController extends AbstractController {
         this.productService = productService;
     }
 
-    @GetMapping(Fix.MAP_ANY + API + "/best5")
-    public String getProBest5() {
-        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            response = productService.getBest5();
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
 
-//    @DeleteMapping(Fix.MAP_ADM + API)
-//    public String deactivateAccount(Integer accountId, String reason) {
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            if (productService.(accountId, reason)) {
-//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
-
+    // Web Admin - Product - Begin
     @GetMapping(Fix.MAP_ADM + API)
     public String getProList(Integer storeId) {
         Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -86,6 +62,21 @@ public class ProductController extends AbstractController {
         }
         return gson.toJson(response);
     }
+    // Web Admin - Product - Begin
 
+
+    // Mobile Member - Home - Begin
+    @GetMapping(Fix.MAP_ANY + API + "/best5")
+    public String getProBest5() {
+        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = productService.getBest5();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Home - End
 
 }

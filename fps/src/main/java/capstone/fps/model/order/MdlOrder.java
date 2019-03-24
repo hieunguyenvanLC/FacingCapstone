@@ -74,6 +74,9 @@ public class MdlOrder {
     String storeName;
 
     @Expose
+    String storeAddress;
+
+    @Expose
     double storeLongitude;
 
     @Expose

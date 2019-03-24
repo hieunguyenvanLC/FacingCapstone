@@ -33,8 +33,7 @@ public class StoreService {
         this.productRepository = productRepository;
     }
 
-
-    // To do: set schedule
+    // Web Admin - Store - Begin
     public Response<MdlStore> createStore(String name, String phone, String address, Integer distId, Double longitude, Double latitude, MultipartFile storeImg, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -44,7 +43,7 @@ public class StoreService {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-
+        // To do: set schedule
         FRDistrict frDistrict = repo.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
@@ -76,24 +75,6 @@ public class StoreService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
-
-//    public boolean deactivateStore(Integer id, String note) {
-//        Methods methods = new Methods();
-//        long time = methods.getTimeNow();
-//        Optional<FRStore> optional = storeRepository.findById(id);
-//        if (!optional.isPresent()) {
-//            return false;
-//        }
-//        FRStore frStore = optional.get();
-//        frStore.setDeleteTime(time);
-//        if (!methods.nullOrSpace(note)) {
-//            frStore.setNote(note);
-//        }
-//        frStore.setStatus(Fix.STO_HID.index);
-//        frStore.setEditor(methods.getUser());
-//        storeRepository.save(frStore);
-//        return true;
-//    }
 
     public Response<MdlStore> updateStore(Integer storeId, String name, String phone, String address, Integer distId, Double longitude, Double latitude, MultipartFile storeImg, String note, Integer status) {
         Methods methods = new Methods();
@@ -169,7 +150,10 @@ public class StoreService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
+    // Web Admin - Store - Begin
 
+
+    // Mobile Member - Home - Begin
     public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -201,8 +185,10 @@ public class StoreService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStoreList);
         return response;
     }
+    // Mobile Member - Home - End
 
 
+    // Mobile Member - Store Detail - Begin
     public Response<MdlStore> getStoreDetailMem(Integer storeId) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Repo repo = new Repo();
@@ -216,4 +202,5 @@ public class StoreService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
+    // Mobile Member - Store Detail - End
 }

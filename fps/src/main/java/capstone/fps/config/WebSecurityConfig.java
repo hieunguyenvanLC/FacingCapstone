@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -126,6 +127,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //                Response<List<String>> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 //                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+
+
+//                Thread t = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        for (int i = 0; i < 1000; i++) {
+//                            //new Date();
+//                            System.out.println("i - " + i + " - ");
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                });
+//                t.start();
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
                 response.getWriter().append(gson.toJson(responseObj));
 //                System.out.println("Result: " + result.toString());

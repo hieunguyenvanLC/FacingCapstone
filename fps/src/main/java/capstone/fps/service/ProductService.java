@@ -29,19 +29,8 @@ public class ProductService {
         this.storeRepository = storeRepository;
     }
 
-    public Response<List<MdlProduct>> getBest5() {
-        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
-        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        List<FRProduct> frProducts = productRepository.findAllByStatusOrderByRatingDesc(Fix.PRO_NEW.index);
-        int size = Math.min(5, frProducts.size());
-        List<MdlProduct> mdlProducts = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            mdlProducts.add(mdlProductBuilder.buildBig(frProducts.get(i)));
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProducts);
-        return response;
-    }
 
+    // Web Admin - Product - Begin
     public Response<MdlProduct> createProduct(String proName, Integer storeId, Double price, MultipartFile proImg, String description, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -82,7 +71,6 @@ public class ProductService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProduct);
         return response;
     }
-
 
     public Response<MdlProduct> updateProduct(Integer proId, String name, Double price, MultipartFile proImg, String description, String note, Integer status) {
         Methods methods = new Methods();
@@ -153,4 +141,22 @@ public class ProductService {
         }
         return mdlProducts;
     }
+    // Web Admin - Product - End
+
+
+    // Mobile Member - Home - Begin
+    public Response<List<MdlProduct>> getBest5() {
+        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
+        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        List<FRProduct> frProducts = productRepository.findAllByStatusOrderByRatingDesc(Fix.PRO_NEW.index);
+        int size = Math.min(5, frProducts.size());
+        List<MdlProduct> mdlProducts = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            mdlProducts.add(mdlProductBuilder.buildBig(frProducts.get(i)));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProducts);
+        return response;
+    }
+    // Mobile Member - Home - End
+
 }

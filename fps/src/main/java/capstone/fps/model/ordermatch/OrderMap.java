@@ -136,15 +136,11 @@ public class OrderMap {
     }
 
 
-    public OrderStat addOrder(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+    public OrderStat addOrder(FROrder frOrder, double storeLon, double storeLat) {
+        int col = convertLon(storeLon);
+        int row = convertLat(storeLat);
 
-        List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
-        FRStore store = frOrderDetails.get(0).getProduct().getStore();
-        int col = convertLon(store.getLongitude());
-        int row = convertLat(store.getLatitude());
-
-
-        OrderStat orderStat = new OrderStat(frOrder, store.getLongitude(), store.getLatitude());
+        OrderStat orderStat = new OrderStat(frOrder, storeLon, storeLat);
         map[row][col].getStatList().add(orderStat);
         return orderStat;
 
