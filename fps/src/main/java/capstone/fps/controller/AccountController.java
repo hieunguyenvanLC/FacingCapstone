@@ -188,6 +188,7 @@ public class AccountController extends AbstractController {
     }
     // Mobile Mem - Register - End
 
+
     // Mobile Mem - Profile - Begin
     @GetMapping(Fix.MAP_MEM + API + "/detail")
     public String getMemberDetailMem() {

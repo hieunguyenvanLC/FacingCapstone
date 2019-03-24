@@ -61,6 +61,7 @@ public class OrderController extends AbstractController {
     }
     // Web Admin - Order - End
 
+
     // Mobile Member - Order Booking - Begin
     @PostMapping(Fix.MAP_MEM + API)
     public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList) {
@@ -110,6 +111,7 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
     // Mobile Member - Order Booking - End
+
 
     // Mobile Shipper - Queue - Begin
     @DeleteMapping(Fix.MAP_SHP + API)
