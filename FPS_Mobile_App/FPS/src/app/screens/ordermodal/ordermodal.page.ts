@@ -27,6 +27,7 @@ export class OrdermodalPage implements OnInit {
   temp = [];
 
   orderId: number;
+  orderStatus: any;
 
 
   constructor(
@@ -46,7 +47,7 @@ export class OrdermodalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  checkout() {
+   async checkout() {
     //custo
     for (let i = 0; i < this.products.length; i++) {
       const element = this.products[i];
@@ -61,7 +62,7 @@ export class OrdermodalPage implements OnInit {
 
     }
     //this.router.navigateByUrl("order");
-    this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
+    await this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
       .subscribe(data => {
         console.log(data);
         console.log("in create order ----");
@@ -74,26 +75,78 @@ export class OrdermodalPage implements OnInit {
           //handle success api create order
           this.presentToast("Order success ! Finding shipper...");
           console.log(this.temp[0].data);
-          this.orderId = this.temp[0].data;
 
+          //get id order
+          this.orderId = this.temp[0].data;
           console.log(this.orderId);
-          this.router.navigateByUrl("order");
+          
+          //this.router.navigateByUrl("order");
+
+          //-----get status order
+          if (this.orderId) {
+            this.orderService.getOrderStatus(this.orderId).subscribe(res => {
+              if (!this.temp) {
+                // console.log("in !temp");
+                // this.temp = [];
+                // this.temp.push(res);
+                // console.log(this.temp[0].data);
+              }else{
+                console.log("in temp");
+                this.temp = [];
+                this.temp.push(res);
+                
+                console.log(this.temp[0].data);
+                //start if status
+                if (this.temp[0].data.status !== undefined){
+                  this.orderStatus = this.temp[0].data.status;
+                  console.log("order status - " + this.orderStatus + " - " + this.temp[0].data.status);
+                
+                
+                
+                // while(this.orderStatus === 1){
+                //   console.log("in while loop");
+                //   setTimeout(()=> {
+                //     console.log("in while");
+                //     this.orderService.getOrderStatus(this.orderId).subscribe(res => {
+                //       this.temp = [];
+                //       this.temp.push(res);
+                //       if (this.temp[0].data.status === 2){
+                //         this.orderStatus = this.temp[0].data.status;
+                //         console.log("in set interval - " + this.orderStatus);
+                //       }
+                //     });
+                //   }, 3*1000);
+                // }
+                
+                // setInterval(() => {
+                //   console.log("set interval");
+                //   this.orderService.getOrderStatus(this.orderId).subscribe(res => {
+                //     this.temp = [];
+                //     this.temp.push(res);
+                //     if (this.temp[0].data.status === 2){
+                //       this.orderStatus = this.temp[0].data.status;
+                //       console.log("in set interval - " + this.orderStatus);
+                //       return;
+                //     }
+                //   });
+                // }, 5*1000)
+
+              }// end if status
+               
+                
+              }
+            });
+            console.log("done request status !");
+          }
+          //-----end get status order
+
         }
 
         console.log("--end create order");
       });
 
     //get user status
-    if (this.orderId) {
-      this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-        if (!this.temp) {
-          console.log("in !temp");
-          this.temp = [];
-          this.temp.push(res);
-          console.log(this.temp[0].data);
-        }
-      });
-    }
+    
 
   }
 

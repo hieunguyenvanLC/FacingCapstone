@@ -1,4 +1,24 @@
-.welcome-card ion-img {
-  max-height: 35vh;
-  overflow: hidden;
+
+ion-grid{
+  padding: 0;
+  .prod-title{
+      font-size: 13px;
+  }
+  .prod-price{
+      color: green;
+      font-size: 13px;
+      p{
+          margin: 0;
+          text-align: right;
+      }
+  }
+}
+
+.primary-text{
+  color: #3880ffeb;
+}
+
+.footer{
+  background-color:white;
+  padding-bottom: 10px;
 }

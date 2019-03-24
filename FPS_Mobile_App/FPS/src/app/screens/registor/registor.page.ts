@@ -159,8 +159,8 @@ export class RegistorPage implements OnInit {
     });
   }
 
-  changeListener($event): void {
-    this.file = $event.target.files[0];
-    console.log(this.file);
-  }
+  // changeListener($event): void {
+  //   this.file = $event.target.files[0];
+  //   console.log(this.file);
+  // }
 }
