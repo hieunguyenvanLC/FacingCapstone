@@ -1,5 +1,5 @@
 var barChartExample;
-
+var reportTable = null;
 $(document).ready(function () {
 //     // $('body').bootstrapMaterialDesign();
 //     var accountTable = $('#account-table').DataTable({
@@ -266,6 +266,12 @@ $(document).ready(function () {
 
     }
 
+    function getDateOfWeek(w, y) {
+        var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+
+        return new Date(y, 0, d);
+    }
+
     function handleBarClick(evt) {
         var activeElement = barChartExample.getElementAtEvent(evt);
 
@@ -297,18 +303,23 @@ $(document).ready(function () {
         switch (chartType) {
             case '0':
                 // la ngay
-                startMoment = moment(startDate, "DD/MM/YYYY");
-                startUnix1 = startMoment.clone().date(parseInt(selectedBar)).unix() * 1000;
-                endUnix1 = startMoment.clone().date(parseInt(selectedBar) + 1).unix() * 1000;
+                startMoment = moment(selectedBar, "DD/MM/YYYY");
+                startUnix1 = startMoment.unix() * 1000;
+                endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                 break;
 
             case '1':
+                //la tuan
+                var parts = selectedBar.split("/");
+                startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
+                startUnix1 = startMoment.unix() * 1000;
+                endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
                 break;
 
             case '2':
-                startMoment = moment(startDate, "DD/MM/YYYY");
-                startUnix1 = startMoment.clone().date(1).month(parseInt(selectedBar)).unix() * 1000;
-                endUnix1 = startMoment.clone().date(1).month(parseInt(selectedBar) + 1).unix() * 1000;
+                startMoment = moment('01/' + selectedBar, "DD/MM/YYYY");
+                startUnix1 = startMoment.unix() * 1000;
+                endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
                 break;
 
             case '3':
@@ -326,6 +337,22 @@ $(document).ready(function () {
             success: function (response) {
                 var orders = response.data;
                 console.log(orders);
+
+                var list = orders;
+                // report-table
+                $("#report-table").DataTable().destroy();
+                var reportTable = $("#report-table").DataTable();
+                reportTable.clear().draw();
+                for (var i = 0; i < list.length; i++) {
+                    var order = list[i];
+                    reportTable.row.add([
+                        '<span>' + order.id + '</span>',
+                        '<span>' + order.buyerPhone + '</span>',
+                        '<span>' + order.buyerName + '</span>',
+                        '<span>' + order.totalPrice + '</span>',
+                        fpsGetStatMsg(ORD_STAT_LIST, order.status)
+                    ]).draw();
+                }
             },
             error: function (err) {
                 console.log(err);

@@ -9,10 +9,13 @@ import capstone.fps.model.home.MdlReportSummaryDetail;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
 import capstone.fps.service.HomeService;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
@@ -407,17 +410,15 @@ public class HomeController extends AbstractController {
         /* start: kieu unix time dung de filter */
         /* end: kieu unix time */
         Response response = new Response<MdlChartData<Integer>>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Boolean isSuccess = false;
+        String errorMsg = "";
 
-        Date startDate = new Date(start); // neu start la milisec thi khong can nhan 1000
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTime(startDate);
+        Calendar startCal = unixToCalendar(start); // neu start la milisec thi khong can nhan 1000
         int startYear = startCal.get(Calendar.YEAR);
         int startMonth = startCal.get(Calendar.MONTH) + 1; // start from 0, mon 0 = thang 1
         int startDay = startCal.get(Calendar.DAY_OF_MONTH);
 
-        Date endDate = new Date(end); // neu start la milisec thi khong can nhan 1000
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(endDate);
+        Calendar endCal = unixToCalendar(end); // neu start la milisec thi khong can nhan 1000
         int endYear = endCal.get(Calendar.YEAR);
         int endMonth = endCal.get(Calendar.MONTH) + 1;
         int endDay = endCal.get(Calendar.DAY_OF_MONTH);
@@ -426,33 +427,78 @@ public class HomeController extends AbstractController {
         List<String> labels = new ArrayList<String>();
         List<Integer> orders = new ArrayList<Integer>();
 
-        if (type == 0) { // neu la  theo tuan //ok
-            for (Integer day = startDay; day <= endDay; day++) {
-                labels.add(day.toString());
-                long startUnix = this.dateToUnix(startYear, startMonth, day, 0, 0, 0);
-                long endUnix = this.dateToUnix(startYear, startMonth, day + 1, 0, 0, 0);
-                orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+        if (type == 0) { // neu la  theo ngay //ok
+            int days = diffDay(startCal, endCal);
+            if (days <= 31) {
+                Calendar dateIdx = (Calendar)startCal.clone();
+                for (; dateIdx.compareTo(endCal) <= 0; dateIdx.add(Calendar.DAY_OF_MONTH, 1)) {
+                    labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
+                    long startUnix = dateIdx.getTimeInMillis();
+                    Calendar tempEnd = (Calendar)dateIdx.clone();
+                    tempEnd.add(Calendar.DAY_OF_MONTH, 1);
+                    long endUnix = tempEnd.getTimeInMillis();
+                    orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+                }
+                isSuccess=true;
+            } else {
+                errorMsg = "The number of days is out of range (Only accept less than or equal 31 days)!";
+            }
+        } else if (type == 1) {
+            // Neu la week
+            int weeks = diffWeek(startCal, endCal);
+            int startWeek = startCal.get(Calendar.WEEK_OF_YEAR);
+            if (weeks <= 52) {
+                for (Integer weekIdx = 0; weekIdx < weeks; weekIdx++) {
+                    Integer curWeek = startWeek + weekIdx > 52 ? weekIdx : startWeek + weekIdx;
+                    Integer curYear = startWeek + weekIdx > 12 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
+                    labels.add(String.format("%02d", curWeek) + "/" + curYear.toString());
+                    long startUnix = this.weekToUnix(curYear, curWeek);
+                    long endUnix = this.weekToUnix(curYear, curWeek + 1);
+                    orders.add(this.homeService.countOrderBy(startUnix, endUnix));
+                }
+                isSuccess = true;
+            } else {
+                errorMsg = "The number of weeks is out of range (Only accept less than or equal 52 weeks)!";
             }
         } else if (type == 2) { // neu la theo thang
-            for (Integer mon = startMonth; mon <= endMonth; mon++) {
-                labels.add(mon.toString());
-                long startUnix = this.dateToUnix(startYear, mon, 1, 0, 0, 0);
-                long endUnix = this.dateToUnix(startYear, mon + 1, 1, 0, 0, 0);
-                orders.add(this.homeService.countOrderBy(startUnix, endUnix));
+            int months = diffMon(startCal, endCal);
+
+            if (months <= 12) {
+                for (Integer monIdx = 0; monIdx <= months; monIdx++) {
+                    Integer curMon = startMonth + monIdx > 12 ? monIdx : startMonth + monIdx;
+                    Integer curYear = startMonth + monIdx > 12 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
+                    labels.add(String.format("%02d", curMon) + "/" + curYear.toString());
+                    long startUnix = this.dateToUnix(curYear, curMon, 1, 0, 0, 0);
+                    long endUnix = this.dateToUnix(curYear, curMon + 1, 1, 0, 0, 0);
+                    orders.add(this.homeService.countOrderBy(startUnix, endUnix));
+                }
+                isSuccess = true;
+            } else {
+                errorMsg = "The number of months is out of range (Only accept less than or equal 12 months)!";
             }
         } else { // neu la theo nam
-            for (Integer year = startYear; year <= endYear; year++) {
-                labels.add(year.toString());
-                long startUnix = this.dateToUnix(year, 1, 1, 0, 0, 0);
-                long endUnix = this.dateToUnix(year + 1, 1, 1, 0, 0, 0);
-                orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+            if (endYear - startYear < 30) {
+                for (Integer year = startYear; year <= endYear; year++) {
+                    labels.add(year.toString());
+                    long startUnix = this.dateToUnix(year, 1, 1, 0, 0, 0);
+                    long endUnix = this.dateToUnix(year + 1, 1, 1, 0, 0, 0);
+                    orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+                }
+                isSuccess = true;
+            } else {
+                errorMsg = "The number of years is out of range (Only accept less than or equal 30 years)!";
             }
         }
 
-        chartData.setLabels(labels);
-        chartData.setData(orders);
+        if (isSuccess) {
+            chartData.setLabels(labels);
+            chartData.setData(orders);
 
-        response.setResponse(Response.STATUS_SUCCESS, "", chartData);
+            response.setResponse(Response.STATUS_SUCCESS, "", chartData);
+        } else {
+            response.setResponse(Response.STATUS_FAIL, errorMsg);
+        }
+
         return gson.toJson(response);
     }
 
@@ -492,6 +538,11 @@ public class HomeController extends AbstractController {
     }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
+
         YearMonth yearMonthObject = YearMonth.of(year, month);
         Integer daysInMonth = yearMonthObject.lengthOfMonth();
 
@@ -505,12 +556,52 @@ public class HomeController extends AbstractController {
             }
         }
 
-        if (month > 12) {
-            month = 1;
-            year++;
-        }
-
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);
         return dateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
+    }
+
+    private long weekToUnix(int year, int week) {
+        Calendar cld = Calendar.getInstance();
+        cld.set(Calendar.YEAR, year);
+        cld.set(Calendar.WEEK_OF_YEAR, week);
+        cld.set(Calendar.MILLISECOND, 0);
+        cld.set(Calendar.SECOND, 0);
+        cld.set(Calendar.MINUTE, 0);
+        cld.set(Calendar.HOUR_OF_DAY, 0);
+//        Date result = cld.getTime();
+        return cld.getTimeInMillis();
+    }
+
+    private Calendar unixToCalendar(Long timestamp) {
+        Date date = new Date(timestamp); // neu start la milisec thi khong can nhan 1000
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar;
+    }
+
+    private int diffWeek(Calendar start, Calendar end) {
+        int weeks = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) * 52;
+        weeks -= start.get(Calendar.WEEK_OF_YEAR) - 1;
+        weeks += end.get(Calendar.WEEK_OF_YEAR);
+        return weeks <= 0 ? 0 : weeks;
+    }
+
+    private int diffMon(Calendar start, Calendar end) {
+        int months = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) * 12;
+        months -= start.get(Calendar.MONTH) + 1;
+        months += end.get(Calendar.MONTH) + 1;
+        return months <= 0 ? 0 : months;
+    }
+
+    private int diffDay(Calendar start, Calendar end) {
+        int oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        return Math.round(Math.abs((end.getTimeInMillis() - start.getTimeInMillis()) / (oneDay)));
+    }
+
+    private String formatDate(Calendar cal, String format) {
+        Date date = cal.getTime();
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(date);
     }
 }
