@@ -426,7 +426,7 @@
             txtFullName.value = accEdit.name;
             cbbSource.value = accEdit.sourceId;
 
-            dpDob.value = accEdit.dateOfBirth;
+            dpDob.valueAsNumber = accEdit.dateOfBirth;
             txtEmail.value = accEdit.email;
             txtNote.value = accEdit.note;
             cbbPriceLevel.value = accEdit.priceLevelId;
@@ -441,9 +441,9 @@
             cbbStatus.value = accEdit.status;
 
             txtNatId.value = accEdit.natId;
-            dpNatDate.value = accEdit.natDate;
+            dpNatDate.valueAsNumber = accEdit.natDate;
             txtBikeRegId.value = accEdit.bikeRegId;
-            dpBikeRegDate.value = accEdit.bikeRegDate;
+            dpBikeRegDate.valueAsNumber = accEdit.bikeRegDate;
 
             fpsSetImgSrc(imgNatFront, accEdit.natFront);
             fpsSetImgSrc(imgNatBack, accEdit.natBack);
@@ -601,7 +601,7 @@
                     }
                 },
                 error: function (response) {
-                    alert("Unable to Edit");
+                    alert("Unable to Add");
                 }
             })
         }
