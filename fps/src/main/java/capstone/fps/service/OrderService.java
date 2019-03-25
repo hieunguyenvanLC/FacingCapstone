@@ -237,7 +237,7 @@ public class OrderService {
 
 
     // Mobile Member - Order Booking - Begin
-    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr) {
+    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -284,7 +284,7 @@ public class OrderService {
         frOrder.setTotalPrice(totalPrice);
         frOrder.setBookTime(time);
         frOrder.setReceiveTime(null);
-        frOrder.setShipperEarn(null);
+        frOrder.setShipperEarn(methods.calculateShpEarn(distance));
         frOrder.setShipAddress(null);
         frOrder.setDistrict(null);
         frOrder.setLongitude(longitude);
@@ -424,7 +424,6 @@ public class OrderService {
                                     orderMap.removeOrder(order, colNode, rowNode);
                                     FROrder frOrder = order.getFrOrder();
                                     frOrder.setShipper(currentUser.getShipper());
-                                    frOrder.setShipperEarn(methods.caculateShpEarn(frOrder.getLongitude(), frOrder.getLatitude(), order.getStoreLon(), order.getStoreLat(), longitude, latitude));
                                     frOrder.setStatus(Fix.ORD_ASS.index);
                                     orderRepository.save(frOrder);
                                     MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
@@ -475,6 +474,9 @@ public class OrderService {
         }
 
         // test face here
+
+
+
 
 
 

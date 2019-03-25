@@ -64,10 +64,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Member - Order Booking - Begin
     @PostMapping(Fix.MAP_MEM + API)
-    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList) {
+    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.createOrder(longitude, latitude, customerDescription, proList);
+            response = orderService.createOrder(longitude, latitude, customerDescription, proList, distance);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
