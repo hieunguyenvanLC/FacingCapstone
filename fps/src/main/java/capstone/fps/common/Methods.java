@@ -164,7 +164,8 @@ public final class Methods {
         return response.toString();
     }
 
-    public void deleteDirectoryWalkTree(Path path) throws IOException {
+    public void deleteDirectoryWalkTree(String folderName) throws IOException {
+        Path deleteDirPath = Paths.get(folderName).toAbsolutePath().normalize();
         FileVisitor visitor = new SimpleFileVisitor<Path>() {
 
             @Override
@@ -188,6 +189,6 @@ public final class Methods {
                 return FileVisitResult.CONTINUE;
             }
         };
-        Files.walkFileTree(path, visitor);
+        Files.walkFileTree(deleteDirPath, visitor);
     }
 }

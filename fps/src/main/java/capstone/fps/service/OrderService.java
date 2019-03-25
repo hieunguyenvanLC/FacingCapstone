@@ -2,6 +2,7 @@ package capstone.fps.service;
 
 import capstone.fps.common.*;
 import capstone.fps.entity.*;
+import capstone.fps.model.FPSSessionData;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -14,10 +15,11 @@ import capstone.fps.repository.*;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -26,12 +28,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderService {
@@ -42,14 +40,13 @@ public class OrderService {
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
     private PaymentInfoRepo paymentInfoRepo;
-
-    @Autowired
+    private ReceiveMemberRepo receiveMemberRepo;
     private OrderMap orderMap;
     @Autowired
     private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
@@ -57,6 +54,8 @@ public class OrderService {
         this.accountRepository = accountRepository;
 
         this.paymentInfoRepo = paymentInfoRepo;
+        this.receiveMemberRepo = receiveMemberRepo;
+        this.orderMap = orderMap;
     }
 
 
@@ -465,7 +464,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face) throws IOException {
+    public Response<String> checkout(Gson gson, Integer orderId, String face, HttpServletRequest request) {
         Methods methods = new Methods();
         Repo repo = new Repo();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -475,46 +474,71 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
+        HttpSession session = request.getSession(true);
+        session.removeAttribute("faceTest");
+
 
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
 
         // test face here
+
         FaceRecognise(faceBytes);
 
 
+        String rep;
+        while ((rep = (String) session.getAttribute("faceTest")) == null) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
 
+        rep = rep.replace("fps", "");
+        String[] strList = rep.split("|");
+        for (String idStr : strList) {
+            int revMemId = Integer.parseInt(idStr);
+            FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
+            if (receiveMember != null) {
+                if (receiveMember.getAccount().getId() == frOrder.getAccount().getId()) {
+
+                    FRAccount buyer = frOrder.getAccount();
+                    List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(frOrder.getAccount());
+
+                    FRPaymentInformation frPayInfo = informationList.get(0);
+
+                    String payUsername = frPayInfo.getUsername();
+                    String payPassword = frPayInfo.getPassword();
+                    String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
+                    double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.usd;
+                    String priceStr = String.format("%.2f", price);
 
 
-        final String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
+                    callPaypal(gson, payUsername, payPassword, priceStr, description);
 
-        FRAccount buyer = frOrder.getAccount();
-        List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(frOrder.getAccount());
+                    response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+                    return response;
 
-        FRPaymentInformation frPayInfo = informationList.get(0);
+                }
+            }
+        }
+        
+        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        return response;
+    }
+    // Mobile Shipper - Order Checkout - End
 
-        String payUsername = frPayInfo.getUsername();
-        String payPassword = frPayInfo.getPassword();
-        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
-        double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.usd;
-        String priceStr = String.format("%.2f", price);
-
-
-//        Map<String, String> params = new HashMap<>();
-//        params.put("username", payUsername);
-//        params.put("password", payPassword);
-//        params.put("price", priceStr);
-//        params.put("description", description);
-
-
+    private String callPaypal(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
+        Methods methods = new Methods();
         URL url;
         HttpURLConnection urlConnection;
 
-
+        String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
         String method = "POST";
-        final String[] paramName = {"username", "password", "price", "description"};
-        final String[] paramValue = {payUsername, payPassword, priceStr, description};
+        String[] paramName = {"username", "password", "price", "description"};
+        String[] paramValue = {payUsername, payPassword, priceStr, description};
 
         try {
             url = new URL(uri);
@@ -539,10 +563,12 @@ public class OrderService {
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
 
-                String result = gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+                return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
 
-                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
-                return response;
+//                String result = gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+//
+//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+//                return response;
 
 
             }
@@ -551,26 +577,18 @@ public class OrderService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        String result = gson.fromJson(restTemplate.getForObject(uri, String.class, params), String.class);
-
-
-//        shipperWait.setCancel(true);
-        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        return response;
+        return "fail";
     }
 
 
-    // Mobile Shipper - Order Checkout - End
-
-    public static String callPayPal(String rep){
-
+    public String receiveFaceTestResult(String rep, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.setAttribute("faceTest", rep);
         return rep;
     }
 
-    public void FaceRecognise( byte[] faceBytes) throws IOException {
+
+    public boolean FaceRecognise(byte[] faceBytes) {
 
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
@@ -588,34 +606,28 @@ public class OrderService {
         try {
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+
+            CommandPrompt commandPrompt = new CommandPrompt();
+            String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
+            String result = commandPrompt.execute(cutAndRecenter);
+//            System.out.println(result);
+            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
+            String result2 = commandPrompt.execute(testFaceAI);
+            System.out.println(result2);
+
+            //delete folder crop test
+            methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-
-        CommandPrompt commandPrompt = new CommandPrompt();
-
-        String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
-        String result = commandPrompt.execute(cutAndRecenter);
-        System.out.println(result);
-        String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
-        String result2 = commandPrompt.execute(testFaceAI);
-        System.out.println(result2);
 
         // delete folder test
-        String deleteDirName = folderName;
-        Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
         try {
-            methods.deleteDirectoryWalkTree(deleteDirPath);
+            methods.deleteDirectoryWalkTree(folderName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //delete folder crop test
-        String deleteDirNameCropFolder = Fix.CROP_TEST_FACE_FOLDER+"fpsTestFile";
-        Path deleteDirPathCropFolder = Paths.get(deleteDirNameCropFolder).toAbsolutePath().normalize();
-        try {
-            methods.deleteDirectoryWalkTree(deleteDirPathCropFolder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return true;
     }
 }

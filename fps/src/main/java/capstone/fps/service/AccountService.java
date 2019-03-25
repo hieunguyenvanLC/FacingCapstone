@@ -492,12 +492,7 @@ public class AccountService {
             @Override
             public void run() {
                 // training in python here
-                try {
-                    trainningFaceRecognise(frReceiveMember,faceBytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                trainingFaceRecognise(frReceiveMember);
             }
         });
         t.start();
@@ -507,12 +502,10 @@ public class AccountService {
         return response;
     }
 
-    public void trainningFaceRecognise(FRReceiveMember frReceiveMember, byte[] faceBytes) throws IOException {
-
+    public void trainingFaceRecognise(FRReceiveMember frReceiveMember) {
         Methods methods = new Methods();
         String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
-
 
         File directory = new File(folderName);
         if (!directory.exists()) {
@@ -521,46 +514,37 @@ public class AccountService {
 
         File jpgFile = new File(folderName + "/" + jpgName);
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
+        ByteArrayInputStream bis = new ByteArrayInputStream(frReceiveMember.getFace());
         try {
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        CommandPrompt commandPrompt = new CommandPrompt();
+
+            CommandPrompt commandPrompt = new CommandPrompt();
 //        String cdToDocker = "cd /Users/nguyenvanhieu/Project/CapstoneProject/docker";
 //        commandPrompt.execute(cdToDocker);
-        String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
-        String result =  commandPrompt.execute(cutAndRecenter);
-        System.out.println(result);
-        String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
-        String result2 = commandPrompt.execute(trainingAI);
-        System.out.println(result2);
+            String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
+            String resultCrop = commandPrompt.execute(cutAndRecenter);
+//            System.out.println(result);
+            String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
+            String resultTrain = commandPrompt.execute(trainingAI);
+            System.out.println(resultTrain);
 
-
-        // delete folder receive
-        String deleteDirName = folderName;
-        Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
-        try {
-            methods.deleteDirectoryWalkTree(deleteDirPath);
+            //delete folder crop test
+            methods.deleteDirectoryWalkTree(Fix.CROP_FACE_FOLDER + "fps" + frReceiveMember.getId());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //delete folder crop test
-        String deleteDirNameCropFolder = Fix.CROP_FACE_FOLDER+"fps"+frReceiveMember.getId();
-        Path deleteDirPathCropFolder = Paths.get(deleteDirNameCropFolder).toAbsolutePath().normalize();
+
+        // delete folder receive
         try {
-            methods.deleteDirectoryWalkTree(deleteDirPathCropFolder);
+            methods.deleteDirectoryWalkTree(folderName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-//  String
+    // Mobile Member - Register - End
 
-
-// Mobile Member - Register - End
 
     // Mobile Mem - Profile - Begin
     public Response<MdlAccount> getMemberDetailMem() {
