@@ -13,11 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,14 +26,19 @@ public class AccountService {
     private PriceLevelRepo priceLevelRepo;
     private ShipperRepo shipperRepo;
     private ReceiveMemberRepo receiveMemberRepo;
+    private PaymentTypeRepo paymentTypeRepo;
+    private PaymentInfoRepo paymentInfoRepo;
 
-    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo, ReceiveMemberRepo receiveMemberRepo) {
+
+    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo, ReceiveMemberRepo receiveMemberRepo, PaymentTypeRepo paymentTypeRepo, PaymentInfoRepo paymentInfoRepo) {
         this.accountRepo = accountRepo;
         this.roleRepo = roleRepo;
         this.sourceRepo = sourceRepo;
         this.priceLevelRepo = priceLevelRepo;
         this.shipperRepo = shipperRepo;
         this.receiveMemberRepo = receiveMemberRepo;
+        this.paymentTypeRepo = paymentTypeRepo;
+        this.paymentInfoRepo = paymentInfoRepo;
     }
 
     private FRRole initRole(String name) {
@@ -52,6 +53,21 @@ public class AccountService {
         optional = roleRepo.findByName(name);
         return optional.orElse(null);
     }
+
+
+    private FRPaymentType initPaymentType(String type) {
+        Optional<FRPaymentType> optional;
+        optional = paymentTypeRepo.findByType(type);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        FRPaymentType paymentType = new FRPaymentType();
+        paymentType.setName("paypal");
+        paymentTypeRepo.save(paymentType);
+        optional = paymentTypeRepo.findByType(type);
+        return optional.orElse(null);
+    }
+
 
     public boolean banAccount(Integer accountId, String reason) {
         Methods methods = new Methods();
@@ -487,6 +503,13 @@ public class AccountService {
         frReceiveMember.setAccount(frAccount);
         receiveMemberRepo.save(frReceiveMember);
 
+
+        FRPaymentInformation frPaymentInformation = new FRPaymentInformation();
+        frPaymentInformation.setPaymentType(initPaymentType("sale"));
+        frPaymentInformation.setAccount(frAccount);
+        frPaymentInformation.setUsername(payUsername);
+        frPaymentInformation.setPassword(payPassword);
+        paymentInfoRepo.save(frPaymentInformation);
 
         Thread t = new Thread(new Runnable() {
             @Override
