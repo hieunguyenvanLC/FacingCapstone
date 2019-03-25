@@ -1,14 +1,12 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.OrderService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -156,8 +154,8 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String getPayPalResp(String rep) {
-        System.out.println("test " + rep);
+    public String getPayPalResp(@RequestBody MapFaceResult map) {
+        System.out.println("test " + map.getRep());
         return "";
 
     }
