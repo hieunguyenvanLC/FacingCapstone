@@ -53,3 +53,9 @@ camera
 
 ionic cordova plugin add cordova-plugin-camera
 npm install @ionic-native/camera
+
+---------------
+image resize (not install yet)
+
+ionic cordova plugin add info.protonet.imageresizer
+npm install @ionic-native/image-resizer

@@ -111,7 +111,7 @@ export class HomePage implements OnInit {
       console.log(this.myPhotoBinary);
 
       //call api
-      this.orderService.checkOutOrder(this.order[0].data.id, this.myPhoto).subscribe(
+      this.orderService.checkOutOrder(this.order[0].data.id, this.myPhotoBinary).subscribe(
         res => {
           console.log(res);
           this.toastHandle.presentToast("Check out success");
