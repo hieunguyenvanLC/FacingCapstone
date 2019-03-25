@@ -14,7 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -446,7 +449,7 @@ public class AccountService {
 
 
     // Mobile Member - Register - Begin
-    public Response createAccountMember(String phone, String pass, String name, String face) {
+    public Response createAccountMember(String phone, String pass, String name, String face, String payUsername, String payPassword) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -493,7 +496,7 @@ public class AccountService {
             directory.mkdir();
         }
 
-        File jpgFile = new File(folderName +"/"+ jpgName);
+        File jpgFile = new File(folderName + "/" + jpgName);
 
         ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
         try {
@@ -503,9 +506,25 @@ public class AccountService {
             e.printStackTrace();
         }
 
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        // train here
+                // train here
 //        trainningFaceRecognise(face);
+
+                /*
+                String deleteDirName = "";
+                Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
+                try {
+                    methods.deleteDirectoryWalkTree(deleteDirPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+            }
+        });
+        t.start();
+
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;

@@ -176,10 +176,10 @@ public class AccountController extends AbstractController {
 
     // Mobile Mem - Register - Begin
     @PostMapping(Fix.MAP_ANY + API)
-    public String createAccountMember(String phoneNumber, String password, String fullName, String face) {
+    public String createAccountMember(String phoneNumber, String password, String fullName, String face, String payUsername, String payPassword) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.createAccountMember(phoneNumber, password, fullName, face);
+            response = accountService.createAccountMember(phoneNumber, password, fullName, face, payUsername, payPassword);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -226,4 +226,6 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
     // Mobile Mem - Profile - End
+
+
 }
