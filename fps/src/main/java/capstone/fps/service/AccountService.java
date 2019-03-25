@@ -487,6 +487,29 @@ public class AccountService {
         frReceiveMember.setAccount(frAccount);
         receiveMemberRepo.save(frReceiveMember);
 
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // training in python here
+                try {
+                    trainningFaceRecognise(frReceiveMember,faceBytes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        t.start();
+
+
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
+    public void trainningFaceRecognise(FRReceiveMember frReceiveMember, byte[] faceBytes) throws IOException {
+
+        Methods methods = new Methods();
         String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
 
@@ -506,36 +529,33 @@ public class AccountService {
             e.printStackTrace();
         }
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                // train here
-//        trainningFaceRecognise(face);
-
-                /*
-                String deleteDirName = "";
-                Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
-                try {
-                    methods.deleteDirectoryWalkTree(deleteDirPath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
-            }
-        });
-        t.start();
-
-
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
-    }
-
-    public void trainningFaceRecognise(MultipartFile face) throws IOException {
         CommandPrompt commandPrompt = new CommandPrompt();
-        InputStream in = new ByteArrayInputStream(face.getBytes());
-        BufferedImage image = ImageIO.read(in);
-        File outputFile = new File("/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/test/Vladimir_Putin/hieu.jpeg");
-        ImageIO.write(image, "png", outputFile);
+//        String cdToDocker = "cd /Users/nguyenvanhieu/Project/CapstoneProject/docker";
+//        commandPrompt.execute(cdToDocker);
+        String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
+        String result =  commandPrompt.execute(cutAndRecenter);
+        System.out.println(result);
+        String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
+        String result2 = commandPrompt.execute(trainingAI);
+        System.out.println(result2);
+
+
+        // delete folder receive
+        String deleteDirName = folderName;
+        Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
+        try {
+            methods.deleteDirectoryWalkTree(deleteDirPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //delete folder crop test
+        String deleteDirNameCropFolder = Fix.CROP_FACE_FOLDER+"fps"+frReceiveMember.getId();
+        Path deleteDirPathCropFolder = Paths.get(deleteDirNameCropFolder).toAbsolutePath().normalize();
+        try {
+            methods.deleteDirectoryWalkTree(deleteDirPathCropFolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 //  String
 

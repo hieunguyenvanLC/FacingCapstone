@@ -6,39 +6,31 @@ import java.io.InputStreamReader;
 
 public class CommandPrompt {
 
-    public void execute(String command) {
-
-        String s = null;
-
+    public String execute(String command) {
+        StringBuilder resultBuilder = new StringBuilder();
         try {
-
             // run the Unix "ps -ef" command
             // using the Runtime exec method:
             Process p = Runtime.getRuntime().exec(command);
-
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(p.getInputStream()));
-
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(p.getErrorStream()));
-
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             // read the output from the command
-            System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
+            System.out.println(command);
+            String line;
+            while ((line = stdInput.readLine()) != null) {
+                resultBuilder.append(line);
             }
-
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+//            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((line = stdError.readLine()) != null) {
+                System.out.println(line);
             }
-
-            System.exit(0);
+            return resultBuilder.toString();
         } catch (IOException e) {
             System.out.println("exception happened - here's what I know: ");
             e.printStackTrace();
-            System.exit(-1);
         }
+        return null;
     }
+
 }

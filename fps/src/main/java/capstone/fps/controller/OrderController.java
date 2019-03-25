@@ -155,7 +155,8 @@ public class OrderController extends AbstractController {
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
     public String getPayPalResp(@RequestBody MapFaceResult map) {
-        System.out.println("test " + map.getRep());
+        OrderService.callPayPal(map.getRep());
+
         return "";
 
     }

@@ -1,9 +1,6 @@
 package capstone.fps.service;
 
-import capstone.fps.common.Fix;
-import capstone.fps.common.Methods;
-import capstone.fps.common.Repo;
-import capstone.fps.common.Validator;
+import capstone.fps.common.*;
 import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
@@ -20,11 +17,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -462,7 +465,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face) {
+    public Response<String> checkout(Gson gson, Integer orderId, String face) throws IOException {
         Methods methods = new Methods();
         Repo repo = new Repo();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -473,8 +476,11 @@ public class OrderService {
             return response;
         }
 
-        // test face here
+        // face to byte[]
+        byte[] faceBytes = methods.base64ToBytes(face);
 
+        // test face here
+        FaceRecognise(faceBytes);
 
 
 
@@ -555,5 +561,61 @@ public class OrderService {
         response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         return response;
     }
+
+
     // Mobile Shipper - Order Checkout - End
+
+    public static String callPayPal(String rep){
+
+        return rep;
+    }
+
+    public void FaceRecognise( byte[] faceBytes) throws IOException {
+
+        Methods methods = new Methods();
+        String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
+        String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
+
+
+        File directory = new File(folderName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+
+        File jpgFile = new File(folderName + "/" + jpgName);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        CommandPrompt commandPrompt = new CommandPrompt();
+
+        String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
+        String result = commandPrompt.execute(cutAndRecenter);
+        System.out.println(result);
+        String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
+        String result2 = commandPrompt.execute(testFaceAI);
+        System.out.println(result2);
+
+        // delete folder test
+        String deleteDirName = folderName;
+        Path deleteDirPath = Paths.get(deleteDirName).toAbsolutePath().normalize();
+        try {
+            methods.deleteDirectoryWalkTree(deleteDirPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //delete folder crop test
+        String deleteDirNameCropFolder = Fix.CROP_TEST_FACE_FOLDER+"fpsTestFile";
+        Path deleteDirPathCropFolder = Paths.get(deleteDirNameCropFolder).toAbsolutePath().normalize();
+        try {
+            methods.deleteDirectoryWalkTree(deleteDirPathCropFolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
