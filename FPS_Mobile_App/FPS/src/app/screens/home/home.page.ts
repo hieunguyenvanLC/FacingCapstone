@@ -6,6 +6,7 @@ import {Store} from 'src/app/models/store.model';
 import { TouchSequence } from 'selenium-webdriver';
 import { Http } from '@angular/http';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ export class HomePage {
   constructor(
     private storeService : StoreService,
     private nativeStorage: NativeStorage,
+    private loading : LoadingService,
   ){
 
   }

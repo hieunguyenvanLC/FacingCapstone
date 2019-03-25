@@ -20,6 +20,7 @@ export class OrdermodalPage implements OnInit {
   longutudeCus = "106.67927390539103";
   latitudeCus = "10.82767617410066";
   prodList = "";
+  distance = "1.8";
 
   deliveryFees: number;
   total: number;
@@ -62,7 +63,7 @@ export class OrdermodalPage implements OnInit {
 
     }
     //this.router.navigateByUrl("order");
-    await this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList)
+    await this.orderService.createOrder(this.longutudeCus, this.latitudeCus, "", this.prodList, this.distance)
       .subscribe(data => {
         console.log(data);
         console.log("in create order ----");
@@ -117,7 +118,7 @@ export class OrdermodalPage implements OnInit {
                 //     });
                 //   }, 3*1000);
                 // }
-                
+
                 // setInterval(() => {
                 //   console.log("set interval");
                 //   this.orderService.getOrderStatus(this.orderId).subscribe(res => {
