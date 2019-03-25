@@ -534,6 +534,7 @@ public class OrderService {
             if (responseCode == HttpURLConnection.HTTP_OK) {
 
                 String result = gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+                
                 response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
                 return response;
 
