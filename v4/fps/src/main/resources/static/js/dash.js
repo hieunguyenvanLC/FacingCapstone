@@ -1,6 +1,62 @@
 var barChartExample;
-var reportTable = null;
+// var reportTable = null;
+var uplBuyerFace = document.getElementById("uplBuyerFace");
+var imgBuyerFace = document.getElementById("imgBuyerFace");
+
+var uplBill = document.getElementById("uplBill");
+var imgBill = document.getElementById("imgBill");
+
+var txtOrderId = document.getElementById("txtOrderId");
+var txtBuyerName = document.getElementById("txtBuyerName");
+var txtBuyerPhone = document.getElementById("txtBuyerPhone");
+var txtShipperName = document.getElementById("txtShipperName");
+var txtShipperPhone = document.getElementById("txtShipperPhone");
+var cbbStatus = document.getElementById("cbbStatus");
+
+var txtLatitude = document.getElementById("txtLatitude");
+var txtLongitude = document.getElementById("txtLongitude");
+
+var txtTotalPrice = document.getElementById("txtTotalPrice");
+var txtShipperEarn = document.getElementById("txtShipperEarn");
+
+var txtStoreName = document.getElementById("txtStoreName");
+var txtCustomerDescription = document.getElementById("txtCustomerDescription");
+var txtNote = document.getElementById("txtNote");
+
+var btnCloseModal = document.getElementById("btnCloseModal");
+var tblBodyDetail = document.getElementById("tblBodyDetail");
+////
+var orderList;
+var orderEdit;
+var orderEditPos;
+var fpsApiOrd = fpsBackEnd + MAP_ADM + MAP_API + "/order";  // /adm/api/order
+
 $(document).ready(function () {
+    uplBuyerFace = document.getElementById("uplBuyerFace");
+    imgBuyerFace = document.getElementById("imgBuyerFace");
+
+    uplBill = document.getElementById("uplBill");
+    imgBill = document.getElementById("imgBill");
+
+    txtOrderId = document.getElementById("txtOrderId");
+    txtBuyerName = document.getElementById("txtBuyerName");
+    txtBuyerPhone = document.getElementById("txtBuyerPhone");
+    txtShipperName = document.getElementById("txtShipperName");
+    txtShipperPhone = document.getElementById("txtShipperPhone");
+    cbbStatus = document.getElementById("cbbStatus");
+
+    txtLatitude = document.getElementById("txtLatitude");
+    txtLongitude = document.getElementById("txtLongitude");
+
+    txtTotalPrice = document.getElementById("txtTotalPrice");
+    txtShipperEarn = document.getElementById("txtShipperEarn");
+
+    txtStoreName = document.getElementById("txtStoreName");
+    txtCustomerDescription = document.getElementById("txtCustomerDescription");
+    txtNote = document.getElementById("txtNote");
+
+    btnCloseModal = document.getElementById("btnCloseModal");
+    tblBodyDetail = document.getElementById("tblBodyDetail");
 //     // $('body').bootstrapMaterialDesign();
 //     var accountTable = $('#account-table').DataTable({
 //         "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-9'f<'filter-group status-group'><'filter-group active-group'>>>" +
@@ -336,6 +392,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 var orders = response.data;
+                orderList = orders;
                 console.log(orders);
 
                 var list = orders;
@@ -346,8 +403,8 @@ $(document).ready(function () {
                 for (var i = 0; i < list.length; i++) {
                     var order = list[i];
                     reportTable.row.add([
-                        '<span>' + order.id + '</span>',
-                        '<span>' + order.buyerPhone + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
                         '<span>' + order.buyerName + '</span>',
                         '<span>' + order.totalPrice + '</span>',
                         fpsGetStatMsg(ORD_STAT_LIST, order.status)
@@ -370,6 +427,69 @@ function fpsFormatDate(date) {
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
     return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}
+
+function getOrderDetail(pos) {
+    orderEditPos = pos;
+    console.log(orderList[pos], pos);
+    if (typeof orderList[pos].createTime === "undefined") {
+        $.ajax({
+            type: 'GET',
+            url: "/adm/api/order/detail",
+            data: {orderId: orderList[pos].id},
+            dataType: 'json',
+            success: function (response) {
+                orderList[pos] = response.data;
+                orderEdit = orderList[pos];
+                loadEditForm();
+            },
+            error: function (response) {
+            }
+        })
+    } else {
+        orderEdit = orderList[pos];
+        loadEditForm();
+    }
+}
+
+function loadEditForm() {
+
+    uplBuyerFace.value = "";
+    fpsSetImgSrc(imgBuyerFace, orderEdit.BuyerFace);
+
+    uplBill.value = "";
+    fpsSetImgSrc(imgBill, orderEdit.bill);
+
+    txtOrderId.value = orderEdit.id;
+    txtBuyerName.value = orderEdit.buyerName;
+    txtBuyerPhone.value = orderEdit.buyerPhone;
+    txtShipperName.value = orderEdit.shipperName;
+    txtShipperPhone.value = orderEdit.shipperPhone;
+    cbbStatus.value = orderEdit.status;
+
+    txtLatitude.value = orderEdit.latitude;
+    txtLongitude.value = orderEdit.longitude;
+
+    txtTotalPrice.value = orderEdit.totalPrice;
+    txtShipperEarn.value = orderEdit.shipperEarn;
+
+    txtStoreName.value = orderEdit.storeName;
+    txtCustomerDescription.value = orderEdit.customerDescription;
+    txtNote.value = orderEdit.note;
+
+
+    tblBodyDetail.innerHTML = '';
+    var list = orderEdit.detailList;
+    for (var i = 0; i < list.length; i++) {
+        var pro = list[i];
+        var row = '  <td>' + (i + 1) + '</td>\n' +
+            '            <td>' + pro.proName + '</td>\n' +
+            '            <td>' + pro.unitPrice + '</td>\n' +
+            '            <td>' + pro.quantity + '</td>\n' +
+            '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n';
+        tblBodyDetail.innerHTML += row;
+    }
+
 }
 
 function changeTimeWeek() {

@@ -194,165 +194,192 @@
                                     <!--</tr>-->
                                     </tbody>
                                 </table>
-                                <!--&lt;!&ndash; Modal&ndash;&gt;-->
-                                <!--<div id="edit-order-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"-->
-                                <!--aria-hidden="true" class="modal fade text-left">-->
-                                <!--<div role="document" class="modal-dialog">-->
-                                <!--<div class="modal-content">-->
+                                <!-- Modal-->
+                                <div id="statistic-detail-modal" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true" class="modal fade text-left">
+                                    <div role="document" class="modal-dialog">
+                                        <div class="modal-content">
 
-                                <!--<div class="modal-header">-->
-                                <!--<h4 id="exampleModalLabelStore" class="modal-title"></h4>-->
-                                <!--<button type="button" data-dismiss="modal" aria-label="Close" class="close"><span-->
-                                <!--id="btnCloseModal" aria-hidden="true">×</span></button>-->
-                                <!--</div>-->
+                                            <div class="modal-header">
+                                                <h4 id="exampleModalLabelStore" class="modal-title"></h4>
+                                                <button type="button" data-dismiss="modal" aria-label="Close"
+                                                        class="close"><span
+                                                        id="btnCloseModal" aria-hidden="true">×</span></button>
+                                            </div>
 
-                                <!--<div class="modal-body">-->
-                                <!--<div class="row row-eq-height no-padding">-->
-                                <!--<div class="col-4  padding-0">-->
-                                <!--<label>Customer Face</label>-->
-                                <!--<div class="input-group">-->
-                                <!--&lt;!&ndash;<div class="input-group-prepend">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<span class="input-group-text"&ndash;&gt;-->
-                                <!--&lt;!&ndash;id="inputGroupFileAddon01">Upload</span>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--<div class="custom-file">-->
-                                <!--<input type="file" class="custom-file-input" id="uplBuyerFace"-->
-                                <!--onchange="uplStoreThumbOnChange()">-->
-                                <!--<label class="custom-file-label" for="uplBuyerFace"-->
-                                <!--style="border-radius: 0">Choose file</label>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<img id="imgBuyerFace" src="" alt="Buyer" style="width: 256px; height: 256px">-->
-                                <!--</div>-->
+                                            <div class="modal-body">
+                                                <div class="row row-eq-height no-padding">
+                                                    <div class="col-4  padding-0">
+                                                        <label>Customer Face</label>
+                                                        <div class="input-group">
+                                                            <!--<div class="input-group-prepend">-->
+                                                            <!--<span class="input-group-text"-->
+                                                            <!--id="inputGroupFileAddon01">Upload</span>-->
+                                                            <!--</div>-->
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input"
+                                                                       id="uplBuyerFace"
+                                                                       onchange="uplStoreThumbOnChange()">
+                                                                <label class="custom-file-label" for="uplBuyerFace"
+                                                                       style="border-radius: 0">Choose file</label>
+                                                            </div>
+                                                        </div>
+                                                        <img id="imgBuyerFace" src="" alt="Buyer"
+                                                             style="width: 256px; height: 256px">
+                                                    </div>
 
-                                <!--<div class="col-4 padding-0">-->
-                                <!--<label>Bill</label>-->
-                                <!--<div class="input-group">-->
-                                <!--&lt;!&ndash;<div class="input-group-prepend">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<span class="input-group-text"&ndash;&gt;-->
-                                <!--&lt;!&ndash;id="inputGroupFileAddon02">Upload</span>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--<div class="custom-file">-->
-                                <!--<input type="file" class="custom-file-input" id="uplBill"-->
-                                <!--onchange="uplStoreThumbOnChange()">-->
-                                <!--<label class="custom-file-label" for="uplBill"-->
-                                <!--style="border-radius: 0">Choose file</label>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<img id="imgBill" src="" alt="Bill" style="width: 100%;">-->
-                                <!--</div>-->
+                                                    <div class="col-4 padding-0">
+                                                        <label>Bill</label>
+                                                        <div class="input-group">
+                                                            <!--<div class="input-group-prepend">-->
+                                                            <!--<span class="input-group-text"-->
+                                                            <!--id="inputGroupFileAddon02">Upload</span>-->
+                                                            <!--</div>-->
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input"
+                                                                       id="uplBill"
+                                                                       onchange="uplStoreThumbOnChange()">
+                                                                <label class="custom-file-label" for="uplBill"
+                                                                       style="border-radius: 0">Choose file</label>
+                                                            </div>
+                                                        </div>
+                                                        <img id="imgBill" src="" alt="Bill" style="width: 100%;">
+                                                    </div>
 
-                                <!--<div class="col-4 padding-0">-->
+                                                    <div class="col-4 padding-0">
 
-                                <!--<div class="form-group">-->
-                                <!--<label>Order ID</label>-->
-                                <!--<input type="text" placeholder="Id" class="form-control"-->
-                                <!--id="txtOrderId">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Buyer Phone</label>-->
-                                <!--<input type="text" placeholder="Buyer Phone" class="form-control"-->
-                                <!--id="txtBuyerPhone">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Buyer Name</label>-->
-                                <!--<input type="text" placeholder="Buyer Name" class="form-control"-->
-                                <!--id="txtBuyerName">-->
-                                <!--</div>-->
+                                                        <div class="form-group">
+                                                            <label>Order ID</label>
+                                                            <input type="text" placeholder="Id" class="form-control"
+                                                                   id="txtOrderId">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Buyer Phone</label>
+                                                            <input type="text" placeholder="Buyer Phone"
+                                                                   class="form-control"
+                                                                   id="txtBuyerPhone">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Buyer Name</label>
+                                                            <input type="text" placeholder="Buyer Name"
+                                                                   class="form-control"
+                                                                   id="txtBuyerName">
+                                                        </div>
 
-                                <!--<div class="form-group">-->
-                                <!--<label>Shipper Phone</label>-->
-                                <!--<input type="text" placeholder="Shipper Phone" class="form-control"-->
-                                <!--id="txtShipperPhone">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Shipper Name</label>-->
-                                <!--<input type="text" placeholder="Shipper Name" class="form-control"-->
-                                <!--id="txtShipperName">-->
-                                <!--</div>-->
+                                                        <div class="form-group">
+                                                            <label>Shipper Phone</label>
+                                                            <input type="text" placeholder="Shipper Phone"
+                                                                   class="form-control"
+                                                                   id="txtShipperPhone">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Shipper Name</label>
+                                                            <input type="text" placeholder="Shipper Name"
+                                                                   class="form-control"
+                                                                   id="txtShipperName">
+                                                        </div>
 
-                                <!--<div class="form-group">-->
-                                <!--<label for="cbbStatus">Status</label>-->
-                                <!--<select class="form-control" id="cbbStatus"></select>-->
-                                <!--</div>-->
+                                                        <div class="form-group">
+                                                            <label for="cbbStatus">Status</label>
+                                                            <select class="form-control" id="cbbStatus"></select>
+                                                        </div>
 
-                                <!--</div>-->
-
-                                <!--</div>-->
-
-
-                                <!--<div class="row row-eq-height no-padding">-->
-                                <!--<div class="col-4 padding-0">-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Longitude</label>-->
-                                <!--<input type="text" placeholder="Longitude" class="form-control"-->
-                                <!--id="txtLongitude">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Latitude</label>-->
-                                <!--<input type="text" placeholder="Latitude" class="form-control"-->
-                                <!--id="txtLatitude">-->
-                                <!--</div>-->
-
-                                <!--</div>-->
-                                <!--<div class="col-4 padding-0">-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Total Price</label>-->
-                                <!--<input type="text" placeholder="Total Price" class="form-control"-->
-                                <!--id="txtTotalPrice">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Shipper Earn</label>-->
-                                <!--<input type="text" placeholder="Shipper Earn" class="form-control"-->
-                                <!--id="txtShipperEarn">-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="col-4 padding-0">-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Store Name</label>-->
-                                <!--<input type="text" placeholder="Store Name" class="form-control"-->
-                                <!--id="txtStoreName">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Customer Description</label>-->
-                                <!--<input type="text" placeholder="Customer Description" class="form-control"-->
-                                <!--id="txtCustomerDescription">-->
-                                <!--</div>-->
-                                <!--<div class="form-group">-->
-                                <!--<label>Note</label>-->
-                                <!--<input type="text" placeholder="Note" class="form-control"-->
-                                <!--id="txtNote">-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--</div>-->
+                                                    </div>
+                                                    <div class="col-4 padding-0">
+                                                        <label for="cbbStatus">Status</label>
+                                                        <select class="form-control" id="cbbStatus"></select>
+                                                    </div>
+                                                </div>
 
 
-                                <!--<div class="row">-->
-                                <!--<div class="col-sm-12 bg-white">-->
-                                <!--<table id="order-detail-table" class="table">-->
-                                <!--<thead>-->
-                                <!--<tr>-->
-                                <!--<th>#</th>-->
-                                <!--<th>Product</th>-->
-                                <!--<th>Price</th>-->
-                                <!--<th>Unit</th>-->
-                                <!--<th>Cost</th>-->
-                                <!--</tr>-->
-                                <!--</thead>-->
-                                <!--<tbody id="tblBodyDetail"></tbody>-->
-                                <!--</table>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="modal-footer">-->
-                                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>-->
-                                <!--<button type="button" class="btn btn-primary" onclick="sendEdit()">Save</button>-->
-                                <!--</div>-->
+                                                <div class="row row-eq-height no-padding">
+                                                    <div class="col-4 padding-0">
+                                                        <div class="form-group">
+                                                            <label>Longitude</label>
+                                                            <input type="text" placeholder="Longitude"
+                                                                   class="form-control"
+                                                                   id="txtLongitude">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Latitude</label>
+                                                            <input type="text" placeholder="Latitude"
+                                                                   class="form-control"
+                                                                   id="txtLatitude">
+                                                        </div>
 
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--&lt;!&ndash; Modal&ndash;&gt;-->
+                                                    </div>
+                                                    <div class="col-4 padding-0">
+                                                        <div class="form-group">
+                                                            <label>Total Price</label>
+                                                            <input type="text" placeholder="Total Price"
+                                                                   class="form-control"
+                                                                   id="txtTotalPrice">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Shipper Earn</label>
+                                                            <input type="text" placeholder="Shipper Earn"
+                                                                   class="form-control"
+                                                                   id="txtShipperEarn">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 padding-0">
+                                                        <div class="form-group">
+                                                            <label>Store Name</label>
+                                                            <input type="text" placeholder="Store Name"
+                                                                   class="form-control"
+                                                                   id="txtStoreName">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Customer Description</label>
+                                                            <input type="text" placeholder="Customer Description"
+                                                                   class="form-control"
+                                                                   id="txtCustomerDescription">
+                                                        </div>
+                                                        <!--<div class="form-group">-->
+                                                            <!--<label>Note</label>-->
+                                                            <!--<input type="text" placeholder="Note" class="form-control"-->
+                                                                   <!--id="txtNote">-->
+                                                        <!--</div>-->
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 bg-white">
+                                                        <div class="form-group">
+                                                            <label>Note</label>
+                                                            <input type="text" placeholder="Note" class="form-control"
+                                                                   id="txtNote">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12 bg-white">
+                                                        <table id="order-detail-table" class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Product</th>
+                                                                <th>Price</th>
+                                                                <th>Unit</th>
+                                                                <th>Cost</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody id="tblBodyDetail"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Cancel
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal-->
                             </div>
                         </div>
                     </div>

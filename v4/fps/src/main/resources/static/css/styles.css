@@ -79,6 +79,9 @@ section.dashboard-counts .row {
     #edit-order-detail-modal .modal-dialog {
         max-width: 900px;
     }
+    #statistic-detail-modal .modal-dialog {
+        max-width: 1000px;
+    }
 }
 
 /* Char */

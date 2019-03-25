@@ -12,3 +12,7 @@
 .t-datepicker span {
     display: initial;
 }
+
+#statistic-detail-modal .modal-body{
+    padding: 2rem;
+}

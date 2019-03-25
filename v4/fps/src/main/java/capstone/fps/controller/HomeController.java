@@ -9,6 +9,7 @@ import capstone.fps.model.home.MdlReportSummaryDetail;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
 import capstone.fps.service.HomeService;
+import capstone.fps.service.OrderService;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ public class HomeController extends AbstractController {
     private static final String API = Fix.MAP_API + "/report";
 
     private HomeService homeService;
+    private OrderService orderService;
+
 
     public HomeController(HomeService homeService) {
         this.homeService = homeService;
@@ -430,16 +433,16 @@ public class HomeController extends AbstractController {
         if (type == 0) { // neu la  theo ngay //ok
             int days = diffDay(startCal, endCal);
             if (days <= 31) {
-                Calendar dateIdx = (Calendar)startCal.clone();
+                Calendar dateIdx = (Calendar) startCal.clone();
                 for (; dateIdx.compareTo(endCal) <= 0; dateIdx.add(Calendar.DAY_OF_MONTH, 1)) {
                     labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
                     long startUnix = dateIdx.getTimeInMillis();
-                    Calendar tempEnd = (Calendar)dateIdx.clone();
+                    Calendar tempEnd = (Calendar) dateIdx.clone();
                     tempEnd.add(Calendar.DAY_OF_MONTH, 1);
                     long endUnix = tempEnd.getTimeInMillis();
                     orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
                 }
-                isSuccess=true;
+                isSuccess = true;
             } else {
                 errorMsg = "The number of days is out of range (Only accept less than or equal 31 days)!";
             }
@@ -534,6 +537,18 @@ public class HomeController extends AbstractController {
         }
 
         response.setResponse(Response.STATUS_SUCCESS, "", mdlOrders);
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ANY + API + "/orderdetail")
+    public String getOrderDetail(Integer orderId) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderDetailAdm(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
         return gson.toJson(response);
     }
 
