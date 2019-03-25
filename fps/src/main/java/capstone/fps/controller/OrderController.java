@@ -156,7 +156,9 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String getPayPalResp(String rep){
+    public String getPayPalResp(String rep) {
+        System.out.println("test " + rep);
         return "";
+
     }
 }
