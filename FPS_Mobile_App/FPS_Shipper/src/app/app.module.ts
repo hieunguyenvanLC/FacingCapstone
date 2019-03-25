@@ -16,6 +16,7 @@ import { Constant } from './common/constant';
 import { AccountService } from './services/account.service';
 import { OrderService } from './services/order.service';
 import { LoadingService } from './services/loading.service';
+import { Camera } from '@ionic-native/camera/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,6 +37,7 @@ import { LoadingService } from './services/loading.service';
     AccountService,
     OrderService,
     LoadingService,
+    Camera,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
