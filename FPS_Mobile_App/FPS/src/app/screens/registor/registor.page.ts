@@ -41,7 +41,7 @@ export class RegistorPage implements OnInit {
     public alertController: AlertController,
     public accountService: AccountService,
     private camera: Camera,
-    private toastHandle : ToastHandleService,
+    private toastHandle: ToastHandleService,
   ) {
     this.password = "123";
     this.fullname = "thangdp";
@@ -120,7 +120,7 @@ export class RegistorPage implements OnInit {
     this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
       this.data.push(res);
       console.log(this.data[0].message);
-      if (this.data[0].message === "Success"){
+      if (this.data[0].message === "Success") {
         this.toastHandle.presentToast("Create success !");
       }
     }), err => {
@@ -132,6 +132,16 @@ export class RegistorPage implements OnInit {
 
 
   takePhoto() {
+    if (this.myPhoto) {
+      console.log("photo is exist, set null");
+      this.myPhoto = '';
+    }
+    console.log("my photo: " +this.myPhoto);
+    if (this.myPhotoBinary){
+      console.log("photoBinary is exist, set null");
+      this.myPhotoBinary = '';
+    }
+    console.log("my photoBinary: " + this.myPhotoBinary);
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -145,19 +155,17 @@ export class RegistorPage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
-      
-      
       this.myPhoto = 'data:image/jpeg;base64,' + imageData;
-      this.myPhotoBinary =  imageData;
-      
-    //   let byteNumbers = new Array(imageData.length);
+      this.myPhotoBinary = imageData;
 
-    // for (var i = 0; i < imageData.length; i++) 
-    //     byteNumbers[i] = imageData.charCodeAt(i);
-    
-    // let byteArray = new Uint8Array(byteNumbers);
+      //   let byteNumbers = new Array(imageData.length);
 
-    // this.myPhotoBinary  = new Blob([byteArray], {type: 'image/jpeg'});
+      // for (var i = 0; i < imageData.length; i++) 
+      //     byteNumbers[i] = imageData.charCodeAt(i);
+
+      // let byteArray = new Uint8Array(byteNumbers);
+
+      // this.myPhotoBinary  = new Blob([byteArray], {type: 'image/jpeg'});
       //this.myPhotoBinary = new Blob([imageData], { type: 'image/jpg' });
       // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
       console.log(imageData);
