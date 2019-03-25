@@ -5,10 +5,12 @@ import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.OrderService;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -140,10 +142,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Shipper - Checkout - Begin
     @PutMapping(Fix.MAP_ANY + API + "/checkout")
-    public String checkout(Integer orderId, String face) {
+    public String checkout(Integer orderId, String face, HttpServletRequest request) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.checkout(gson, orderId, face);
+            response = orderService.checkout(gson, orderId, face, request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -154,8 +156,8 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String getPayPalResp(@RequestBody MapFaceResult map) {
-        OrderService.callPayPal(map.getRep());
+    public String receiveFaceTestResult(@RequestBody MapFaceResult map, HttpServletRequest request) {
+        orderService.receiveFaceTestResult(map.getRep(), request);
 
         return "";
 
