@@ -19,6 +19,8 @@ export class RegistorPage implements OnInit {
   phoneNumber: string;
   password: string;
   fullname: string;
+  ppUsername: string;
+  ppPassword: string;
 
 
   registerForm: FormGroup;
@@ -113,7 +115,7 @@ export class RegistorPage implements OnInit {
   onSubmit() {
     this.phoneNumber = this.phoneNumber.replace("+", "");
     console.log(this.myPhotoBinary);
-    this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary).subscribe((res: any) => {
+    this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
       this.data.push(res);
       console.log(this.data[0].status_code);
     }), err => {

@@ -16,15 +16,15 @@ export class LoadingService {
     this.isLoading = true;
     return await this.loadingController.create({
       message: 'Waiting...',
-      duration: 10000
+      duration: 60*1000
     })
     .then(a => {
       a.present()
-      .then( () => {
-        if (this.isLoading){
-          a.dismiss();
-        }
-      })
+      // .then( () => {
+      //   if (this.isLoading){
+      //     a.dismiss();
+      //   }
+      // })
     })
   }
 

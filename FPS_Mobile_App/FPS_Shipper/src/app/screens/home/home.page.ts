@@ -49,6 +49,7 @@ export class HomePage implements OnInit {
         //call api to auto assign order
         this.orderService.onShipMode(this.longitudeShp, this.latitudeShp).subscribe(
           res => {
+            console.log("Begin res: ");
             console.log(res);
             this.order.push(res);
 
@@ -57,14 +58,21 @@ export class HomePage implements OnInit {
               if (this.order[0].data) {
                 this.isLoaded = true;
                 this.isLoading = false;
-                console.log(this.order[0].data);
+                this.loading.dismiss();
+                console.log("in if success :"+this.order[0].data);
               }
-            }
+            }//end if success
+            else if (this.order[0].message === "time out"){
+              // this.isLoaded = true;
+              this.isLoading = false;
+              this.loading.dismiss();
+              this.shipperMode = false;
+            }//end if time out
           }, () => {
             //handle finish loading
-            if (!this.isLoading) {
-              this.loading.dismiss();
-            }
+            // if (!this.isLoading) {
+            //   this.loading.dismiss();
+            // }
           }
         ); //end api auto assign order
       });//end loading
@@ -73,6 +81,7 @@ export class HomePage implements OnInit {
     }else{
       //if mode is off
       this.orderService.offShipperMode().subscribe(res => {
+        console.log("in off: ");
         console.log(res);
         this.isLoaded = false;
       });//end api

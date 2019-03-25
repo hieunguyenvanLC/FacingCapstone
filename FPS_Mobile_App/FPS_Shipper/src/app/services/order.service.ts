@@ -25,7 +25,7 @@ export class OrderService {
   }
 
   offShipperMode(){
-    return this.apiHttp.get(this.constant.MAP_SHP +
+    return this.apiHttp.delete(this.constant.MAP_SHP +
                             this.constant.MAP_API +
                             this.constant.ORDER);
   }
