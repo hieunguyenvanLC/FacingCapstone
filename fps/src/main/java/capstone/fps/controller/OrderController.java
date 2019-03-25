@@ -153,4 +153,10 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
     // Mobile Shipper - Checkout - End
+
+
+    @PostMapping(Fix.MAP_ANY + "/paypal")
+    public String getPayPalResp(String rep){
+        return "";
+    } 
 }
