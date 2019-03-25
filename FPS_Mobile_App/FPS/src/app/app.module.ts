@@ -41,6 +41,7 @@ import { FirebasecloudmessengerService } from './services/firebasecloudmessenger
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { LoadingService } from './services/loading.service';
 import { GoogleMap, GoogleMaps } from '@ionic-native/google-maps';
+import { ToastHandleService } from './services/toasthandle.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -68,6 +69,7 @@ import { GoogleMap, GoogleMaps } from '@ionic-native/google-maps';
     Camera,
     LoadingService,
     OrderService,
+    ToastHandleService,
 
     GoogleMaps,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

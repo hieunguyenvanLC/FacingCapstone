@@ -9,6 +9,8 @@ import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 import { StoreService } from 'src/app/services/store.service';
 import { Store } from './../../models/store.model';
 import { LoadingService } from 'src/app/services/loading.service';
+import { isLoaded } from 'google-maps';
+import { ToastHandleService } from 'src/app/services/toasthandle.service';
 
 @Component({
   selector: 'app-store',
@@ -23,9 +25,11 @@ export class StorePage implements OnInit {
   isHaveProduct = false;
   currentModal = null;
   storeId: number;
-  store : Store[];
+  store: Store[];
   quantity = 1;
   status_code = 0;
+
+  isLoaded = false;
 
   // {
   //   id: "AL1",
@@ -68,19 +72,20 @@ export class StorePage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private storeService: StoreService,
-    private loading : LoadingService,
+    private loading: LoadingService,
+    private toastHandle: ToastHandleService,
   ) {
   }
 
   ngOnInit() {
-    this.loading.present().then( () => {
+    this.loading.present().then(() => {
       this.getStoreDetail();
     })
-    
+
 
   }
 
-  getStoreDetail(){
+  getStoreDetail() {
     this.activatedRoute.paramMap
       .subscribe(param => {
         this.storeId = parseInt(param.get('id'));
@@ -140,13 +145,13 @@ export class StorePage implements OnInit {
     await this.modalController.create({
       animated: true,
       component: OrdermodalPage,
-      componentProps: { 
-                        products: this.orders,
-                        latitudeStore: this.products[0].data.latitude,
-                        longitudeStore: this.products[0].data.longitude,
-                        addressStore: this.products[0].data.address+ ", " + this.products[0].data.distStr,
-                        subTotal: this.total,
-                      }
+      componentProps: {
+        products: this.orders,
+        latitudeStore: this.products[0].data.latitude,
+        longitudeStore: this.products[0].data.longitude,
+        addressStore: this.products[0].data.address + ", " + this.products[0].data.distStr,
+        subTotal: this.total,
+      }
     }).then(modal => {
       modal.present();
       this.currentModal = modal;
@@ -172,15 +177,15 @@ export class StorePage implements OnInit {
           element["total"] = 0;
         });
       }, error => {
+        this.toastHandle.presentToast("Error to get product store !");
         console.log(error);
       }, () => {
-        if (this.status_code === 1){
+        if (this.status_code === 1) {
           //handle if success loading component will dismiss
+          this.isLoaded = true;
+          this.loading.dismiss();
 
-          //wait more 2s for fill object to html
-          setTimeout(() => this.loading.dismiss(), 2000);
-          
-        }else{
+        } else {
           //handle error
         }
       }

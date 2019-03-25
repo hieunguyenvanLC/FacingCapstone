@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { AccountService } from '../../services/account.service';
 import { Account } from '../../models/account';
+import { ToastHandleService } from 'src/app/services/toasthandle.service';
 
 //import * as $ from 'jquery';
 
@@ -39,7 +40,8 @@ export class RegistorPage implements OnInit {
     public router: Router,
     public alertController: AlertController,
     public accountService: AccountService,
-    private camera: Camera
+    private camera: Camera,
+    private toastHandle : ToastHandleService,
   ) {
     this.password = "123";
     this.fullname = "thangdp";
@@ -117,8 +119,12 @@ export class RegistorPage implements OnInit {
     console.log(this.myPhotoBinary);
     this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
       this.data.push(res);
-      console.log(this.data[0].status_code);
+      console.log(this.data[0].message);
+      if (this.data[0].message === "Success"){
+        this.toastHandle.presentToast("Create success !");
+      }
     }), err => {
+      this.toastHandle.presentToast("Create error !");
       console.log(err);
     };
   }
