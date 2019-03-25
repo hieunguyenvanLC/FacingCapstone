@@ -485,14 +485,15 @@ public class AccountService {
         receiveMemberRepo.save(frReceiveMember);
 
         String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
-        String jpgName = "p" + methods.getTimeNow() + "." + Fix.DEF_IMG_TYPE;
+        String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
 
 
         File directory = new File(folderName);
         if (!directory.exists()) {
             directory.mkdir();
         }
-        File jpgFile = new File(folderName + "/" + jpgName);
+
+        File jpgFile = new File(folderName +"/"+ jpgName);
 
         ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
         try {
@@ -512,17 +513,15 @@ public class AccountService {
 
     public void trainningFaceRecognise(MultipartFile face) throws IOException {
         CommandPrompt commandPrompt = new CommandPrompt();
-
         InputStream in = new ByteArrayInputStream(face.getBytes());
-
         BufferedImage image = ImageIO.read(in);
-//        Path file = Paths.get();
         File outputFile = new File("/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/test/Vladimir_Putin/hieu.jpeg");
         ImageIO.write(image, "png", outputFile);
     }
-//        String
+//  String
 
-    // Mobile Member - Register - End
+
+// Mobile Member - Register - End
 
     // Mobile Mem - Profile - Begin
     public Response<MdlAccount> getMemberDetailMem() {
