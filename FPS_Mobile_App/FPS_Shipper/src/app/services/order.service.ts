@@ -29,4 +29,15 @@ export class OrderService {
                             this.constant.MAP_API +
                             this.constant.ORDER);
   }
+
+  checkOutOrder(orderID, face){
+    let formData: FormData = new FormData();
+    formData.append("orderId", orderID);
+    formData.append("face", face);
+
+    return this.apiHttp.put(this.constant.MAP_ANY +
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            this.constant.CHECKOUT, formData);
+  }
 }

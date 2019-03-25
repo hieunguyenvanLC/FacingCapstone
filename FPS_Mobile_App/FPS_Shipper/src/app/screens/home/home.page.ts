@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/services/order.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { Router } from '@angular/router';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { ToasthandleService } from 'src/app/services/toasthandle.service';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +22,15 @@ export class HomePage implements OnInit {
   isLoading = false;
   isLoaded = false;
 
+  myPhoto: any;
+  myPhotoBinary: string;
+
   constructor(
     private orderService: OrderService,
     private loading: LoadingService,
+    private router : Router,
+    private camera : Camera,
+    private toastHandle : ToasthandleService,
   ) {
     this.shipperMode = false;
   }
@@ -69,5 +78,41 @@ export class HomePage implements OnInit {
       });//end api
     }
     console.log(this.shipperMode);
+  }
+
+  checkout(){
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      //sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.myPhoto = 'data:image/jpeg;base64,' + imageData;
+      this.myPhotoBinary = imageData;
+      //this.myPhotoBinary = new Blob([imageData], { type: 'image/jpg' });
+      // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
+      console.log(imageData);
+      console.log(this.myPhotoBinary);
+
+      //call api
+      this.orderService.checkOutOrder(this.order[0].data.id, this.myPhoto).subscribe(
+        res => {
+          console.log(res);
+          this.toastHandle.presentToast("Check out success");
+        }, (err) => {
+          this.toastHandle.presentToast("Check out error");
+          console.log("error check out " + err);
+        }
+      );
+    }, (err) => {
+      console.log("error at takephoto :" + err)
+    });
   }
 }

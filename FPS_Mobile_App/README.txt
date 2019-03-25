@@ -48,3 +48,8 @@ native-storage:
 ionic cordova plugin add cordova-plugin-nativestorage
 npm install @ionic-native/native-storage
 
+---------------
+camera
+
+ionic cordova plugin add cordova-plugin-camera
+npm install @ionic-native/camera
