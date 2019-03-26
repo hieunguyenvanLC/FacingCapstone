@@ -41,11 +41,12 @@ public class OrderService {
     private PaymentInfoRepo paymentInfoRepo;
     private ReceiveMemberRepo receiveMemberRepo;
     private OrderMap orderMap;
+    private TransactionRepo transactionRepo;
     @Autowired
     private ShipperWait shipperWait;
 
 
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap) {
+    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
         this.districtRepository = districtRepository;
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
@@ -55,6 +56,7 @@ public class OrderService {
         this.paymentInfoRepo = paymentInfoRepo;
         this.receiveMemberRepo = receiveMemberRepo;
         this.orderMap = orderMap;
+        this.transactionRepo = transactionRepo;
     }
 
 
@@ -497,9 +499,26 @@ public class OrderService {
                 e.printStackTrace();
             }
         }
-        handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
-        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        return response;
+        String payId = handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
+        if ("fail".equals(payId)) {
+            response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+            return response;
+        } else {
+            long time = methods.getTimeNow();
+            FRTransaction frTransaction = new FRTransaction();
+            frTransaction.setPayId(payId);
+            frTransaction.setAmount(price);
+            frTransaction.setTime(time);
+            frTransaction.setPaymentInformation(frPayInfo);
+            transactionRepo.save(frTransaction);
+
+            frOrder.setStatus(Fix.ORD_COM.index);
+            frOrder.setBuyerFace(faceBytes);
+            frOrder.setReceiveTime(time);
+            orderRepository.save(frOrder);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            return response;
+        }
     }
 
     // Compare Member List with buyer
