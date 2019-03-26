@@ -502,6 +502,7 @@ public class OrderService {
         return response;
     }
 
+    // Compare Member List with buyer
     private String handlingFaceResult(String rep, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
         rep = rep.replace("fps", "");
@@ -518,6 +519,7 @@ public class OrderService {
         return "fail";
     }
 
+    // Send HttpReq to Paypal Emulator
     private String callPaypal(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
         Methods methods = new Methods();
         URL url;
