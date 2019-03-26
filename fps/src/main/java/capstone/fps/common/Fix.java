@@ -12,7 +12,7 @@ public interface Fix {
     double DEGREE_PER_KM = 0.009;
 
 
-    double usd = 23199.50D;
+    double USD = 23199.50D;
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";

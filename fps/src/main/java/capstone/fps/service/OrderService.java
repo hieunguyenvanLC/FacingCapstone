@@ -2,7 +2,6 @@ package capstone.fps.service;
 
 import capstone.fps.common.*;
 import capstone.fps.entity.*;
-import capstone.fps.model.FPSSessionData;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -476,15 +475,19 @@ public class OrderService {
         }
         HttpSession session = request.getSession(true);
         session.removeAttribute("faceTest");
-
-
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
-
         // test face here
+        CommandPrompt commandPrompt = faceRecognise(faceBytes);
 
-        FaceRecognise(faceBytes);
-
+        FRAccount buyer = frOrder.getAccount();
+        List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
+        FRPaymentInformation frPayInfo = informationList.get(0);
+        String payUsername = frPayInfo.getUsername();
+        String payPassword = frPayInfo.getPassword();
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
+        double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
+        String priceStr = String.format("%.2f", price);
 
         String rep;
         while ((rep = (String) session.getAttribute("faceTest")) == null) {
@@ -494,57 +497,41 @@ public class OrderService {
                 e.printStackTrace();
             }
         }
+        handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
+        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        return response;
+    }
 
-
+    private String handlingFaceResult(String rep, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
+        Repo repo = new Repo();
         rep = rep.replace("fps", "");
         String[] strList = rep.split("|");
         for (String idStr : strList) {
             int revMemId = Integer.parseInt(idStr);
             FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
             if (receiveMember != null) {
-                if (receiveMember.getAccount().getId() == frOrder.getAccount().getId()) {
-                    FRAccount buyer = frOrder.getAccount();
-                    List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(frOrder.getAccount());
-                    FRPaymentInformation frPayInfo = informationList.get(0);
-                    String payUsername = frPayInfo.getUsername();
-                    String payPassword = frPayInfo.getPassword();
-                    String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
-                    double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.usd;
-                    String priceStr = String.format("%.2f", price);
-
-
-                    callPaypal(gson, payUsername, payPassword, priceStr, description);
-
-                    response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-                    return response;
-
+                if (receiveMember.getAccount().getId() == buyer.getId()) {
+                    return callPaypal(gson, payUsername, payPassword, priceStr, description);
                 }
             }
         }
-
-        response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        return response;
+        return "fail";
     }
-    // Mobile Shipper - Order Checkout - End
 
     private String callPaypal(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
         Methods methods = new Methods();
         URL url;
         HttpURLConnection urlConnection;
-
         String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
         String method = "POST";
         String[] paramName = {"username", "password", "price", "description"};
         String[] paramValue = {payUsername, payPassword, priceStr, description};
-
         try {
             url = new URL(uri);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(method);
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
-
-
             if (paramName.length > 0) {
                 String urlParameters = paramName[0] + "=" + paramValue[0];
                 for (int i = 1; i < paramName.length; i++) {
@@ -555,19 +542,10 @@ public class OrderService {
                 wr.flush();
                 wr.close();
             }
-
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-
                 return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
-
-//                String result = gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
-//
-//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
-//                return response;
-
-
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -577,34 +555,28 @@ public class OrderService {
         return "fail";
     }
 
-
     public String receiveFaceTestResult(String rep, HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute("faceTest", rep);
         return rep;
     }
 
-
-    public boolean FaceRecognise(byte[] faceBytes) {
-
+    public CommandPrompt faceRecognise(byte[] faceBytes) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
-
-
+        CommandPrompt commandPrompt = null;
         File directory = new File(folderName);
         if (!directory.exists()) {
             directory.mkdir();
         }
-
         File jpgFile = new File(folderName + "/" + jpgName);
-
         ByteArrayInputStream bis = new ByteArrayInputStream(faceBytes);
         try {
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
 
-            CommandPrompt commandPrompt = new CommandPrompt();
+            commandPrompt = new CommandPrompt();
             String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
             commandPrompt.execute(cutAndRecenter);
             String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
@@ -614,7 +586,6 @@ public class OrderService {
             methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
         // delete folder generated by Java
         try {
@@ -622,6 +593,9 @@ public class OrderService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
+        return commandPrompt;
     }
+    // Mobile Shipper - Order Checkout - End
+
+
 }
