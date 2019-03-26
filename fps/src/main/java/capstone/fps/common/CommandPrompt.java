@@ -3,34 +3,57 @@ package capstone.fps.common;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandPrompt {
 
-    public String execute(String command) {
-        StringBuilder resultBuilder = new StringBuilder();
+    private List<String> result;
+    private List<String> error;
+
+    public void execute(String command) {
+        result = new ArrayList<>();
+        error = new ArrayList<>();
         try {
-            // run the Unix "ps -ef" command
-            // using the Runtime exec method:
             Process p = Runtime.getRuntime().exec(command);
+            System.out.println(command);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             // read the output from the command
-            System.out.println(command);
             String line;
             while ((line = stdInput.readLine()) != null) {
-                resultBuilder.append(line);
+                result.add(line);
             }
             // read any errors from the attempted command
-//            System.out.println("Here is the standard error of the command (if any):\n");
             while ((line = stdError.readLine()) != null) {
-                System.out.println(line);
+                error.add(line);
             }
-            return resultBuilder.toString();
         } catch (IOException e) {
             System.out.println("exception happened - here's what I know: ");
             e.printStackTrace();
         }
-        return null;
     }
 
+    public List<String> getResult() {
+        return result;
+    }
+
+    public List<String> getError() {
+        return error;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Here is the output of the command (if any):\n\n");
+        for (String line : result) {
+            stringBuilder.append(line).append("\n");
+        }
+        stringBuilder.append("Here is the standard error of the command (if any):\n\n");
+        for (String line : error) {
+            stringBuilder.append(line).append("\n");
+        }
+        return stringBuilder.toString();
+    }
 }
