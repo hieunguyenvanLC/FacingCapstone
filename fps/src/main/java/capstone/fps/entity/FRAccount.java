@@ -21,10 +21,8 @@ public class FRAccount implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
     @Column(name = "phone_number")
     private String phone;
-
     @ManyToOne
     @JoinColumn(name = "FR_Role_id")
     private FRRole role;
@@ -41,9 +39,9 @@ public class FRAccount implements UserDetails {
     @Column(name = "user_image")
     private byte[] userImage;
     @Column(name = "national_id", length = 50)
-    private String nationalId;
+    private String natId;
     @Column(name = "national_id_created_date")
-    private Long nationalIdCreatedDate;
+    private Long natDate;
     @Column(name = "date_of_birth")
     private Long dateOfBirth;
     @Column(name = "create_time")
@@ -70,6 +68,8 @@ public class FRAccount implements UserDetails {
     private Collection<FRPaymentInformation> paymentInformationCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private Collection<FROrder> orderCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private Collection<FRReceiveMember> receiveMemberCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private Collection<FRRating> ratingCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "editor")
@@ -188,20 +188,20 @@ public class FRAccount implements UserDetails {
         this.userImage = userImage;
     }
 
-    public String getNationalId() {
-        return nationalId;
+    public String getNatId() {
+        return natId;
     }
 
-    public void setNationalId(String nationalId) {
-        this.nationalId = nationalId;
+    public void setNatId(String nationalId) {
+        this.natId = nationalId;
     }
 
-    public Long getNationalIdCreatedDate() {
-        return nationalIdCreatedDate;
+    public Long getNatDate() {
+        return natDate;
     }
 
-    public void setNationalIdCreatedDate(Long nationalIdCreatedDate) {
-        this.nationalIdCreatedDate = nationalIdCreatedDate;
+    public void setNatDate(Long nationalIdCreatedDate) {
+        this.natDate = nationalIdCreatedDate;
     }
 
     public Long getDateOfBirth() {

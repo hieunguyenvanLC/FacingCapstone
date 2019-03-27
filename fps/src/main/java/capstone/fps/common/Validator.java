@@ -57,6 +57,18 @@ public class Validator {
         }
     }
 
+    public String checkOrderProList(String proListStr) {
+        try {
+            String s = proListStr.replaceAll("\\s", "");
+            if (!s.matches("^[0-9]+x[0-9]+(n[0-9]+x[0-9]+)*$")) {
+                return null;
+            }
+            return s;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 //    public boolean checkFace(byte[] input) {
 //        try {
 //            return true;

@@ -7,16 +7,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
 public final class Methods {
 
@@ -59,38 +59,39 @@ public final class Methods {
         if (str.isEmpty()) {
             return true;
         }
-        if (str.trim().isEmpty()) {
-            return true;
-        }
-        return false;
+        return str.trim().isEmpty();
     }
 
 
-    public String handleImage(MultipartFile image) {
-        if (image != null) {
-            String fileName = image.getOriginalFilename();
-//            Files.createDirectories(rootLocation);
-            try {
-                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-                return fileName;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+//    public String handleImage(MultipartFile image) {
+//        if (image != null) {
+//            String fileName = image.getOriginalFilename();
+////            Files.createDirectories(rootLocation);
+//            try {
+//                Files.copy(image.getInputStream(), Fix.IMG_DIR_PATH.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+//                return fileName;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return null;
+//    }
 
     public String bytesToBase64(byte[] bytes) {
-        if(bytes == null){
+        if (bytes == null) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("data:image/png;base64,");
-        sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false)));
-        return sb.toString();
+        return "data:image/jpg;base64," + StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false));
     }
 
-    public byte[] multipartToBytes(MultipartFile input){
+    public byte[] base64ToBytes(String base64) {
+        if (base64 == null) {
+            return null;
+        }
+        return Base64.decodeBase64(base64);
+    }
+
+    public byte[] multipartToBytes(MultipartFile input) {
         if (input != null) {
             try {
                 return input.getBytes();
@@ -102,6 +103,92 @@ public final class Methods {
     }
 
 
+//    public double caculateShpEarn(double buyerLon, double buyerLat, double storeLon, double storeLat, double shipperLon, double shipperLat) {
+//        // GG API
+//        double dis = Math.sqrt((buyerLon - storeLon) * (buyerLon - storeLon) + (buyerLat - storeLat) * (buyerLat - storeLat)) * 40000 / 360;
+//        double price = 14000;
+//        int kms = (int) Math.ceil(dis);
+//        if (kms > 0) {
+//            price += kms * 1000;
+//        }
+//        kms -= 5;
+//        if (kms > 0) {
+//            price += kms * 1000;
+//        }
+//        kms -= 5;
+//        if (kms > 0) {
+//            price += kms * 1000;
+//        }
+//        return price;
+//    }
 
 
+    public double calculateShpEarn(double dis) {
+        double price = 14000;
+        int kms = (int) Math.ceil(dis);
+        if (kms > 0) {
+            price += kms * 1000;
+        }
+        kms -= 5;
+        if (kms > 0) {
+            price += kms * 1000;
+        }
+        kms -= 5;
+        if (kms > 0) {
+            price += kms * 1000;
+        }
+        return price;
+    }
+
+    // Converting InputStream to String
+    public static String readStream(InputStream in) {
+        BufferedReader reader = null;
+        StringBuilder response = new StringBuilder();
+        try {
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response.toString();
+    }
+
+    public void deleteDirectoryWalkTree(String folderName) throws IOException {
+        Path deleteDirPath = Paths.get(folderName).toAbsolutePath().normalize();
+        FileVisitor visitor = new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        };
+        Files.walkFileTree(deleteDirPath, visitor);
+    }
 }

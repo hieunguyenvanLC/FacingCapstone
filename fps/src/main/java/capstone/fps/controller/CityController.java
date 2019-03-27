@@ -12,7 +12,7 @@ import java.util.List;
 @Controller
 public class CityController extends AbstractController {
 
-    private static final String API = Fix.MAP_API + "city";
+    private static final String API = Fix.MAP_API + "/city";
 
     private CityService cityService;
 

@@ -1,6 +1,11 @@
 package capstone.fps.config;
 
 import capstone.fps.common.Fix;
+import capstone.fps.entity.FRAccount;
+import capstone.fps.model.Response;
+import capstone.fps.model.account.MdlAccount;
+import capstone.fps.repository.AccountRepo;
+import capstone.fps.service.AccountService;
 import capstone.fps.service.LoginService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,22 +28,34 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+@RestController
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
+    private AccountService accountService;
+
 
     @Autowired
-    public WebSecurityConfig(LoginService loginService) {
+    public WebSecurityConfig(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;
+        this.accountService = accountService;
     }
 
     @Autowired
@@ -58,19 +75,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
+
                 .authorizeRequests()
-                .antMatchers(Fix.MAP_ADM + "**")
+                .antMatchers(Fix.MAP_ADM + "/**")
                 .hasRole("ADMIN")
-                .antMatchers(Fix.MAP_SHP + "**")
+                .antMatchers(Fix.MAP_SHP + "/**")
                 .hasRole("SHIPPER")
-                .antMatchers(Fix.MAP_MEM + "**")
+                .antMatchers(Fix.MAP_MEM + "/**")
                 .hasRole("MEMBER")
-                .antMatchers(Fix.MAP_LOG + "**")
+                .antMatchers(Fix.MAP_LOG + "/**")
                 .hasAnyRole("ADMIN", "MEMBER", "SHIPPER")
                 .and()
                 .formLogin()
-                .loginPage("/loginPage")
+//                .loginPage("/loginPage")
                 .loginProcessingUrl("/login")
                 .usernameParameter("phoneNumber")
                 .passwordParameter("password")
@@ -86,7 +104,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutSuccessUrl("/loginPage")
                 .and()
-                .csrf().disable();
+                .cors().and().rememberMe();
+
     }
 
     private AuthenticationSuccessHandler loginSuccessHandler() {
@@ -95,29 +114,64 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-//                switch (role) {
-//                    case Fix.ROL_ADM:
-//                        response.sendRedirect("/admin");
-//                        return;
-//                    case Fix.ROL_MEM:
-//                        response.sendRedirect("/api/index");
-//                        return;
-//
-//                    default:
-//                        response.sendRedirect("/access_denied");
-//                }
-                Gson gson = new GsonBuilder().create();
-                response.getWriter().append(gson.toJson(role));
+                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+//                String phoneNumber = authentication.getName();
+
+//                FRAccount account = accountService.findByPhone(phoneNumber);
+
+//                List<String> result = new ArrayList<>();
+//                result.add("Role: " + role);
+//                result.add("Account ID: " + account.getId());
+
+
+//                Response<List<String>> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, result);
+
+
+//                Thread t = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        for (int i = 0; i < 1000; i++) {
+//                            //new Date();
+//                            System.out.println("i - " + i + " - ");
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                });
+//                t.start();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
+                response.getWriter().append(gson.toJson(responseObj));
+//                System.out.println("Result: " + result.toString());
             }
         };
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Access-Control-Allow-Credentials"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
     private AuthenticationFailureHandler loginFailureHandler() {
         return new AuthenticationFailureHandler() {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                responseObj.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL, "Error");
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
-                response.getWriter().append(gson.toJson("Error"));
+                response.getWriter().append(gson.toJson(responseObj));
             }
         };
     }

@@ -13,354 +13,378 @@
             </ul>
         </div>
     </header>
+
     <section class="dashboard-counts no-padding-bottom">
         <div class="container-fluid">
             <div class="table-responsive row bg-white has-shadow">
-                <div class="d-flex p-2">
-                    <div class="flex-grow-1">
-                        <button id="add-new" class="btn btn-primary" data-toggle="modal"
-                                data-target="#addnew-store-detail-modal">
-                            Add new
-                        </button>
-                    </div>
-                    <div>
-                        <!--   <button id="deactive-sel" class="btn btn-warning">Deactive (0)</button>-->
-                        <button class="btn btn-warning">Deactive</button>
-                    </div>
-                </div>
+
 
                 <table id="account-table" class="table">
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
-                        <th>Address</th>
+                        <th>Buyer Phone</th>
+                        <th>Buyer Name</th>
+                        <th>Total Price</th>
                         <th>Status</th>
-                        <th>Rating</th>
-                        <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row" data-target="#store-detail-modal" data-toggle="modal">1</th>
-                        <td data-target="#store-detail-modal" data-toggle="modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu
-                        </td>
-                        <td data-target="#store-detail-modal" data-toggle="modal">83 Hồ Tùng Mậu</td>
-                        <td data-target="#store-detail-modal" data-toggle="modal">Working</td>
-                        <td data-target="#store-detail-modal" data-toggle="modal">❤❤❤</td>
-                        <td>
-                            <a href="#" class="btn btn-danger">Deactive</a>
-                        </td>
-                    </tr>
+                    <tbody id="tblBodyOrder">
+                    <!--<tr>-->
+                    <!--<th scope="row" data-target="#edit-order-detail-modal" data-toggle="modal" onclick="loadEditForm()">1</th>-->
+                    <!--<td data-target="#store-detail-modal" data-toggle="modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu-->
+                    <!--</td>-->
+                    <!--<td data-target="#store-detail-modal" data-toggle="modal">83 Hồ Tùng Mậu</td>-->
+                    <!--<td data-target="#store-detail-modal" data-toggle="modal">Working</td>-->
+                    <!--<td data-target="#store-detail-modal" data-toggle="modal">❤❤❤</td>-->
+                    <!--<td>-->
+                    <!--<a href="#" class="btn btn-danger">Deactive</a>-->
+                    <!--</td>-->
+                    <!--</tr>-->
                     </tbody>
                 </table>
                 <!-- Modal-->
-                <div id="addnew-store-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                <div id="edit-order-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                      aria-hidden="true" class="modal fade text-left">
                     <div role="document" class="modal-dialog">
                         <div class="modal-content">
+
                             <div class="modal-header">
                                 <h4 id="exampleModalLabelStore" class="modal-title"></h4>
                                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
-                                        aria-hidden="true">×</span></button>
+                                        id="btnCloseModal" aria-hidden="true">×</span></button>
                             </div>
+
                             <div class="modal-body">
-                                <!--<p>Lorem ipsum dolor sit amet consectetur.</p>-->
-                                <form>
-                                    <div class="form-group">
-                                        <label>Name</label>
-                                        <input type="text" placeholder="Name" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Street</label>
-                                        <input type="text" placeholder="Street Address" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>District</label>
-                                        <select name="district" class="form-control mb-3">
-                                            <option value="1">District 1</option>
-                                            <option value="2">District 2</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>City</label>
-                                        <select name="city" class="form-control mb-3">
-                                            <option value="2">HCM</option>
-                                            <option value="1">HN</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="row row-eq-height">
-                                        <div class="col-sm padding-0">
-                                            <div class="form-group">
-                                                <label>Name</label>
-                                                <input type="text" placeholder="Name" class="form-control">
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-4  padding-0">
+                                        <label>Customer Face</label>
+                                        <div class="input-group">
+                                            <!--<div class="input-group-prepend">-->
+                                            <!--<span class="input-group-text"-->
+                                            <!--id="inputGroupFileAddon01">Upload</span>-->
+                                            <!--</div>-->
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="uplBuyerFace"
+                                                       onchange="uplStoreThumbOnChange()">
+                                                <label class="custom-file-label" for="uplBuyerFace"
+                                                       style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
-                                        <div class="col-sm padding-0">
-                                            <div class="form-group">
-                                                <label>Phone</label>
-                                                <input type="text" placeholder="Phone Number" class="form-control">
+                                        <img id="imgBuyerFace" src="" alt="Buyer" style="width: 256px; height: 256px">
+                                    </div>
+
+                                    <div class="col-4 padding-0">
+                                        <label>Bill</label>
+                                        <div class="input-group">
+                                            <!--<div class="input-group-prepend">-->
+                                            <!--<span class="input-group-text"-->
+                                            <!--id="inputGroupFileAddon02">Upload</span>-->
+                                            <!--</div>-->
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="uplBill"
+                                                       onchange="uplStoreThumbOnChange()">
+                                                <label class="custom-file-label" for="uplBill"
+                                                       style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
+                                        <img id="imgBill" src="" alt="Bill" style="width: 100%;">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Phone</label>
-                                        <input type="text" placeholder="Phone Number" class="form-control">
-                                    </div>
-                                    <!--<div class="form-group">-->
-                                        <!--<label>Create Day</label>-->
-                                        <!--&lt;!&ndash;<div class="input-group date-picker" data-provider="createDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<input type="date" class="form-control" id="createDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--</div>-->
-                                    <!--<div class="form-group">-->
-                                        <!--<label>Update Day</label>-->
-                                        <!--&lt;!&ndash;<div class="input-group date-picker" data-provider="updateDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<input type="date" class="form-control" id="updateDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--</div>-->
-                                    <!--<div class="form-group">-->
-                                        <!--<label>Delete Day</label>-->
-                                        <!--&lt;!&ndash;<div class="input-group date-picker" data-provider="deleteDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<input type="date" class="form-control" id="deleteDay">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--</div>-->
+                                    <div class="col-4 padding-0">
 
-                                        <div class="form-group" style="text-align: center">
-                                            <div class="text-center">
-                                                <img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">
-                                            </div>
-
-                                            <!--<label for="exampleFormControlFile1">Example file input</label>-->
-                                            <input type="file" class="form-control-file"
-                                                   id="exampleFormControlFile1">
-
+                                        <div class="form-group">
+                                            <label>Order ID</label>
+                                            <input type="text" placeholder="Id" class="form-control"
+                                                   id="txtOrderId">
                                         </div>
-                            </div>
-                            </form>
-                            <div class="form-group">
-                                <input id="actived-check" type="checkbox" value="" checked=""
-                                       class="checkbox-template">
-                                <label for="actived-check">Is actived</label>
-                            </div>
-                            </form>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal-->
-            <div id="store-detail-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true" class="modal fade text-left">
-                <div role="document" class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 id="exampleModalLabel" class="modal-title"></h4>
-                            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
-                                    aria-hidden="true">×</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
-                                        <label>Images</label>
-                                        <div class="text-center">
-
-                                            <img src="/img/avatar-1.jpg" class="card-img"
-                                                 alt="Responsive image" style="width:400px;height:400px;">
-                                            <!--<label for="exampleFormControlFile1">Example file input</label>-->
-
-                                            <input type="file" class="form-control-file"
-                                                   id="imagesSelected" style="text-align: center">
-
+                                        <div class="form-group">
+                                            <label>Buyer Phone</label>
+                                            <input type="text" placeholder="Buyer Phone" class="form-control"
+                                                   id="txtBuyerPhone">
                                         </div>
+                                        <div class="form-group">
+                                            <label>Buyer Name</label>
+                                            <input type="text" placeholder="Buyer Name" class="form-control"
+                                                   id="txtBuyerName">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Shipper Phone</label>
+                                            <input type="text" placeholder="Shipper Phone" class="form-control"
+                                                   id="txtShipperPhone">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Shipper Name</label>
+                                            <input type="text" placeholder="Shipper Name" class="form-control"
+                                                   id="txtShipperName">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="cbbStatus">Status</label>
+                                            <select class="form-control" id="cbbStatus"></select>
+                                        </div>
+
                                     </div>
+
                                 </div>
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
+
+
+                                <div class="row row-eq-height no-padding">
+                                    <div class="col-4 padding-0">
                                         <div class="form-group">
-                                            <label>Name</label>
-                                            <input type="text" placeholder="Name" class="form-control">
+                                            <label>Longitude</label>
+                                            <input type="text" placeholder="Longitude" class="form-control"
+                                                   id="txtLongitude">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Latitude</label>
+                                            <input type="text" placeholder="Latitude" class="form-control"
+                                                   id="txtLatitude">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-4 padding-0">
+                                        <div class="form-group">
+                                            <label>Total Price</label>
+                                            <input type="text" placeholder="Total Price" class="form-control"
+                                                   id="txtTotalPrice">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Shipper Earn</label>
+                                            <input type="text" placeholder="Shipper Earn" class="form-control"
+                                                   id="txtShipperEarn">
                                         </div>
                                     </div>
-                                    <div class="col-sm padding-0">
+                                    <div class="col-4 padding-0">
                                         <div class="form-group">
-                                            <label>Phone</label>
-                                            <input type="text" placeholder="Phone Number" class="form-control">
+                                            <label>Store Name</label>
+                                            <input type="text" placeholder="Store Name" class="form-control"
+                                                   id="txtStoreName">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Customer Description</label>
+                                            <input type="text" placeholder="Customer Description" class="form-control"
+                                                   id="txtCustomerDescription">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" placeholder="Note" class="form-control"
+                                                   id="txtNote">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
-                                        <div class="form-group">
-                                            <label>Street</label>
-                                            <input type="text" placeholder="Street Address" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm padding-0">
-                                        <div class="form-group">
-                                            <label>District</label>
-                                            <select name="district" class="form-control mb-3">
-                                                <option value="1">District 1</option>
-                                                <option value="2">District 2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm padding-0">
 
-                                        <div class="form-group">
-                                            <label>City</label>
-                                            <select name="city" class="form-control mb-3">
-                                                <option value="2">HCM</option>
-                                                <option value="1">HN</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row row-eq-height">
-                                    <div class="col-sm padding-0">
-                                        <label>Create Day</label>
-                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
-                                    </div>
-                                    <div class="col-sm padding-0">
-                                        <label>Update Day</label>
-                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
-                                    </div>
-                                    <div class="col-sm padding-0">
-                                        <label>Delete Day</label>
-                                        <!--<input type="text" placeholder="Street Address" class="form-control">-->
-                                    </div>
-                                </div>
                                 <div class="row">
-                                    <label>Time Working</label>
-                                    <div class="col-sm-12 bg-white has-shadow">
-
-                                        <table>
-                                            <tr>
-                                                <th></th>
-                                                <th>Monday</th>
-                                                <th>Tuesday</th>
-                                                <th>Wednesday</th>
-                                                <th>Thursday</th>
-                                                <th>Friday</th>
-                                                <th>Saturday</th>
-                                                <th>Sunday</th>
-                                            </tr>
-                                            <tr>
-                                                <td style="color: red">Open</td>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td style="color: red">Close</td>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                                <th>
-                                                    <input type="time">
-                                                </th>
-                                            </tr>
-                                        </table>
-
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12 bg-white has-shadow">
+                                    <div class="col-sm-12 bg-white">
                                         <table id="order-detail-table" class="table">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Product Name</th>
-                                                <th>Net</th>
-                                                <th>Amount</th>
-                                                <!--<th>Name</th>-->
-                                                <!--<th>Email</th>-->
-                                                <!--<th>Actions</th>-->
+                                                <th>Product</th>
+                                                <th>Price</th>
+                                                <th>Unit</th>
+                                                <th>Cost</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <!--<td data-toggle="modal" data-target="#add-edit-modal">Milk Shake-->
-                                                <!--</td>-->
-                                                <td onclick="location.href='/admin/product'" data-toggle="modal"
-                                                    data-target="#add-edit-modal">Milk Shake
-                                                </td>
-                                                <td onclick="location.href='/admin/product'" data-toggle="modal"
-                                                    data-target="#add-edit-modal">200
-                                                </td>
-                                                <td onclick="location.href='/admin/product'" data-toggle="modal"
-                                                    data-target="#add-edit-modal">4
-                                                </td>
-                                                <!--<td>-->
-                                                <!--<a href="#" class="btn btn-xs btn-warning">Delete</a>-->
-                                                <!--</td>-->
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td data-toggle="modal" data-target="#add-edit-modal">Chocalate</td>
-                                                <td>300</td>
-                                                <td>2</td>
-                                                <!--<td>-->
-                                                <!--<a href="#" class="btn btn-xs btn-warning">Delete</a>-->
-                                                <!--</td>-->
-                                            </tr>
-                                            </tbody>
+                                            <tbody id="tblBodyDetail"></tbody>
                                         </table>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="sendEdit()">Save</button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
+                <!-- Modal-->
             </div>
         </div>
-</div>
-</section>
+    </section>
+
+    <script>
+        var uplBuyerFace = document.getElementById("uplBuyerFace");
+        var imgBuyerFace = document.getElementById("imgBuyerFace");
+
+        var uplBill = document.getElementById("uplBill");
+        var imgBill = document.getElementById("imgBill");
+
+        var txtOrderId = document.getElementById("txtOrderId");
+        var txtBuyerName = document.getElementById("txtBuyerName");
+        var txtBuyerPhone = document.getElementById("txtBuyerPhone");
+        var txtShipperName = document.getElementById("txtShipperName");
+        var txtShipperPhone = document.getElementById("txtShipperPhone");
+        var cbbStatus = document.getElementById("cbbStatus");
+
+        var txtLatitude = document.getElementById("txtLatitude");
+        var txtLongitude = document.getElementById("txtLongitude");
+
+        var txtTotalPrice = document.getElementById("txtTotalPrice");
+        var txtShipperEarn = document.getElementById("txtShipperEarn");
+
+        var txtStoreName = document.getElementById("txtStoreName");
+        var txtCustomerDescription = document.getElementById("txtCustomerDescription");
+        var txtNote = document.getElementById("txtNote");
+
+        var btnCloseModal = document.getElementById("btnCloseModal");
+        var tblBodyDetail = document.getElementById("tblBodyDetail");
+
+        var orderList;
+        var orderEdit;
+        var orderEditPos;
+        var fpsApiOrd = fpsBackEnd + MAP_ADM + MAP_API + "/order";
+
+
+        function fpsFetchData() {
+            getOrderList();
+            fpsSetCbbStatus(cbbStatus, ORD_STAT_LIST);
+        }
+
+
+        function drawTblOrder() {
+            btnCloseModal.click();
+            var list = orderList;
+            // console.log($('#account-table'));
+            $('#account-table').DataTable().destroy();
+            var accountTable = $('#account-table').DataTable();
+            accountTable.clear().draw();
+            for (var i = 0; i < list.length; i++) {
+                var order = list[i];
+// console.log(order);
+                accountTable.row.add([
+                    '<span data-target="#edit-order-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')" >' + order.id + '</span>',
+                    '<span data-target="#edit-order-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')" >' + order.buyerPhone + '</span>',
+                    order.buyerName,
+                    order.totalPrice,
+                    fpsGetStatMsg(ORD_STAT_LIST, order.status)
+                ]).draw();
+            }
+        }
+
+        function getOrderList() {
+            $.ajax({
+                type: 'GET',
+                url: fpsApiOrd,
+                data: {},
+                dataType: 'json',
+                success: function (response) {
+                    orderList = response.data;
+                    drawTblOrder();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            })
+        }
+
+        function getOrderDetail(pos) {
+            orderEditPos = pos;
+            if (typeof orderList[pos].createTime === "undefined") {
+                $.ajax({
+                    type: 'GET',
+                    url: fpsApiOrd + "/detail",
+                    data: {orderId: orderList[pos].id},
+                    dataType: 'json',
+                    success: function (response) {
+                        orderList[pos] = response.data;
+                        orderEdit = orderList[pos];
+                        loadEditForm();
+                    },
+                    error: function (response) {
+                    }
+                })
+            } else {
+                orderEdit = orderList[pos];
+                loadEditForm();
+            }
+        }
+
+        function loadEditForm() {
+
+            uplBuyerFace.value = "";
+            fpsSetImgSrc(imgBuyerFace, orderEdit.BuyerFace);
+
+            uplBill.value = "";
+            fpsSetImgSrc(imgBill, orderEdit.bill);
+
+            txtOrderId.value = orderEdit.id;
+            txtBuyerName.value = orderEdit.buyerName;
+            txtBuyerPhone.value = orderEdit.buyerPhone;
+            txtShipperName.value = orderEdit.shipperName;
+            txtShipperPhone.value = orderEdit.shipperPhone;
+            cbbStatus.value = orderEdit.status;
+
+            txtLatitude.value = orderEdit.latitude;
+            txtLongitude.value = orderEdit.longitude;
+
+            txtTotalPrice.value = orderEdit.totalPrice;
+            txtShipperEarn.value = orderEdit.shipperEarn;
+
+            txtStoreName.value = orderEdit.storeName;
+            txtCustomerDescription.value = orderEdit.customerDescription;
+            txtNote.value = orderEdit.note;
+
+
+            tblBodyDetail.innerHTML = '';
+            var list = orderEdit.detailList;
+            for (var i = 0; i < list.length; i++) {
+                var pro = list[i];
+                var row = '  <td>' + (i + 1) + '</td>\n' +
+                    '            <td>' + pro.proName + '</td>\n' +
+                    '            <td>' + pro.unitPrice + '</td>\n' +
+                    '            <td>' + pro.quantity + '</td>\n' +
+                    '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n';
+                tblBodyDetail.innerHTML += row;
+            }
+
+        }
+
+        function sendEdit() {
+            var formData = new FormData();
+            fpsFormAppend(formData, "orderId", orderEdit.id);
+
+            fpsFormAppend(formData, "buyerFace", uplBuyerFace.files[0]);
+            fpsFormAppend(formData, "bill", uplBill.files[0]);
+
+            fpsFormAppend2(formData, "buyerName", txtBuyerName.value, orderEdit.buyerName);
+            fpsFormAppend2(formData, "buyerPhone", txtBuyerPhone.value, orderEdit.buyerPhone);
+            fpsFormAppend2(formData, "shipperName", txtShipperName.value, orderEdit.shipperName);
+            fpsFormAppend2(formData, "shipperPhone", txtShipperPhone.value, orderEdit.shipperPhone);
+            fpsFormAppend2(formData, "status", cbbStatus.value, orderEdit.status);
+
+            fpsFormAppend2(formData, "latitude", txtLatitude.value, orderEdit.latitude);
+            fpsFormAppend2(formData, "longitude", txtLongitude.value, orderEdit.longitude);
+
+            fpsFormAppend2(formData, "totalPrice", txtTotalPrice.value, orderEdit.totalPrice);
+            fpsFormAppend2(formData, "shipperEarn", txtShipperEarn.value, orderEdit.shipperEarn);
+
+            fpsFormAppend2(formData, "customerDescription", txtCustomerDescription.value, orderEdit.customerDescription);
+            fpsFormAppend2(formData, "note", txtNote.value, orderEdit.note);
+            $.ajax({
+                type: 'PUT',
+                url: fpsApiOrd,
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status_code === RESP_SUCCESS) {
+                        orderList[orderEditPos] = response.data;
+                        drawTblOrder();
+                    } else {
+                    }
+                },
+                error: function (response) {
+                    alert("Unable to Edit");
+                }
+            })
+        }
+
+
+    </script>
 </div>
 </html>

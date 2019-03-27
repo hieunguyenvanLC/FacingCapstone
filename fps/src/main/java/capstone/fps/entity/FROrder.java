@@ -22,6 +22,10 @@ public class FROrder {
     @ManyToOne
     @JoinColumn(name = "FR_Shipper_id")
     private FRShipper shipper;
+    @Column(name = "buyer_face")
+    private byte[] buyerFace;
+    @Column(name = "bill")
+    private byte[] bill;
     @Column(name = "order_code", length = 50)
     private String orderCode;
     @Column(name = "total_price")
@@ -61,27 +65,6 @@ public class FROrder {
     private Collection<FROrderDetail> orderDetailCollection;
 
     public FROrder() {
-    }
-
-    public FROrder(FRAccount account, FRShipper shipper, String orderCode, Double totalPrice, Long bookTime, Long receiveTime, Double shipperEarn, String shipAddress, FRDistrict district, Double longitude, Double latitude, String customerDescription, Long createTime, Long updateTime, Long deleteTime, String note, Integer status, FRAccount editor) {
-        this.account = account;
-        this.shipper = shipper;
-        this.orderCode = orderCode;
-        this.totalPrice = totalPrice;
-        this.bookTime = bookTime;
-        this.receiveTime = receiveTime;
-        this.shipperEarn = shipperEarn;
-        this.shipAddress = shipAddress;
-        this.district = district;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.customerDescription = customerDescription;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.deleteTime = deleteTime;
-        this.note = note;
-        this.status = status;
-        this.editor = editor;
     }
 
     public Integer getId() {
@@ -234,5 +217,21 @@ public class FROrder {
 
     public void setEditor(FRAccount editor) {
         this.editor = editor;
+    }
+
+    public byte[] getBill() {
+        return bill;
+    }
+
+    public void setBill(byte[] bill) {
+        this.bill = bill;
+    }
+
+    public byte[] getBuyerFace() {
+        return buyerFace;
+    }
+
+    public void setBuyerFace(byte[] buyerFace) {
+        this.buyerFace = buyerFace;
     }
 }

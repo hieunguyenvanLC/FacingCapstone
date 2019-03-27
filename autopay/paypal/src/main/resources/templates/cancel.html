@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Paypal Canceled</title>
+    <style>
+        .box {
+            width: 200px;
+            height: 200px;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mark {
+            background-color: #A9A9A9;
+        }
+
+        .cancel {
+            background-color: #FF0000;
+        }
+
+        .pay {
+            width: 400px;
+            height: 400px;
+            display: block;
+            margin: 0;
+            padding: 0;
+            background-color: darkgreen;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="box mark"></div>
+<div class="box cancel"></div>
+<a href="/pay/init">
+    <div class="box pay"></div>
+</a>
+
+
+</body>
+</html>

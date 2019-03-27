@@ -2,24 +2,26 @@ package capstone.fps.service;
 
 import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
+import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
 import capstone.fps.entity.FRAccount;
 import capstone.fps.entity.FRDistrict;
 import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
+import capstone.fps.model.store.MdlStoreBuilder;
 import capstone.fps.model.store.StoreDis;
 import capstone.fps.repository.DistrictRepo;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@Service
 public class StoreService {
     private StoreRepo storeRepository;
     private DistrictRepo districtRepository;
@@ -31,32 +33,18 @@ public class StoreService {
         this.productRepository = productRepository;
     }
 
-
-    public FRDistrict getDIst(Integer distId) {
-        if (distId == null) {
-            return null;
-        }
-        Optional<FRDistrict> optional = districtRepository.findById(distId);
-        return optional.orElse(null);
-    }
-
-    public FRStore getStore(Integer storeId) {
-        if (storeId == null) {
-            return null;
-        }
-        Optional<FRStore> optional = storeRepository.findById(storeId);
-        return optional.orElse(null);
-    }
-
-    // To do: set schedule
+    // Web Admin - Store - Begin
     public Response<MdlStore> createStore(String name, String phone, String address, Integer distId, Double longitude, Double latitude, MultipartFile storeImg, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
+        Repo repo = new Repo();
+        FRAccount currentUser = methods.getUser();
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount account = methods.getUser();
 
-        FRDistrict frDistrict = getDIst(distId);
+        // To do: set schedule
+        FRDistrict frDistrict = repo.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
@@ -80,45 +68,30 @@ public class StoreService {
         frStore.setCreateTime(time);
         frStore.setNote(valid.nullProof(note));
         frStore.setStatus(Fix.STO_NEW.index);
-        frStore.setEditor(account);
+        frStore.setEditor(currentUser);
         storeRepository.save(frStore);
 
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
-
-//    public boolean deactivateStore(Integer id, String note) {
-//        Methods methods = new Methods();
-//        long time = methods.getTimeNow();
-//        Optional<FRStore> optional = storeRepository.findById(id);
-//        if (!optional.isPresent()) {
-//            return false;
-//        }
-//        FRStore frStore = optional.get();
-//        frStore.setDeleteTime(time);
-//        if (!methods.nullOrSpace(note)) {
-//            frStore.setNote(note);
-//        }
-//        frStore.setStatus(Fix.STO_HID.index);
-//        frStore.setEditor(methods.getUser());
-//        storeRepository.save(frStore);
-//        return true;
-//    }
 
     public Response<MdlStore> updateStore(Integer storeId, String name, String phone, String address, Integer distId, Double longitude, Double latitude, MultipartFile storeImg, String note, Integer status) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
-        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount account = methods.getUser();
+        Repo repo = new Repo();
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        FRAccount currentUser = methods.getUser();
 
-        FRStore frStore = getStore(storeId);
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FRStore frStore = repo.getStore(storeId, storeRepository);
         if (frStore == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find store");
             return response;
         }
-        FRDistrict frDistrict = getDIst(distId);
+        FRDistrict frDistrict = repo.getDIst(distId, districtRepository);
         if (frDistrict == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
@@ -147,26 +120,56 @@ public class StoreService {
         frStore.setUpdateTime(time);
         frStore.setNote(valid.nullProof(note));
         frStore.setStatus(valid.checkUpdateStatus(frStore.getStatus(), status, Fix.STO_STAT_LIST));
-        frStore.setEditor(account);
+        frStore.setEditor(currentUser);
         storeRepository.save(frStore);
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
 
-
-    public List getStoreNearby(double longitude, double latitude) {
-        double dis2km = 2 * Fix.DEGREE_PER_KM;
-        double dis2kmNeg = -dis2km;
+    public List<MdlStore> getStoreList() {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         List<FRStore> frStoreList = storeRepository.findAll();
+        List<MdlStore> mdlStoreList = new ArrayList<>();
+        for (FRStore frStore : frStoreList) {
+            mdlStoreList.add(mdlStoreBuilder.buildTableRowAdm(frStore));
+        }
+        return mdlStoreList;
+    }
+
+    public Response<MdlStore> getStoreDetailAdm(Integer storeId) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Repo repo = new Repo();
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRStore frStore = repo.getStore(storeId, storeRepository);
+        if (frStore == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find store");
+            return response;
+        }
+        MdlStore mdlStore = mdlStoreBuilder.buildFull(frStore, productRepository);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
+        return response;
+    }
+    // Web Admin - Store - Begin
+
+
+    // Mobile Member - Home - Begin
+    public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        double dis = 5 * Fix.DEGREE_PER_KM;
+        double minLon = longitude - dis;
+        double maxLon = longitude + dis;
+        double minLat = latitude - dis;
+        double maxLat = latitude + dis;
+        List<FRStore> frStoreList = storeRepository.findAll();
+        List<MdlStore> mdlStoreList = new ArrayList<>();
         List<StoreDis> storeDisList = new ArrayList<>();
         for (FRStore frStore : frStoreList) {
-            double disLon = longitude - frStore.getLongitude();
-            double disLat = latitude - frStore.getLatitude();
-            if (dis2kmNeg <= disLon && disLon < dis2km && dis2kmNeg <= disLat && disLat < dis2km) {
-                double dis = disLon * disLon + disLat * disLat;
-                StoreDis storeDis = new StoreDis(frStore, dis);
-                storeDisList.add(storeDis);
+            if (minLon <= frStore.getLongitude() && frStore.getLongitude() < maxLon && minLat <= frStore.getLatitude() && frStore.getLatitude() < maxLat) {
+                double disLon = frStore.getLongitude() - longitude;
+                double disLat = frStore.getLatitude() - latitude;
+                storeDisList.add(new StoreDis(disLon * disLon + disLat * disLat, frStore));
             }
         }
         storeDisList.sort((o1, o2) -> {
@@ -175,34 +178,29 @@ public class StoreService {
             }
             return -1;
         });
-        return null;
-    }
-
-
-    public List<MdlStore> getStoreList() {
-        List<FRStore> frStoreList = storeRepository.findAll();
-        List<MdlStore> mdlStoreList = new ArrayList<>();
-        MdlStore mdlStore = new MdlStore();
-        for (FRStore frStore : frStoreList) {
-            mdlStoreList.add(mdlStore.convertTableRow(frStore));
+        int size = Math.min(5, storeDisList.size());
+        for (int i = 0; i < size; i++) {
+            mdlStoreList.add(mdlStoreBuilder.buildStoreNearBy(storeDisList.get(i).getStore()));
         }
-        return mdlStoreList;
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStoreList);
+        return response;
     }
+    // Mobile Member - Home - End
 
-    public Response<MdlStore> getStoreDetailAdm(Integer storeId) {
+
+    // Mobile Member - Store Detail - Begin
+    public Response<MdlStore> getStoreDetailMem(Integer storeId) {
+        MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
+        Repo repo = new Repo();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        if (storeId == null) {
+        FRStore frStore = repo.getStore(storeId, storeRepository);
+        if (frStore == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find store");
             return response;
         }
-        Optional<FRStore> optional = storeRepository.findById(storeId);
-        if (!optional.isPresent()) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find store");
-            return response;
-        }
-        FRStore frStore = optional.get();
-        MdlStore mdlStore = new MdlStore().convertFull(frStore, productRepository);
+        MdlStore mdlStore = mdlStoreBuilder.buildDetailMember(frStore, productRepository);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlStore);
         return response;
     }
+    // Mobile Member - Store Detail - End
 }

@@ -38,14 +38,14 @@ function fpsFormatDate(date) {
 }
 
 
-function fpsShowMsg(msgStr) {
-    var lblMsg = document.getElementById("lblDisplayMsg");
+function fpsShowMsg(lblMsg, msgStr) {
+    // var lblMsg = document.getElementById("lblDisplayMsg");
     lblMsg.innerHTML = msgStr;
     lblMsg.style.display = 'inline-block';
 }
 
-function fpsHideMsg() {
-    var lblMsg = document.getElementById("lblDisplayMsg");
+function fpsHideMsg(lblMsg) {
+    // var lblMsg = document.getElementById("lblDisplayMsg");
     lblMsg.style.display = 'none';
 }
 
@@ -110,8 +110,18 @@ function fpsGetBase64(img, file) {
 }
 
 function fpsFormAppend(formData, paramName, paramValue) {
-    if (typeof paramValue !== 'undefined' && paramValue !== "") {
-        formData.append(paramName, paramValue);
+    if (typeof paramValue === 'undefined' || Number.isNaN(paramValue) || paramValue === "") {
+        return;
     }
+    formData.append(paramName, paramValue);
 }
 
+function fpsFormAppend2(formData, paramName, newValue, oldValue) {
+    if (typeof newValue === 'undefined' || Number.isNaN(newValue) || newValue === "") {
+        return;
+    }
+    if (newValue == oldValue) {
+        return;
+    }
+    formData.append(paramName, newValue);
+}

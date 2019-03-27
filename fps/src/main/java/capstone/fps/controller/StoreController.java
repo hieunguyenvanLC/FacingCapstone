@@ -5,7 +5,7 @@ import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
 import capstone.fps.service.StoreService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,18 +17,19 @@ import java.util.List;
 public class StoreController extends AbstractController {
 
     private StoreService storeService;
-    private static final String API = Fix.MAP_API + "store";
+    private static final String API = Fix.MAP_API + "/store";
 
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
     }
 
+    // Web Admin - Store - Begin
     @GetMapping(Fix.MAP_ADM + API)
     public String getStoreList() {
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             List<MdlStore> storeList = storeService.getStoreList();
-            response.setResponse(storeList.size(), Response.MESSAGE_SUCCESS, storeList);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, storeList);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -42,7 +43,6 @@ public class StoreController extends AbstractController {
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = storeService.getStoreDetailAdm(storeId);
-
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -73,20 +73,35 @@ public class StoreController extends AbstractController {
         }
         return gson.toJson(response);
     }
-
-//    @DeleteMapping(Fix.MAP_ADM + API)
-//    public String deactivateStore(Integer storeId, String reason) {
-//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            if (storeService.deactivateStore(storeId, reason)) {
-//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
+    // Web Admin - Store - End
 
 
+    // Mobile Member - Home - Begin
+    @GetMapping(Fix.MAP_MEM + API)
+    public String getStoreNearby(double longitude, double latitude) {
+        Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = storeService.getStoreNearby(longitude, latitude);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Home - End
+
+
+    // Mobile Member - Store Detail - Begin
+    @GetMapping(Fix.MAP_MEM + API + "/detail")
+    public String getStoreDetailMem(Integer storeId) {
+        Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = storeService.getStoreDetailMem(storeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Store Detail - End
 }

@@ -253,8 +253,8 @@
         var cityList;
         var storeEdit;
         var storeEditPos;
-        var fpsApiSto = fpsBackEnd + MAP_ADM + MAP_API + "store";
-        var fpsApiCty = fpsBackEnd + MAP_ANY + MAP_API + "city";
+        var fpsApiSto = fpsBackEnd + MAP_ADM + MAP_API + "/store";
+        var fpsApiCty = fpsBackEnd + MAP_ANY + MAP_API + "/city";
 
         var tblBodyPro = document.getElementById("tblBodyPro");
 
@@ -436,7 +436,7 @@
                     '            <td>' + pro.name + '</td>\n' +
                     '            <td>' + pro.price + '</td>\n' +
                     '            <td>' + pro.note + '</td>\n' +
-                    '            <td>' + fpsGetStatMsg(proStatList, pro.status) + '</td>';
+                    '            <td>' + fpsGetStatMsg(PRO_STAT_LIST, pro.status) + '</td>';
                 tblBodyPro.innerHTML += row;
             }
         }
