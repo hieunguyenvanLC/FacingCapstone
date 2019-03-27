@@ -1,6 +1,7 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.model.AppData;
 import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -156,10 +158,15 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String receiveFaceTestResult(@RequestBody MapFaceResult map, HttpServletRequest request) {
-        orderService.receiveFaceTestResult(map.getRep(), request);
+    public String receiveFaceTestResult(@RequestBody MapFaceResult map) {
 
-        return "";
+
+        System.out.println("------------------------------call API------------------------------" + map.getRep() + "---"+ map.getKey());
+        AppData.faceReceive = new HashMap<>();
+        AppData.faceReceive.put(map.getKey(), map.getRep());
+//        orderService.receiveFaceTestResult(map.getRep());
+
+        return "Sucess call";
 
     }
 }
