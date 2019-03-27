@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="dismissModal()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-buttons>
+    <ion-title class="title-md hydrated">Cart</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="padding: 5px">
+    Delivery to
+    <p class="primary-text">Khu Phần mềm Quang Trung</p>
+    Your order from <strong>{{addressStore}}</strong>
+  </div>
+  <br>
+  <!-- item group -->
+  <ion-item-group>
+    <!-- item -->
+    <ion-item no-padding *ngFor="let item of products">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="3">
+            <ion-thumbnail>
+              <img src="{{item.image}}">
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col size="4" class="prod-title">
+            <strong>{{item.name}}</strong>
+
+          </ion-col>
+          <ion-col size="2" class="prod-price none-padding">
+            <p>{{item.quantity}}</p>
+          </ion-col>
+          <ion-col size="3" class="prod-price">
+            <p>{{item.price}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <!-- end item -->
+  </ion-item-group>
+  <!-- end item group -->
+
+  <!-- <ion-item> -->
+    <br>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="9">
+          Subtotal
+        </ion-col>
+        <ion-col size="3">
+          {{subTotal}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="9">
+          Delivery fees
+        </ion-col>
+        <ion-col size="3">
+          {{deliveryFees}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  <!-- </ion-item> -->
+  <ion-grid>
+      <br>
+      <ion-row>
+          <ion-col size="9">
+            Total
+          </ion-col>
+          <ion-col size="3">
+            {{total}}
+          </ion-col>
+        </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="footer">
+  <ion-button expand="full" (click)="checkout()">Create Order</ion-button>
+</ion-footer>

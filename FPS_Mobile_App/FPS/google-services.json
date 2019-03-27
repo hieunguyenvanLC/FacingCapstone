@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "276178642720",
+    "firebase_url": "https://fpscustomer-project.firebaseio.com",
+    "project_id": "fpscustomer-project",
+    "storage_bucket": "fpscustomer-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276178642720:android:764d2cb7da3280eb",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276178642720-fg3qctja1p0srvjbp895gbntojcbsbji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVNiPafJjWm7VPN63WtCCY6931mDSuQ-g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

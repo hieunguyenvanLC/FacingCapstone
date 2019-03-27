@@ -1,0 +1,64 @@
+<ion-app>
+  <ion-split-pane>
+    <ion-menu>
+       <!-- Profile user -->
+      <ion-item class="margin0" no-padding margin-bottom>
+        <ion-toolbar>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="3">
+                <img src="../assets/image/slide3.jpg">
+              </ion-col>
+              <ion-col size="9">
+                <ion-label>
+                  <ion-text color="medium">
+                    <h1>
+                      <strong>Username</strong>
+                    </h1>
+                  </ion-text>
+                  <!-- <ion-text color="medium">
+                  <h3>
+                    São Paulo, Brazil
+                  </h3>
+                </ion-text> -->
+                  <ion-menu-toggle auto-hide="false">
+                    <a tappable (click)="goToEditProgile()">
+                      <ion-text color="medium">
+                        <ion-icon class="margin--2" name="contact"></ion-icon>
+                        <span>edit profile</span>
+                      </ion-text>
+                    </a>
+                    <ion-text color="medium"> | </ion-text>
+                    <a tappable>
+                      <ion-text color="medium">
+                        <ion-icon class="margin--2" name="log-out"></ion-icon>
+                        <span>logout</span>
+                      </ion-text>
+                    </a>
+                  </ion-menu-toggle>
+                </ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-toolbar>
+      </ion-item>
+      <!-- End profile user -->
+      <ion-content>
+        <ion-list>
+          <!-- <ion-header>
+            <ion-title>Menu</ion-title>
+          </ion-header> -->
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{p.title}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet main></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

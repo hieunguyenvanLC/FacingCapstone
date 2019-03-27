@@ -1,0 +1,6 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "FPS",
+  "bundledWebRuntime": false,
+  "webDir": "www"
+}

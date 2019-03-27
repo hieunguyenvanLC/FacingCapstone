@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Shipper Mode</ion-label>
+      <ion-toggle (ionChange)="changeMode()" [(ngModel)]="shipperMode"></ion-toggle>
+    </ion-item>
+  </ion-list>
+  <div *ngIf=(isLoaded)>
+    <div style="padding: 5px">
+      Delivery to
+      <p class="primary-text">Khu Phần mềm Quang Trung</p>
+      Your order from <strong>{{ order[0].data.storeName}} - {{ order[0].data.storeAddress}}</strong>
+    </div>
+    <br>
+    <!-- item group -->
+    <ion-item-group>
+      <!-- item -->
+      <ion-item no-padding *ngFor="let item of order[0].data.detailList">
+        <ion-grid>
+          <ion-row>
+            <!-- <ion-col size="3">
+            <ion-thumbnail>
+              <img src="{{item.image}}">
+            </ion-thumbnail>
+          </ion-col> -->
+            <ion-col size="4" class="prod-title">
+              <strong>{{item.proName}}</strong>
+
+            </ion-col>
+            <ion-col size="4" class="prod-price none-padding">
+              <p>{{item.quantity}}</p>
+            </ion-col>
+            <ion-col size="4" class="prod-price">
+              <p>{{item.unitPrice}}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <!-- end item -->
+    </ion-item-group>
+    <!-- end item group -->
+
+    <!-- <ion-item> -->
+    <br>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="9">
+          Total
+        </ion-col>
+        <ion-col size="3">
+          {{order[0].data.totalPrice}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="9">
+          Shipper earn
+        </ion-col>
+        <ion-col size="3">
+          {{order[0].data.shipperEarn}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <!-- </ion-item> -->
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+            <ion-button expand="full" color="primary">Ready for shipping</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col size="12">
+              <ion-button expand="full" color="danger" (click)="checkout()">Check out</ion-button>
+          </ion-col>
+        </ion-row>
+      <ion-row>
+        <ion-col size="12">
+            <ion-button expand="full" color="light">Cancel</ion-button>
+        </ion-col>
+        
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

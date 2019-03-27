@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar color="">
+    <ion-buttons slot="start" (click)="goToHome()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-buttons>
+    <ion-title>Edit Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile">
+  <ion-card no-margin>
+    <ion-card-content class="bg-profile">
+      <img src="{{ userDetail[0].data.avatar }}">
+      <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
+      <h2 margin-bottom>Extra point: {{ userDetail[0].data.extraPoint }}</h2>
+      <ion-button icon-left color="light">
+        <ion-icon name="photos"></ion-icon> 
+        Edit / Add Avatar
+      </ion-button>
+    </ion-card-content>
+  
+    <ion-grid fixed no-padding>
+      <ion-row>
+        <ion-col size="12" padding>
+
+          <ion-list margin-bottom>
+            <ion-list-header color="light">
+              <ion-label class="fw700">Form</ion-label>
+            </ion-list-header>
+
+            <ion-item>
+              <ion-label color="dark" position="stacked">Full Name:</ion-label>
+              <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" value="{{ userDetail[0].data.name }}"></ion-input>
+            </ion-item>
+    
+            <ion-item>
+              <ion-label color="dark" position="stacked">Email:</ion-label>
+              <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail[0].data.email }}"></ion-input>
+            </ion-item>
+    
+            <!-- <ion-item> -->
+              <!-- <ion-label color="dark" position="stacked">Extra point: {{ userDetail[0].data.extraPoint }}</ion-label> -->
+              <!-- <ion-input inputmode="text" placeholder="Ex.: Abey Road 5"></ion-input> -->
+            <!-- </ion-item> -->
+    
+            <!-- <ion-item>
+              <ion-label color="dark">City</ion-label>
+              <ion-select>
+                <ion-select-option value="nes">New York</ion-select-option>
+                <ion-select-option value="n64">Los Angeles</ion-select-option>
+                <ion-select-option value="ps">London</ion-select-option>
+                <ion-select-option value="genesis">Paris</ion-select-option>
+                <ion-select-option value="saturn">São Paulo</ion-select-option>
+                <ion-select-option value="snes">Tokyo</ion-select-option>
+                <ion-select-option value="snes">New Delhi</ion-select-option>
+              </ion-select>
+            </ion-item>
+    
+            <ion-item>
+              <ion-label color="dark">State</ion-label>
+              <ion-select>
+                <ion-select-option value="nes">NY</ion-select-option>
+                <ion-select-option value="n64">CA</ion-select-option>
+                <ion-select-option value="ps">Greater London</ion-select-option>
+                <ion-select-option value="genesis">Paris</ion-select-option>
+                <ion-select-option value="saturn">SP</ion-select-option>
+                <ion-select-option value="snes">Kantō</ion-select-option>
+                <ion-select-option value="snes">Delhi</ion-select-option>
+              </ion-select>
+            </ion-item>-->
+          </ion-list> 
+
+          <!-- <ion-list>
+            <ion-radio-group>
+              <ion-list-header color="light">
+                <ion-label class="fw700">User Type</ion-label>
+              </ion-list-header>
+          
+              <ion-item>
+                <ion-label color="primary">Customer</ion-label>
+                <ion-radio slot="start" value="customer" checked></ion-radio>
+              </ion-item>
+          
+              <ion-item>
+                <ion-label color="primary">Owner</ion-label>
+                <ion-radio slot="start" value="agent"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+
+            <ion-item>
+              <ion-label class="text-1x">Checkbox test</ion-label>
+              <ion-checkbox></ion-checkbox>
+            </ion-item>
+          </ion-list> -->
+  
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+    <ion-button size="" expand="full" color="primary" no-margin>Edit</ion-button>
+  </ion-card>
+</ion-content>

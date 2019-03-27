@@ -1,0 +1,8 @@
+{
+  "name": "FPS",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

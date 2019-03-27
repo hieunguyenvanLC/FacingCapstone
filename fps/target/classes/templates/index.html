@@ -1,0 +1,103 @@
+<html>
+<head></head>
+<body>
+<script src="jquery.min.js"></script>
+
+<input type="text" id="txtUsername" value="ntt"/><br/>
+<input type="text" id="txtPassword" value="zzz"/><br/>
+<input type="text" id="txtMatch" value=""/><br/>
+<input type="text" id="txtCol" value=""/><br/>
+<input type="text" id="txtRow" value=""/><br/>
+<input type="text" id="txtMsg" value=""/><br/>
+<input type="text" id="txtOppMove" value=""/><br/><br/>
+<button type="button" onclick="login()">Login</button>
+<br/>
+<button type="button" onclick="start()">Start</button>
+<br/>
+<button type="button" onclick="move()">Move</button>
+<br/>
+<button type="button" onclick="quit()">Quit</button>
+<br/>
+
+
+<script>
+    var txtUsername = document.getElementById("txtUsername");
+    var txtPassword = document.getElementById("txtPassword");
+    var txtMatch = document.getElementById("txtMatch");
+    var txtCol = document.getElementById("txtCol");
+    var txtRow = document.getElementById("txtRow");
+    var txtOppMove = document.getElementById("txtOppMove");
+    var fpsBackEnd = "http://localhost:8080";
+
+    function login() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/sign_in",
+            data: {username: txtUsername.value, password: txtPassword.value},
+            dataType: 'json',
+            success: function (response) {
+                txtMatch.value = response;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function start() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/api/log/match",
+            data: {},
+            dataType: 'json',
+            success: function (response) {
+
+                txtMatch.value = response.data;
+                $.ajax({
+                    type: 'GET',
+                    url: fpsBackEnd + "/api/log/match",
+                    data: {id: response.data},
+                    daaType: 'json',
+                    success: function (response2) {
+                        txtMatch.value = response2.data;
+                    },
+                    error: function (response) {
+                    }
+                });
+
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function move() {
+        $.ajax({
+            type: 'POST',
+            url: fpsBackEnd + "/api/log/match",
+            data: {id: txtMatch.value, col: txtCol.value, row: txtRow.value},
+            dataType: 'json',
+            success: function (response) {
+                txtOppMove.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function quit() {
+        $.ajax({
+            type: 'DELETE',
+            url: fpsBackEnd + "/api/log/match",
+            data: {id: txtMatch.value},
+            dataType: 'json',
+            success: function (response) {
+                txtOppMove.value = response.data;
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
