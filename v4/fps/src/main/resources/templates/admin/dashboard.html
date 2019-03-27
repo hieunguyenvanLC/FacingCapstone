@@ -79,8 +79,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="chart col-lg-3 col-12">
-                    Type:
-                    <select id="selReportType">
+                    <label>Type:</label>
+                    <select id="selReportType" width="250px">
                         <option value="order">Order</option>
                         <option value="orderCnl">Order Canceled</option>
                         <option value="orderScc">Order Success</option>
@@ -89,16 +89,20 @@
                         <option value="totalAmt">Total Amount</option>
                         <option value="shipPaid">Paid Shipper</option>
                     </select>
+                    <div class="clearfix"></div>
                 </div>
-                <div class="chart col-lg-3 col-12">
-                    Date:
-                    <select id="selChartType">
+                <div class="chart col-lg-2 col-12">
+                    <label>Date:</label>
+                    <select id="selChartType" width="150px">
                         <option value="0">Day</option>
                         <option value="1">Week</option>
                         <option value="2">Month</option>
                         <option value="3">Year</option>
 
                     </select>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="chart col-lg-1 col-12">
                 </div>
                 <div class="chart char-filter col-lg-6 col-12">
                     <!--<div class="input-group date-picker">-->
@@ -107,8 +111,8 @@
                     <!--To:-->
                     <!--<input type="date" class="form-control">-->
                     <!--</div>-->
-                    <input id="dpkStart" width="50%" style="display: inline"/>
-                    <input id="dpkEnd" width="50%" style="display: inline"/>
+                    <input id="dpkStart" width="50%" style="display: inline" autocomplete="off"/>
+                    <input id="dpkEnd" width="50%" style="display: inline" autocomplete="off"/>
                 </div>
             </div>
             <br/>
@@ -225,8 +229,7 @@
                                                                        style="border-radius: 0">Choose file</label>
                                                             </div>
                                                         </div>
-                                                        <img id="imgBuyerFace" src="" alt="Buyer"
-                                                             style="width: 256px; height: 256px">
+                                                        <img id="imgBuyerFace" src="" alt="Buyer">
                                                     </div>
 
                                                     <div class="col-4 padding-0">
@@ -286,10 +289,10 @@
                                                         </div>
 
                                                     </div>
-                                                    <div class="col-4 padding-0">
-                                                        <label for="cbbStatus">Status</label>
-                                                        <select class="form-control" id="cbbStatus"></select>
-                                                    </div>
+                                                    <!--<div class="col-4 padding-0">-->
+                                                        <!--<label for="cbbStatus">Status</label>-->
+                                                        <!--<select class="form-control" id="cbbStatus"></select>-->
+                                                    <!--</div>-->
                                                 </div>
 
 
@@ -344,17 +347,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-sm-12 bg-white">
+                                                    <div class="col-sm-12 no-padding">
                                                         <div class="form-group">
                                                             <label>Note</label>
-                                                            <input type="text" placeholder="Note" class="form-control"
-                                                                   id="txtNote">
+                                                            <textarea type="text" placeholder="Note" class="form-control"
+                                                                      id="txtNote"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col-sm-12 bg-white">
+                                                    <div class="col-sm-12 no-padding">
                                                         <table id="order-detail-table" class="table">
                                                             <thead>
                                                             <tr>

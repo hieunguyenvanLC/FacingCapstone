@@ -225,22 +225,79 @@ $(document).ready(function () {
                 // }
             ]
         }
-    })
+    });
+    // Khoi tao filter
+    var selReportType = $("#selReportType");
+    var selChartType = $("#selChartType");
+    selReportType.dropdown({
+        uiLibrary: 'bootstrap4'
+    });
+    selChartType.dropdown({
+        uiLibrary: 'bootstrap4'
+    });
+
     // Xu ly filter
-    var reportType = $("#selReportType").val();
-    var chartType = $("#selChartType").val();
+    var reportType = selReportType.val();
+    var chartType = selChartType.val();
     var startDate = null;
     var endDate = null;
-    $("#selReportType").change(function () {
-        reportType = $("#selReportType").val();
+    selReportType.change(function () {
+        reportType = selReportType.val();
         loadChart(reportType, chartType, startDate, endDate);
     });
-    $("#selChartType").change(function () {
-        chartType = $("#selChartType").val();
-        loadChart(reportType, chartType, startDate, endDate);
+    selChartType.change(function () {
+        chartType = selChartType.val();
+        if (dpkStart) {
+            dpkStart.destroy();
+        }
+
+        if (dpkEnd) {
+            dpkEnd.destroy();
+        }
+
+        var formatDatepicker = "dd/mm/yyyy";
+        var prefixStartDate = '';
+        var prefixEndDate = '';
+
+        switch (chartType) {
+            case '2':
+                formatDatepicker = 'mm/yyyy';
+                prefixStartDate = '01/';
+                prefixEndDate = '01/';
+                break;
+            case '3':
+                formatDatepicker = 'yyyy';
+                prefixStartDate = '01/01';
+                prefixEndDate = '01/01';
+                break;
+        }
+
+        loadChart(reportType, chartType, null, null);
+
+        dpkStart = $('#dpkStart').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: formatDatepicker,
+            change: function (e) {
+                startDate = dpkStart.value();
+                loadChart(reportType, chartType, prefixStartDate + startDate, prefixEndDate + endDate);
+            }
+        });
+
+        dpkEnd = $('#dpkEnd').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: formatDatepicker,
+            change: function (e) {
+                endDate = dpkEnd.value();
+                loadChart(reportType, chartType, prefixStartDate + startDate, prefixEndDate + endDate);
+            }
+        });
+
+
+        // loadChart(reportType, chartType, startDate, endDate);
     });
     var dpkStart = $('#dpkStart').datepicker({
         uiLibrary: 'bootstrap4',
+        // format: 'dd/mm/yyyy',
         format: 'dd/mm/yyyy',
         change: function (e) {
             startDate = dpkStart.value();
@@ -258,6 +315,9 @@ $(document).ready(function () {
 
     function loadChart(reportT, charT, start, end) {
         if (!start || !end) {
+            barChartExample.data.labels = [];
+            barChartExample.data.datasets = [];
+            barChartExample.update();
             return;
         }
 
@@ -265,7 +325,7 @@ $(document).ready(function () {
         var chartTitle = "Orders";
         var startUnix = moment(start, "DD/MM/YYYY").unix() * 1000;
         var endUnix = moment(end, "DD/MM/YYYY").unix() * 1000;
-        console.log(reportT, charT, startUnix, endUnix);
+        // console.log(reportT, charT, startUnix, endUnix);
 
         switch (reportT) {
             case "orderCnl":
