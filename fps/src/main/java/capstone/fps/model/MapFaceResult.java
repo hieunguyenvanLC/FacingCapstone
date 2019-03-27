@@ -7,27 +7,15 @@ import com.sun.xml.internal.ws.developer.Serialization;
 
 public class MapFaceResult {
 
-    String rep;
+    public String rep;
+
+    public String key;
+
+    public MapFaceResult(String rep, String key) {
+        this.rep = rep;
+        this.key = key;
+    }
 
     public MapFaceResult() {
-    }
-
-    public MapFaceResult(String rep) {
-        this.rep = rep;
-    }
-
-    public String getRep() {
-        return rep;
-    }
-
-    public void setRep(String rep) {
-        this.rep = rep;
-    }
-
-    @Override
-    public String toString() {
-        return "MapFaceResult{" +
-                "rep='" + rep + '\'' +
-                '}';
     }
 }

@@ -142,10 +142,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Shipper - Checkout - Begin
     @PutMapping(Fix.MAP_ANY + API + "/checkout")
-    public String checkout(Integer orderId, String face, HttpServletRequest request) {
+    public String checkout(Integer orderId, String face) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.checkout(gson, orderId, face, request);
+            response = orderService.checkout(gson, orderId, face);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -156,9 +156,8 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String receiveFaceTestResult(@RequestBody MapFaceResult map, HttpServletRequest request) {
-        orderService.receiveFaceTestResult(map.getRep(), request);
-
+    public String receiveFaceTestResult(@RequestBody MapFaceResult map) {
+        orderService.receiveFaceTestResult(map.rep, map.key);
         return "";
 
     }

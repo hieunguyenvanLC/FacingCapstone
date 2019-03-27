@@ -2,6 +2,8 @@ package capstone.fps.service;
 
 import capstone.fps.common.*;
 import capstone.fps.entity.*;
+import capstone.fps.model.AppData;
+import capstone.fps.model.FPSSessionData;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -29,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -44,6 +47,8 @@ public class OrderService {
     private TransactionRepo transactionRepo;
     @Autowired
     private ShipperWait shipperWait;
+    @Autowired
+    private AppData appData;
 
 
     public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
@@ -465,7 +470,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face, HttpServletRequest request) {
+    public Response<String> checkout(Gson gson, Integer orderId, String face) {
         Methods methods = new Methods();
         Repo repo = new Repo();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -475,31 +480,40 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-        HttpSession session = request.getSession(true);
-        session.removeAttribute("faceTest");
+
+
+        appData.faceTestResult = null;
+
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
-        CommandPrompt commandPrompt = faceRecognise(faceBytes);
 
+        String key = UUID.randomUUID().toString();
+
+        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
+
+        String s = commandPrompt.getResult().get(commandPrompt.getResult().size() - 2);
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
         FRPaymentInformation frPayInfo = informationList.get(0);
         String payUsername = frPayInfo.getUsername();
         String payPassword = frPayInfo.getPassword();
-        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
 
-        String rep;
-        while ((rep = (String) session.getAttribute("faceTest")) == null) {
+
+        while (appData.faceTestResult == null){
             try {
-                Thread.sleep(500);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        String payId = handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
+
+
+
+        String payId = handlingFaceResult(appData.faceTestResult, gson, buyer, payUsername, payPassword, priceStr, description);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
             return response;
@@ -576,13 +590,12 @@ public class OrderService {
         return "fail";
     }
 
-    public String receiveFaceTestResult(String rep, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.setAttribute("faceTest", rep);
+    public String receiveFaceTestResult(String rep, String key) {
+        appData.faceTestResult = rep;
         return rep;
     }
 
-    public CommandPrompt faceRecognise(byte[] faceBytes) {
+    public CommandPrompt faceRecognise(byte[] faceBytes, String key) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
@@ -596,13 +609,12 @@ public class OrderService {
         try {
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
-
             commandPrompt = new CommandPrompt();
             String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
             commandPrompt.execute(cutAndRecenter);
-            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
+            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5 --key-gen " + key;
             commandPrompt.execute(testFaceAI);
-            System.out.println(commandPrompt);
+//            System.out.println(commandPrompt);
             //delete folder generated by Python
             methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
         } catch (IOException e) {

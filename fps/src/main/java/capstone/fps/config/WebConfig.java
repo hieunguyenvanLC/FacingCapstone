@@ -1,5 +1,6 @@
 package capstone.fps.config;
 
+import capstone.fps.model.AppData;
 import capstone.fps.model.ordermatch.OrderMap;
 import capstone.fps.model.ordermatch.ShipperWait;
 import org.springframework.context.annotation.Bean;
@@ -22,5 +23,12 @@ public class WebConfig {
     public ShipperWait shipperWait() {
         return new ShipperWait();
     };
+
+    @Bean
+    @Scope(value = WebApplicationContext.SCOPE_APPLICATION)
+    public AppData appData() {
+        return new AppData();
+    }
+
 
 }
