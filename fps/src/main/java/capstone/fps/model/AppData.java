@@ -8,5 +8,5 @@ public class AppData {
 
     public static HashMap<String,String > faceReceive;
 
-
+  
 }
