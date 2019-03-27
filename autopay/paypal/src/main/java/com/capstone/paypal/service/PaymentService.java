@@ -76,7 +76,7 @@ public class PaymentService {
 
     public String receivePaymentInput(String username, String password, String price, String description) {
 
-        paymentData.setResult("0");
+        paymentData.setResult(null);
         paymentData.setPrice(price);
         paymentData.setDescription(description);
 //        paymentResult = 0;
@@ -115,34 +115,39 @@ public class PaymentService {
 
                 s.waitForPixel(880, 267, loginDarkBlue);
             }
-            if (true) {
-                // login
-                s.delayRandomShort();
-                s.type('\t');
-                s.delayRandomShort();
-                s.copyParseString(username);
-                s.delayRandomMedium();
-                s.type('\t');
-                s.delayRandomMedium();
-                s.copyParseString(password);
-                s.delay(1000);
-                s.moveAndClickInBox(860, 550, 120, 30);
 
-                id = s.waitForMultiPixel(pixErr, pixBil);
-                System.out.println("step 2 - " + id);
+            // login
+            s.delayRandomShort();
+            s.type('\t');
+            s.delayRandomShort();
+            s.copyParseString(username);
+            s.delayRandomMedium();
+            s.type('\t');
+            s.delayRandomMedium();
+            s.copyParseString(password);
+            s.delay(1000);
+            s.moveAndClickInBox(860, 550, 120, 30);
 
-                if (id == pixBil.id) {
-                    // confirm bill
-                    s.delayRandomMedium();
-                    s.delay(2000);
-                    s.moveAndClickInBox(650, 840, 200, 30);
-                    return "1";
-                } else {
-                    s.clickInBox(1500, 50, 0, 0);
-                    s.copyParseString(Fix.LOCAL_URL);
-                    s.type('\n');
-                    return "2";
+            id = s.waitForMultiPixel(pixErr, pixBil);
+            System.out.println("step 2 - " + id);
+
+            if (id == pixBil.id) {
+                // confirm bill
+                s.delayRandomMedium();
+                s.delay(2000);
+                s.moveAndClickInBox(650, 840, 200, 30);
+                while (paymentData.getResult() == null) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                    }
                 }
+                return paymentData.getResult();
+            } else {
+                s.clickInBox(1500, 50, 0, 0);
+                s.copyParseString(Fix.LOCAL_URL);
+                s.type('\n');
+                return "fail";
             }
 
 
@@ -237,11 +242,21 @@ public class PaymentService {
         return "redirect:/";
     }
 
-    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
-        Payment payment = new Payment();
-        payment.setId(paymentId);
-        PaymentExecution paymentExecute = new PaymentExecution();
-        paymentExecute.setPayerId(payerId);
-        return payment.execute(apiContext, paymentExecute);
+    public String executePayment(String paymentId, String payerId) {
+        try {
+            Payment payment = new Payment();
+            payment.setId(paymentId);
+            PaymentExecution paymentExecute = new PaymentExecution();
+            paymentExecute.setPayerId(payerId);
+            Payment executePayment = payment.execute(apiContext, paymentExecute);
+            if (executePayment.getState().equals("approved")) {
+                paymentData.setResult(paymentId);
+                return "success";
+            }
+        } catch (PayPalRESTException e) {
+            e.printStackTrace();
+        }
+        paymentData.setResult("fail");
+        return "redirect:/";
     }
 }

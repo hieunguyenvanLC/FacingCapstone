@@ -55,15 +55,7 @@ public class WebPageController {
 
     @GetMapping(URL_PAYPAL_SUCCESS)
     public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
-        try {
-            Payment payment = paymentService.executePayment(paymentId, payerId);
-            if (payment.getState().equals("approved")) {
-                return "success";
-            }
-        } catch (PayPalRESTException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/";
+        return paymentService.executePayment(paymentId, payerId);
     }
 
 
