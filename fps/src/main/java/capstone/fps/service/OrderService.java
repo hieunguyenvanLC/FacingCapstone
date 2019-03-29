@@ -2,7 +2,6 @@ package capstone.fps.service;
 
 import capstone.fps.common.*;
 import capstone.fps.entity.*;
-import capstone.fps.model.AppData;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -28,11 +27,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.server.UID;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -484,8 +480,7 @@ public class OrderService {
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
-        String key = UUID.randomUUID().toString();
-        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
+        CommandPrompt commandPrompt = faceRecognise(faceBytes);
 
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
@@ -496,39 +491,17 @@ public class OrderService {
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
 
-        String rep=null;
-//        while ((rep = (String) session.getAttribute("faceTest")) == null) {
-//            try {
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-        while(AppData.faceReceive == null && !AppData.faceReceive.get(key).equals(key)){
+        String rep;
+        while ((rep = (String) session.getAttribute("faceTest")) == null) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
-        System.out.println("---------Get Result here-------"+ AppData.faceReceive.get(key));
-
-        rep = AppData.faceReceive.get(key);
-        System.out.println("--------------------------PayID-----------------");
         String payId = handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
-
-        // remove face and key proccessed
-
-
-            AppData.faceReceive.remove(key);
-
-
-
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
             return response;
         } else {
             long time = methods.getTimeNow();
@@ -590,11 +563,8 @@ public class OrderService {
                 wr.flush();
                 wr.close();
             }
-            System.out.println("----------------------------Connect----------------");
-
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
-            System.out.println("----------------------------Response----------------"+ responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
             }
@@ -606,13 +576,13 @@ public class OrderService {
         return "fail";
     }
 
-    public String receiveFaceTestResult(String rep) {
-
-//        session.setAttribute("faceTest", rep);
+    public String receiveFaceTestResult(String rep, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.setAttribute("faceTest", rep);
         return rep;
     }
 
-    public CommandPrompt faceRecognise(byte[] faceBytes, String key) {
+    public CommandPrompt faceRecognise(byte[] faceBytes) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
@@ -630,7 +600,7 @@ public class OrderService {
             commandPrompt = new CommandPrompt();
             String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
             commandPrompt.execute(cutAndRecenter);
-            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5 --key-gen "+key;
+            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
             commandPrompt.execute(testFaceAI);
             System.out.println(commandPrompt);
             //delete folder generated by Python

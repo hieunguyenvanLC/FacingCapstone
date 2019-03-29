@@ -8,14 +8,12 @@ import com.sun.xml.internal.ws.developer.Serialization;
 public class MapFaceResult {
 
     String rep;
-    String key;
 
     public MapFaceResult() {
     }
 
-    public MapFaceResult(String rep, String key) {
+    public MapFaceResult(String rep) {
         this.rep = rep;
-        this.key = key;
     }
 
     public String getRep() {
@@ -26,11 +24,10 @@ public class MapFaceResult {
         this.rep = rep;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    @Override
+    public String toString() {
+        return "MapFaceResult{" +
+                "rep='" + rep + '\'' +
+                '}';
     }
 }
