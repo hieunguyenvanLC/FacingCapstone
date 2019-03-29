@@ -48,7 +48,8 @@ public class OrderService {
     private TransactionRepo transactionRepo;
     @Autowired
     private ShipperWait shipperWait;
-
+    @Autowired
+    private AppData appData;
 
 
     public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
@@ -480,17 +481,21 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
+
+
+        appData.faceTestResult = null;
+
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
         String key = UUID.randomUUID().toString();
         CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
 
-//        String key = UUID.randomUUID().toString();
+        String key = UUID.randomUUID().toString();
 
-//        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
+        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
 
-//        String s = commandPrompt.getResult().get(commandPrompt.getResult().size() - 2);
+        String s = commandPrompt.getResult().get(commandPrompt.getResult().size() - 2);
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
         FRPaymentInformation frPayInfo = informationList.get(0);
