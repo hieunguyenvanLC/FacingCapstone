@@ -144,10 +144,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Shipper - Checkout - Begin
     @PutMapping(Fix.MAP_ANY + API + "/checkout")
-    public String checkout(Integer orderId, String face) {
+    public String checkout(Integer orderId, String face, HttpServletRequest request) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.checkout(gson, orderId, face);
+            response = orderService.checkout(gson, orderId, face, request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

@@ -43,17 +43,10 @@ public class WebPageController {
 //        return "indexPage";
 //    }
 
-    @GetMapping(Fix.MAP_PAY + "/init")
+    @GetMapping(Fix.MAP_PAY)
     public String initPay() {
         return paymentService.initPayment(URL_PAYPAL_CANCEL, URL_PAYPAL_SUCCESS);
     }
-
-    @GetMapping(Fix.MAP_PAY )
-    public String sPay() {
-        System.out.println("?");
-        return "fail";
-    }
-
 
     @GetMapping(URL_PAYPAL_CANCEL)
     public String cancelPay() {

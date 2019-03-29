@@ -22,9 +22,8 @@ public class MapFaceResult {
         return rep;
     }
 
-    public MapFaceResult(String rep, String key) {
+    public void setRep(String rep) {
         this.rep = rep;
-        this.key = key;
     }
 
     public String getKey() {
