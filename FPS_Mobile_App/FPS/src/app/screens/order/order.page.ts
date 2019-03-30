@@ -5,7 +5,6 @@ import {
   ElementRef
 } from '@angular/core';
 
-// import { Geolocation } from '@ionic-native/geolocation/ngx';
 // import {
 //   NativeGeocoder,
 //   NativeGeocoderReverseResult,
@@ -34,13 +33,12 @@ import { Platform, ToastController, LoadingController } from '@ionic/angular';
 })
 export class OrderPage implements OnInit {
 
-  @ViewChild('map') mapElement: ElementRef;
+  //@ViewChild('map') mapElement: ElementRef;
   map: GoogleMap;
   loading: any;
   //address: string;
 
   constructor(
-    //private geolocation: Geolocation,
     //private nativeGeocoder: NativeGeocoder,
     public router: Router,
     // public googleMaps: GoogleMaps,
@@ -53,6 +51,10 @@ export class OrderPage implements OnInit {
     // this.loadMap();
     //await this.platform.ready();
     console.log("anfasda")
+    
+  }
+
+  ngAfterViewInit(){
     this.loadMap();
   }
 
@@ -72,32 +74,46 @@ export class OrderPage implements OnInit {
     //   'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyASMHVlLhJr78esAqJVglJU67r-SD-VBNQ'
     // });
 
-    let mapOptions: GoogleMapOptions = {
-      camera: {
-        target: {
-          lat: 43.0741904,
-          lng: -89.3809802
-        },
-        zoom: 18,
-        tilt: 30
-      }
-    };
+    // this.geolocation.getCurrentPosition().then((resp) => {
+      //     let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      //     let mapOptions = {
+      //       center: latLng,
+      //       zoom: 15,
+      //       mapTypeId: google.maps.MapTypeId.ROADMAP
+      let mapOptions: GoogleMapOptions = {
+        camera: {
+          target: {
+            // "106.67927390539103
+            // "10.82767617410066";
+            lat: 10.82767617410066,
+            lng: 106.67927390539103
+          },
+          zoom: 18,
+          tilt: 30
+        }
+      };
 
-    this.map = GoogleMaps.create('map', mapOptions);
+      this.map = GoogleMaps.create('map', mapOptions);
+      
+      this.map.getMyLocation().then((location: MyLocation) => {
+        console.log(location);
+      })
+      let marker: Marker = this.map.addMarkerSync({
+        snippet: 'You are here',
+        title: 'You are here',
+        icon: 'red',
+        animation: 'DROP',
+        position: {
+          lat: 10.82767617410066,
+          lng: 106.67927390539103
+        }
+      });
+      marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+        // alert('clicked');
+      });
+    // });
 
-    let marker: Marker = this.map.addMarkerSync({
-      title: 'Ionic',
-      icon: 'blue',
-      animation: 'DROP',
-      position: {
-        lat: 43.0741904,
-        lng: -89.3809802
-      }
-    });
-    marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-      alert('clicked');
-    });
-    
+
   }
 
 
@@ -231,5 +247,5 @@ export class OrderPage implements OnInit {
   // }
   */
 
-  
+
 }
