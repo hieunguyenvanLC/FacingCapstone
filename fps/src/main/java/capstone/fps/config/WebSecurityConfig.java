@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyRole("ADMIN", "MEMBER", "SHIPPER")
                 .and()
                 .formLogin()
-//                .loginPage("/loginPage")
+                .loginPage("/loginPage")
                 .loginProcessingUrl("/login")
                 .usernameParameter("phoneNumber")
                 .passwordParameter("password")

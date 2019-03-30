@@ -162,7 +162,10 @@ public class OrderController extends AbstractController {
 
 
         System.out.println("------------------------------call API------------------------------" + map.getRep() + "---"+ map.getKey());
-        AppData.faceReceive = new HashMap<>();
+        if(AppData.faceReceive == null){
+
+            AppData.faceReceive = new HashMap<>();
+        }
         AppData.faceReceive.put(map.getKey(), map.getRep());
 //        orderService.receiveFaceTestResult(map.getRep());
 

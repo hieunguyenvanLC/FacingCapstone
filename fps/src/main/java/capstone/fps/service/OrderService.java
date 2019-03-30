@@ -510,7 +510,7 @@ public class OrderService {
 //            }
 //        }
 
-        while(AppData.faceReceive == null || !AppData.faceReceive.get(key).equals(key)){
+        while(AppData.faceReceive == null ){
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
