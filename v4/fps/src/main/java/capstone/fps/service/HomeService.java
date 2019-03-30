@@ -92,18 +92,22 @@ public class HomeService {
     }
 
     public Integer sumProductByOrder(Long start, Long end) {
-        return this.orderRepository.sumSoldProduct(1, start, end); // doi status = 4
+        return this.orderRepository.sumSoldProduct(4, start, end); // doi status = 4
     }
 
     public Integer sumTotalAmount(Long start, Long end) {
-        return this.orderRepository.sumTotalAmount(1, start, end); // doi status = 4
+        return this.orderRepository.sumTotalAmount(4, start, end); // doi status = 4
     }
 
     public Integer sumShipperEarn(Long start, Long end) {
-        return this.orderRepository.sumShipperEarn(1, start, end); // doi status = 4
+        return this.orderRepository.sumShipperEarn(4, start, end); // doi status = 4
     }
 
     public List<FROrder> getOrderList(Integer status, Long start, Long end) {
+        if (status == -1) {
+            return this.orderRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+        }
+
         return this.orderRepository.findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
     }
 

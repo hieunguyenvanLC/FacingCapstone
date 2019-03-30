@@ -86,7 +86,7 @@ $(document).ready(function () {
 //     var orderDetailTable = $("#order-detail-table").DataTable({});
 
     $.ajax({
-        url: "/any/api/report/summary?mon=3&year=2019",
+        url: "/any/api/report/summary?mon=7&year=2019",
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -162,68 +162,29 @@ $(document).ready(function () {
                             display: true
                         }],
                         yAxes: [{
-                            display: true
+                            display: true,
+                            type: 'linear',
+                            ticks: {
+                                beginAtZero: true,
+                                min: 0,
+                                precision: 0,
+                                suggestedMax: 10
+                            }
                         }],
                     },
                 legend: {
                     display: false
                 },
+                title: {
+                    text: '',
+                    display: true,
+                    fontSize: 24
+                },
                 onClick: handleBarClick
             },
         data: {
             labels: [],
-            datasets: [
-                // {
-                //     label: "Data Set 1",
-                //     backgroundColor: [
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7'
-                //     ],
-                //     borderColor: [
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7',
-                //         '#44b2d7'
-                //     ],
-                //     borderWidth: 0,
-                //     data: [35, 55, 65, 85, 30, 22, 18, 35]
-                // },
-                // {
-                //     label: "Data Set 1",
-                //     backgroundColor: [
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6'
-                //     ],
-                //     borderColor: [
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6',
-                //         '#59c2e6'
-                //     ],
-                //     borderWidth: 0,
-                //     data: [49, 68, 85, 40, 27, 35, 20, 25]
-                // }
-            ]
+            datasets: []
         }
     });
     // Khoi tao filter
@@ -247,11 +208,15 @@ $(document).ready(function () {
     });
     selChartType.change(function () {
         chartType = selChartType.val();
+        var calendarWeeks = false;
+
         if (dpkStart) {
+            startDate = '';
             dpkStart.destroy();
         }
 
         if (dpkEnd) {
+            endDate = '';
             dpkEnd.destroy();
         }
 
@@ -260,6 +225,9 @@ $(document).ready(function () {
         var prefixEndDate = '';
 
         switch (chartType) {
+            case '1':
+                calendarWeeks = true;
+                break;
             case '2':
                 formatDatepicker = 'mm/yyyy';
                 prefixStartDate = '01/';
@@ -277,18 +245,20 @@ $(document).ready(function () {
         dpkStart = $('#dpkStart').datepicker({
             uiLibrary: 'bootstrap4',
             format: formatDatepicker,
+            calendarWeeks: calendarWeeks,
             change: function (e) {
-                startDate = dpkStart.value();
-                loadChart(reportType, chartType, prefixStartDate + startDate, prefixEndDate + endDate);
+                startDate = prefixStartDate + dpkStart.value();
+                loadChart(reportType, chartType, startDate, endDate);
             }
         });
 
         dpkEnd = $('#dpkEnd').datepicker({
             uiLibrary: 'bootstrap4',
             format: formatDatepicker,
+            calendarWeeks: calendarWeeks,
             change: function (e) {
-                endDate = dpkEnd.value();
-                loadChart(reportType, chartType, prefixStartDate + startDate, prefixEndDate + endDate);
+                endDate = prefixEndDate + dpkEnd.value();
+                loadChart(reportType, chartType,  startDate, endDate);
             }
         });
 
@@ -318,6 +288,7 @@ $(document).ready(function () {
             barChartExample.data.labels = [];
             barChartExample.data.datasets = [];
             barChartExample.update();
+            $("#chartName").text("");
             return;
         }
 
@@ -326,36 +297,62 @@ $(document).ready(function () {
         var startUnix = moment(start, "DD/MM/YYYY").unix() * 1000;
         var endUnix = moment(end, "DD/MM/YYYY").unix() * 1000;
         // console.log(reportT, charT, startUnix, endUnix);
+        var charNameT = "";
 
         switch (reportT) {
             case "orderCnl":
                 apiEndpoint = "canceledorderchart";
                 chartTitle = "Canceled Orders";
+                charNameT += "The number of canceled orders by ";
                 break;
             case "orderScc":
                 apiEndpoint = "successorderchart";
                 chartTitle = "Success Orders";
+                charNameT += "The number of success orders by ";
                 break;
             case "productSld":
                 apiEndpoint = "soldproductchart";
                 chartTitle = "Sold Products";
+                charNameT += "The number of sold products by ";
                 break;
             case "rateScc":
                 apiEndpoint = "successratechart";
                 chartTitle = "Success Delivery Rate";
+                charNameT += "The rate of success by ";
                 break;
             case "totalAmt":
                 apiEndpoint = "incomeammountchart";
                 chartTitle = "Total Amount";
+                charNameT += "The total amount by ";
                 break;
             case "shipPaid":
                 apiEndpoint = "paidshipperchart";
                 chartTitle = "Paid Shipper Amount";
+                charNameT += "The paid amount for shippers by ";
                 break;
             default:
                 apiEndpoint = "orderchart";
                 chartTitle = "Orders";
+                charNameT += "The number of orders by ";
         }
+
+        switch (charT) {
+            case '0':
+                charNameT += " days";
+                break;
+            case '1':
+                charNameT += " weeks";
+                break;
+            case '2':
+                charNameT += " months";
+                break;
+            case '3':
+                charNameT += " years";
+                break;
+        }
+
+        charNameT += " chart";
+        // $("#chartName").text(charNameT);
 
         $.ajax({
             url: "/any/api/report/" + apiEndpoint + "?type=" + charT + "&start=" + startUnix + "&end=" + endUnix,
@@ -365,6 +362,7 @@ $(document).ready(function () {
                 // console.log(response.data);
                 var chartData = response.data;
 
+                barChartExample.options.title.text = charNameT;
                 barChartExample.data.labels = chartData.labels;
                 barChartExample.data.datasets = [{
                     label: chartTitle,
@@ -383,7 +381,7 @@ $(document).ready(function () {
     }
 
     function getDateOfWeek(w, y) {
-        var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+        var d = ((w - 1) * 7 - 1); // 1st of January + 7 days for each week
 
         return new Date(y, 0, d);
     }
@@ -404,17 +402,22 @@ $(document).ready(function () {
         var status = 1;
         var startUnix1 = 0;
         var endUnix1 = 0;
+        var labelOrderList = "List of ";
 
         switch (reportType) {
             case "orderCnl":
                 status = 5;
+                labelOrderList += " canceled orders";
                 break;
             case "orderScc":
                 status = 4;
+                labelOrderList += " success orders";
                 break;
             default:
-                status = 1;
+                status = -1;
+                labelOrderList += " orders";
         }
+        labelOrderList += " by ";
 
         switch (chartType) {
             case '0':
@@ -422,6 +425,7 @@ $(document).ready(function () {
                 startMoment = moment(selectedBar, "DD/MM/YYYY");
                 startUnix1 = startMoment.unix() * 1000;
                 endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
+                labelOrderList += " days";
                 break;
 
             case '1':
@@ -430,20 +434,24 @@ $(document).ready(function () {
                 startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
                 startUnix1 = startMoment.unix() * 1000;
                 endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
+                labelOrderList += " weeks";
                 break;
 
             case '2':
                 startMoment = moment('01/' + selectedBar, "DD/MM/YYYY");
                 startUnix1 = startMoment.unix() * 1000;
                 endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
+                labelOrderList += " months";
                 break;
 
             case '3':
                 startUnix1 = moment("01/01/" + selectedBar, "DD/MM/YYYY").unix() * 1000;
                 endUnix1 = moment("01/01/" + (parseInt(selectedBar) + 1), "DD/MM/YYYY").unix() * 1000;
+                labelOrderList += " years";
                 break;
         }
 
+        $("#lbOrderList").text(labelOrderList);
         console.log(reportType, chartType, startUnix1, endUnix1);
         // console.log(day);
         $.ajax({
@@ -465,8 +473,8 @@ $(document).ready(function () {
                     reportTable.row.add([
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
-                        '<span>' + order.buyerName + '</span>',
-                        '<span>' + order.totalPrice + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.totalPrice + '</span>',
                         fpsGetStatMsg(ORD_STAT_LIST, order.status)
                     ]).draw();
                 }

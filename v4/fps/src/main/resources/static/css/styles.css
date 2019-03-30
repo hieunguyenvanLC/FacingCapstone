@@ -19,6 +19,10 @@ section.dashboard-counts .row {
     margin: 0;
 }
 
+section.dashboard-header div[class*='row'] .item {
+    padding: 15px 0;
+}
+
 .padding-0 {
     padding-right:10px;
     padding-left:0;
