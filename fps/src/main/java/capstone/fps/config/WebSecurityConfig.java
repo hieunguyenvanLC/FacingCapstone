@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
 //                .loginPage("/loginPage")
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/sign_in")
                 .usernameParameter("phoneNumber")
                 .passwordParameter("password")
                 .permitAll()
@@ -102,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/sign_out", "GET"))
                 .permitAll()
-                .logoutSuccessUrl("/loginPage")
+                .logoutSuccessUrl("/logout_success")
                 .and()
                 .cors().and().rememberMe();
 
@@ -111,11 +111,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler loginSuccessHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+                Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
 //                String phoneNumber = authentication.getName();
 
 //                FRAccount account = accountService.findByPhone(phoneNumber);
@@ -145,7 +145,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                });
 //                t.start();
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
-                response.getWriter().append(gson.toJson(responseObj));
+                httpServletResponse.getWriter().append(gson.toJson(response));
 //                System.out.println("Result: " + result.toString());
             }
         };

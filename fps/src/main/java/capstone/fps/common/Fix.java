@@ -19,6 +19,7 @@ public interface Fix {
     String PAY_SERVER_URL = "http://192.168.100.99:8084/";
 
 
+    String FACE_RESULT_TAG = "<result>";
 
 
 //    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();

@@ -465,7 +465,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face, HttpServletRequest request) {
+    public Response<String> checkout(Gson gson, Integer orderId, String face) {
         Methods methods = new Methods();
         Repo repo = new Repo();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -475,13 +475,20 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-        HttpSession session = request.getSession(true);
-        session.removeAttribute("faceTest");
+
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
         CommandPrompt commandPrompt = faceRecognise(faceBytes);
 
+        List<String> result = commandPrompt.getResult();
+        String memListStr = null;
+        for (int i = 0; i < result.size() && memListStr == null; i++) {
+            String line = result.get(i);
+            if (line.contains(Fix.FACE_RESULT_TAG)) {
+                memListStr = line.replace(Fix.FACE_RESULT_TAG, "").trim();
+            }
+        }
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
         FRPaymentInformation frPayInfo = informationList.get(0);
@@ -491,15 +498,8 @@ public class OrderService {
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
 
-        String rep;
-        while ((rep = (String) session.getAttribute("faceTest")) == null) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        String payId = handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
+
+        String payId = handlingFaceResult(memListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
             return response;
@@ -522,24 +522,24 @@ public class OrderService {
     }
 
     // Compare Member List with buyer
-    private String handlingFaceResult(String rep, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
+    private String handlingFaceResult(String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
-        rep = rep.replace("fps", "");
-        String[] strList = rep.split("|");
+        memListStr = memListStr.replace("fps", "");
+        String[] strList = memListStr.split("|");
         for (String idStr : strList) {
             int revMemId = Integer.parseInt(idStr);
             FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
             if (receiveMember != null) {
                 if (receiveMember.getAccount().getId() == buyer.getId()) {
-                    return callPaypal(gson, payUsername, payPassword, priceStr, description);
+                    return callEmulatorServer(gson, payUsername, payPassword, priceStr, description);
                 }
             }
         }
         return "fail";
     }
 
-    // Send HttpReq to Paypal Emulator
-    private String callPaypal(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
+    // Send HttpReq to PayPal Emulator
+    private String callEmulatorServer(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
         Methods methods = new Methods();
         URL url;
         HttpURLConnection urlConnection;
@@ -576,12 +576,6 @@ public class OrderService {
         return "fail";
     }
 
-    public String receiveFaceTestResult(String rep, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.setAttribute("faceTest", rep);
-        return rep;
-    }
-
     public CommandPrompt faceRecognise(byte[] faceBytes) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
@@ -602,7 +596,6 @@ public class OrderService {
             commandPrompt.execute(cutAndRecenter);
             String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5";
             commandPrompt.execute(testFaceAI);
-            System.out.println(commandPrompt);
             //delete folder generated by Python
             methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
         } catch (IOException e) {
