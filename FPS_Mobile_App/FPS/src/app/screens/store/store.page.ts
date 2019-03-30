@@ -174,12 +174,12 @@ export class StorePage implements OnInit {
 
         this.status_code = this.products[0].status_code;
         this.storage.get("MYLOCATION").then(value => {
-          console.log(value.latitude);
-          console.log(value.longitude);
+          console.log(value);
+          // console.log(value.longitude);
           //console.log(this.products[0].data.latitude);
           //console.log(this.products[0].data.longitude);
           this.googleApi.getAddressGoogle(value.latitude, value.longitude, this.products[0].data.latitude, this.products[0].data.longitude)
-                        .subscribe(res => {
+                        .then(res => {
                           console.log("START GOOGLE ----")
                           console.log(res);
                           //this.temp.push(res);

@@ -71,7 +71,9 @@ export class AppComponent {
       //   console.log(token);
       // });// end fcm
       // this.storage.clear().then(() => {
+        console.log(11111111)
         this.geolocation.getCurrentPosition().then((resp) => {
+          console.log(resp)
           let lati = resp.coords.latitude;
           let longi = resp.coords.longitude;
           this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
