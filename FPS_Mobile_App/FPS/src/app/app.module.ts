@@ -23,7 +23,6 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 import { Camera } from '@ionic-native/camera/ngx';
 
@@ -38,10 +37,14 @@ var firebaseConfig = {
 
 import { Firebase } from '@ionic-native/firebase';
 import { FirebasecloudmessengerService } from './services/firebasecloudmessenger.service'
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { LoadingService } from './services/loading.service';
 import { GoogleMap, GoogleMaps } from '@ionic-native/google-maps';
 import { ToastHandleService } from './services/toasthandle.service';
+import { IonicStorageModule } from '@ionic/storage';
+import { GoogleApiService } from './services/google-api.service';
+import { HTTP } from '@ionic-native/http/ngx';
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -49,6 +52,7 @@ import { ToastHandleService } from './services/toasthandle.service';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     OrdermodalPageModule,
     HttpClientModule,
@@ -64,12 +68,12 @@ import { ToastHandleService } from './services/toasthandle.service';
     Constant,
     FirebasecloudmessengerService,
     Geolocation,
-    NativeGeocoder,
-    NativeStorage,
     Camera,
     LoadingService,
     OrderService,
     ToastHandleService,
+    GoogleApiService,
+    HTTP,
 
     GoogleMaps,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

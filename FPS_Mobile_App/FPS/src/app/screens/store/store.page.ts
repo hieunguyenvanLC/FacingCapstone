@@ -9,8 +9,9 @@ import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 import { StoreService } from 'src/app/services/store.service';
 import { Store } from './../../models/store.model';
 import { LoadingService } from 'src/app/services/loading.service';
-import { isLoaded } from 'google-maps';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
+import { GoogleApiService } from 'src/app/services/google-api.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-store',
@@ -28,6 +29,7 @@ export class StorePage implements OnInit {
   store: Store[];
   quantity = 1;
   status_code = 0;
+  temp = [];
 
   isLoaded = false;
 
@@ -74,6 +76,8 @@ export class StorePage implements OnInit {
     private storeService: StoreService,
     private loading: LoadingService,
     private toastHandle: ToastHandleService,
+    private googleApi : GoogleApiService,
+    private storage : Storage,
   ) {
   }
 
@@ -169,7 +173,19 @@ export class StorePage implements OnInit {
         console.log(this.products[0].data);
 
         this.status_code = this.products[0].status_code;
-
+        this.storage.get("MYLOCATION").then(value => {
+          console.log(value.latitude);
+          console.log(value.longitude);
+          //console.log(this.products[0].data.latitude);
+          //console.log(this.products[0].data.longitude);
+          this.googleApi.getAddressGoogle(value.latitude, value.longitude, this.products[0].data.latitude, this.products[0].data.longitude)
+                        .subscribe(res => {
+                          console.log("START GOOGLE ----")
+                          console.log(res);
+                          //this.temp.push(res);
+                          //console.log(this.temp[0].routes[0].legs[0])
+                        });//end google api
+        });//end storage
         // console.log(this.products[0].data.proList);
         this.products[0].data.proList.forEach(element => {
           //add 2 attribute into product detail

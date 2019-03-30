@@ -123,6 +123,7 @@ export class RegistorPage implements OnInit {
       if (this.data[0].message === "Success") {
         this.toastHandle.presentToast("Create success !");
       }
+      this.router.navigateByUrl("login");
     }), err => {
       this.toastHandle.presentToast("Create error !");
       console.log(err);
@@ -157,18 +158,8 @@ export class RegistorPage implements OnInit {
       // If it's base64 (DATA_URL):
       this.myPhoto = 'data:image/jpeg;base64,' + imageData;
       this.myPhotoBinary = imageData;
-
-      //   let byteNumbers = new Array(imageData.length);
-
-      // for (var i = 0; i < imageData.length; i++) 
-      //     byteNumbers[i] = imageData.charCodeAt(i);
-
-      // let byteArray = new Uint8Array(byteNumbers);
-
-      // this.myPhotoBinary  = new Blob([byteArray], {type: 'image/jpeg'});
-      //this.myPhotoBinary = new Blob([imageData], { type: 'image/jpg' });
       // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
-      console.log(imageData);
+      //console.log(imageData);
       console.log(this.myPhotoBinary);
     }, (err) => {
       console.log("error at takephoto :" + err)

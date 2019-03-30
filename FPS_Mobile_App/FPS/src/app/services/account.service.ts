@@ -42,11 +42,14 @@ export class AccountService {
     return this.apiHttpService.post(this.constant.MAP_ANY + this.constant.MAP_API + this.constant.ACCOUNT,formData);
   }
 
-  updateImageMember(image){
+  updateImageMember(id,image){
+    let formData: FormData = new FormData();
+    formData.append('revMemId', id);
+    formData.append('face', image);
     return this.apiHttpService.put(this.constant.MAP_MEM + 
                                    this.constant.MAP_API +
                                    this.constant.ACCOUNT +
-                                   "/face", image);
+                                   "/face", formData);
   }
 
   getDetailUser(){
@@ -54,6 +57,10 @@ export class AccountService {
                                    this.constant.MAP_API +
                                    this.constant.ACCOUNT +
                                    "/detail");
+  }
+
+  logOut(){
+    
   }
 
 }

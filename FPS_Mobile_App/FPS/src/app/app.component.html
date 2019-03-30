@@ -1,26 +1,47 @@
 <ion-app>
   <ion-split-pane>
     <ion-menu>
-       <!-- Profile user -->
-      <ion-item class="margin0" no-padding margin-bottom>
+      <!-- Profile user -->
+      <ion-item class="margin0 marginTop--10" no-padding margin-bottom>
         <ion-toolbar>
           <ion-grid>
             <ion-row>
               <ion-col size="3">
-                <img src="../assets/image/slide3.jpg">
+                <div *ngIf="avatar === undefine">
+                  <ion-avatar class="user-avatar">
+                    <img src="../assets/image/default-user.png">
+                  </ion-avatar>
+                </div>
+                <div *ngIf="avatar !== undefine">
+                  <img src="{{ avatar }}">
+                </div>
               </ion-col>
               <ion-col size="9">
-                <ion-label>
+                <ion-label style="padding-left: 5px">
                   <ion-text color="medium">
-                    <h1>
-                      <strong>Username</strong>
-                    </h1>
+                    <div *ngIf=(!isLoaded)>
+                      <h1>
+                        <strong>Username</strong>
+                      </h1>
+                    </div>
+                    <div *ngIf=(isLoaded)>
+                      <h1>
+                        <strong>{{username}}</strong>
+                      </h1>
+                    </div>
                   </ion-text>
-                  <!-- <ion-text color="medium">
-                  <h3>
-                    São Paulo, Brazil
-                  </h3>
-                </ion-text> -->
+                  <ion-text color="medium">
+                    <div *ngIf=(!isLoaded)>
+                    <h3>
+                      Extra point: 0
+                    </h3>
+                  </div>
+                  <div *ngIf=(isLoaded)>
+                      <h3>
+                        Extra point: {{extraPoint}}
+                      </h3>
+                    </div>
+                  </ion-text>
                   <ion-menu-toggle auto-hide="false">
                     <a tappable (click)="goToEditProgile()">
                       <ion-text color="medium">
@@ -29,7 +50,7 @@
                       </ion-text>
                     </a>
                     <ion-text color="medium"> | </ion-text>
-                    <a tappable>
+                    <a tappable (click)="logout()">
                       <ion-text color="medium">
                         <ion-icon class="margin--2" name="log-out"></ion-icon>
                         <span>logout</span>
