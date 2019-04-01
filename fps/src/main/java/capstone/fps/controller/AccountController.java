@@ -58,7 +58,7 @@ public class AccountController extends AbstractController {
     // Admin Web - Member - Begin
     @GetMapping(Fix.MAP_ADM + API + "/mem")
     public String getAccountMemberList() {
-        Response<List<MdlAdmin>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlMember>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getListMember();
         } catch (Exception e) {
