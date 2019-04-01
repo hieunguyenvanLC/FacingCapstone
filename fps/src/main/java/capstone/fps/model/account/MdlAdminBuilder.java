@@ -4,8 +4,8 @@ import capstone.fps.entity.FRAccount;
 
 public class MdlAdminBuilder {
 
-    public MdlAccount buildAdmDetail(FRAccount frAccount) {
-        MdlAccount mdlAccount = new MdlAccount();
+    public MdlAdmin buildAdmDetail(FRAccount frAccount) {
+        MdlAdmin mdlAccount = new MdlAdmin();
         mdlAccount.id = frAccount.getId();
         mdlAccount.phone = frAccount.getPhone();
         mdlAccount.name = frAccount.getName();

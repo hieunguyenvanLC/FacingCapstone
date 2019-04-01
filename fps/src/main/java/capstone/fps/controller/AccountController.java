@@ -1,12 +1,11 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
-import capstone.fps.model.account.MdlAccount;
+import capstone.fps.model.account.MdlAdmin;
+import capstone.fps.model.account.MdlMember;
 import capstone.fps.model.account.MdlShipper;
 import capstone.fps.service.AccountService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class AccountController extends AbstractController {
@@ -60,7 +58,7 @@ public class AccountController extends AbstractController {
     // Admin Web - Member - Begin
     @GetMapping(Fix.MAP_ADM + API + "/mem")
     public String getAccountMemberList() {
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlAdmin>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getListMember();
         } catch (Exception e) {
@@ -138,7 +136,7 @@ public class AccountController extends AbstractController {
     // Admin Web - Admin - Begin
     @GetMapping(Fix.MAP_ADM + API + "/adm")
     public String getAccountAdminList() {
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlAdmin>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getListAdmin();
         } catch (Exception e) {
@@ -192,7 +190,7 @@ public class AccountController extends AbstractController {
     // Mobile Mem - Profile - Begin
     @GetMapping(Fix.MAP_MEM + API + "/detail")
     public String getMemberDetailMem() {
-        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getMemberDetailMem();
         } catch (Exception e) {
@@ -204,7 +202,7 @@ public class AccountController extends AbstractController {
 
     @PutMapping(Fix.MAP_MEM + API)
     public String updateMemberDetailMem(String name, String email, Long dob) {
-        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateMemberDetailMem(name, email, dob);
         } catch (Exception e) {

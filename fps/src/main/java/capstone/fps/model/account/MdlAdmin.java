@@ -2,7 +2,7 @@ package capstone.fps.model.account;
 
 import com.google.gson.annotations.Expose;
 
-public class MdlAccount {
+public class MdlAdmin {
 
     @Expose
     Integer id;

@@ -38,9 +38,9 @@ public class MdlMemberBuilder {
     */
 
 
-    public MdlAccount buildMemDetailAdm(FRAccount frAccount) {
+    public MdlMember buildMemDetailAdm(FRAccount frAccount) {
         Methods methods = new Methods();
-        MdlAccount mdlAccount = new MdlAccount();
+        MdlMember mdlAccount = new MdlMember();
         mdlAccount.id = frAccount.getId();
         mdlAccount.phone = frAccount.getPhone();
         mdlAccount.name = frAccount.getName();

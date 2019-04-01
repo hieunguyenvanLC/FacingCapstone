@@ -119,11 +119,11 @@ public class AccountService {
     }
 
     // Web Admin - Member - Begin
-    public Response<List<MdlAccount>> getListMember() {
+    public Response<List<MdlMember>> getListMember() {
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlMember>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
-        List<MdlAccount> accList = new ArrayList<>();
+        List<MdlMember> accList = new ArrayList<>();
         for (FRAccount frAccount : frAccountList) {
             accList.add(mdlMemberBuilder.buildMemDetailAdm(frAccount));
         }
@@ -257,11 +257,11 @@ public class AccountService {
         return response;
     }
 
-    public Response<List<MdlAccount>> getListAdmin() {
+    public Response<List<MdlAdmin>> getListAdmin() {
         MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<List<MdlAdmin>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_ADM));
-        List<MdlAccount> accList = new ArrayList<>();
+        List<MdlAdmin> accList = new ArrayList<>();
         for (FRAccount frAccount : frAccountList) {
             accList.add(mdlAdminBuilder.buildAdmDetail(frAccount));
         }

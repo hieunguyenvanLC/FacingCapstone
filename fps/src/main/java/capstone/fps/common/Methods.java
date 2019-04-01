@@ -125,19 +125,18 @@ public final class Methods {
 
     public double calculateShpEarn(double dis) {
         double price = 14000;
-        int kms = (int) Math.ceil(dis);
-        if (kms > 0) {
-            price += kms * 1000;
+        if (dis > 0) {
+            price += dis * 1000d;
         }
-        kms -= 5;
-        if (kms > 0) {
-            price += kms * 1000;
+        dis -= 5;
+        if (dis > 0) {
+            price += dis * 1000d;
         }
-        kms -= 5;
-        if (kms > 0) {
-            price += kms * 1000;
+        dis -= 5;
+        if (dis > 0) {
+            price += dis * 1000d;
         }
-        return price;
+        return Math.ceil(price);
     }
 
     // Converting InputStream to String

@@ -1,10 +1,7 @@
 package capstone.fps.config;
 
 import capstone.fps.common.Fix;
-import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
-import capstone.fps.model.account.MdlAccount;
-import capstone.fps.repository.AccountRepo;
 import capstone.fps.service.AccountService;
 import capstone.fps.service.LoginService;
 import com.google.gson.Gson;
@@ -32,15 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @RestController
