@@ -557,7 +557,7 @@ public class AccountService {
     // Mobile Member - Register - End
 
 
-    // Mobile Mem - Profile - Begin
+    // Mobile Member - Profile - Begin
     public Response<MdlMember> getMemberDetailMem() {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();
@@ -617,5 +617,26 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
-// Mobile Mem - Profile - End
+    // Mobile Member - Profile - End
+
+
+    // Mobile Shipper - Profile - Begin
+    public Response<MdlShipper> getShipperDetailShp() {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
+
+        FRAccount frAccount = methods.getUser();
+        if (frAccount == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
+        return response;
+    }
+    // Mobile Shipper - Profile - End
+
 }

@@ -225,5 +225,18 @@ public class AccountController extends AbstractController {
     }
     // Mobile Mem - Profile - End
 
+    // Mobile Shipper - Begin
+    @GetMapping(Fix.MAP_ADM + API + "/shp/detail")
+    public String getShipperDetailShp() {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getShipperDetailShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - End
 
 }
