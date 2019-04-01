@@ -124,7 +124,7 @@ public final class Methods {
 
 
     public double calculateShpEarn(double dis) {
-        double price = 14000;
+        double price = 14000d;
         if (dis > 0) {
             price += dis * 1000d;
         }
@@ -136,7 +136,7 @@ public final class Methods {
         if (dis > 0) {
             price += dis * 1000d;
         }
-        return Math.ceil(price);
+        return Math.ceil(price / 1000d) * 1000d;
     }
 
     // Converting InputStream to String
