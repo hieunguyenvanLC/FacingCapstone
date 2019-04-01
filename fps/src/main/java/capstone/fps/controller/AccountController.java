@@ -226,7 +226,7 @@ public class AccountController extends AbstractController {
     // Mobile Mem - Profile - End
 
     // Mobile Shipper - Begin
-    @GetMapping(Fix.MAP_ADM + API + "/shp/detail")
+    @GetMapping(Fix.MAP_SHP + API + "/shp/detail")
     public String getShipperDetailShp() {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
