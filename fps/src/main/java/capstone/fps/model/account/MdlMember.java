@@ -45,5 +45,5 @@ public class MdlMember {
     @Expose
     String avatar;
     @Expose
-    List<MdlFace> faceList;
+    MdlFace[] faceList;
 }

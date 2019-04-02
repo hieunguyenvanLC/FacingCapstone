@@ -7,10 +7,7 @@ import capstone.fps.model.account.MdlMember;
 import capstone.fps.model.account.MdlShipper;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -56,11 +53,23 @@ public class AccountController extends AbstractController {
     }
 
     // Admin Web - Member - Begin
-    @GetMapping(Fix.MAP_ADM + API + "/mem")
-    public String getAccountMemberList() {
+    @GetMapping(Fix.MAP_ADM + API + "/mem/list")
+    public String getMemberListAdm() {
         Response<List<MdlMember>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.getListMember();
+            response = accountService.getMemberList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ADM + API + "/mem/detail")
+    public String getMemberDetailAdm(int accId) {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getMemberDetailAdm(accId);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -69,10 +78,10 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/mem")
-    public String editAccountMember(Integer accId, String fullName, String email, long dob, String note) {
+    public String updateMemberAdm(int accId, String fullName, String email, Long dob, String note, Integer status) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.editAccountMember(accId, fullName, email, dob, note);
+            response = accountService.updateMemberAdm(accId, fullName, email, dob, note, status);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -96,7 +105,7 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/shp")
-    public String updateShipper(Integer accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+    public String updateShipper(int accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateShipper(accId, phone, sumRevenue, name, sourceId, dob, email, note, priceLevelId, userFace, introduce, extraPoint, reportPoint, status, natId, natDate, bikeRegId, bikeRegDate, natFront, natBack, bikeRegFront, bikeRegBack);
@@ -120,7 +129,7 @@ public class AccountController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_ADM + API + "/shp/detail")
-    public String getShipperDetailAdm(Integer accId) {
+    public String getShipperDetailAdm(int accId) {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getShipperDetailAdm(accId);
@@ -147,7 +156,7 @@ public class AccountController extends AbstractController {
     }
 
     @PostMapping(Fix.MAP_ADM + API + "/adm")
-    public String createAccountAdmin(String username, String password, String fullName, String email, String natId, long natDate, long dob, String note) {
+    public String createAccountAdmin(String username, String password, String fullName, String email, String natId, Long natDate, Long dob, String note) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.createAccountAdmin(username, password, fullName, email, natId, natDate, dob, note);
@@ -159,7 +168,7 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/adm")
-    public String editAccountAdmin(Integer accId, String fullName, String email, String natId, long natDate, long dob, String note) {
+    public String editAccountAdmin(int accId, String fullName, String email, String natId, Long natDate, Long dob, String note) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.editAccountAdmin(accId, fullName, email, natId, natDate, dob, note);

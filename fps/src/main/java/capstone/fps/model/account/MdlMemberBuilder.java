@@ -37,21 +37,35 @@ public class MdlMemberBuilder {
     }
     */
 
+    public MdlMember buildMemEntryAdm(FRAccount frAccount) {
+        MdlMember mdlMember = new MdlMember();
+        mdlMember.id = frAccount.getId();
+        mdlMember.phone = frAccount.getPhone();
+        mdlMember.name = frAccount.getName();
+        mdlMember.email = frAccount.getEmail();
+        mdlMember.note = frAccount.getNote();
+        mdlMember.status = frAccount.getStatus();
+        return mdlMember;
+    }
 
-    public MdlMember buildMemDetailAdm(FRAccount frAccount) {
-        Methods methods = new Methods();
-        MdlMember mdlAccount = new MdlMember();
-        mdlAccount.id = frAccount.getId();
-        mdlAccount.phone = frAccount.getPhone();
-        mdlAccount.name = frAccount.getName();
-        mdlAccount.email = frAccount.getEmail();
-        mdlAccount.userImage = methods.bytesToBase64(frAccount.getUserImage());
-        mdlAccount.dob = frAccount.getDateOfBirth();
-        mdlAccount.createTime = frAccount.getCreateTime();
-        mdlAccount.note = frAccount.getNote();
-        mdlAccount.status = frAccount.getStatus();
-        mdlAccount.editor = frAccount.getEditor() != null ? frAccount.getEditor().getPhone() : null;
-        return mdlAccount;
+
+    public MdlMember buildMemDetailAdm(FRAccount frAccount, ReceiveMemberRepo receiveMemberRepo) {
+        MdlMember mdlMember = new MdlMember();
+        mdlMember.id = frAccount.getId();
+        mdlMember.phone = frAccount.getPhone();
+        mdlMember.name = frAccount.getName();
+        mdlMember.email = frAccount.getEmail();
+        mdlMember.dob = frAccount.getDateOfBirth();
+        mdlMember.createTime = frAccount.getCreateTime();
+        mdlMember.note = frAccount.getNote();
+        mdlMember.status = frAccount.getStatus();
+        mdlMember.editor = frAccount.getEditor() != null ? frAccount.getEditor().getPhone() : null;
+        List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
+        mdlMember.faceList = new MdlFace[receiveMembers.size()];
+        for (int i = 0; i < receiveMembers.size(); i++) {
+            mdlMember.faceList[i] = new MdlFace(receiveMembers.get(i));
+        }
+        return mdlMember;
     }
 
 
@@ -66,9 +80,9 @@ public class MdlMemberBuilder {
         mdlMember.dob = frAccount.getDateOfBirth();
         mdlMember.avatar = methods.bytesToBase64(frAccount.getUserImage());
         List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
-        mdlMember.faceList = new ArrayList<>();
-        for (FRReceiveMember frReceiveMember : receiveMembers) {
-            mdlMember.faceList.add(new MdlFace(frReceiveMember));
+        mdlMember.faceList = new MdlFace[receiveMembers.size()];
+        for (int i = 0; i < receiveMembers.size(); i++) {
+            mdlMember.faceList[i] = new MdlFace(receiveMembers.get(i));
         }
         return mdlMember;
     }

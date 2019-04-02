@@ -119,44 +119,58 @@ public class AccountService {
     }
 
     // Web Admin - Member - Begin
-    public Response<List<MdlMember>> getListMember() {
+    public Response<List<MdlMember>> getMemberList() {
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
         Response<List<MdlMember>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FRAccount> frAccountList = accountRepo.findAllByRole(initRole(Fix.ROL_MEM));
         List<MdlMember> accList = new ArrayList<>();
         for (FRAccount frAccount : frAccountList) {
-            accList.add(mdlMemberBuilder.buildMemDetailAdm(frAccount));
+            accList.add(mdlMemberBuilder.buildMemEntryAdm(frAccount));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
         return response;
     }
 
-    public Response editAccountMember(Integer accId, String name, String email, long dob, String note) {
+    public Response<MdlMember> getMemberDetailAdm(int accId) {
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount frAccount = accountRepo.findById(accId).orElse(null);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemDetailAdm(frAccount, receiveMemberRepo));
+        return response;
+    }
+
+    public Response updateMemberAdm(int accId, String name, String email, Long dob, String note, Integer status) {
         Methods methods = new Methods();
+        Validator valid = new Validator();
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        Optional<FRAccount> optional = accountRepo.findById(accId);
-        if (!optional.isPresent()) {
+        FRAccount frAccount = accountRepo.findById(accId).orElse(null);
+        if (frAccount == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find account");
             return response;
         }
-        FRAccount frAccount = optional.get();
         if (!frAccount.getRole().getName().equals(Fix.ROL_MEM)) {
             response.setResponse(Response.STATUS_FAIL, "Not a member");
             return response;
         }
-        if (note == null) {
-            note = "";
+        if (name != null) {
+            frAccount.setName(name.trim());
         }
-
-        frAccount.setName(name.trim());
-        frAccount.setEmail(email.trim());
-        frAccount.setDateOfBirth(dob);
+        if (email != null) {
+            frAccount.setEmail(email.trim());
+        }
+        if (note != null) {
+            frAccount.setNote(note.trim());
+        }
+        if (dob != null) {
+            frAccount.setDateOfBirth(dob);
+        }
         frAccount.setUpdateTime(methods.getTimeNow());
-        frAccount.setNote(note);
+        frAccount.setStatus(valid.checkUpdateStatus(frAccount.getStatus(), status, Fix.ACC_STAT_LIST));
         frAccount.setEditor(methods.getUser());
         accountRepo.save(frAccount);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemDetailAdm(frAccount, receiveMemberRepo));
         return response;
     }
     // Web Admin - Member - End
@@ -211,7 +225,7 @@ public class AccountService {
         return response;
     }
 
-    public Response editAccountAdmin(int accId, String name, String email, String natId, long natDate, long dob, String note) {
+    public Response editAccountAdmin(int accId, String name, String email, String natId, Long natDate, Long dob, String note) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -223,34 +237,32 @@ public class AccountService {
         }
         FRAccount frAccount = optional.get();
         if (!frAccount.getRole().getName().equals(Fix.ROL_ADM)) {
-            response.setResponse(Response.STATUS_FAIL, "Not a member");
-            return response;
-        }
-        name = valid.checkFullName(name);
-        if (name == null) {
-            response.setResponse(Response.STATUS_FAIL, "Name invalid");
-            return response;
-        }
-        natId = valid.checkNumber(natId);
-        if (natId == null) {
-            response.setResponse(Response.STATUS_FAIL, "NatId invalid");
-            return response;
-        }
-        if (note == null) {
-            note = "";
-        }
-        if (methods.getAge(dob) < 18) {
-            response.setResponse(Response.STATUS_FAIL, "Age invalid");
+            response.setResponse(Response.STATUS_FAIL, "Not a admin");
             return response;
         }
 
-        frAccount.setName(name);
-        frAccount.setEmail(email);
-        frAccount.setNatId(natId);
-        frAccount.setNatDate(natDate);
-        frAccount.setDateOfBirth(dob);
+        name = valid.checkFullName(name);
+        if (name != null) {
+            frAccount.setName(name);
+        }
+        if (email != null) {
+            frAccount.setEmail(email);
+        }
+        natId = valid.checkNumber(natId);
+        if (natId != null) {
+            frAccount.setNatId(natId);
+        }
+        if (natDate != null) {
+            frAccount.setNatDate(natDate);
+        }
+        if (note != null) {
+            frAccount.setNote(note);
+        }
+        if (methods.getAge(dob) >= 18) {
+            frAccount.setDateOfBirth(dob);
+        }
         frAccount.setUpdateTime(methods.getTimeNow());
-        frAccount.setNote(note);
+
         frAccount.setEditor(methods.getUser());
         accountRepo.save(frAccount);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
@@ -637,6 +649,8 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }
+
+
     // Mobile Shipper - Profile - End
 
 }

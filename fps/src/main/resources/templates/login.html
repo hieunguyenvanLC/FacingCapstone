@@ -123,7 +123,7 @@
 
         $.ajax({
             type: 'POST',
-            url: fpsBackEnd + "/login",
+            url: fpsBackEnd + "/sign_in",
             data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
             dataType: 'json',
             success: function (response) {
