@@ -482,7 +482,7 @@ public class OrderService {
     }
 
 
-    private String notifyShipper( FROrder frOrder, String shipperToken) {
+    private String notifyShipper(FROrder frOrder, String shipperToken) {
         Methods methods = new Methods();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         JsonObject notification = new JsonObject();
@@ -656,6 +656,29 @@ public class OrderService {
             e.printStackTrace();
         }
         return commandPrompt;
+    }
+
+    public Response<String> testNotify(Gson gson, int orderId, String shipperToken) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = orderRepository.findById(orderId).orElse(null);
+        Methods methods = new Methods();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Your order has been taken by shipper Test");
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.addProperty("data", gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository)));
+        body.addProperty("priority", "high");
+        body.addProperty("to", shipperToken);
+        body.addProperty("restricted_package_name", "");
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+        return response;
     }
     // Mobile Shipper - Order Checkout - End
 
