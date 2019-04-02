@@ -163,15 +163,15 @@ public class OrderController extends AbstractController {
 //
 //    }
 
-    @GetMapping(Fix.MAP_ANY + API + "/notify")
-    public String testNotify(int orderId, String shipperToken) {
-        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            response = orderService.testNotify(gson, orderId, shipperToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
+//    @GetMapping(Fix.MAP_ANY + API + "/notify")
+//    public String testNotify(int orderId, String shipperToken) {
+//        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        try {
+//            response = orderService.testNotify(gson, orderId, shipperToken);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+//        }
+//        return gson.toJson(response);
+//    }
 }

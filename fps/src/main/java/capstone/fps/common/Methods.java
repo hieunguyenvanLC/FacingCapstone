@@ -203,8 +203,6 @@ public final class Methods {
         try {
             urlObj = new URL(url);
             urlConnection = (HttpURLConnection) urlObj.openConnection();
-            urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            urlConnection.setRequestProperty("Accept", "application/json");
             for (Map.Entry<String, String> entry : header.entrySet()) {
                 urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
             }
@@ -212,16 +210,16 @@ public final class Methods {
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 
-            OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-            wr.write(body.toString());
-            wr.flush();
-            wr.close();
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(body.toString().getBytes("UTF-8"));
+            os.close();
 
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                return readStream(urlConnection.getInputStream());
-            }
+//            if (responseCode == HttpURLConnection.HTTP_OK) {
+//
+//            }
+            return readStream(urlConnection.getInputStream());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -13,6 +13,7 @@ import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -463,42 +464,55 @@ public class OrderService {
 
     private String notifyBuyer(Gson gson, FROrder frOrder) {
         Methods methods = new Methods();
+        JsonParser parser = new JsonParser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+
         JsonObject notification = new JsonObject();
         notification.addProperty("title", "FPS");
         notification.addProperty("body", "Your order has been taken by shipper " + frOrder.getShipper().getAccount().getName());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
         notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+
         JsonObject body = new JsonObject();
         body.add("notification", notification);
-        body.addProperty("data", gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository)));
+        body.add("data", data);
         body.addProperty("priority", "high");
         body.addProperty("to", frOrder.getBuyerToken());
         body.addProperty("restricted_package_name", "");
-        Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "key=" + Fix.FCM_KEY);
-        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
+
+        return  methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
 
     private String notifyShipper(FROrder frOrder, String shipperToken) {
         Methods methods = new Methods();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+
         JsonObject notification = new JsonObject();
         notification.addProperty("title", "FPS");
         notification.addProperty("body", "You has taken order" + frOrder.getId());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
         notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+
         JsonObject body = new JsonObject();
         body.add("notification", notification);
-        body.addProperty("data", "");
+        body.add("data", data);
         body.addProperty("priority", "high");
         body.addProperty("to", shipperToken);
         body.addProperty("restricted_package_name", "");
-        Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "key=" + Fix.FCM_KEY);
+
         return methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
@@ -658,28 +672,36 @@ public class OrderService {
         return commandPrompt;
     }
 
-    public Response<String> testNotify(Gson gson, int orderId, String shipperToken) {
-        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FROrder frOrder = orderRepository.findById(orderId).orElse(null);
-        Methods methods = new Methods();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        JsonObject notification = new JsonObject();
-        notification.addProperty("title", "FPS");
-        notification.addProperty("body", "Your order has been taken by shipper Test");
-        notification.addProperty("sound", "default");
-        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
-        notification.addProperty("icon", "fcm_push_icon");
-        JsonObject body = new JsonObject();
-        body.add("notification", notification);
-        body.addProperty("data", gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository)));
-        body.addProperty("priority", "high");
-        body.addProperty("to", shipperToken);
-        body.addProperty("restricted_package_name", "");
-        Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "key=" + Fix.FCM_KEY);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
-        return response;
-    }
+//    public Response<String> testNotify(Gson gson, int orderId, String shipperToken) {
+//        Methods methods = new Methods();
+//        JsonParser parser = new JsonParser();
+//        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+//        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        FROrder frOrder = orderRepository.findById(orderId).orElse(null);
+//
+//        JsonObject notification = new JsonObject();
+//        notification.addProperty("title", "FPS");
+//        notification.addProperty("body", "Your order has been taken by shipper Test");
+//        notification.addProperty("sound", "default");
+//        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+//        notification.addProperty("icon", "fcm_push_icon");
+//
+//        JsonObject data = new JsonObject();
+//        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+//
+//        JsonObject body = new JsonObject();
+//        body.add("notification", notification);
+//        body.add("data", data);
+//        body.addProperty("priority", "high");
+//        body.addProperty("to", shipperToken);
+//        body.addProperty("restricted_package_name", "");
+//
+//        Map<String, String> header = new HashMap<>();
+//        header.put("Content-Type", "application/json");
+//        header.put("Authorization", "key=" + Fix.FCM_KEY);
+//        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+//        return response;
+//    }
     // Mobile Shipper - Order Checkout - End
 
 
