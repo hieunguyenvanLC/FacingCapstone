@@ -33,6 +33,7 @@ public class HomeController extends AbstractController {
 
     public HomeController(HomeService homeService) {
         this.homeService = homeService;
+        this.orderService=orderService;
     }
 
     @GetMapping(Fix.MAP_ANY + API + "/summary")

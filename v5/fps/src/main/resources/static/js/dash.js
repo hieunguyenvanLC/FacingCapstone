@@ -102,7 +102,7 @@ $(document).ready(function () {
         }
     });
 
-    var BARCHARTEXMPLE = $('#barChartExample');
+    var BARCHARTEXMPLE = $('#barChartExample'); // Date picker cua chart home
     // barChartExample = new Chart(BARCHARTEXMPLE, {
     //     type: 'bar',
     //     options: {
@@ -423,6 +423,8 @@ $(document).ready(function () {
             case '0':
                 // la ngay
                 startMoment = moment(selectedBar, "DD/MM/YYYY");
+                // endMoment = startMoment
+                // endMoment.add(1, 'days')
                 startUnix1 = startMoment.unix() * 1000;
                 endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                 labelOrderList += " days";
