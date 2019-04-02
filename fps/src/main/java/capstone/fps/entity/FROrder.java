@@ -60,6 +60,8 @@ public class FROrder {
     @ManyToOne
     @JoinColumn(name = "editor_id")
     private FRAccount editor;
+    @Column(name = "buyer_token", length = 100)
+    private String buyerToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
@@ -233,5 +235,13 @@ public class FROrder {
 
     public void setBuyerFace(byte[] buyerFace) {
         this.buyerFace = buyerFace;
+    }
+
+    public String getBuyerToken() {
+        return buyerToken;
+    }
+
+    public void setBuyerToken(String buyerToken) {
+        this.buyerToken = buyerToken;
     }
 }

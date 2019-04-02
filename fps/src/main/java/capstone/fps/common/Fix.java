@@ -19,6 +19,9 @@ public interface Fix {
     String PAY_SERVER_URL = "http://192.168.100.99:8084/";
 
 
+    String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    String FCM_KEY = "AAAAQE2HpyA:APA91bHSMzhajeXcYtWn6iE83V_SYX_CSqAP57zUxMLbrFmwToKsxpW8bsBL6pOX05tXJQeVOBziYmPqguQF1NFRqU03Wy8qdwbh4gYsqNmJzVwfsNhK5Uadnvbs_-KiB8mX_UV_o0oH";
+
     String FACE_RESULT_TAG = "<result>";
 
 

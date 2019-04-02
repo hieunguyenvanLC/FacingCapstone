@@ -1,6 +1,9 @@
 package capstone.fps.common;
 
 import capstone.fps.entity.FRAccount;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -10,10 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
@@ -189,5 +192,41 @@ public final class Methods {
             }
         };
         Files.walkFileTree(deleteDirPath, visitor);
+    }
+
+
+    public String sendHttpRequest(String url, Map<String, String> header, JsonObject body) {
+        URL urlObj;
+        HttpURLConnection urlConnection;
+
+        String method = "POST";
+        try {
+            urlObj = new URL(url);
+            urlConnection = (HttpURLConnection) urlObj.openConnection();
+            urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            urlConnection.setRequestProperty("Accept", "application/json");
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+            urlConnection.setRequestMethod(method);
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+            OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+            wr.write(body.toString());
+            wr.flush();
+            wr.close();
+
+            urlConnection.connect();
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                return readStream(urlConnection.getInputStream());
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "fail";
     }
 }

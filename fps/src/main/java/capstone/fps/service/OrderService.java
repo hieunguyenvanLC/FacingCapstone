@@ -12,6 +12,7 @@ import capstone.fps.model.ordermatch.OrderStat;
 import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +29,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -240,7 +243,7 @@ public class OrderService {
 
 
     // Mobile Member - Order Booking - Begin
-    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance) {
+    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance, String deviceToken) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -299,6 +302,7 @@ public class OrderService {
         frOrder.setNote("");
         frOrder.setStatus(Fix.ORD_NEW.index);
         frOrder.setEditor(null);
+        frOrder.setBuyerToken(deviceToken);
         orderRepository.save(frOrder);
 
         for (MdlDetailCreate detail : detailList) {
@@ -393,7 +397,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Matching - Begin
-    public Response<MdlOrder> autoAssign(double longitude, double latitude) {
+    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken) {
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         Methods methods = new Methods();
@@ -429,6 +433,8 @@ public class OrderService {
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setStatus(Fix.ORD_ASS.index);
                                     orderRepository.save(frOrder);
+                                    notifyBuyer(gson, frOrder);
+                                    notifyShipper(frOrder, shipperToken);
                                     MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
@@ -453,6 +459,47 @@ public class OrderService {
             response.setResponse(Response.STATUS_SUCCESS, "time out");
             return response;
         }
+    }
+
+    private String notifyBuyer(Gson gson, FROrder frOrder) {
+        Methods methods = new Methods();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Your order has been taken by shipper " + frOrder.getShipper().getAccount().getName());
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.addProperty("data", gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository)));
+        body.addProperty("priority", "high");
+        body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("restricted_package_name", "");
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
+    }
+
+
+    private String notifyShipper( FROrder frOrder, String shipperToken) {
+        Methods methods = new Methods();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "You has taken order" + frOrder.getId());
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.addProperty("data", "");
+        body.addProperty("priority", "high");
+        body.addProperty("to", shipperToken);
+        body.addProperty("restricted_package_name", "");
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
     public Response<Integer> stopQueue() {

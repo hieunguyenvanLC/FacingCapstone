@@ -64,10 +64,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Member - Order Booking - Begin
     @PostMapping(Fix.MAP_MEM + API)
-    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance) {
+    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance, String deviceToken) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.createOrder(longitude, latitude, customerDescription, proList, distance);
+            response = orderService.createOrder(longitude, latitude, customerDescription, proList, distance, deviceToken);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -127,10 +127,10 @@ public class OrderController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_SHP + API)
-    public String startQueue(Double longitude, Double latitude) {
+    public String startQueue(double longitude, double latitude, String shipperToken) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.autoAssign(longitude, latitude);
+            response = orderService.autoAssign(longitude, latitude, shipperToken);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
