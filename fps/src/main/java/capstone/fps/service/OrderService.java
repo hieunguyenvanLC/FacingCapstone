@@ -408,9 +408,7 @@ public class OrderService {
         shipperWait.setCancel(false);
 
         while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
-            for (int layerNo = 0; layerNo <= 4; layerNo++) {
-                ArrayList<Delta> layer = orderMap.getLayer(layerNo);
-//                Collections.shuffle(layer);
+            for (ArrayList<Delta> layer: orderMap.getLayers()){
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
                     int rowNode = row + delta.row;
@@ -418,7 +416,6 @@ public class OrderService {
                     if (node.size() > 0) {
                         for (OrderStat order : node) {
                             if (!order.isCancel() && order.getLockBy() == 0) {
-
                                 order.setLockBy(accId);
                                 try {
                                     Thread.sleep(500);
@@ -443,6 +440,41 @@ public class OrderService {
                     }
                 }
             }
+//            for (int layerNo = 0; layerNo <= 4; layerNo++) {
+//                ArrayList<Delta> layer = orderMap.getLayer(layerNo);
+////                Collections.shuffle(layer);
+//                for (Delta delta : layer) {
+//                    int colNode = col + delta.col;
+//                    int rowNode = row + delta.row;
+//                    List<OrderStat> node = orderMap.getNode(colNode, rowNode).getStatList();
+//                    if (node.size() > 0) {
+//                        for (OrderStat order : node) {
+//                            if (!order.isCancel() && order.getLockBy() == 0) {
+//
+//                                order.setLockBy(accId);
+//                                try {
+//                                    Thread.sleep(500);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                if (!order.isCancel() && order.getLockBy() == accId) {
+//                                    orderMap.removeOrder(order, colNode, rowNode);
+//                                    FROrder frOrder = order.getFrOrder();
+//                                    frOrder.setShipper(currentUser.getShipper());
+//                                    frOrder.setStatus(Fix.ORD_ASS.index);
+//                                    orderRepository.save(frOrder);
+//                                    notifyBuyer(gson, frOrder);
+//                                    notifyShipper(frOrder, shipperToken);
+//                                    MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+//                                    response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+//                                    return response;
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
