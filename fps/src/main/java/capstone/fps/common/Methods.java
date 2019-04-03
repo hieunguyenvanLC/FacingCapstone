@@ -146,7 +146,7 @@ public final class Methods {
     }
 
     // Converting InputStream to String
-    public static String readStream(InputStream in) {
+    public String readStream(InputStream in) {
         BufferedReader reader = null;
         StringBuilder response = new StringBuilder();
         try {

@@ -1,11 +1,7 @@
 package capstone.fps.model;
 
 
-import com.google.gson.annotations.Expose;
-import com.sun.xml.internal.ws.developer.Serialization;
-
-
-public class MapFaceResult {
+class MapFaceResult {
 
     String rep;
 

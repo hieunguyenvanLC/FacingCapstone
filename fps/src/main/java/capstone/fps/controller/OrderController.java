@@ -1,16 +1,13 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.OrderService;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller

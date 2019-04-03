@@ -20,15 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +35,6 @@ import java.util.Map;
 @Service
 public class OrderService {
 
-    private DistrictRepo districtRepository;
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
@@ -47,12 +43,11 @@ public class OrderService {
     private ReceiveMemberRepo receiveMemberRepo;
     private OrderMap orderMap;
     private TransactionRepo transactionRepo;
+    private final ShipperWait shipperWait;
+
+
     @Autowired
-    private ShipperWait shipperWait;
-
-
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
-        this.districtRepository = districtRepository;
+    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -62,6 +57,7 @@ public class OrderService {
         this.receiveMemberRepo = receiveMemberRepo;
         this.orderMap = orderMap;
         this.transactionRepo = transactionRepo;
+        this.shipperWait = shipperWait;
     }
 
 
@@ -544,7 +540,7 @@ public class OrderService {
         String key = frOrder.getId() + "" + methods.getTimeNow();
         Map<String, String> faceResult = AppData.getFaceResult();
         faceResult.remove(key);
-        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
+        faceRecognise(faceBytes, key);
 
         while (faceResult.get(key) == null) {
             try {
@@ -587,6 +583,7 @@ public class OrderService {
         }
     }
 
+    // Receive HttpReq from Python
     public String receiveFaceResult(String key, String faceListStr) {
         AppData.getFaceResult().put(key, faceListStr);
         return "ok";
@@ -596,12 +593,13 @@ public class OrderService {
     private String handlingFaceResult(String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
         memListStr = memListStr.replace("fps", "");
-        String[] strList = memListStr.split("|");
+        String[] strList = memListStr.split("\\|");
+        int buyerId = buyer.getId();
         for (String idStr : strList) {
             int revMemId = Integer.parseInt(idStr);
             FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
             if (receiveMember != null) {
-                if (receiveMember.getAccount().getId() == buyer.getId()) {
+                if (buyerId == receiveMember.getAccount().getId()) {
                     return callEmulatorServer(gson, payUsername, payPassword, priceStr, description);
                 }
             }
@@ -624,30 +622,28 @@ public class OrderService {
             urlConnection.setRequestMethod(method);
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
-            if (paramName.length > 0) {
-                String urlParameters = paramName[0] + "=" + paramValue[0];
-                for (int i = 1; i < paramName.length; i++) {
-                    urlParameters = urlParameters + "&" + paramName[i] + "=" + paramValue[i];
-                }
-                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.flush();
-                wr.close();
+
+            StringBuilder urlParameters = new StringBuilder(paramName[0] + "=" + paramValue[0]);
+            for (int i = 1; i < paramName.length; i++) {
+                urlParameters.append("&").append(paramName[i]).append("=").append(paramValue[i]);
             }
+            DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+            wr.writeBytes(urlParameters.toString());
+            wr.flush();
+            wr.close();
+
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return "fail";
     }
 
-    public CommandPrompt faceRecognise(byte[] faceBytes, String key) {
+    private CommandPrompt faceRecognise(byte[] faceBytes, String key) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
