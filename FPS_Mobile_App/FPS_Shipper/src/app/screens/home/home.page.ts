@@ -4,6 +4,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { Router } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { ToasthandleService } from 'src/app/services/toasthandle.service';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,7 @@ export class HomePage implements OnInit {
 
   myPhoto: any;
   myPhotoBinary: string;
+  tokenFCM : any;
 
   constructor(
     private orderService: OrderService,
@@ -31,8 +33,31 @@ export class HomePage implements OnInit {
     private router : Router,
     private camera : Camera,
     private toastHandle : ToasthandleService,
+    private fcm : FCM,
   ) {
     this.shipperMode = false;
+
+    //firebase
+    this.fcm.getToken().then(token => {
+      console.log(token);
+      this.tokenFCM = token;
+    });
+    // this.fcm.onTokenRefresh().subscribe(token => {
+    //   console.log(token);
+    // });
+    this.fcm.onNotification().subscribe(data => {
+      console.log(data);
+      if (data.wasTapped) {
+        console.log('Received in background');
+        
+        //data.order.id
+        this.loading.dismiss();
+        this.router.navigate(['check-out', data.order.id]);
+      } else {
+        console.log('Received in foreground');
+        // this.router.navigate([data.landing_page, data.price]);
+      }
+    });// end fcm
   }
 
   ngOnInit() {
@@ -47,7 +72,7 @@ export class HomePage implements OnInit {
 
         this.isLoading = true;
         //call api to auto assign order
-        this.orderService.onShipMode(this.longitudeShp, this.latitudeShp).subscribe(
+        this.orderService.onShipMode(this.longitudeShp, this.latitudeShp, this.tokenFCM).subscribe(
           res => {
             console.log("Begin res: ");
             console.log(res);

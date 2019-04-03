@@ -154,6 +154,9 @@ export class StorePage implements OnInit {
   }
 
   async openOrderModal() {
+    console.log("o trong openModalOder");
+    console.log("currentAddress");
+    console.log(this.currentAddress);
     await this.modalController.create({
       animated: true,
       component: OrdermodalPage,
@@ -201,25 +204,34 @@ export class StorePage implements OnInit {
             .then(res => {
               console.log("START GOOGLE ----")
               console.log(res);
+              console.log(res.data)
               this.temp.push(res);
+              let myArr =  JSON.parse(res.data);
+              console.log("myArr");
+              console.log(myArr);
+              console.log(myArr.routes[0].legs[0].start_address);
+              
+
               console.log("----Start address-----")
-              console.log(this.temp[0].routes[0].legs[0].start_address) //start address
-              this.currentAddress = this.temp[0].routes[0].legs[0].start_address;
+              // console.log(this.temp[0].routes[0].legs[0].start_address) //start address
+              this.currentAddress = myArr.routes[0].legs[0].start_address
               // this.storage.set("STARTADDRESS", this.temp[0].routes[0].legs[0].start_address)
-              console.log(this.temp[0].routes[0].legs[0].start_location.lat) //start latitude
-              console.log(this.temp[0].routes[0].legs[0].start_location.lng)
-              console.log("----End address-----")
-              console.log(this.temp[0].routes[0].legs[0].end_address) //end address
-              console.log(this.temp[0].routes[0].legs[0].end_location.lat) //end latitude
-              console.log(this.temp[0].routes[0].legs[0].end_location.lng)
-              console.log("----Duration------")
-              console.log(this.temp[0].routes[0].legs[0].duration.text)// format : "3 phut"
-              this.duration = this.temp[0].routes[0].legs[0].duration.text.replace(" phút", "");
+              // console.log(this.temp[0].routes[0].legs[0].start_location.lat) //start latitude
+              // console.log(this.temp[0].routes[0].legs[0].start_location.lng)
+              // console.log("----End address-----")
+              // console.log(this.temp[0].routes[0].legs[0].end_address) //end address
+              // console.log(this.temp[0].routes[0].legs[0].end_location.lat) //end latitude
+              // console.log(this.temp[0].routes[0].legs[0].end_location.lng)
+              // console.log("----Duration------")
+              // console.log(this.temp[0].routes[0].legs[0].duration.text)// format : "3 phut"
+              this.duration = myArr.routes[0].legs[0].duration.text.replace(" phút", "");
               this.duration = parseInt(this.duration) + 15;
               this.duration += " phút";
               console.log("duration: " + this.duration);
-              console.log(this.temp[0].routes[0].legs[0].distance.text)//distance
-              this.distance = this.temp[0].routes[0].legs[0].distance.text.replace(" km", "");
+              // console.log(this.temp[0].routes[0].legs[0].distance.text)//distance
+              this.distance = myArr.routes[0].legs[0].distance.text.split(" ",1);
+              // console.log(distanceArr);
+              // this.distance = distanceArr[0];
               this.shpEarn = this.calculateShpEarn(parseInt(this.distance));
               console.log(this.distance)
             });//end google api

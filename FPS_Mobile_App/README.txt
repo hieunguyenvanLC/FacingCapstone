@@ -96,3 +96,6 @@ ionic cordova plugin add cordova-plugin-fcm-with-dependecy-updated
 npm install @ionic-native/fcm
 
 -----------------
+HTTP
+ionic cordova plugin add cordova-plugin-advanced-http
+npm install @ionic-native/http

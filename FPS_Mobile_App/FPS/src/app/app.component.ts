@@ -9,6 +9,8 @@ import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { GoogleApiService } from './services/google-api.service';
 import { StorageApiService } from './services/storage-api.service';
+import { FCM } from '@ionic-native/fcm/ngx';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -55,11 +57,12 @@ export class AppComponent {
     private statusBar: StatusBar,
     public navCtrl: NavController,
     private router: Router,
-    // private fcm: FCM,
+    private fcm: FCM,
     private accountService: AccountService,
     private storage: StorageApiService,
     private geolocation: Geolocation,
     private googleAPI : GoogleApiService,
+    private loading : LoadingService,
   ) {
     this.initializeApp();
     // this.getLocataion();
@@ -74,6 +77,21 @@ export class AppComponent {
       // this.fcm.getToken().then(token => {
       //   console.log(token);
       // });// end fcm
+      this.fcm.onNotification().subscribe(data => {
+        console.log(data);
+        if (data.wasTapped) {
+          console.log('Received in background');
+          
+          //data.order.id
+          this.loading.dismiss();
+          this.router.navigate(['check-out', data.order.id]);
+        } else {
+          console.log('Received in foreground');
+          // this.router.navigate([data.landing_page, data.price]);
+          this.loading.dismiss();
+          this.router.navigate(['check-out', data.order.id]);
+        }
+      });// end fcm
       // this.storage.clear().then(() => {
         console.log(11111111)
         // this.geolocation.getCurrentPosition().then((resp) => {

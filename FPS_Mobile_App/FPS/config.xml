@@ -98,6 +98,7 @@
     </plugin>
     <plugin name="cordova-plugin-fcm-with-dependecy-updated" spec="2.4.0" />
     <plugin name="cordova-sqlite-storage" spec="3.2.0" />
+    <plugin name="cordova-plugin-advanced-http" spec="2.0.6" />
     <engine name="ios" spec="4.5.5" />
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="7.1.4" />

@@ -18,12 +18,20 @@ import { OrderService } from './services/order.service';
 import { LoadingService } from './services/loading.service';
 import { Camera } from '@ionic-native/camera/ngx';
 
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
+
+import { IonicStorageModule } from '@ionic/storage';
+import { HTTP } from '@ionic-native/http/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
     HttpModule
@@ -37,7 +45,12 @@ import { Camera } from '@ionic-native/camera/ngx';
     AccountService,
     OrderService,
     LoadingService,
+    HTTP,
     Camera,
+    Geolocation,
+    NativeGeocoder,
+    FCM,
+    Storage,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 export class Constant {
-    public APIURL = "http://192.168.43.247:8080";
-
+    public APIURL = "http://192.168.100.129:8080";
+    // public APIURL ="http://localhost:8080";
     // MAPPING API
     public MAP_ANY = "/any";
     public MAP_LOG = "/log";
@@ -15,7 +15,7 @@ export class Constant {
     public ROL_SHP = "ROLE_SHIPPER";
 
     // Page
-    public LOGIN = "/login";
+    public LOGIN = "/sign_in";
     public ACCOUNT = "/account";
     public STORE = "/store";
     public ORDER = "/order";

@@ -51,7 +51,7 @@ export class OrdermodalPage implements OnInit {
     // componentProps can also be accessed at construction time using NavParams
   }
   ngOnInit() {
-    console.log(this.myOrder[0].products);
+    //console.log(this.myOrder[0].products);
     console.log(this.myOrder)
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
 
@@ -74,6 +74,8 @@ export class OrdermodalPage implements OnInit {
       } else {
         console.log('Received in foreground');
         // this.router.navigate([data.landing_page, data.price]);
+        this.loading.dismiss();
+        this.router.navigate(['check-out', data.order.id]);
       }
     });// end fcm
 
@@ -82,15 +84,16 @@ export class OrdermodalPage implements OnInit {
 
     console.log(this.myOrder[0].latitudeCus);
     console.log(this.myOrder[0].longitudeCus);
+    console.log(this.myOrder[0].distance);
   }
   dismissModal() {
     this.modalController.dismiss();
   }
 
    async checkout() {
-    //custo
+    console.log(this.myOrder[0].products.length)
     for (let i = 0; i < this.myOrder[0].products.length; i++) {
-      const element = this.myOrder.products[i];
+      const element = this.myOrder[0].products[i];
       if (element != undefined) {
         if (i == this.myOrder[0].products.length - 1) {
           this.prodList += element.id + "x" + element.quantity;
@@ -102,6 +105,7 @@ export class OrdermodalPage implements OnInit {
 
     }
     //this.router.navigateByUrl("order");
+    console.log("cb create")
     await this.orderService.createOrder(this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus, "", this.prodList, this.myOrder[0].distance, this.tokenFCM)
       .subscribe(data => {
         console.log(data);
