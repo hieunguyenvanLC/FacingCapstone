@@ -1,12 +1,12 @@
 package com.capstone.paypal.model;
 
-public class PaymentData {
+public class PayPalData {
 
     private String result;
     private String price;
     private String description;
 
-    public PaymentData() {
+    public PayPalData() {
     }
 
     public String getResult() {

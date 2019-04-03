@@ -1,17 +1,16 @@
 package com.capstone.paypal.controller;
 
 import com.capstone.paypal.common.Fix;
-import com.capstone.paypal.service.PaymentService;
+import com.capstone.paypal.service.PayPalService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class PaymentController extends AbstractController {
+public class PayPalController extends AbstractController {
 
-    private PaymentService paymentService;
+    private PayPalService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
+    public PayPalController(PayPalService paymentService) {
         this.paymentService = paymentService;
     }
 

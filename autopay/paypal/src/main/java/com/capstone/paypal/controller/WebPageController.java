@@ -1,11 +1,7 @@
 package com.capstone.paypal.controller;
 
 import com.capstone.paypal.common.Fix;
-import com.capstone.paypal.model.PaymentData;
-import com.capstone.paypal.service.PaymentService;
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.capstone.paypal.service.PayPalService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class WebPageController {
 
-    private static final String URL_PAYPAL_SUCCESS = Fix.MAP_PAY + "/success";
-    private static final String URL_PAYPAL_CANCEL = Fix.MAP_PAY + "/cancel";
-    private final PaymentService paymentService;
+    private static final String URL_PAY_PAL_SUCCESS = Fix.MAP_PAY + "/success";
+    private static final String URL_PAY_PAL_CANCEL = Fix.MAP_PAY + "/cancel";
+    private final PayPalService paymentService;
 
-    public WebPageController(PaymentService paymentService) {
+    public WebPageController(PayPalService paymentService) {
         this.paymentService = paymentService;
     }
 
@@ -45,17 +41,18 @@ public class WebPageController {
 
     @GetMapping(Fix.MAP_PAY)
     public String initPay() {
-        return paymentService.initPayment(URL_PAYPAL_CANCEL, URL_PAYPAL_SUCCESS);
+        return paymentService.initPayment(URL_PAY_PAL_CANCEL, URL_PAY_PAL_SUCCESS);
     }
 
-    @GetMapping(URL_PAYPAL_CANCEL)
+    @GetMapping(URL_PAY_PAL_CANCEL)
     public String cancelPay() {
-        return "cancel";
+        return "redirect:/";
     }
 
-    @GetMapping(URL_PAYPAL_SUCCESS)
+    @GetMapping(URL_PAY_PAL_SUCCESS)
     public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
-        return paymentService.executePayment(paymentId, payerId);
+        paymentService.executePayment(paymentId, payerId);
+        return "redirect:/";
     }
 
 

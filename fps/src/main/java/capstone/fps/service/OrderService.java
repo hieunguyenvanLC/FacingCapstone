@@ -475,7 +475,8 @@ public class OrderService {
         notification.addProperty("icon", "fcm_push_icon");
 
         JsonObject data = new JsonObject();
-        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+//        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+        data.addProperty("orderId", frOrder.getId());
 
         JsonObject body = new JsonObject();
         body.add("notification", notification);

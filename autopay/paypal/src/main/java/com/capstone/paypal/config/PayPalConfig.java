@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class PaypalConfig {
+public class PayPalConfig {
 
 //    @Bean
 //    public Map<String, String> paypalSdkConfig() {

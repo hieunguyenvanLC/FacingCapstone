@@ -2,7 +2,7 @@ package com.capstone.paypal.service;
 
 import com.capstone.paypal.common.Fix;
 import com.capstone.paypal.common.Simulator;
-import com.capstone.paypal.model.PaymentData;
+import com.capstone.paypal.model.PayPalData;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PaymentService {
+public class PayPalService {
 
 
 //    private static String descriptionStr = "basis test";
@@ -22,12 +22,12 @@ public class PaymentService {
 //    public static int paymentResult;
 
     @Autowired
-    private PaymentData paymentData;
+    private PayPalData paymentData;
 
     private APIContext apiContext;
 
 
-    public PaymentService(APIContext apiContext) {
+    public PayPalService(APIContext apiContext) {
         this.apiContext = apiContext;
     }
 
