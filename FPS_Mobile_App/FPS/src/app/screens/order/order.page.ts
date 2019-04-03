@@ -58,40 +58,6 @@ export class OrderPage implements OnInit{
     // private googleMapcreate : GoogleMaps
   ) { }
 
-  // async ngOnInit() {
-    
-
-  //   await this.platform.ready();
-  //   await this.loadMap();
-  //   console.log("anfasda")
-    
-  // }
-
-  
-  // loadMap() {
-  //   let mapOptions: GoogleMapOptions = {
-    
-  //     center: {
- 
-  //         lat: 10.82767617410066,
-  //         lng: 106.67927390539103
-  //       },
-  //       zoom: 18,
-  //       tilt: 30
-      
-  //   };
- 
-  //   let map = new google.maps.Map(
-  //     this.mapElement.nativeElement,
-  //     mapOptions);
-
-  // }
-
-  //--------------------------------test new----------------------------------
-
-  
- 
- 
   ngOnInit() {
     this.loadMap();
   }
@@ -119,7 +85,8 @@ export class OrderPage implements OnInit{
         this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
       });
  
-    }).catch((error) => {
+    }) //end geolocation get current
+    .catch((error) => {
       console.log('Error getting location', error);
     });
   }

@@ -15,8 +15,8 @@
           <img src="{{ userDetail.avatar }}">
         </div>
         <div *ngIf=(!isImg)>
-            <img src="../../../assets/image/default-user.png">
-          </div>
+          <img src="../../../assets/image/default-user.png">
+        </div>
         <h1 class="fw500">{{ userDetail.name }}</h1>
         <h2 margin-bottom>Extra point: {{ userDetail.extraPoint }}</h2>
         <ion-button icon-left color="light">
@@ -51,10 +51,10 @@
               </ion-item>
 
               <ion-item>
-                  <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-                  <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail.phone }}">
-                  </ion-input>
-                </ion-item>
+                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
+                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail.phone }}">
+                </ion-input>
+              </ion-item>
 
               <!-- <ion-item> -->
               <!-- <ion-label color="dark" position="stacked">Extra point: {{ userDetail[0].data.extraPoint }}</ion-label> -->
@@ -110,7 +110,28 @@
               <ion-checkbox></ion-checkbox>
             </ion-item>
           </ion-list> -->
+            <ion-list margin-bottom>
+              <ion-list-header color="light">
+                <ion-label class="fw700">Your member</ion-label>
+              </ion-list-header>
 
+              <ion-item>
+                <ion-label color="dark" position="stacked">Full Name:</ion-label>
+                </ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label color="dark" position="stacked">Email:</ion-label>
+                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail.email }}">
+                </ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
+                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail.phone }}">
+                </ion-input>
+              </ion-item>
+            </ion-list>
           </ion-col>
         </ion-row>
       </ion-grid>

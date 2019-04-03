@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { AccountService } from './services/account.service';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { GoogleApiService } from './services/google-api.service';
+import { StorageApiService } from './services/storage-api.service';
 
 @Component({
   selector: 'app-root',
@@ -55,10 +57,12 @@ export class AppComponent {
     private router: Router,
     // private fcm: FCM,
     private accountService: AccountService,
-    private storage: Storage,
+    private storage: StorageApiService,
     private geolocation: Geolocation,
+    private googleAPI : GoogleApiService,
   ) {
     this.initializeApp();
+    // this.getLocataion();
   }
 
   initializeApp() {
@@ -72,16 +76,17 @@ export class AppComponent {
       // });// end fcm
       // this.storage.clear().then(() => {
         console.log(11111111)
-        this.geolocation.getCurrentPosition().then((resp) => {
-          console.log(resp)
-          let lati = resp.coords.latitude;
-          let longi = resp.coords.longitude;
-          this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
-          // resp.coords.latitude
-          // resp.coords.longitude
-        }).catch((error) => {
-          console.log('Error getting location: ', error);
-        });
+        // this.geolocation.getCurrentPosition().then((resp) => {
+        //   console.log(resp)
+        //   let lati = resp.coords.latitude;
+        //   let longi = resp.coords.longitude;
+        //   this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+        //   // resp.coords.latitude
+        //   // resp.coords.longitude
+        // }).catch((error) => {
+        //   console.log('Error getting location: ', error);
+        // });
+        this.googleAPI.getCurrentLocation();
       });
 
     // });
@@ -102,7 +107,24 @@ export class AppComponent {
     this.router.navigateByUrl("profile");
   }
 
-  logout() {
+  // getLocataion(){
+  //   this.geolocation.getCurrentPosition().then((resp) => {
+  //     console.log(resp)
+  //     let lati = resp.coords.latitude;
+  //     let longi = resp.coords.longitude;
+  //     this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+  //     // resp.coords.latitude
+  //     // resp.coords.longitude
+  //   }).catch((error) => {
+  //     console.log('Error getting location: ', error);
+  //   });
+  // }
 
+   async logout() {
+    await this.accountService.logOut().subscribe(res => {
+      console.log(res);
+      this.storage.clear();
+      this.router.navigateByUrl("login");
+    }); //end api log out
   }
 }

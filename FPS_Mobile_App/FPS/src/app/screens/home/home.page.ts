@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { StoreService } from 'src/app/services/store.service';
-import { store } from '@angular/core/src/render3';
 import {Store} from 'src/app/models/store.model';
 import { TouchSequence } from 'selenium-webdriver';
-import { Http } from '@angular/http';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
 import { Storage } from '@ionic/storage';
 import { AccountService } from 'src/app/services/account.service';
 import { AppComponent } from '../../app.component'
+import { Constant } from 'src/app/common/constant';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-home',
@@ -41,13 +41,34 @@ export class HomePage {
     private storage: Storage,
     private accountService : AccountService,
     private appComponent : AppComponent,
+    private constant: Constant,
+    private geolocation: Geolocation,
   ){
-
+    console.log('contructor')
+    this.storage.get("MYLOCATION").then(value => {
+      if (value === null){
+        console.log("in null, set location");
+        console.log(value);
+        // this.appComponent.getLocataion();
+        this.geolocation.getCurrentPosition().then((resp) => {
+          console.log(resp)
+          let lati = resp.coords.latitude;
+          let longi = resp.coords.longitude;
+          this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+          // resp.coords.latitude
+          // resp.coords.longitude
+        }).catch((error) => {
+          console.log('Error getting location: ', error);
+        });
+      }
+      console.log("MYLOCATION IS ")
+      console.log(value);
+    });
   }
 
   ngOnInit() {
     console.log("da tao");
-    this.loading.present().then( () => {
+    this.loading.present(this.constant.LOADINGMSG).then( () => {
       this.storeService.getList(this.longitude, this.latitude).subscribe(
         res => {
           //this.stores = Array.prototype.slice.call(data.toString);
@@ -89,10 +110,15 @@ export class HomePage {
       }
       
     });
-    this.storage.get("MYLOCATION").then(value => {
-      console.log("MYLOCATION IS ")
-      console.log(value);
-    });
+    // this.storage.get("MYLOCATION").then(value => {
+    //   // if (value === null){
+    //   //   console.log("in null, set location");
+    //   //   console.log(value);
+    //   //   this.appComponent.getLocataion();
+    //   // }
+    //   console.log("MYLOCATION IS ")
+    //   console.log(value);
+    // });
 
     //refresh slide menu
     // if (this.username){
