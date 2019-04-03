@@ -157,7 +157,7 @@ public class StoreService {
     public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        double dis = 5 * Fix.DEGREE_PER_KM;
+        double dis = 15 * Fix.DEGREE_PER_KM;
         double minLon = longitude - dis;
         double maxLon = longitude + dis;
         double minLat = latitude - dis;

@@ -45,7 +45,10 @@ public final class Methods {
         return BCrypt.hashpw(input, salt);
     }
 
-    public int getAge(long time) {
+    public int getAge(Long time) {
+        if (time == null) {
+            return -1;
+        }
         Calendar firstCal = GregorianCalendar.getInstance();
         Calendar secondCal = GregorianCalendar.getInstance();
         firstCal.setTimeInMillis(time);
