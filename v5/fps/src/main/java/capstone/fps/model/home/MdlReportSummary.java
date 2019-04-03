@@ -11,8 +11,38 @@ public class MdlReportSummary {
     private int StoreCount; //count all store
     @Expose
     private int OrderCount; // count all order
+    @Expose
+    private int countOrderLess; // Count order with <12h
+    @Expose
+    private int countOrderEqual; //Count order with 12-24h
+    @Expose
+    private int countOrderMore; //Count order >24h
 //    @Expose
 //    private List<Integer> orders;
+
+    public int getCountOrderLess() {
+        return countOrderLess;
+    }
+
+    public void setCountOrderLess(int countOrderLess) {
+        this.countOrderLess = countOrderLess;
+    }
+
+    public int getCountOrderEqual() {
+        return countOrderEqual;
+    }
+
+    public void setCountOrderEqual(int countOrderEqual) {
+        this.countOrderEqual = countOrderEqual;
+    }
+
+    public int getCountOrderMore() {
+        return countOrderMore;
+    }
+
+    public void setCountOrderMore(int countOrderMore) {
+        this.countOrderMore = countOrderMore;
+    }
 //    @Expose
 //    private List<Integer> canceledOrders;
 //    @Expose

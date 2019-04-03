@@ -19,6 +19,11 @@ public class HomeService {
     private OrderDetailRepo orderDetailRepository;
     private StoreRepo storeRepo;
     private ProductRepo productRepo;
+    long localTime = System.currentTimeMillis();
+    long less = (12 * 60 * 60 * 1000) - 1; // <12h
+    long equal12 = (12 * 60 * 60 * 1000); // =12h
+    long equal24 = (24 * 60 * 60 * 1000); // =24h
+    long more = (24 * 60 * 60 * 1000) + 1; //>24h
 
     public HomeService(
             ProductRepo productRepo,
@@ -81,6 +86,20 @@ public class HomeService {
 
     public int countOrderBy(Long start, Long end) {
         return this.orderRepository.countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+    }
+
+    public int countOrderLess() {
+        return this.orderRepository.countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(1, (localTime - less), localTime);
+    }
+
+    public int countOrderMore() {
+        return this.orderRepository.countByStatusAndCreateTimeLessThan(1, (localTime - more));
+    }
+
+    public int countOrderEqual() {
+        long timeFirst = localTime - equal12;
+        long timeSecond = localTime - equal24;
+        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(1, timeSecond, timeFirst);
     }
 
     public int countOrderCancelBy(Long start, Long end) {

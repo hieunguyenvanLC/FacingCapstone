@@ -96,6 +96,10 @@ $(document).ready(function () {
             $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
             $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
             $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
+            $("#lbPenLess").html("<strong>" + summary.countOrderLess + "</strong>");
+            $("#lbPenMore").html("<strong>" + summary.countOrderMore + "</strong>");
+            $("#lbPenEqual").html("<strong>" + summary.countOrderEqual + "</strong>");
+
         },
         error: function (err) {
             console.log(err);

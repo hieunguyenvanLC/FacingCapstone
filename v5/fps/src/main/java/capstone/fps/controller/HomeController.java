@@ -33,7 +33,7 @@ public class HomeController extends AbstractController {
 
     public HomeController(HomeService homeService) {
         this.homeService = homeService;
-        this.orderService=orderService;
+        this.orderService = orderService;
     }
 
     @GetMapping(Fix.MAP_ANY + API + "/summary")
@@ -48,6 +48,10 @@ public class HomeController extends AbstractController {
         summary.setOrderCount(this.homeService.countOrder());   //Count All Order
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
         summary.setStoreCount(this.homeService.countStore());   //Count All Store
+
+        summary.setCountOrderLess(this.homeService.countOrderLess()); //Count Order less than 12h
+        summary.setCountOrderMore(this.homeService.countOrderMore()); //Count Order more than 12h
+        summary.setCountOrderEqual(this.homeService.countOrderEqual()); //Count Order less than 12h-24h
 
 //        YearMonth yearMonthObject = YearMonth.of(year, mon);
 //        Integer daysInMonth = yearMonthObject.lengthOfMonth(); //28
