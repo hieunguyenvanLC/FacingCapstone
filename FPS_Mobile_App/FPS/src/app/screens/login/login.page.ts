@@ -5,6 +5,10 @@ import { ToastController } from '@ionic/angular';
 import { element } from '../../../../node_modules/protractor';
 import { Storage } from '@ionic/storage';
 import { StorageApiService } from 'src/app/services/storage-api.service';
+import { GoogleApiService } from 'src/app/services/google-api.service';
+import { async } from 'q';
+import { getHostElement } from '@angular/core/src/render3';
+// import { setTimeout } from 'timers';
 
 @Component({
   selector: 'app-login',
@@ -17,21 +21,31 @@ export class LoginPage implements OnInit {
   password: string;
   error: string;
   account = [];
-  accountDetail = [];
+  // accountDetail = [];
 
   constructor(
     private router: Router,
-    private accountService: AccountService,
+     private  accountService: AccountService,
     private toastCtrl: ToastController,
-    private storage: StorageApiService,
+   private storage: StorageApiService,
+    private googleAPI: GoogleApiService
   ) { 
     this.phonenumber = '222';
     this.password = 'zzz';
     this.error = '';
     
+    
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
+    setTimeout(()=>{
+       this.googleAPI.getCurrentLocation();
+       console.log(this.googleAPI.getCurrentLocation());
+      this.getStorage();
+      
+    },300) 
+    
     // this.phonenumber = 'azx';
     //this.phonenumber = '222';
     //this.password = 'zzz';
@@ -59,66 +73,64 @@ export class LoginPage implements OnInit {
     //#endregion
   }
 
-  async login() {
+   async login() {
+    
+    
+    
+    await this.storage;
      //this.accountService.logOut();
-     this.account.length = 0;
-     this.accountDetail.length =0;
-     console.log("truoc khi login"+this.account);
-    this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
+   this.account.length = 0;
+    //  this.accountDetail.length =0;
+    //  console.log("truoc khi login"+this.account);
+     this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
       console.log(this.phonenumber + "  " + this.password);
       console.log(res);
      
       //let body = res.json();  // If response is a JSON use json()
-      console.log(this.account);
+  
       this.account.push(res);
-      console.log(this.account[0].data);
-      console.log(this.account[0].status_code);
 
-
-      if (this.account) {
+       if (this.account) {
         //if (role === "ROLE_MEMBER"){
         if (this.account[0].data === "ROLE_MEMBER") {
           this.error = '';
-          //console.log("vo home")
-          // this.storage.set("ACCOUNT", [{id: "tu_tu_roi_biet",phonenumber: this.phonenumber}])
 
-          this.accountService.getDetailUser().subscribe(res => {
-            this.accountDetail.push(res);
-            console.log("---USERDETAIL HERE----")
-            console.log(this.accountDetail[0].data);
-            
-            this.storage.set("ACCOUNT", this.accountDetail[0].data);
-            console.log("-----// USERDETAIL HERE \\------")
-            console.log("----- get USERDETAIL HERE")
-            this.storage.get("ACCOUNT").then(value => {
-              console.log(value)
-              console.log("in get account")
-            })
-            console.log("----- // get USERDETAIL HERE")
-          }, 
-          () => {
-            // this.storage.get("ACCOUNT").then(value => {
-            //   if (value){
-            //     this.storage.remove("ACCOUNT").then(() => {
+          
+             this.getDetailAccount().then(value => {
+               console.log("value tra ve")
+               console.log(value);
+               
+                setTimeout(()=>{
                   
-            //     });
-            //   }
-            // });
-            
-          });//end api get detail
-
-          this.router.navigateByUrl("home");
-
+                  this.getStorage();
+                  
+                },1300) 
+               
+               
+                
+             });
+            //end api get detail
+             
+          
         } else {
           this.error = "Wrong username or password";
         }
+
+        
       } else {
 
       }
+
+      
     }), err => {
       console.log(err);
     };
-
+    
+   
+    
+     
+         
+    
 
   }
 
@@ -127,6 +139,50 @@ export class LoginPage implements OnInit {
     this.router.navigateByUrl("registor");
   }
 
+  async getStorage(){
+      await console.log("----- get Storage here---------------")
+      this.storage.get("ACCOUNT").then(value => {
+               console.log(value)
+               console.log("in get account")
+               this.router.navigateByUrl("home");
+             }).catch(Err => {
+                 console.log(Err);
+             });
+             
+           
+  }
 
+
+  async getDetailAccount(){
+    let result = "Failed";
+    let userAccountDetail = [];
+    await this.accountService.getDetailUser().subscribe(res => {
+     
+      userAccountDetail.push(res);
+      console.log(userAccountDetail);
+      
+      console.log("---Get detail account here----")
+     
+      console.log(userAccountDetail[0].data);
+
+      
+
+    }, () => {
+
+    });
+
+     setTimeout(()=>{
+         this.storage.set("ACCOUNT", userAccountDetail[0].data).then(()=>{
+        console.log("------------Truoc khi tra result------------------")
+        console.log(result);
+        console.log("------------Sau khi tra result------------------")
+         result = "Success";
+
+         console.log(result);
+      });
+    },500);
+    
+     return await result;
+  }
 
 }

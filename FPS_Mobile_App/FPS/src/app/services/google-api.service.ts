@@ -55,8 +55,10 @@ export class GoogleApiService {
     );
   }
 
-  async getCurrentLocation(){
-    await this.geolocation.getCurrentPosition().then((resp) => {
+   getCurrentLocation(){
+    console.log("vao ham");
+     this.geolocation.getCurrentPosition().then((resp) => {
+      console.log("da gui request");
       console.log(resp)
       let lati = resp.coords.latitude;
       let longi = resp.coords.longitude;

@@ -3,7 +3,7 @@ import { NavParams, ModalController, ToastController } from 'node_modules/@ionic
 import { OrderService } from '../../services/order.service';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AutocompletePage } from '../autocomplete/autocomplete.page';
+// import { AutocompletePage } from '../autocomplete/autocomplete.page';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -223,15 +223,15 @@ export class OrdermodalPage implements OnInit {
     //   this.address.place = data;
     // });
     // modal.present();
-    this.modalController.create({
-      animated: true,
-      component: AutocompletePage,
-      componentProps: {
-        mydata: this.myOrder[0].currentAddress
-      }
-    }).then(modal => {
-      modal.present();
-    })
+    // this.modalController.create({
+    //   animated: true,
+    //   component: AutocompletePage,
+    //   componentProps: {
+    //     mydata: this.myOrder[0].currentAddress
+    //   }
+    // }).then(modal => {
+    //   modal.present();
+    // })
     // animated: true,
     //   component: OrdermodalPage,
     //   componentProps: {

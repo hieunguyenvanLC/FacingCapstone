@@ -99,7 +99,8 @@ export class HomePage {
     
 
     this.storage.get("ACCOUNT").then(value => {
-      console.log("ACCOUNT-");
+      console.log("ACCOUNT-ieikei");
+
       if (value){
         console.log("not empty");
         console.log(value);
