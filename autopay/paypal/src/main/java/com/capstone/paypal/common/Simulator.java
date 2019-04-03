@@ -15,9 +15,7 @@ public class Simulator {
     public final Robot robot;
     public final Clipboard clipboard;
 
-    static {
-        System.setProperty("java.awt.headless", "false");
-    }
+
 
     public Simulator() throws AWTException {
         this.robot = new Robot();

@@ -41,7 +41,7 @@ public class WebPageController {
 
     @GetMapping(Fix.MAP_PAY)
     public String initPay() {
-        return paymentService.initPayment(URL_PAY_PAL_CANCEL, URL_PAY_PAL_SUCCESS);
+        return paymentService.initPayment(Fix.LOCAL_URL + URL_PAY_PAL_CANCEL, Fix.LOCAL_URL + URL_PAY_PAL_SUCCESS);
     }
 
     @GetMapping(URL_PAY_PAL_CANCEL)
@@ -51,8 +51,7 @@ public class WebPageController {
 
     @GetMapping(URL_PAY_PAL_SUCCESS)
     public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
-        paymentService.executePayment(paymentId, payerId);
-        return "redirect:/";
+        return paymentService.executePayment(paymentId, payerId);
     }
 
 
