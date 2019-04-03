@@ -10,8 +10,8 @@ export class StorageApiService {
     private storage: Storage,
   ) { }
 
-  public set(key, value) {
-    return this.storage.set(key, value);
+  public async set(key, value) {
+    return await this.storage.set(key, value);
   }
   public async get(key) {
     return await this.storage.get(key);

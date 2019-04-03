@@ -86,7 +86,7 @@ export class AppComponent {
         // }).catch((error) => {
         //   console.log('Error getting location: ', error);
         // });
-        this.googleAPI.getCurrentLocation();
+       
       });
 
     // });
@@ -123,7 +123,9 @@ export class AppComponent {
    async logout() {
     await this.accountService.logOut().subscribe(res => {
       console.log(res);
+      
       this.storage.clear();
+      
       this.router.navigateByUrl("login");
     }); //end api log out
   }

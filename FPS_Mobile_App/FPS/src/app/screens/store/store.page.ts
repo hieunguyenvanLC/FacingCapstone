@@ -203,8 +203,12 @@ export class StorePage implements OnInit {
               console.log(res);
               this.temp.push(res);
               console.log("----Start address-----")
-              console.log(this.temp[0].routes[0].legs[0].start_address) //start address
-              this.currentAddress = this.temp[0].routes[0].legs[0].start_address;
+              let jsonList = JSON.parse(res.data);
+              console.log("jsonList-------");
+             
+              // console.log(this.temp[0].routes[0].legs[0].start_address) //start address
+              console.log(this.currentAddress = jsonList.routes[0].legs[0].start_address);
+              this.currentAddress = jsonList.routes[0].legs[0].start_address;
               // this.storage.set("STARTADDRESS", this.temp[0].routes[0].legs[0].start_address)
               console.log(this.temp[0].routes[0].legs[0].start_location.lat) //start latitude
               console.log(this.temp[0].routes[0].legs[0].start_location.lng)
