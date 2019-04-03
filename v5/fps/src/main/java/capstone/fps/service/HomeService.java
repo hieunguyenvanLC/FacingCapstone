@@ -19,7 +19,7 @@ public class HomeService {
     private OrderDetailRepo orderDetailRepository;
     private StoreRepo storeRepo;
     private ProductRepo productRepo;
-    long localTime = System.currentTimeMillis();
+    long localTime = 0;
     long less = (12 * 60 * 60 * 1000) - 1; // <12h
     long equal12 = (12 * 60 * 60 * 1000); // =12h
     long equal24 = (24 * 60 * 60 * 1000); // =24h
@@ -89,14 +89,17 @@ public class HomeService {
     }
 
     public int countOrderLess() {
+        localTime = System.currentTimeMillis();
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(1, (localTime - less), localTime);
     }
 
     public int countOrderMore() {
+        localTime = System.currentTimeMillis();
         return this.orderRepository.countByStatusAndCreateTimeLessThan(1, (localTime - more));
     }
 
     public int countOrderEqual() {
+        localTime = System.currentTimeMillis();
         long timeFirst = localTime - equal12;
         long timeSecond = localTime - equal24;
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(1, timeSecond, timeFirst);

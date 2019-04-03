@@ -84,27 +84,31 @@ $(document).ready(function () {
 //     });
 //
 //     var orderDetailTable = $("#order-detail-table").DataTable({});
+    function loadSummary() {
+        $.ajax({
+            url: "/any/api/report/summary?mon=7&year=2019",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response.data);
+                var summary = response.data;
+                $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
+                $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
+                $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
+                $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
+                $("#lbPenLess").html("<strong>" + summary.countOrderLess + "</strong>");
+                $("#lbPenMore").html("<strong>" + summary.countOrderMore + "</strong>");
+                $("#lbPenEqual").html("<strong>" + summary.countOrderEqual + "</strong>");
 
-    $.ajax({
-        url: "/any/api/report/summary?mon=7&year=2019",
-        type: "GET",
-        dataType: "json",
-        success: function (response) {
-            // console.log(response.data);
-            var summary = response.data;
-            $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
-            $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
-            $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
-            $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
-            $("#lbPenLess").html("<strong>" + summary.countOrderLess + "</strong>");
-            $("#lbPenMore").html("<strong>" + summary.countOrderMore + "</strong>");
-            $("#lbPenEqual").html("<strong>" + summary.countOrderEqual + "</strong>");
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
 
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    });
+    loadSummary();
+    setInterval(loadSummary, 5000);
 
     var BARCHARTEXMPLE = $('#barChartExample'); // Date picker cua chart home
     // barChartExample = new Chart(BARCHARTEXMPLE, {
@@ -491,8 +495,62 @@ $(document).ready(function () {
         });
     }
 
-    // Show chart
-    // loadChart(reportType, chartType, 0, 0);
+    // Xy ly pending
+    $('#lbPenLess').click(function () {
+        var now = moment();
+        var low = now.clone().subtract(12, 'hours').unix() * 1000;
+        var up = now.unix() * 1000;
+        loadPendingOrders(low, up);
+    });
+    $('#lbPenEqual').click(function () {
+        var now = moment();
+        var low = now.clone().subtract(24, 'hours').unix() * 1000;
+        var up = now.clone().subtract(12, 'hours').unix() * 1000;
+        loadPendingOrders(low, up);
+    });
+    $('#lbPenMore').click(function () {
+        var now = moment();
+        var low = 0;
+        var up = now.clone().subtract(24, 'hours').unix() * 1000;
+        loadPendingOrders(low, up);
+    });
+
+    // low: chan duoi, up: chan tren
+    // current local time: now
+    // [now - 12, now)
+    // [now - 24, now - 12]
+    // [0, now - 24)
+    function loadPendingOrders(low, up) {
+        $("#lbOrderList").text("List of pending order");
+
+        $.ajax({
+            url: "/any/api/report/orderlist?status=1&start=" + low + "&end=" + up,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                var orders = response.data;
+                orderList = orders;
+
+                // report-table
+                $("#report-table").DataTable().destroy();
+                var reportTable = $("#report-table").DataTable();
+                reportTable.clear().draw();
+                for (var i = 0; i < orderList.length; i++) {
+                    var order = orderList[i];
+                    reportTable.row.add([
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.totalPrice + '</span>',
+                        fpsGetStatMsg(ORD_STAT_LIST, order.status)
+                    ]).draw();
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
 });
 
 function fpsFormatDate(date) {
@@ -549,6 +607,10 @@ function loadEditForm() {
 
     txtStoreName.value = orderEdit.storeName;
     txtCustomerDescription.value = orderEdit.customerDescription;
+
+    $("#txtCreateTime").val(orderEdit.createTime ? moment.unix(orderEdit.createTime / 1000).format('DD/MM/YYYY') : '');
+    $("#txtReceiveTime").val(orderEdit.receiveTime ? moment.unix(orderEdit.receiveTime / 1000).format('DD/MM/YYYY') : '');
+
     txtNote.value = orderEdit.note;
 
 

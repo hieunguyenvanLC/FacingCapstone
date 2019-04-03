@@ -101,3 +101,7 @@ section.dashboard-header div[class*='row'] .item {
     display: flex;
     flex-flow: row;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
