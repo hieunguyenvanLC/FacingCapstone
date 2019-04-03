@@ -16,7 +16,7 @@ public interface Fix {
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
-    String PAY_SERVER_URL = "http://192.168.100.99:8084/";
+    String PAY_SERVER_URL = "http://192.168.100.107:8084/";
 
 
     String FCM_URL = "https://fcm.googleapis.com/fcm/send";

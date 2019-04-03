@@ -232,7 +232,20 @@
 <!-- Main File-->
 
 <script src="/js/front.js"></script>
+<script>
 
+
+    function fpsGetProfile() {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", fpsBackEnd + "/adm/api/profile", true); // true for asynchronous
+        xmlHttp.send(null);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+
+            }
+        }
+    }
+</script>
 
 </body>
 </html>
