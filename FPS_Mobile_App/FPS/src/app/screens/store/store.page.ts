@@ -202,17 +202,17 @@ export class StorePage implements OnInit {
           //console.log(this.products[0].data.longitude);
           this.googleApi.getAddressGoogle(value.latitude, value.longitude, this.products[0].data.latitude, this.products[0].data.longitude)
             .then(res => {
-              console.log("START GOOGLE ----")
-              console.log(res);
-              console.log(res.data)
-              this.temp.push(res);
+              // console.log("START GOOGLE ----")
+              // console.log(res);
+              // console.log(res.data)
+              // this.temp.push(res);
               let myArr =  JSON.parse(res.data);
-              console.log("myArr");
-              console.log(myArr);
-              console.log(myArr.routes[0].legs[0].start_address);
+              // console.log("myArr");
+              // console.log(myArr);
+              // console.log(myArr.routes[0].legs[0].start_address);
               
 
-              console.log("----Start address-----")
+              // console.log("----Start address-----")
               // console.log(this.temp[0].routes[0].legs[0].start_address) //start address
               this.currentAddress = myArr.routes[0].legs[0].start_address
               // this.storage.set("STARTADDRESS", this.temp[0].routes[0].legs[0].start_address)
@@ -227,13 +227,13 @@ export class StorePage implements OnInit {
               this.duration = myArr.routes[0].legs[0].duration.text.replace(" phút", "");
               this.duration = parseInt(this.duration) + 15;
               this.duration += " phút";
-              console.log("duration: " + this.duration);
+              // console.log("duration: " + this.duration);
               // console.log(this.temp[0].routes[0].legs[0].distance.text)//distance
               this.distance = myArr.routes[0].legs[0].distance.text.split(" ",1);
               // console.log(distanceArr);
               // this.distance = distanceArr[0];
               this.shpEarn = this.calculateShpEarn(parseInt(this.distance));
-              console.log(this.distance)
+              // console.log(this.distance)
             });//end google api
         });//end storage
         // console.log(this.products[0].data.proList);

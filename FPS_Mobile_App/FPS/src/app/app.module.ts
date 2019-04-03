@@ -36,7 +36,7 @@ var firebaseConfig = {
   messagingSenderId: "276178642720"
 };
 
-import { Firebase } from '@ionic-native/firebase';
+import { Firebase } from '@ionic-native/firebase/ngx';
 import { FirebasecloudmessengerService } from './services/firebasecloudmessenger.service'
 import { LoadingService } from './services/loading.service';
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
@@ -69,7 +69,7 @@ import { StorageApiService } from './services/storage-api.service';
     SplashScreen,
     AccountService,
     StoreService,
-
+    Firebase,
     Constant,
     FirebasecloudmessengerService,
     Geolocation,

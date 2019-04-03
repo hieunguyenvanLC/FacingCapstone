@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 // import { AutocompletePage } from '../autocomplete/autocomplete.page';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { LoadingService } from 'src/app/services/loading.service';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 @Component({
   selector: 'app-ordermodal',
@@ -46,41 +47,52 @@ export class OrdermodalPage implements OnInit {
     private modalCtrl: ModalController,
     private fcm : FCM,
     private loading: LoadingService,
+    private firebase: Firebase
     
   ) {
     // componentProps can also be accessed at construction time using NavParams
   }
   ngOnInit() {
-    //console.log(this.myOrder[0].products);
+    
     console.log(this.myOrder)
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
 
     //firebase
     this.fcm.getToken().then(token => {
-      console.log(token);
+      // console.log(token);
       this.tokenFCM = token;
     });
-    // this.fcm.onTokenRefresh().subscribe(token => {
-    //   console.log(token);
-    // });
+
+    this.fcm.onTokenRefresh().subscribe(token => {
+      // console.log(token);
+    });
+
     this.fcm.onNotification().subscribe(data => {
-      console.log(data);
+      // console.log("vo day");
+      // console.log(data);
+      
       if (data.wasTapped) {
         console.log('Received in background');
-        
+        this.dismissModal();
+        this.loading.dismiss();
+      this.router.navigate(['check-out', data.orderId]);
         //data.order.id
-        this.loading.dismiss();
-        this.router.navigate(['check-out', data.order.id]);
+       
       } else {
-        console.log('Received in foreground');
-        // this.router.navigate([data.landing_page, data.price]);
-        this.loading.dismiss();
-        this.router.navigate(['check-out', data.order.id]);
+        
       }
     });// end fcm
 
-    console.log("---FCM ---")
-    console.log(this.tokenFCM);
+
+this.firebase.onNotificationOpen()
+  .subscribe(data => {
+    console.log('Received in background');
+        this.dismissModal();
+        this.loading.dismiss();
+      this.router.navigate(['check-out', data.orderId]);
+  });
+
+    
 
     console.log(this.myOrder[0].latitudeCus);
     console.log(this.myOrder[0].longitudeCus);
