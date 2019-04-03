@@ -1,6 +1,7 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.OrderService;
@@ -153,19 +154,19 @@ public class OrderController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_ANY + "/python")
-    public String receiveFaceResult(@RequestBody String key, @RequestBody String faceListStr) {
-        return orderService.receiveFaceResult(key, faceListStr);
+    public String receiveFaceResult(@RequestBody MapFaceResult map) {
+        return orderService.receiveFaceResult(map.key, map.faceListStr);
     }
 
-//    @GetMapping(Fix.MAP_ANY + API + "/notify")
-//    public String testNotify(int orderId, String shipperToken) {
-//        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-//        try {
-//            response = orderService.testNotify(gson, orderId, shipperToken);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-//        }
-//        return gson.toJson(response);
-//    }
+    @GetMapping(Fix.MAP_ANY + API + "/notify")
+    public String testNotify(int orderId, String shipperToken) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.testNotify(gson, orderId, shipperToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
 }

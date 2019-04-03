@@ -1,29 +1,32 @@
 package capstone.fps.model;
 
 
-class MapFaceResult {
+public class MapFaceResult {
 
-    String rep;
+    public String key;
+    public String faceListStr;
 
     public MapFaceResult() {
     }
 
-    public MapFaceResult(String rep) {
-        this.rep = rep;
+    public MapFaceResult(String key, String faceListStr) {
+        this.key = key;
+        this.faceListStr = faceListStr;
     }
 
-    public String getRep() {
-        return rep;
+    public String getKey() {
+        return key;
     }
 
-    public void setRep(String rep) {
-        this.rep = rep;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    @Override
-    public String toString() {
-        return "MapFaceResult{" +
-                "rep='" + rep + '\'' +
-                '}';
+    public String getFaceListStr() {
+        return faceListStr;
+    }
+
+    public void setFaceListStr(String faceListStr) {
+        this.faceListStr = faceListStr;
     }
 }

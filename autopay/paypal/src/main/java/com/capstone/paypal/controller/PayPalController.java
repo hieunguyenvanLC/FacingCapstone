@@ -15,7 +15,7 @@ public class PayPalController extends AbstractController {
     }
 
 
-    @PostMapping(Fix.MAP_API + Fix.MAP_PAY + "/input")
+    @PostMapping("api/pay/input")
     public String receivePaymentInput(String username, String password, String price, String description) {
         System.out.println(username);
         System.out.println(password);

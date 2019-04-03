@@ -9,7 +9,7 @@ public interface Fix {
     String MAP_ADM = "/adm";
     String MAP_MEM = "/mem";
     String MAP_API = "/api";
-    String MAP_PAY = "/pay";
+    String MAP_PAY = "/pay_pal";
 
 
     String LOCAL_URL = "http://localhost:8084" ;
