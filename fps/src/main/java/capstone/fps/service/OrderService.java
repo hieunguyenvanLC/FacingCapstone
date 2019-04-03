@@ -2,6 +2,7 @@ package capstone.fps.service;
 
 import capstone.fps.common.*;
 import capstone.fps.entity.*;
+import capstone.fps.model.AppData;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlDetailCreate;
 import capstone.fps.model.order.MdlOrder;
@@ -487,7 +488,7 @@ public class OrderService {
         body.addProperty("to", frOrder.getBuyerToken());
         body.addProperty("restricted_package_name", "");
 
-        return  methods.sendHttpRequest(Fix.FCM_URL, header, body);
+        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
 
@@ -540,17 +541,20 @@ public class OrderService {
         // face to byte[]
         byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
-        String key = methods.getTimeNow() + "";
+        String key = frOrder.getId() + "" + methods.getTimeNow();
+        Map<String, String> faceResult = AppData.getFaceResult();
+        faceResult.remove(key);
         CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
 
-        List<String> result = commandPrompt.getResult();
-        String memListStr = null;
-        for (int i = 0; i < result.size() && memListStr == null; i++) {
-            String line = result.get(i);
-            if (line.contains(Fix.FACE_RESULT_TAG + key)) {
-                memListStr = line.replace(Fix.FACE_RESULT_TAG + key, "").trim();
+        while (faceResult.get(key) == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+        String faceListStr = faceResult.get(key);
+        faceResult.remove(key);
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
         FRPaymentInformation frPayInfo = informationList.get(0);
@@ -561,7 +565,7 @@ public class OrderService {
         String priceStr = String.format("%.2f", price);
 
 
-        String payId = handlingFaceResult(memListStr, gson, buyer, payUsername, payPassword, priceStr, description);
+        String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
             return response;
@@ -581,6 +585,11 @@ public class OrderService {
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             return response;
         }
+    }
+
+    public String receiveFaceResult(String key, String faceListStr) {
+        AppData.getFaceResult().put(key, faceListStr);
+        return "ok";
     }
 
     // Compare Member List with buyer

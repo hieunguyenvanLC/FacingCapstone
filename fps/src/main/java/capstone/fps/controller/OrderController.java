@@ -155,13 +155,10 @@ public class OrderController extends AbstractController {
     // Mobile Shipper - Checkout - End
 
 
-//    @PostMapping(Fix.MAP_ANY + "/paypal")
-//    public String receiveFaceTestResult(@RequestBody MapFaceResult map, HttpServletRequest request) {
-//        orderService.receiveFaceTestResult(map.getRep(), request);
-//
-//        return "";
-//
-//    }
+    @PostMapping(Fix.MAP_ANY + "/python")
+    public String receiveFaceResult(@RequestBody String key, @RequestBody String faceListStr) {
+        return orderService.receiveFaceResult(key, faceListStr);
+    }
 
 //    @GetMapping(Fix.MAP_ANY + API + "/notify")
 //    public String testNotify(int orderId, String shipperToken) {
