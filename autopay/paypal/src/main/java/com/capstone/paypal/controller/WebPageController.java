@@ -39,7 +39,7 @@ public class WebPageController {
 //        return "indexPage";
 //    }
 
-    @GetMapping(Fix.MAP_PAY)
+    @GetMapping("/pay_init")
     public String initPay() {
         return paymentService.initPayment(Fix.LOCAL_URL + URL_PAY_PAL_CANCEL, Fix.LOCAL_URL + URL_PAY_PAL_SUCCESS);
     }

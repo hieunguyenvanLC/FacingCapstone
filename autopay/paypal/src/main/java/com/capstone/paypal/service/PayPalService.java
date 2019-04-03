@@ -6,7 +6,6 @@ import com.capstone.paypal.model.PayPalData;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -16,17 +15,9 @@ import java.util.List;
 @Service
 public class PayPalService {
 
-
-//    private static String descriptionStr = "basis test";
-//    private static String orderPrice = "1.23";
-//    public static int paymentResult;
-
     private final PayPalData payPalData;
-
     private APIContext apiContext;
 
-
-    @Autowired
     public PayPalService(APIContext apiContext, PayPalData payPalData) {
         this.apiContext = apiContext;
         this.payPalData = payPalData;
@@ -175,6 +166,11 @@ public class PayPalService {
 
     public String initPayment(String cancelUrl, String successUrl) {
         try {
+
+            System.out.println("init");
+            System.out.println(payPalData.getPrice());
+            System.out.println(payPalData.getDescription());
+
 
 //        Set payer details
             Payer payer = new Payer();
