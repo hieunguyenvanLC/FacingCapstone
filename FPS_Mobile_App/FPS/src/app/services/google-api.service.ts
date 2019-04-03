@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Constant } from '../common/constant';
 import { ApihttpService } from './apihttp.service';
-// import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import { Http } from '@angular/http'
 import { HTTP } from '@ionic-native/http/ngx';
+import { Storage } from '@ionic/storage';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 
 @Injectable({
@@ -16,6 +18,8 @@ export class GoogleApiService {
     private constant: Constant,
     private http: HTTP,
     // private httpNative : HTTP,
+    private storage: Storage,
+    private geolocation: Geolocation,
   ) { }
 
   // createHeader() {
@@ -46,8 +50,22 @@ export class GoogleApiService {
         originLati + "," + originLongi +
        "&destination=" +
          desLati + "," + desLongi +
-         "&key=" + this.constant.GOOGLEKEY,{},{}
+         "&key=" + this.constant.GOOGLEKEY
+         ,{},{}
     );
+  }
+
+  async getCurrentLocation(){
+    await this.geolocation.getCurrentPosition().then((resp) => {
+      console.log(resp)
+      let lati = resp.coords.latitude;
+      let longi = resp.coords.longitude;
+      this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+      // resp.coords.latitude
+      // resp.coords.longitude
+    }).catch((error) => {
+      console.log('Error getting location: ', error);
+    });
   }
   
   

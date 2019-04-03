@@ -46,7 +46,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { GoogleApiService } from './services/google-api.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { from } from 'rxjs';
-
+import { FCM } from '@ionic-native/fcm/ngx';
+import { StorageApiService } from './services/storage-api.service';
 
 
 @NgModule({
@@ -77,10 +78,11 @@ import { from } from 'rxjs';
     OrderService,
     ToastHandleService,
     GoogleApiService,
+    StorageApiService,
     HTTP,  
     Geolocation,
     NativeGeocoder,
-    
+    FCM,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     
   ],

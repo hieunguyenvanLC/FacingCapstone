@@ -60,7 +60,7 @@ export class AccountService {
   }
 
   logOut(){
-    
+    return this.apiHttpService.get(this.constant.LOGOUT);
   }
 
 }

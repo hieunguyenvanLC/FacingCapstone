@@ -11,7 +11,10 @@ const routes: Routes = [
   { path: 'registor', loadChildren: './screens/registor/registor.module#RegistorPageModule' },
   { path: 'order', loadChildren: './screens/order/order.module#OrderPageModule' },
   { path: 'ordermodal', loadChildren: './screens/ordermodal/ordermodal.module#OrdermodalPageModule' },
-  { path: 'profile', loadChildren: './screens/profile/profile.module#ProfilePageModule' }
+  { path: 'profile', loadChildren: './screens/profile/profile.module#ProfilePageModule' },
+  { path: 'autocomplete', loadChildren: './screens/autocomplete/autocomplete.module#AutocompletePageModule' },
+  { path: 'check-out', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
+  { path: 'check-out/:id', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' }
 ];
 
 @NgModule({

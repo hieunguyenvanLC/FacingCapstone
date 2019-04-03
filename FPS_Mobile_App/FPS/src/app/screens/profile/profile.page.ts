@@ -5,6 +5,7 @@ import { AccountService } from 'src/app/services/account.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Storage } from '@ionic/storage';
+import { Constant } from 'src/app/common/constant';
 
 @Component({
   selector: 'app-profile',
@@ -30,10 +31,12 @@ export class ProfilePage implements OnInit {
     private toastController: ToastController,
     private camera: Camera,
     private storage : Storage,
+    private constant : Constant,
+
   ) { }
 
   ngOnInit() {
-    this.loadingService.present().then( () => {
+    this.loadingService.present(this.constant.LOADINGMSG).then( () => {
       this.getUser();
     })
     

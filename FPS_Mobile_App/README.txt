@@ -45,8 +45,6 @@ Geocoder: (remove)
 ionic cordova plugin add cordova-plugin-nativegeocoder
 npm install --save @ionic-native/native-geocoder@beta
 
-typescript google-maps: (remove)
-npm install @types/google-maps --save
 
 remove(---
 //native-storage:
@@ -66,10 +64,35 @@ ionic cordova plugin add info.protonet.imageresizer
 npm install @ionic-native/image-resizer
 
 --------------
+storage
+ionic cordova plugin add cordova-sqlite-storage
+npm install --save @ionic/storage
+
+--------------
 geolocation
 ionic cordova plugin add cordova-plugin-geolocation
-npm install @ionic-native/geolocation
+npm remove @ionic-native/geolocation
 
-fcm (remove)
+
+---------------
+thu tu cai dat cho google map:
+ionic cordova plugin add cordova-plugin-googlemaps --variable API_KEY_FOR_ANDROID=“AIzaSyASMHVlLhJr78esAqJVglJU67r-SD-VBNQ”
+npm install @ionic-native/core@beta @ionic-native/google-maps@beta
+
+
+-geolocation:
+ionic cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="To locate you"
+npm install --save @ionic-native/geolocation@beta
+-Geocoder:
+ionic cordova plugin add cordova-plugin-nativegeocoder
+npm install --save @ionic-native/native-geocoder@beta
+
+typescript google-maps:
+npm install @types/google-maps --save
+
+
+fcm
 ionic cordova plugin add cordova-plugin-fcm-with-dependecy-updated
 npm install @ionic-native/fcm
+
+-----------------

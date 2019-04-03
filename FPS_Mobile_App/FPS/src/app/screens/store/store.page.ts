@@ -12,6 +12,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
 import { GoogleApiService } from 'src/app/services/google-api.service';
 import { Storage } from '@ionic/storage';
+import { Constant } from 'src/app/common/constant';
 
 @Component({
   selector: 'app-store',
@@ -31,6 +32,12 @@ export class StorePage implements OnInit {
   status_code = 0;
   temp = [];
 
+  latitudeCus: any;
+  longitudeCus: any;
+  duration: any;
+  distance: any;
+  shpEarn: any;
+  currentAddress: any;
   isLoaded = false;
 
   // {
@@ -76,13 +83,14 @@ export class StorePage implements OnInit {
     private storeService: StoreService,
     private loading: LoadingService,
     private toastHandle: ToastHandleService,
-    private googleApi : GoogleApiService,
-    private storage : Storage,
+    private googleApi: GoogleApiService,
+    private storage: Storage,
+    private constant: Constant,
   ) {
   }
 
   ngOnInit() {
-    this.loading.present().then(() => {
+    this.loading.present(this.constant.LOADINGMSG).then(() => {
       this.getStoreDetail();
     })
 
@@ -150,11 +158,20 @@ export class StorePage implements OnInit {
       animated: true,
       component: OrdermodalPage,
       componentProps: {
-        products: this.orders,
-        latitudeStore: this.products[0].data.latitude,
-        longitudeStore: this.products[0].data.longitude,
-        addressStore: this.products[0].data.address + ", " + this.products[0].data.distStr,
-        subTotal: this.total,
+        myOrder: [{
+          products: this.orders,
+          latitudeStore: this.products[0].data.latitude, //latitude store
+          longitudeStore: this.products[0].data.longitude, //longitude store
+          addressStore: this.products[0].data.address + ", " + this.products[0].data.distStr,
+          subTotal: this.total,
+          shpEarn: this.shpEarn,
+          duration: this.duration,
+          distance: this.distance,
+          currentAddress: this.currentAddress,
+          latitudeCus: this.latitudeCus,
+          longitudeCus: this.longitudeCus,
+        }]
+
       }
     }).then(modal => {
       modal.present();
@@ -175,16 +192,37 @@ export class StorePage implements OnInit {
         this.status_code = this.products[0].status_code;
         this.storage.get("MYLOCATION").then(value => {
           console.log(value);
+          this.latitudeCus = value.latitude;
+          this.longitudeCus = value.longitude;
           // console.log(value.longitude);
           //console.log(this.products[0].data.latitude);
           //console.log(this.products[0].data.longitude);
           this.googleApi.getAddressGoogle(value.latitude, value.longitude, this.products[0].data.latitude, this.products[0].data.longitude)
-                        .then(res => {
-                          console.log("START GOOGLE ----")
-                          console.log(res);
-                          //this.temp.push(res);
-                          //console.log(this.temp[0].routes[0].legs[0])
-                        });//end google api
+            .then(res => {
+              console.log("START GOOGLE ----")
+              console.log(res);
+              this.temp.push(res);
+              console.log("----Start address-----")
+              console.log(this.temp[0].routes[0].legs[0].start_address) //start address
+              this.currentAddress = this.temp[0].routes[0].legs[0].start_address;
+              // this.storage.set("STARTADDRESS", this.temp[0].routes[0].legs[0].start_address)
+              console.log(this.temp[0].routes[0].legs[0].start_location.lat) //start latitude
+              console.log(this.temp[0].routes[0].legs[0].start_location.lng)
+              console.log("----End address-----")
+              console.log(this.temp[0].routes[0].legs[0].end_address) //end address
+              console.log(this.temp[0].routes[0].legs[0].end_location.lat) //end latitude
+              console.log(this.temp[0].routes[0].legs[0].end_location.lng)
+              console.log("----Duration------")
+              console.log(this.temp[0].routes[0].legs[0].duration.text)// format : "3 phut"
+              this.duration = this.temp[0].routes[0].legs[0].duration.text.replace(" phút", "");
+              this.duration = parseInt(this.duration) + 15;
+              this.duration += " phút";
+              console.log("duration: " + this.duration);
+              console.log(this.temp[0].routes[0].legs[0].distance.text)//distance
+              this.distance = this.temp[0].routes[0].legs[0].distance.text.replace(" km", "");
+              this.shpEarn = this.calculateShpEarn(parseInt(this.distance));
+              console.log(this.distance)
+            });//end google api
         });//end storage
         // console.log(this.products[0].data.proList);
         this.products[0].data.proList.forEach(element => {
@@ -208,5 +246,26 @@ export class StorePage implements OnInit {
     )
   }
 
-
+  calculateShpEarn(dis) {
+    let price = 14000;
+    let kms;
+    if (dis < 1) {
+      kms = 1
+    } else {
+      kms = dis
+    }
+    // let kms = Math.ceil(dis);
+    if (kms > 0) {
+      price += kms * 1000;
+    }
+    kms -= 5;
+    if (kms > 0) {
+      price += kms * 1000;
+    }
+    kms -= 5;
+    if (kms > 0) {
+      price += kms * 1000;
+    }
+    return Math.ceil(price/1000) *1000;
+  }//end calculateShpEarn
 } 
