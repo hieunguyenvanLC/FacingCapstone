@@ -15,8 +15,6 @@ public class Simulator {
     public final Robot robot;
     public final Clipboard clipboard;
 
-
-
     public Simulator() throws AWTException {
         this.robot = new Robot();
         this.clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -52,7 +50,6 @@ public class Simulator {
             this.blueMax = Math.min(255, blue + delta);
         }
     }
-
 
     public PixelColor createPixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {
         return new PixelColor(id, xFrom, yFrom, xTo, yTo, color, delta);

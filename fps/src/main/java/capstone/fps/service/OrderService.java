@@ -408,7 +408,7 @@ public class OrderService {
         shipperWait.setCancel(false);
 
         while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
-            for (ArrayList<Delta> layer: orderMap.getLayers()){
+            for (ArrayList<Delta> layer : orderMap.getLayers()) {
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
                     int rowNode = row + delta.row;
@@ -428,8 +428,8 @@ public class OrderService {
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setStatus(Fix.ORD_ASS.index);
                                     orderRepository.save(frOrder);
-                                    notifyBuyer(gson, frOrder);
-                                    notifyShipper(frOrder, shipperToken);
+                                    notifyBuyer(frOrder);
+//                                    notifyShipper(frOrder, shipperToken);
                                     MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
@@ -491,7 +491,7 @@ public class OrderService {
         }
     }
 
-    private String notifyBuyer(Gson gson, FROrder frOrder) {
+    private String notifyBuyer(FROrder frOrder) {
         Methods methods = new Methods();
         JsonParser parser = new JsonParser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -553,6 +553,25 @@ public class OrderService {
         return response;
     }
     // Mobile Shipper - Order Matching - End
+
+
+    // Mobile Shipper - Post Bill - Begin
+    public Response<String> postBill(Integer orderId, String bill) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        frOrder.setBill(methods.base64ToBytes(bill));
+        frOrder.setStatus(Fix.ORD_BUY.index);
+        orderRepository.save(frOrder);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+    // Mobile Shipper - Post Bill - End
 
 
     // Mobile Shipper - Order Checkout - Begin

@@ -122,12 +122,14 @@ public class OrderMap {
             layers.add(new ArrayList<>());
         }
         layers.get(0).add(new Delta(0, 0));
+        for (int i = 1; i <= range; i++) {
+            layers.get(i).add(new Delta(i, 0));
+            layers.get(i).add(new Delta(0, -i));
+            layers.get(i).add(new Delta(-i, 0));
+            layers.get(i).add(new Delta(0, i));
+        }
         for (int x = 1; x <= range; x++) {
-            layers.get(x).add(new Delta(x, 0));
-            layers.get(x).add(new Delta(0, -x));
-            layers.get(x).add(new Delta(-x, 0));
-            layers.get(x).add(new Delta(0, x));
-            for (int y = 1; y <= range; y++) {
+            for (int y = range; y >= 1; y--) {
                 int dis = (int) Math.round(Math.sqrt(x * x + y * y));
                 if (dis <= range) {
                     layers.get(dis).add(new Delta(x, y));

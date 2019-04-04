@@ -138,6 +138,20 @@ public class OrderController extends AbstractController {
     // Mobile Shipper - Queue - Begin
 
 
+    // Mobile Shipper - Post Bill - Begin
+    @PutMapping(Fix.MAP_ANY + API + "/bill")
+    public String postBill(Integer orderId, String bill) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.postBill(orderId, bill);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - Post Bill - End
+
     // Mobile Shipper - Checkout - Begin
     @PutMapping(Fix.MAP_ANY + API + "/checkout")
     public String checkout(Integer orderId, String face) {
