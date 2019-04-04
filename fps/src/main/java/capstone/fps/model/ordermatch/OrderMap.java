@@ -112,25 +112,28 @@ public class OrderMap {
 //        layer4.add(new Delta(-3, -2));
 //        layer4.add(new Delta(-3, -3));
 //        layer4.add(new Delta(-2, -3));
-        initLayer();
-
+        initLayer(Fix.shipperRange);
     }
 
 
-    private void initLayer() {
+    private void initLayer(int range) {
         layers = new ArrayList<>();
-        int range = Fix.shipperRange;
         for (int i = 0; i <= range; i++) {
             layers.add(new ArrayList<>());
         }
-        for (int x = 0; x <= range; x++) {
-            for (int y = 0; y <= range; y++) {
+        layers.get(0).add(new Delta(0, 0));
+        for (int x = 1; x <= range; x++) {
+            layers.get(x).add(new Delta(x, 0));
+            layers.get(x).add(new Delta(0, -x));
+            layers.get(x).add(new Delta(-x, 0));
+            layers.get(x).add(new Delta(0, x));
+            for (int y = 1; y <= range; y++) {
                 int dis = (int) Math.round(Math.sqrt(x * x + y * y));
                 if (dis <= range) {
                     layers.get(dis).add(new Delta(x, y));
-                    layers.get(dis).add(new Delta(-x, y));
-                    layers.get(dis).add(new Delta(x, -y));
+                    layers.get(dis).add(new Delta(-y, x));
                     layers.get(dis).add(new Delta(-x, -y));
+                    layers.get(dis).add(new Delta(y, -x));
                 }
             }
         }
