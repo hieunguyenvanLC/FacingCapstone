@@ -95,6 +95,10 @@ section.dashboard-header div[class*='row'] .item {
 }
 
 /* Char */
+.filter-sm-text {
+    font-size: 1.2rem !important;
+}
+
 .char-filter {
     display: -webkit-flex; /* Safari */
     -webkit-flex-flow: row; /* Safari 6.1+ */

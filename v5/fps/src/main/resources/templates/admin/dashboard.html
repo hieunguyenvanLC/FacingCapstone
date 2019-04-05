@@ -77,34 +77,31 @@
                 <div class="col-xl-3 col-sm-6">
                     <div class="item d-flex align-items-center">
                         <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
-                        <!--<div class="title"><span>Order<br>Pending</span>-->
-                        <div class="title" style="font-size: 30px"><b>Order Pending</b></div>
-
-
-                        <!--<div class="number" id="lbActivedShipper"><strong>0</strong></div>-->
+                        <div class="title"><span>Success<br>Rate</span></div>
+                        <div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
                     <div class="item d-flex align-items-center">
-                        <div class="title"><span>Since<br/>< 12 hours</span></div>
-                        <div class="number text-success cursor-pointer" id="lbPenLess"><strong>--</strong></div>
+                        <div class="title"><span>Total<br/>Amount</span></div>
+                        <div class="number filter-sm-text" id="lbTotalAmount"><strong>0 VND</strong></div>
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
                     <div class="item d-flex align-items-center">
                         <!--<div class="icon bg-green"><i class="icon-bill"></i></div>-->
-                        <div class="title"><span>Since<br/>12-24 hours</span></div>
-                        <div class="number text-warning cursor-pointer" id="lbPenEqual"><strong>--</strong></div>
+                        <div class="title"><span>Paid Shipper<br/>Amount</span></div>
+                        <div class="number filter-sm-text" id="lbPaidShipper"><strong>0 VND</strong></div>
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
                     <div class="item d-flex align-items-center">
                         <!--<div class="icon bg-orange"><i class="icon-check"></i></div>-->
-                        <div class="title"><span>Since<br/>> 24 hours</span></div>
-                        <div class="number text-danger cursor-pointer" id="lbPenMore"><strong>--</strong></div>
+                        <div class="title"><span>Sold<br/>Products</span></div>
+                        <div class="number filter-sm-text" id="lbSoldProduct"><strong>0</strong></div>
                     </div>
                 </div>
             </div>
@@ -123,20 +120,17 @@
                     <div class="row" style="margin: 0px">
                         <div class="chart col-lg-3 col-12">
                             <label>Type:</label>
-                            <select id="selReportType" width="250px">
+                            <select id="selReportType" width="220px">
                                 <option value="order">Order</option>
-                                <option value="orderCnl">Order Canceled</option>
-                                <option value="orderScc">Order Success</option>
                                 <option value="productSld">Product Sold</option>
                                 <option value="rateScc">Rate Successfull</option>
                                 <option value="totalAmt">Total Amount</option>
-                                <option value="shipPaid">Paid Shipper</option>
                             </select>
                             <div class="clearfix"></div>
                         </div>
                         <div class="chart col-lg-2 col-12">
                             <label>Date:</label>
-                            <select id="selChartType" width="150px">
+                            <select id="selChartType" width="120px">
                                 <option value="0">Day</option>
                                 <option value="1">Week</option>
                                 <option value="2">Month</option>
@@ -181,8 +175,9 @@
                     <!--<h2 id="chartName" class="d-flex align-items-center justify-content-center" style="padding-top: 20px;"></h2>-->
 
                     <div class="line-chart d-flex align-items-center justify-content-center">
-                        <canvas id="barChartExample"></canvas>
+                        <!--<canvas id="barChartExample"></canvas>-->
                         <!--<canvas id="barChart1"></canvas>-->
+                        <div id="barChartExample" style="width: 100%"></div>
                     </div>
                     <!--<div class="chartjs-render-monitor">-->
                     <!--<canvas id="barChart1"></canvas>-->

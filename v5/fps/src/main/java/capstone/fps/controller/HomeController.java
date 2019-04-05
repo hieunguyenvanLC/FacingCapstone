@@ -49,9 +49,14 @@ public class HomeController extends AbstractController {
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
         summary.setStoreCount(this.homeService.countStore());   //Count All Store
 
-        summary.setCountOrderLess(this.homeService.countOrderLess()); //Count Order less than 12h
-        summary.setCountOrderMore(this.homeService.countOrderMore()); //Count Order more than 12h
-        summary.setCountOrderEqual(this.homeService.countOrderEqual()); //Count Order less than 12h-24h
+        summary.setSoldProductCount(this.homeService.sumProductByOrder());
+        summary.setSuccessRate(this.homeService.allSuccessRate());
+        summary.setTotalAmount(this.homeService.sumTotalAmount());
+        summary.setPaidShipper(this.homeService.sumShipperEarn());
+
+//        summary.setCountOrderLess(this.homeService.countOrderLess()); //Count Order less than 12h
+//        summary.setCountOrderMore(this.homeService.countOrderMore()); //Count Order more than 12h
+//        summary.setCountOrderEqual(this.homeService.countOrderEqual()); //Count Order less than 12h-24h
 
 //        YearMonth yearMonthObject = YearMonth.of(year, mon);
 //        Integer daysInMonth = yearMonthObject.lengthOfMonth(); //28
@@ -695,21 +700,28 @@ public class HomeController extends AbstractController {
         int endMonth = endCal.get(Calendar.MONTH) + 1;
         int endDay = endCal.get(Calendar.DAY_OF_MONTH);
 
-        MdlChartData<Integer> chartData = new MdlChartData<Integer>();
+        MdlChartData<Integer[]> chartData = new MdlChartData<Integer[]>();
         List<String> labels = new ArrayList<String>();
-        List<Integer> orders = new ArrayList<Integer>();
+        List<Integer[]> orders = new ArrayList<Integer[]>();
 
         if (type == 0) { // neu la  theo ngay //ok
             int days = diffDay(startCal, endCal);
             if (days <= 31) {
                 Calendar dateIdx = (Calendar) startCal.clone();
                 for (; dateIdx.compareTo(endCal) <= 0; dateIdx.add(Calendar.DAY_OF_MONTH, 1)) {
-                    labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
                     long startUnix = dateIdx.getTimeInMillis();
                     Calendar tempEnd = (Calendar) dateIdx.clone();
                     tempEnd.add(Calendar.DAY_OF_MONTH, 1);
                     long endUnix = tempEnd.getTimeInMillis();
-                    orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+                    Integer[] cols = {
+                            this.homeService.countOrders(Fix.ORD_NEW.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_ASS.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_BUY.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_COM.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_CXL.index, startUnix, endUnix)
+                    };
+                    labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
+                    orders.add(cols); // Gia su startMonth = endMonth
                 }
                 isSuccess = true;
             } else {
@@ -723,10 +735,17 @@ public class HomeController extends AbstractController {
                 for (Integer weekIdx = 0; weekIdx < weeks; weekIdx++) {
                     Integer curWeek = startWeek + weekIdx > 52 ? weekIdx : startWeek + weekIdx;
                     Integer curYear = startWeek + weekIdx > 12 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
-                    labels.add(String.format("%02d", curWeek) + "/" + curYear.toString());
                     long startUnix = this.weekToUnix(curYear, curWeek);
                     long endUnix = this.weekToUnix(curYear, curWeek + 1);
-                    orders.add(this.homeService.countOrderBy(startUnix, endUnix));
+                    Integer[] cols = {
+                            this.homeService.countOrders(Fix.ORD_NEW.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_ASS.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_BUY.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_COM.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_CXL.index, startUnix, endUnix)
+                    };
+                    labels.add(String.format("%02d", curWeek) + "/" + curYear.toString());
+                    orders.add(cols);
                 }
                 isSuccess = true;
             } else {
@@ -739,10 +758,17 @@ public class HomeController extends AbstractController {
                 for (Integer monIdx = 0; monIdx <= months; monIdx++) {
                     Integer curMon = startMonth + monIdx > 12 ? monIdx : startMonth + monIdx;
                     Integer curYear = startMonth + monIdx > 12 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
-                    labels.add(String.format("%02d", curMon) + "/" + curYear.toString());
                     long startUnix = this.dateToUnix(curYear, curMon, 1, 0, 0, 0);
                     long endUnix = this.dateToUnix(curYear, curMon + 1, 1, 0, 0, 0);
-                    orders.add(this.homeService.countOrderBy(startUnix, endUnix));
+                    Integer[] cols = {
+                            this.homeService.countOrders(Fix.ORD_NEW.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_ASS.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_BUY.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_COM.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_CXL.index, startUnix, endUnix)
+                    };
+                    labels.add(String.format("%02d", curMon) + "/" + curYear.toString());
+                    orders.add(cols);
                 }
                 isSuccess = true;
             } else {
@@ -751,10 +777,17 @@ public class HomeController extends AbstractController {
         } else { // neu la theo nam
             if (endYear - startYear < 30) {
                 for (Integer year = startYear; year <= endYear; year++) {
-                    labels.add(year.toString());
                     long startUnix = this.dateToUnix(year, 1, 1, 0, 0, 0);
                     long endUnix = this.dateToUnix(year + 1, 1, 1, 0, 0, 0);
-                    orders.add(this.homeService.countOrderBy(startUnix, endUnix)); // Gia su startMonth = endMonth
+                    Integer[] cols = {
+                            this.homeService.countOrders(Fix.ORD_NEW.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_ASS.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_BUY.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_COM.index, startUnix, endUnix),
+                            this.homeService.countOrders(Fix.ORD_CXL.index, startUnix, endUnix)
+                    };
+                    labels.add(year.toString());
+                    orders.add(cols); // Gia su startMonth = endMonth
                 }
                 isSuccess = true;
             } else {

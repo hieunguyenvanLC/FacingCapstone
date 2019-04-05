@@ -17,6 +17,15 @@ public class MdlReportSummary {
     private int countOrderEqual; //Count order with 12-24h
     @Expose
     private int countOrderMore; //Count order >24h
+
+    @Expose
+    private int soldProductCount;
+    @Expose
+    private double successRate;
+    @Expose
+    private int totalAmount;
+    @Expose
+    private int paidShipper;
 //    @Expose
 //    private List<Integer> orders;
 
@@ -43,85 +52,6 @@ public class MdlReportSummary {
     public void setCountOrderMore(int countOrderMore) {
         this.countOrderMore = countOrderMore;
     }
-//    @Expose
-//    private List<Integer> canceledOrders;
-//    @Expose
-//    private List<Integer> successOrders;
-//    @Expose
-//    private List<String> labels;
-//    @Expose
-//    private int orderCountBy; //count order with day month year
-//    @Expose
-//    private int orderCancelBy; //Count order cancel with day month year
-//    @Expose
-//    private int orderSuccessBy;  //Count order success with day month year
-//    @Expose
-//    private int soldProductBy;  //Count product sold with day month year
-
-//    public int getSoldProductBy() {
-//        return soldProductBy;
-//    }
-//
-//    public void setSoldProductBy(int soldProductBy) {
-//        this.soldProductBy = soldProductBy;
-//    }
-//
-//    public int getOrderSuccessBy() {
-//        return orderSuccessBy;
-//    }
-//
-//    public void setOrderSuccessBy(int orderSuccessBy) {
-//        this.orderSuccessBy = orderSuccessBy;
-//    }
-//
-//    public int getOrderCancelBy() {
-//        return orderCancelBy;
-//    }
-//
-//    public void setOrderCancelBy(int orderCancelBy) {
-//        this.orderCancelBy = orderCancelBy;
-//    }
-//
-//    public int getOrderCountBy() {
-//        return orderCountBy;
-//    }
-//
-//    public void setOrderCountBy(int orderCountBy) {
-//        this.orderCountBy = orderCountBy;
-//    }
-
-
-//    public List<Integer> getOrders() {
-//        return orders;
-//    }
-//
-//    public void setOrders(List<Integer> orders) {
-//        this.orders = orders;
-//    }
-//
-//    public List<Integer> getCanceledOrders() {
-//        return canceledOrders;
-//    }
-//
-//    public void setCanceledOrders(List<Integer> canceledOrders) {
-//        this.canceledOrders = canceledOrders;
-//    }
-//
-//    public List<Integer> getSuccessOrders() {
-//        return successOrders;
-//    }
-//
-//    public void setSuccessOrders(List<Integer> successOrders) {
-//        this.successOrders = successOrders;
-//    }
-//
-//    public List<String> getLabels() {
-//        return labels;
-//    }
-//
-//    public void setLabels(List<String> labels) {
-//        this.labels = labels;
-//    }
 
     public int getShipperCount() {
         return shipperCount;
@@ -153,5 +83,37 @@ public class MdlReportSummary {
 
     public void setOrderCount(int orderCount) {
         OrderCount = orderCount;
+    }
+
+    public int getSoldProductCount() {
+        return soldProductCount;
+    }
+
+    public void setSoldProductCount(int soldProductCount) {
+        this.soldProductCount = soldProductCount;
+    }
+
+    public double getSuccessRate() {
+        return successRate;
+    }
+
+    public void setSuccessRate(double successRate) {
+        this.successRate = successRate;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getPaidShipper() {
+        return paidShipper;
+    }
+
+    public void setPaidShipper(int paidShipper) {
+        this.paidShipper = paidShipper;
     }
 }

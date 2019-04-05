@@ -75,11 +75,6 @@ public class HomeService {
         return this.storeRepo.countByStatus(1);
     }
 
-    //    public int countNewOrder(int month, int year) {
-//        long start = this.dateToUnix(year, month, 1, 0, 0, 0);
-//        long end = this.dateToUnix(year, month + 1, 1, 0, 0, 0);
-//        return this.orderRepository.countByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
-//    }
     public int countOrder() {
         return this.orderRepository.countAllBy();
     }
@@ -105,6 +100,28 @@ public class HomeService {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(1, timeSecond, timeFirst);
     }
 
+    public int sumProductByOrder() {
+        long endTime = System.currentTimeMillis();
+        return this.sumProductByOrder(0L, endTime);
+    }
+
+    public double allSuccessRate() {
+        long endTime = System.currentTimeMillis();
+        int success = this.countOrderSuccessBy(0L, endTime);
+        int canceled = this.countOrderCancelBy(0L, endTime);
+        return success * 100.0 / (success + canceled);
+    }
+
+    public Integer sumTotalAmount() {
+        long endTime = System.currentTimeMillis();
+        return this.sumTotalAmount(0L, endTime);
+    }
+
+    public Integer sumShipperEarn() {
+        long endTime = System.currentTimeMillis();
+        return this.sumShipperEarn(0L, endTime);
+    }
+
     public int countOrderCancelBy(Long start, Long end) {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(5, start, end);
     }
@@ -123,6 +140,10 @@ public class HomeService {
 
     public Integer sumShipperEarn(Long start, Long end) {
         return this.orderRepository.sumShipperEarn(4, start, end); // doi status = 4
+    }
+
+    public Integer countOrders(Integer status, Long start, Long end) {
+        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
     }
 
     public List<FROrder> getOrderList(Integer status, Long start, Long end) {

@@ -96,9 +96,10 @@ $(document).ready(function () {
                 $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
                 $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
                 $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
-                $("#lbPenLess").html("<strong>" + summary.countOrderLess + "</strong>");
-                $("#lbPenMore").html("<strong>" + summary.countOrderMore + "</strong>");
-                $("#lbPenEqual").html("<strong>" + summary.countOrderEqual + "</strong>");
+                $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");
+                $("#lbTotalAmount").html("<strong>" + summary.totalAmount + " VND</strong>");
+                $("#lbPaidShipper").html("<strong>" + summary.paidShipper + " VND</strong>");
+                $("#lbSoldProduct").html("<strong>" + summary.soldProductCount + "</strong>");
 
             },
             error: function (err) {
@@ -110,91 +111,28 @@ $(document).ready(function () {
     loadSummary();
     setInterval(loadSummary, 5000);
 
-    var BARCHARTEXMPLE = $('#barChartExample'); // Date picker cua chart home
-    // barChartExample = new Chart(BARCHARTEXMPLE, {
-    //     type: 'bar',
-    //     options: {
-    //         scales: {
-    //             xAxes: [{
-    //                 display: true,
-    //                 gridLines: {
-    //                     color: '#eee'
-    //                 }
-    //             }],
-    //             yAxes: [{
-    //                 display: true,
-    //                 gridLines: {
-    //                     color: '#eee'
-    //                 }
-    //             }]
-    //         },
-    //         onClick: handleBarClick
-    //     },
-    //     data: {
-    //         labels: summary.labels,
-    //         datasets: [
-    //             {
-    //                 label: "Orders",
-    //                 backgroundColor: 'rgba(255, 119, 119, 0.94)',
-    //                 hoverBackgroundColor: 'rgba(255, 119, 119, 0.94)',
-    //                 borderColor: 'rgba(255, 119, 119, 0.94)',
-    //                 borderWidth: 1,
-    //                 data: summary.orders,
-    //             },
-    //             {
-    //                 label: "Canceled Orders",
-    //                 backgroundColor: 'rgba(76, 162, 205, 0.85)',
-    //                 hoverBackgroundColor: 'rgba(76, 162, 205, 0.85)',
-    //                 borderColor: 'rgba(76, 162, 205, 0.85)',
-    //                 borderWidth: 1,
-    //                 data: summary.canceledOrders,
-    //             },
-    //             {
-    //                 label: "Success Orders",
-    //                 backgroundColor: '#3eb579',
-    //                 hoverBackgroundColor: '#3eb579',
-    //                 borderColor: '#3eb579',
-    //                 borderWidth: 1,
-    //                 data: summary.successOrders,
-    //             }
-    //         ]
-    //     }
-    // });
-    barChartExample = new Chart(BARCHARTEXMPLE, {
-        type: 'bar',
-        options:
-            {
-                scales:
-                    {
-                        xAxes: [{
-                            display: true
-                        }],
-                        yAxes: [{
-                            display: true,
-                            type: 'linear',
-                            ticks: {
-                                beginAtZero: true,
-                                min: 0,
-                                precision: 0,
-                                suggestedMax: 10
-                            }
-                        }],
-                    },
-                legend: {
-                    display: false
-                },
-                title: {
-                    text: '',
-                    display: true,
-                    fontSize: 24
-                },
-                onClick: handleBarClick
-            },
-        data: {
-            labels: [],
-            datasets: []
+    // Init chart
+    var mainDataTable = null;
+    var mainChart = null;
+    google.charts.load('current', {'packages':['line']});
+    google.charts.setOnLoadCallback(function () {
+        mainChart = new google.charts.Line(document.getElementById('barChartExample'));
+
+        google.visualization.events.addListener(mainChart, 'select', selectHandler);
+
+        function selectHandler(e) {
+            // alert('A table row was selected');
+            var selections = mainChart.getSelection();
+            if (selections.length) {
+                var selection = selections[0];
+                if (selection.row && selection.column) {
+                    console.log(e, mainDataTable.getValue(selection.row, 0));
+                    handleBarClick(mainDataTable.getValue(selection.row, 0), selection.column);
+                }
+            }
         }
     });
+
     // Khoi tao filter
     var selReportType = $("#selReportType");
     var selChartType = $("#selChartType");
@@ -291,12 +229,72 @@ $(document).ready(function () {
         }
     });
 
+    function drawChart(data, title, subtitle) {
+        var options = {
+            chart: {
+                title: title,
+                subtitle: subtitle
+            },
+            // width: 900,
+            height: 500
+        };
+        mainDataTable = data;
+        mainChart.draw(mainDataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function createOrderChartData(xLable, chartData) {
+        console.log(chartData);
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', xLable);
+        data.addColumn('number', 'New Orders');
+        data.addColumn('number', 'Assigned Orders');
+        data.addColumn('number', 'Bought Orders');
+        data.addColumn('number', 'Received Orders');
+        data.addColumn('number', 'Canceled Orders');
+        data.addRows(chartData);
+        return data;
+    }
+
+    function createRateChartData(xLable, data) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', xLable);
+        data.addColumn('number', 'Success rate');
+        data.addRows(data);
+        return data;
+    }
+
+    function createSoldProductChartData(xLable, data) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', xLable);
+        data.addColumn('number', 'Sold Products');
+        data.addRows(data);
+        return data;
+    }
+
+    function createTotalAmountChartData(xLable, data) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', xLable);
+        data.addColumn('number', 'Total Amount');
+        data.addColumn('number', 'Paid Shipper Amount');
+        data.addRows(data);
+        return data;
+    }
+
+    function processChartData(data) {
+        var labels = data.labels;
+        var data = data.data;
+
+        return data.map((row, idx) => {
+            return [labels[idx]].concat(row);
+        });
+    }
+
     function loadChart(reportT, charT, start, end) {
         if (!start || !end) {
-            barChartExample.data.labels = [];
-            barChartExample.data.datasets = [];
-            barChartExample.update();
-            $("#chartName").text("");
+            // barChartExample.data.labels = [];
+            // barChartExample.data.datasets = [];
+            // barChartExample.update();
+            // $("#chartName").text("");
             return;
         }
 
@@ -306,18 +304,9 @@ $(document).ready(function () {
         var endUnix = moment(end, "DD/MM/YYYY").unix() * 1000;
         // console.log(reportT, charT, startUnix, endUnix);
         var charNameT = "";
+        var xLabel = "";
 
         switch (reportT) {
-            case "orderCnl":
-                apiEndpoint = "canceledorderchart";
-                chartTitle = "Canceled Orders";
-                charNameT += "The number of canceled orders by ";
-                break;
-            case "orderScc":
-                apiEndpoint = "successorderchart";
-                chartTitle = "Success Orders";
-                charNameT += "The number of success orders by ";
-                break;
             case "productSld":
                 apiEndpoint = "soldproductchart";
                 chartTitle = "Sold Products";
@@ -347,15 +336,19 @@ $(document).ready(function () {
         switch (charT) {
             case '0':
                 charNameT += " days";
+                xLabel = "Day";
                 break;
             case '1':
                 charNameT += " weeks";
+                xLabel = "Week";
                 break;
             case '2':
                 charNameT += " months";
+                xLabel = "Month";
                 break;
             case '3':
                 charNameT += " years";
+                xLabel = "Year";
                 break;
         }
 
@@ -369,17 +362,24 @@ $(document).ready(function () {
             success: function (response) {
                 // console.log(response.data);
                 var chartData = response.data;
+                var dataTable;
+                chartData = processChartData(chartData);
 
-                barChartExample.options.title.text = charNameT;
-                barChartExample.data.labels = chartData.labels;
-                barChartExample.data.datasets = [{
-                    label: chartTitle,
-                    backgroundColor: '#44b2d7',
-                    borderColor: '#44b2d7',
-                    borderWidth: 0,
-                    data: chartData.data
-                }];
-                barChartExample.update();
+                switch (reportT) {
+                    case "productSld":
+                        dataTable = createSoldProductChartData(xLabel, chartData);
+                        break;
+                    case "rateScc":
+                        dataTable = createRateChartData(xLabel, chartData);
+                        break;
+                    case "totalAmt":
+                        dataTable = createTotalAmountChartData(xLabel, chartData);
+                        break;
+                    default:
+                        dataTable = createOrderChartData(xLabel, chartData);
+                }
+
+                drawChart(dataTable, charNameT, '');
             },
             error: function (err) {
                 console.log(err);
@@ -394,10 +394,9 @@ $(document).ready(function () {
         return new Date(y, 0, d);
     }
 
-    function handleBarClick(evt) {
-        var activeElement = barChartExample.getElementAtEvent(evt);
+    function handleBarClick(selectedBar, status) {
 
-        if (!activeElement.length) {
+        if (!selectedBar) {
             //     $("#valOrderCnt").html("--");
             //     $("#valCanceledOrderCnt").html("--");
             //     $("#valSuccessOrderCnt").html("--");
@@ -406,23 +405,28 @@ $(document).ready(function () {
             return;
         }
 
-        var selectedBar = activeElement[0]._model.label;
-        var status = 1;
+        // var status = 1;
         var startUnix1 = 0;
         var endUnix1 = 0;
         var labelOrderList = "List of ";
 
-        switch (reportType) {
-            case "orderCnl":
-                status = 5;
+        switch (status) {
+            case 1:
+                labelOrderList += " new orders";
+                break;
+            case 2:
+                labelOrderList += " assigned orders";
+                break;
+            case 3:
+                labelOrderList += " bought orders";
+                break;
+            case 4:
+                labelOrderList += " received orders";
+                break;
+            case 5:
                 labelOrderList += " canceled orders";
                 break;
-            case "orderScc":
-                status = 4;
-                labelOrderList += " success orders";
-                break;
             default:
-                status = -1;
                 labelOrderList += " orders";
         }
         labelOrderList += " by ";
@@ -431,8 +435,6 @@ $(document).ready(function () {
             case '0':
                 // la ngay
                 startMoment = moment(selectedBar, "DD/MM/YYYY");
-                // endMoment = startMoment
-                // endMoment.add(1, 'days')
                 startUnix1 = startMoment.unix() * 1000;
                 endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                 labelOrderList += " days";
