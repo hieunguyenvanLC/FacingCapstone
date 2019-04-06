@@ -20,7 +20,7 @@ public class MdlShipperBuilder {
         mdlShipper.userImage = methods.bytesToBase64(frAccount.getUserImage());
         mdlShipper.natId = frAccount.getNatId();
         mdlShipper.natDate = frAccount.getNatDate();
-        mdlShipper.dateOfBirth = frAccount.getDateOfBirth();
+        mdlShipper.dateOfBirth = frAccount.getDob();
         mdlShipper.createTime = frAccount.getCreateTime();
         mdlShipper.updateTime = frAccount.getUpdateTime();
         mdlShipper.deleteTime = frAccount.getDeleteTime();
@@ -30,8 +30,8 @@ public class MdlShipperBuilder {
         mdlShipper.bikeRegId = frShipper.getBikeRegId();
         mdlShipper.bikeRegDate = frShipper.getBikeRegDate();
         mdlShipper.introduce = frShipper.getIntroduce();
-        mdlShipper.natFront = methods.bytesToBase64(frShipper.getNationalIdFrontImage());
-        mdlShipper.natBack = methods.bytesToBase64(frShipper.getNationalIdBackImage());
+        mdlShipper.natFront = methods.bytesToBase64(frShipper.getNatIdFrontImage());
+        mdlShipper.natBack = methods.bytesToBase64(frShipper.getNatIdBackImage());
         mdlShipper.sumRevenue = frShipper.getSumRevenue();
         mdlShipper.sourceId = frShipper.getSource().getId();
         mdlShipper.bikeRegFront = methods.bytesToBase64(frShipper.getBikeRegFront());

@@ -20,9 +20,9 @@ public class FRShipper implements Serializable {
     @Column(name = "sum_revenue")
     private Double sumRevenue;
     @Column(name = "national_id_front_image")
-    private byte[] nationalIdFrontImage;
+    private byte[] natIdFrontImage;
     @Column(name = "national_id_back_image")
-    private byte[] nationalIdBackImage;
+    private byte[] natIdBackImage;
     @Column(name = "bike_registration_id", length = 100)
     private String bikeRegId;
     @Column(name = "bike_registration_date")
@@ -71,20 +71,20 @@ public class FRShipper implements Serializable {
         this.sumRevenue = sumRevenue;
     }
 
-    public byte[] getNationalIdFrontImage() {
-        return nationalIdFrontImage;
+    public byte[] getNatIdFrontImage() {
+        return natIdFrontImage;
     }
 
-    public void setNationalIdFrontImage(byte[] nationalIdFrontImage) {
-        this.nationalIdFrontImage = nationalIdFrontImage;
+    public void setNatIdFrontImage(byte[] nationalIdFrontImage) {
+        this.natIdFrontImage = nationalIdFrontImage;
     }
 
-    public byte[] getNationalIdBackImage() {
-        return nationalIdBackImage;
+    public byte[] getNatIdBackImage() {
+        return natIdBackImage;
     }
 
-    public void setNationalIdBackImage(byte[] nationalIdBackImage) {
-        this.nationalIdBackImage = nationalIdBackImage;
+    public void setNatIdBackImage(byte[] nationalIdBackImage) {
+        this.natIdBackImage = nationalIdBackImage;
     }
 
     public String getBikeRegId() {

@@ -41,13 +41,14 @@ public class OrderService {
     private AccountRepo accountRepository;
     private PaymentInfoRepo paymentInfoRepo;
     private ReceiveMemberRepo receiveMemberRepo;
+    private ShipperRepo shipperRepo;
     private OrderMap orderMap;
     private TransactionRepo transactionRepo;
     private final ShipperWait shipperWait;
 
 
     @Autowired
-    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
+    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -55,6 +56,7 @@ public class OrderService {
 
         this.paymentInfoRepo = paymentInfoRepo;
         this.receiveMemberRepo = receiveMemberRepo;
+        this.shipperRepo = shipperRepo;
         this.orderMap = orderMap;
         this.transactionRepo = transactionRepo;
         this.shipperWait = shipperWait;
@@ -286,7 +288,7 @@ public class OrderService {
         frOrder.setBill(null);
         frOrder.setOrderCode(null);
         frOrder.setTotalPrice(totalPrice);
-        frOrder.setBookTime(time);
+        frOrder.setBuyTime(time);
         frOrder.setReceiveTime(null);
         frOrder.setShipperEarn(methods.calculateShpEarn(distance));
         frOrder.setShipAddress(null);
@@ -427,6 +429,7 @@ public class OrderService {
                                     FROrder frOrder = order.getFrOrder();
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setStatus(Fix.ORD_ASS.index);
+                                    frOrder.setPriceLevel(currentUser.getShipper().getPriceLevel().getPrice());
                                     orderRepository.save(frOrder);
                                     notifyBuyer(frOrder);
 //                                    notifyShipper(frOrder, shipperToken);
@@ -630,6 +633,11 @@ public class OrderService {
             frOrder.setBuyerFace(faceBytes);
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
+
+            double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
+            FRShipper frShipper = methods.getUser().getShipper();
+            frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
+            shipperRepo.save(frShipper);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             return response;
         }
@@ -637,7 +645,6 @@ public class OrderService {
 
     // Receive HttpReq from Python
     public String receiveFaceResult(String key, String faceListStr) {
-
         AppData.getFaceResult().put(key, faceListStr);
         return "ok";
     }

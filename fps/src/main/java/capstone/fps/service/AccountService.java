@@ -164,7 +164,7 @@ public class AccountService {
             frAccount.setNote(note.trim());
         }
         if (dob != null) {
-            frAccount.setDateOfBirth(dob);
+            frAccount.setDob(dob);
         }
         frAccount.setUpdateTime(methods.getTimeNow());
         frAccount.setStatus(valid.checkUpdateStatus(frAccount.getStatus(), status, Fix.ACC_STAT_LIST));
@@ -215,7 +215,7 @@ public class AccountService {
         frAccount.setReportPoint(0);
         frAccount.setNatId(natId);
         frAccount.setNatDate(natDate);
-        frAccount.setDateOfBirth(dob);
+        frAccount.setDob(dob);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote(note);
         frAccount.setStatus(Fix.ACC_NEW.index);
@@ -259,7 +259,7 @@ public class AccountService {
             frAccount.setNote(note);
         }
         if (methods.getAge(dob) >= 18) {
-            frAccount.setDateOfBirth(dob);
+            frAccount.setDob(dob);
         }
         frAccount.setUpdateTime(methods.getTimeNow());
 
@@ -278,6 +278,16 @@ public class AccountService {
             accList.add(mdlAdminBuilder.buildAdmDetail(frAccount));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, accList);
+        return response;
+    }
+
+    public Response<MdlAdmin> getAdminProfileAdm() {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        FRAccount frAccount =methods.getUser();
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAdminBuilder.buildAdmProfile(frAccount));
         return response;
     }
     // Web - Admin - End
@@ -323,7 +333,7 @@ public class AccountService {
         frAccount.setUserImage(methods.multipartToBytes(userFace));
         frAccount.setNatId(natId);
         frAccount.setNatDate(natDate);
-        frAccount.setDateOfBirth(dob);
+        frAccount.setDob(dob);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote(valid.nullProof(note));
         frAccount.setStatus(Fix.ACC_NEW.index);
@@ -335,8 +345,8 @@ public class AccountService {
         frShipper.setBikeRegId(bikeRegId);
         frShipper.setBikeRegDate(bikeRegDate);
         frShipper.setIntroduce(valid.nullProof(introduce));
-        frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
-        frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
+        frShipper.setNatIdFrontImage(methods.multipartToBytes(natFront));
+        frShipper.setNatIdBackImage(methods.multipartToBytes(natBack));
         frShipper.setSumRevenue(0D);
         frShipper.setBikeRegFront(methods.multipartToBytes(bikeRegFront));
         frShipper.setBikeRegBack(methods.multipartToBytes(bikeRegBack));
@@ -391,7 +401,7 @@ public class AccountService {
             frAccount.setNatDate(natDate);
         }
         if (dob != null) {
-            frAccount.setDateOfBirth(dob);
+            frAccount.setDob(dob);
         }
         if (email != null) {
             frAccount.setEmail(email);
@@ -416,10 +426,10 @@ public class AccountService {
             frShipper.setIntroduce(introduce);
         }
         if (natFront != null) {
-            frShipper.setNationalIdFrontImage(methods.multipartToBytes(natFront));
+            frShipper.setNatIdFrontImage(methods.multipartToBytes(natFront));
         }
         if (natBack != null) {
-            frShipper.setNationalIdBackImage(methods.multipartToBytes(natBack));
+            frShipper.setNatIdBackImage(methods.multipartToBytes(natBack));
         }
         if (sumRevenue != null) {
             frShipper.setSumRevenue(sumRevenue);
@@ -500,7 +510,7 @@ public class AccountService {
         frAccount.setUserImage(null);
         frAccount.setNatId(null);
         frAccount.setNatDate(null);
-        frAccount.setDateOfBirth(null);
+        frAccount.setDob(null);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote("");
         frAccount.setStatus(Fix.ACC_NEW.index);
@@ -593,7 +603,7 @@ public class AccountService {
             currentUser.setEmail(email.trim());
         }
         if (dob != null) {
-            currentUser.setDateOfBirth(dob);
+            currentUser.setDob(dob);
         }
         currentUser.setUpdateTime(methods.getTimeNow());
         currentUser.setEditor(currentUser);
@@ -626,6 +636,21 @@ public class AccountService {
         // train here
         trainingFaceRecognise(frReceiveMember);
 
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
+    public Response<String> updateAvatar(String avatar) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        FRAccount currentUser = methods.getUser();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        if (avatar == null) {
+            response.setResponse(Response.STATUS_FAIL, "Avatar is null");
+            return response;
+        }
+        currentUser.setAvatar(methods.base64ToBytes(avatar));
+        accountRepo.save(currentUser);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }

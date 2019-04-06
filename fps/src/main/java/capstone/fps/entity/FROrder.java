@@ -2,8 +2,6 @@ package capstone.fps.entity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
@@ -30,12 +28,14 @@ public class FROrder {
     private String orderCode;
     @Column(name = "total_price")
     private Double totalPrice;
-    @Column(name = "book_time")
-    private Long bookTime;
+    @Column(name = "buy_time")
+    private Long buyTime;
     @Column(name = "receive_time")
     private Long receiveTime;
     @Column(name = "shipper_earn")
     private Double shipperEarn;
+    @Column(name = "price_level")
+    private Double priceLevel;
     @Column(name = "ship_address", length = 300)
     private String shipAddress;
     @ManyToOne
@@ -109,12 +109,12 @@ public class FROrder {
         this.totalPrice = totalPrice;
     }
 
-    public Long getBookTime() {
-        return bookTime;
+    public Long getBuyTime() {
+        return buyTime;
     }
 
-    public void setBookTime(Long bookTime) {
-        this.bookTime = bookTime;
+    public void setBuyTime(Long bookTime) {
+        this.buyTime = bookTime;
     }
 
     public Long getReceiveTime() {
@@ -243,5 +243,13 @@ public class FROrder {
 
     public void setBuyerToken(String buyerToken) {
         this.buyerToken = buyerToken;
+    }
+
+    public Double getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(Double priceLevel) {
+        this.priceLevel = priceLevel;
     }
 }

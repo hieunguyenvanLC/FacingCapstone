@@ -178,6 +178,19 @@ public class AccountController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+
+    @GetMapping(Fix.MAP_ADM + API + "/profile")
+    public String getAdminProfileAdm() {
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getAdminProfileAdm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
     // Admin Web - Admin - End
 
 
@@ -198,7 +211,7 @@ public class AccountController extends AbstractController {
 
     // Mobile Mem - Profile - Begin
     @GetMapping(Fix.MAP_MEM + API + "/detail")
-    public String getMemberDetailMem() {
+    public String getMemberProfileMem() {
         Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getMemberDetailMem();
@@ -214,6 +227,18 @@ public class AccountController extends AbstractController {
         Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateMemberDetailMem(name, email, dob);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_MEM + API + "/avatar")
+    public String updateAvatarMem(String avatar) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateAvatar(avatar);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

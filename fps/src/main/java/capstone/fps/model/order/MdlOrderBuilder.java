@@ -28,7 +28,7 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        mdlOrder.bookTime = frOrder.getBookTime();
+        mdlOrder.bookTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.longitude = frOrder.getLongitude();
@@ -65,7 +65,7 @@ public class MdlOrderBuilder {
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
-        mdlOrder.bookTime = frOrder.getBookTime();
+        mdlOrder.bookTime = frOrder.getBuyTime();
         mdlOrder.status = frOrder.getStatus();
         return mdlOrder;
     }

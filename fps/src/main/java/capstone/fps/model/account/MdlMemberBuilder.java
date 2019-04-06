@@ -5,7 +5,6 @@ import capstone.fps.entity.FRAccount;
 import capstone.fps.entity.FRReceiveMember;
 import capstone.fps.repository.ReceiveMemberRepo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MdlMemberBuilder {
@@ -55,7 +54,7 @@ public class MdlMemberBuilder {
         mdlMember.phone = frAccount.getPhone();
         mdlMember.name = frAccount.getName();
         mdlMember.email = frAccount.getEmail();
-        mdlMember.dob = frAccount.getDateOfBirth();
+        mdlMember.dob = frAccount.getDob();
         mdlMember.createTime = frAccount.getCreateTime();
         mdlMember.note = frAccount.getNote();
         mdlMember.status = frAccount.getStatus();
@@ -77,7 +76,7 @@ public class MdlMemberBuilder {
         mdlMember.email = frAccount.getEmail();
         mdlMember.extraPoint = frAccount.getExtraPoint();
         mdlMember.reportPoint = frAccount.getReportPoint();
-        mdlMember.dob = frAccount.getDateOfBirth();
+        mdlMember.dob = frAccount.getDob();
         mdlMember.avatar = methods.bytesToBase64(frAccount.getUserImage());
         List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
         mdlMember.faceList = new MdlFace[receiveMembers.size()];
