@@ -126,9 +126,9 @@ $(document).ready(function () {
     // Init chart
     var mainDataTable = null;
     var mainChart = null;
-    google.charts.load('current', {'packages': ['bar']}); // bar => line (doi chart)
+    google.charts.load('current', {'packages': ['line']}); // bar => line (doi chart)
     google.charts.setOnLoadCallback(function () {
-        mainChart = new google.charts.Bar(document.getElementById('barChartExample')); // Bar => Line (doi chart)
+        mainChart = new google.charts.Line(document.getElementById('barChartExample')); // Bar => Line (doi chart)
 
         google.visualization.events.addListener(mainChart, 'select', selectHandler);
 
@@ -269,7 +269,7 @@ $(document).ready(function () {
             height: 500
         };
         mainDataTable = data;
-        mainChart.draw(mainDataTable, google.charts.Bar.convertOptions(options)); // Bar => Line (doi chart)
+        mainChart.draw(mainDataTable, google.charts.Line.convertOptions(options)); // Bar => Line (doi chart)
     }
 
     function createOrderChartData(xLable, chartData) {
