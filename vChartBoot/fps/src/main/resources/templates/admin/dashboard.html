@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_dash_layout}" lang="en">
+
+<!--<div class="content-inner" layout:fragment="content-section">-->
+<!--<header class="page-header">-->
+<!--<div class="container-fluid">-->
+<!--<h2 class="no-margin-bottom">Dashboard</h2>-->
+<!--</div>-->
+<!--</header>-->
+<!--</div>-->
+<div class="content-inner" layout:fragment="content-section">
+    <!-- Page Header-->
+    <header class="page-header">
+        <div class="container-fluid">
+            <h2 class="no-margin-bottom">Dashboard</h2>
+        </div>
+    </header>
+    <!-- Dashboard Counts Section-->
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="row bg-white has-shadow" style="margin-left: -15px; margin-right: -15px">
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon bg-violet"><i class="icon-user"></i></div>
+                        <div class="title"><span>Actived<br>Shippers</span>
+                            <!--<div class="progress">-->
+                            <!--<div role="progressbar" style="width: 25%; height: 4px;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-violet"></div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="number" id="lbActivedShipper"><strong>0</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon bg-red"><i class="icon-padnote"></i></div>
+                        <div class="title"><span>All<br>Customers</span>
+                            <!--<div class="progress">-->
+                            <!--<div role="progressbar" style="width: 70%; height: 4px;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-red"></div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="number" id="lbNewCus"><strong>0</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon bg-green"><i class="icon-bill"></i></div>
+                        <div class="title"><span>All<br>Stores</span>
+                            <!--<div class="progress">-->
+                            <!--<div role="progressbar" style="width: 40%; height: 4px;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-green"></div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="number" id="lbNewStores"><strong>0</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon bg-orange"><i class="icon-check"></i></div>
+                        <div class="title"><span>All Orders<br></span>
+                            <!--<div class="progress">-->
+                            <!--<div role="progressbar" style="width: 50%; height: 4px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-orange"></div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="number" id="lbNewOrder"><strong>0</strong></div>
+                    </div>
+                </div>
+            </div>
+            </br>
+            <div class="row bg-white has-shadow" style="margin-left: -15px; margin-right: -15px">
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
+                        <div class="title"><span>Success<br>Rate</span></div>
+                        <div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="title"><span>Total<br/>Amount</span></div>
+                        <div class="number filter-sm-text" id="lbTotalAmount"><strong>0 VND</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <!--<div class="icon bg-green"><i class="icon-bill"></i></div>-->
+                        <div class="title"><span>Paid Shipper<br/>Amount</span></div>
+                        <div class="number filter-sm-text" id="lbPaidShipper"><strong>0 VND</strong></div>
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <!--<div class="icon bg-orange"><i class="icon-check"></i></div>-->
+                        <div class="title"><span>Sold<br/>Products</span></div>
+                        <div class="number filter-sm-text" id="lbSoldProduct"><strong>0</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Dashboard Header Section    -->
+
+    <section class="dashboard-header">
+        <div class="container-fluid">
+            <!--<div class="row"></div>-->
+
+            <div class="row bg-white has-shadow">
+                <div class="item col-12">
+
+
+                    <div class="row" style="margin: 0px">
+                        <div class="chart col-lg-3 col-12">
+                            <label>Type:</label>
+                            <select id="selReportType" width="220px">
+                                <option value="order">Order</option>
+                                <option value="orderCnl">Order Canceled</option>
+                                <option value="orderScc">Order Success</option>
+                                <option value="productSld">Product Sold</option>
+                                <option value="rateScc">Rate Successfull</option>
+                                <option value="totalAmt">Total Amount</option>
+                                <option value="shipPaid">Paid Shipper</option>
+                            </select>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="chart col-lg-2 col-12">
+                            <label>Date:</label>
+                            <select id="selChartType" width="120px">
+                                <option value="0">Day</option>
+                                <option value="1">Week</option>
+                                <option value="2">Month</option>
+                                <option value="3">Year</option>
+                            </select>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="chart col-lg-1 col-12">
+                        </div>
+                        <div class="chart char-filter col-lg-6 col-12">
+                            <input id="dpkStart" width="50%" style="display: inline" autocomplete="off"/>
+                            <input id="dpkEnd" width="50%" style="display: inline" autocomplete="off"/>
+                        </div>
+                    </div>
+                </div>
+                <!-- Statistics -->
+                <!--<div class="statistics col-lg-3 col-12">-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-red"><i class="fa fa-tasks"></i></div>-->
+                <!--<div class="text"><strong id="valOrderCnt">&#45;&#45;</strong><br><small>Order</small></div>-->
+                <!--</div>-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-green"><i class="fa fa-calendar-o"></i></div>-->
+                <!--<div class="text"><strong id="valCanceledOrderCnt">&#45;&#45;</strong><br><small>Order Cancel</small></div>-->
+                <!--</div>-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-orange"><i class="fa fa-paper-plane-o"></i></div>-->
+                <!--<div class="text"><strong id="valSuccessOrderCnt">&#45;&#45;</strong><br><small>Delivery Succress</small></div>-->
+                <!--</div>-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-green"><i class="fa fa-line-chart"></i></div>-->
+                <!--<div class="text"><strong id="valRateOrder">&#45;&#45;</strong><br><small>Success Delivery Rate</small></div>-->
+                <!--</div>-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-orange"><i class="fa fa-paper-plane-o"></i></div>-->
+                <!--<div class="text"><strong id="valSoldProductCnt">&#45;&#45;</strong><br><small>Sold Product</small></div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!-- Line Chart            -->
+
+                <div class="chart col-lg-12 col-12">
+                    <!--<h2 id="chartName" class="d-flex align-items-center justify-content-center" style="padding-top: 20px;"></h2>-->
+
+                    <div class="line-chart d-flex align-items-center justify-content-center">
+                        <canvas id="barChartExample"></canvas>
+                        <!--<canvas id="barChart1"></canvas>-->
+                    </div>
+                    <!--<div class="chartjs-render-monitor">-->
+                    <!--<canvas id="barChart1"></canvas>-->
+                    <!--</div>-->
+                </div>
+                <!--<div class="chart col-lg-3 col-12">-->
+                <!--&lt;!&ndash; Bar Chart   &ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="bar-chart has-shadow bg-white">&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="title"><strong class="text-violet">95%</strong><br><small>Current Server Uptime</small></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<canvas id="barChartHome"></canvas>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash; Numbers&ndash;&gt;-->
+                <!--<div class="statistic d-flex align-items-center bg-white has-shadow">-->
+                <!--<div class="icon bg-green"><i class="fa fa-line-chart"></i></div>-->
+                <!--<div class="text"><strong>99.9%</strong><br><small>Success Delivery Rate</small></div>-->
+                <!--</div>-->
+                <!--</div>-->
+
+
+            </div>
+            <div class="row bg-white has-shadow" style="margin-top: 20px;">
+                <div class="col-lg-12">
+
+                    <div class="table-responsive" style="padding: 15px 0px">
+                        <h2 id="lbOrderList"></h2>
+
+                        <table id="report-table" class="table">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Buyer Phone</th>
+                                <th>Buyer Name</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--<tr>-->
+                            <!--<th scope="row" data-target="#edit-order-detail-modal" data-toggle="modal" onclick="loadEditForm()">1</th>-->
+                            <!--<td data-target="#store-detail-modal" data-toggle="modal">Trà Sữa Gong Cha - 貢茶 - Hồ Tùng Mậu-->
+                            <!--</td>-->
+                            <!--<td data-target="#store-detail-modal" data-toggle="modal">83 Hồ Tùng Mậu</td>-->
+                            <!--<td data-target="#store-detail-modal" data-toggle="modal">Working</td>-->
+                            <!--<td data-target="#store-detail-modal" data-toggle="modal">❤❤❤</td>-->
+                            <!--<td>-->
+                            <!--<a href="#" class="btn btn-danger">Deactive</a>-->
+                            <!--</td>-->
+                            <!--</tr>-->
+                            </tbody>
+                        </table>
+                        <!-- Modal-->
+                        <div id="statistic-detail-modal" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true" class="modal fade text-left">
+                            <div role="document" class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4 id="exampleModalLabelStore" class="modal-title"></h4>
+                                        <button type="button" data-dismiss="modal" aria-label="Close"
+                                                class="close"><span
+                                                id="btnCloseModal" aria-hidden="true">×</span></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row row-eq-height no-padding">
+                                            <div class="col-4  padding-0">
+                                                <label>Customer Face</label>
+                                                <div class="input-group">
+                                                    <!--<div class="input-group-prepend">-->
+                                                    <!--<span class="input-group-text"-->
+                                                    <!--id="inputGroupFileAddon01">Upload</span>-->
+                                                    <!--</div>-->
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input"
+                                                               id="uplBuyerFace"
+                                                               onchange="uplStoreThumbOnChange()">
+                                                        <label class="custom-file-label" for="uplBuyerFace"
+                                                               style="border-radius: 0">Choose file</label>
+                                                    </div>
+                                                </div>
+                                                <img id="imgBuyerFace" src="" alt="Buyer">
+                                            </div>
+
+                                            <div class="col-4 padding-0">
+                                                <label>Bill</label>
+                                                <div class="input-group">
+                                                    <!--<div class="input-group-prepend">-->
+                                                    <!--<span class="input-group-text"-->
+                                                    <!--id="inputGroupFileAddon02">Upload</span>-->
+                                                    <!--</div>-->
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input"
+                                                               id="uplBill"
+                                                               onchange="uplStoreThumbOnChange()">
+                                                        <label class="custom-file-label" for="uplBill"
+                                                               style="border-radius: 0">Choose file</label>
+                                                    </div>
+                                                </div>
+                                                <img id="imgBill" src="" alt="Bill" style="width: 100%;">
+                                            </div>
+
+                                            <div class="col-4 padding-0">
+
+                                                <div class="form-group">
+                                                    <label>Order ID</label>
+                                                    <input type="text" placeholder="Id" class="form-control"
+                                                           id="txtOrderId">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Buyer Phone</label>
+                                                    <input type="text" placeholder="Buyer Phone"
+                                                           class="form-control"
+                                                           id="txtBuyerPhone">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Buyer Name</label>
+                                                    <input type="text" placeholder="Buyer Name"
+                                                           class="form-control"
+                                                           id="txtBuyerName">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Shipper Phone</label>
+                                                    <input type="text" placeholder="Shipper Phone"
+                                                           class="form-control"
+                                                           id="txtShipperPhone">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Shipper Name</label>
+                                                    <input type="text" placeholder="Shipper Name"
+                                                           class="form-control"
+                                                           id="txtShipperName">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="cbbStatus">Status</label>
+                                                    <select class="form-control" id="cbbStatus"></select>
+                                                </div>
+
+                                            </div>
+                                            <!--<div class="col-4 padding-0">-->
+                                            <!--<label for="cbbStatus">Status</label>-->
+                                            <!--<select class="form-control" id="cbbStatus"></select>-->
+                                            <!--</div>-->
+                                        </div>
+
+
+                                        <div class="row row-eq-height no-padding">
+                                            <div class="col-4 padding-0">
+                                                <div class="form-group">
+                                                    <label>Longitude</label>
+                                                    <input type="text" placeholder="Longitude"
+                                                           class="form-control"
+                                                           id="txtLongitude">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Latitude</label>
+                                                    <input type="text" placeholder="Latitude"
+                                                           class="form-control"
+                                                           id="txtLatitude">
+                                                </div>
+
+                                            </div>
+                                            <div class="col-4 padding-0">
+                                                <div class="form-group">
+                                                    <label>Total Price</label>
+                                                    <input type="text" placeholder="Total Price"
+                                                           class="form-control"
+                                                           id="txtTotalPrice">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Shipper Earn</label>
+                                                    <input type="text" placeholder="Shipper Earn"
+                                                           class="form-control"
+                                                           id="txtShipperEarn">
+                                                </div>
+                                            </div>
+                                            <div class="col-4 padding-0">
+                                                <div class="form-group">
+                                                    <label>Store Name</label>
+                                                    <input type="text" placeholder="Store Name"
+                                                           class="form-control"
+                                                           id="txtStoreName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Customer Description</label>
+                                                    <input type="text" placeholder="Customer Description"
+                                                           class="form-control"
+                                                           id="txtCustomerDescription">
+                                                </div>
+                                                <!--<div class="form-group">-->
+                                                <!--<label>Note</label>-->
+                                                <!--<input type="text" placeholder="Note" class="form-control"-->
+                                                <!--id="txtNote">-->
+                                                <!--</div>-->
+                                            </div>
+                                        </div>
+                                        <div class="row row-eq-height no-padding">
+                                            <div class="col-4 padding-0">
+                                                <div class="form-group">
+                                                    <label>Create Time</label>
+                                                    <input type="text" placeholder="Create time"
+                                                           class="form-control"
+                                                           id="txtCreateTime">
+                                                </div>
+                                            </div>
+                                            <div class="col-4 padding-0">
+                                                <div class="form-group">
+                                                    <label>Receive Time</label>
+                                                    <input type="text" placeholder="Receive time"
+                                                           class="form-control"
+                                                           id="txtReceiveTime">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 no-padding">
+                                                <div class="form-group">
+                                                    <label>Note</label>
+                                                    <textarea type="text" placeholder="Note" class="form-control"
+                                                              id="txtNote"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12 no-padding">
+                                                <table id="order-detail-table" class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Product</th>
+                                                        <th>Price</th>
+                                                        <th>Unit</th>
+                                                        <th>Cost</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="tblBodyDetail"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Page Footer-->
+    <footer class="main-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>Your company &copy; 2017-2019</p>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <p>Design by <a href="https://bootstrapious.com/p/admin-template" class="external">Bootstrapious</a>
+                    </p>
+                    <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+</html>
