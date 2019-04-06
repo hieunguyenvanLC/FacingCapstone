@@ -127,19 +127,58 @@ public class HomeService {
     }
 
     public int countOrderSuccessBy(Long start, Long end) {
-        return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
+        Integer res = 0;
+        try {
+            res = this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(4, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res == null ? 0 : res;
+    }
+
+    public Double successRate(Long start, Long end) {
+        int success = this.countOrderSuccessBy(start, end);
+        int canceled = this.countOrderCancelBy(start, end);
+
+        if (success + canceled == 0) {
+            return 0.0;
+        }
+
+        return success * 100.0 / (success + canceled);
     }
 
     public Integer sumProductByOrder(Long start, Long end) {
-        return this.orderRepository.sumSoldProduct(4, start, end); // doi status = 4
+        Integer res = 0;
+        try {
+            res = this.orderRepository.sumSoldProduct(4, start, end); // doi status = 4
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res == null ? 0 : res;
     }
 
     public Integer sumTotalAmount(Long start, Long end) {
-        return this.orderRepository.sumTotalAmount(4, start, end); // doi status = 4
+        Integer res = 0;
+        try {
+            res = this.orderRepository.sumTotalAmount(4, start, end); // doi status = 4
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res == null ? 0 : res;
     }
 
     public Integer sumShipperEarn(Long start, Long end) {
-        return this.orderRepository.sumShipperEarn(4, start, end); // doi status = 4
+        Integer res = 0;
+        try {
+            res = this.orderRepository.sumShipperEarn(4, start, end); // doi status = 4
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res == null ? 0 : res;
     }
 
     public Integer countOrders(Integer status, Long start, Long end) {

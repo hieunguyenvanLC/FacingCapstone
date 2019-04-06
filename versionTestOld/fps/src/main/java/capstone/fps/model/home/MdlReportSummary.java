@@ -26,8 +26,132 @@ public class MdlReportSummary {
     private int totalAmount;
     @Expose
     private int paidShipper;
+
+    @Expose
+    private int soldProductCountTDay;
+    @Expose
+    private double successRateTDay;
+    @Expose
+    private int totalAmountTDay;
+    @Expose
+    private int paidShipperTDay;
+
+    @Expose
+    private int soldProductCountTWeek;
+    @Expose
+    private double successRateTWeek;
+    @Expose
+    private int totalAmountTWeek;
+    @Expose
+    private int paidShipperTWeek;
+
+    @Expose
+    private int soldProductCountTMonth;
+    @Expose
+    private double successRateTMonth;
+    @Expose
+    private int totalAmountTMonth;
+    @Expose
+    private int paidShipperTMonth;
+
 //    @Expose
 //    private List<Integer> orders;
+
+    public int getSoldProductCountTDay() {
+        return soldProductCountTDay;
+    }
+
+    public void setSoldProductCountTDay(int soldProductCountTDay) {
+        this.soldProductCountTDay = soldProductCountTDay;
+    }
+
+    public double getSuccessRateTDay() {
+        return successRateTDay;
+    }
+
+    public void setSuccessRateTDay(double successRateTDay) {
+        this.successRateTDay = successRateTDay;
+    }
+
+    public int getTotalAmountTDay() {
+        return totalAmountTDay;
+    }
+
+    public void setTotalAmountTDay(int totalAmountTDay) {
+        this.totalAmountTDay = totalAmountTDay;
+    }
+
+    public int getPaidShipperTDay() {
+        return paidShipperTDay;
+    }
+
+    public void setPaidShipperTDay(int paidShipperTDay) {
+        this.paidShipperTDay = paidShipperTDay;
+    }
+
+    public int getSoldProductCountTWeek() {
+        return soldProductCountTWeek;
+    }
+
+    public void setSoldProductCountTWeek(int soldProductCountTWeek) {
+        this.soldProductCountTWeek = soldProductCountTWeek;
+    }
+
+    public double getSuccessRateTWeek() {
+        return successRateTWeek;
+    }
+
+    public void setSuccessRateTWeek(double successRateTWeek) {
+        this.successRateTWeek = successRateTWeek;
+    }
+
+    public int getTotalAmountTWeek() {
+        return totalAmountTWeek;
+    }
+
+    public void setTotalAmountTWeek(int totalAmountTWeek) {
+        this.totalAmountTWeek = totalAmountTWeek;
+    }
+
+    public int getPaidShipperTWeek() {
+        return paidShipperTWeek;
+    }
+
+    public void setPaidShipperTWeek(int paidShipperTWeek) {
+        this.paidShipperTWeek = paidShipperTWeek;
+    }
+
+    public int getSoldProductCountTMonth() {
+        return soldProductCountTMonth;
+    }
+
+    public void setSoldProductCountTMonth(int soldProductCountTMonth) {
+        this.soldProductCountTMonth = soldProductCountTMonth;
+    }
+
+    public double getSuccessRateTMonth() {
+        return successRateTMonth;
+    }
+
+    public void setSuccessRateTMonth(double successRateTMonth) {
+        this.successRateTMonth = successRateTMonth;
+    }
+
+    public int getTotalAmountTMonth() {
+        return totalAmountTMonth;
+    }
+
+    public void setTotalAmountTMonth(int totalAmountTMonth) {
+        this.totalAmountTMonth = totalAmountTMonth;
+    }
+
+    public int getPaidShipperTMonth() {
+        return paidShipperTMonth;
+    }
+
+    public void setPaidShipperTMonth(int paidShipperTMonth) {
+        this.paidShipperTMonth = paidShipperTMonth;
+    }
 
     public int getCountOrderLess() {
         return countOrderLess;

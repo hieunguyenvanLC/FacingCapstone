@@ -97,9 +97,21 @@ $(document).ready(function () {
                 $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
                 $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
                 $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");
+                $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");
+                $("#lbSuccessRateW").html("<strong>" + summary.successRateTWeek + "%</strong>");
+                $("#lbSuccessRateM").html("<strong>" + summary.successRateTMonth + "%</strong>");
                 $("#lbTotalAmount").html("<strong>" + summary.totalAmount + " VND</strong>");
+                $("#lbTotalAmountD").html("<strong>" + summary.totalAmountTDay + " VND</strong>");
+                $("#lbTotalAmountW").html("<strong>" + summary.totalAmountTWeek + " VND</strong>");
+                $("#lbTotalAmountM").html("<strong>" + summary.totalAmountTMonth + " VND</strong>");
                 $("#lbPaidShipper").html("<strong>" + summary.paidShipper + " VND</strong>");
+                $("#lbPaidShipperD").html("<strong>" + summary.paidShipperTDay + " VND</strong>");
+                $("#lbPaidShipperW").html("<strong>" + summary.paidShipperTWeek + " VND</strong>");
+                $("#lbPaidShipperM").html("<strong>" + summary.paidShipperTMonth + " VND</strong>");
                 $("#lbSoldProduct").html("<strong>" + summary.soldProductCount + "</strong>");
+                $("#lbSoldProductD").html("<strong>" + summary.soldProductCountTDay + "</strong>");
+                $("#lbSoldProductW").html("<strong>" + summary.soldProductCountTWeek + "</strong>");
+                $("#lbSoldProductM").html("<strong>" + summary.soldProductCountTMonth + "</strong>");
 
             },
             error: function (err) {
@@ -114,9 +126,9 @@ $(document).ready(function () {
     // Init chart
     var mainDataTable = null;
     var mainChart = null;
-    google.charts.load('current', {'packages': ['line']});
+    google.charts.load('current', {'packages': ['bar']}); // bar => line (doi chart)
     google.charts.setOnLoadCallback(function () {
-        mainChart = new google.charts.Line(document.getElementById('barChartExample'));
+        mainChart = new google.charts.Bar(document.getElementById('barChartExample')); // Bar => Line (doi chart)
 
         google.visualization.events.addListener(mainChart, 'select', selectHandler);
 
@@ -126,8 +138,26 @@ $(document).ready(function () {
             if (selections.length) {
                 var selection = selections[0];
                 if (selection.row && selection.column) {
-                    console.log(e, mainDataTable.getValue(selection.row, 0));
-                    handleBarClick(mainDataTable.getValue(selection.row, 0), selection.column);
+                    // console.log(e, mainDataTable.getValue(selection.row, 0));
+                    var status = selection.column;
+
+                    switch (reportType) {
+                        case "productSld":
+                            status = 4;
+                            break;
+                        case "rateScc":
+                            if (selection.column === 1) {
+                                status = 4;
+                            } else {
+                                status = 5;
+                            }
+                            break;
+                        case "totalAmt":
+                            status = 4;
+                            break;
+                    }
+
+                    handleBarClick(mainDataTable.getValue(selection.row, 0), status);
                 }
             }
         }
@@ -239,7 +269,7 @@ $(document).ready(function () {
             height: 500
         };
         mainDataTable = data;
-        mainChart.draw(mainDataTable, google.charts.Line.convertOptions(options));
+        mainChart.draw(mainDataTable, google.charts.Bar.convertOptions(options)); // Bar => Line (doi chart)
     }
 
     function createOrderChartData(xLable, chartData) {
@@ -255,28 +285,29 @@ $(document).ready(function () {
         return data;
     }
 
-    function createRateChartData(xLable, data) {
+    function createRateChartData(xLable, chartData) {
         var data = new google.visualization.DataTable();
-        data.addColumn('number', xLable);
+        data.addColumn('string', xLable);
         data.addColumn('number', 'Success rate');
-        data.addRows(data);
+        data.addColumn('number', 'Canceled rate');
+        data.addRows(chartData);
         return data;
     }
 
-    function createSoldProductChartData(xLable, data) {
+    function createSoldProductChartData(xLable, chartData) {
         var data = new google.visualization.DataTable();
-        data.addColumn('number', xLable);
+        data.addColumn('string', xLable);
         data.addColumn('number', 'Sold Products');
-        data.addRows(data);
+        data.addRows(chartData);
         return data;
     }
 
-    function createTotalAmountChartData(xLable, data) {
+    function createTotalAmountChartData(xLable, chartData) {
         var data = new google.visualization.DataTable();
-        data.addColumn('number', xLable);
+        data.addColumn('string', xLable);
         data.addColumn('number', 'Total Amount');
         data.addColumn('number', 'Paid Shipper Amount');
-        data.addRows(data);
+        data.addRows(chartData);
         return data;
     }
 

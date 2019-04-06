@@ -54,29 +54,30 @@ public class HomeController extends AbstractController {
         summary.setTotalAmount(this.homeService.sumTotalAmount());
         summary.setPaidShipper(this.homeService.sumShipperEarn());
 
-//        summary.setCountOrderLess(this.homeService.countOrderLess()); //Count Order less than 12h
-//        summary.setCountOrderMore(this.homeService.countOrderMore()); //Count Order more than 12h
-//        summary.setCountOrderEqual(this.homeService.countOrderEqual()); //Count Order less than 12h-24h
+        long endUnix = System.currentTimeMillis();
+        Calendar now = unixToCalendar(endUnix);
+        int nowWeek = now.get(Calendar.WEEK_OF_YEAR);
+        long startTodayUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        long startTWeekUnix = this.weekToUnix(now.get(Calendar.YEAR), nowWeek);
+        ;
+        long startTMonthUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, 1, 0, 0, 0);
 
-//        YearMonth yearMonthObject = YearMonth.of(year, mon);
-//        Integer daysInMonth = yearMonthObject.lengthOfMonth(); //28
-
-//        List<String> labels = new ArrayList<String>();
-//        List<Integer> orders = new ArrayList<Integer>();
-//        List<Integer> canceledOrders = new ArrayList<Integer>();
-//        List<Integer> successOrders = new ArrayList<Integer>();
-//
-//        for (Integer day = 1; day < daysInMonth ; day++) {
-//            labels.add(day.toString());
-//            orders.add(this.homeService.countOrderBy(mon, year, day));
-//            canceledOrders.add(this.homeService.countOrderCancelBy(mon, year, day));
-//            successOrders.add(this.homeService.countOrderSuccessBy(mon, year, day));
-//        }
-//
-//        summary.setLabels(labels);
-//        summary.setOrders(orders);
-//        summary.setCanceledOrders(canceledOrders);
-//        summary.setSuccessOrders(successOrders);
+        // Success Rate
+        summary.setSuccessRateTDay(this.homeService.successRate(startTodayUnix, endUnix));
+        summary.setSuccessRateTWeek(this.homeService.successRate(startTWeekUnix, endUnix));
+        summary.setSuccessRateTMonth(this.homeService.successRate(startTMonthUnix, endUnix));
+        // Total Amount
+        summary.setTotalAmountTDay(this.homeService.sumTotalAmount(startTodayUnix, endUnix));
+        summary.setTotalAmountTWeek(this.homeService.sumTotalAmount(startTWeekUnix, endUnix));
+        summary.setTotalAmountTMonth(this.homeService.sumTotalAmount(startTMonthUnix, endUnix));
+        // Paid Shipper Amount
+        summary.setPaidShipperTDay(this.homeService.sumShipperEarn(startTodayUnix, endUnix));
+        summary.setPaidShipperTWeek(this.homeService.sumShipperEarn(startTWeekUnix, endUnix));
+        summary.setPaidShipperTMonth(this.homeService.sumShipperEarn(startTMonthUnix, endUnix));
+        // Sold Products
+        summary.setSoldProductCountTDay(this.homeService.sumProductByOrder(startTodayUnix, endUnix));
+        summary.setSoldProductCountTWeek(this.homeService.sumProductByOrder(startTWeekUnix, endUnix));
+        summary.setSoldProductCountTMonth(this.homeService.sumProductByOrder(startTMonthUnix, endUnix));
 
         response.setResponse(Response.STATUS_SUCCESS, "", summary);
         return gson.toJson(response);
@@ -414,18 +415,23 @@ public class HomeController extends AbstractController {
                     tempEnd.add(Calendar.DAY_OF_MONTH, 1);
                     long endUnix = tempEnd.getTimeInMillis();
 
-                    double total = (this.homeService.countOrderSuccessBy(startUnix, endUnix) + this.homeService.countOrderCancelBy(startUnix, endUnix)) * 1.0D;
+                    Integer success = this.homeService.countOrderSuccessBy(startUnix, endUnix);
+                    Integer canceled = this.homeService.countOrderCancelBy(startUnix, endUnix);
+                    Double total = (success + canceled) * 1.0D;
                     if (total != 0) {
-                        double rate = this.homeService.countOrderSuccessBy(startUnix, endUnix) / total * 100.0D;
                         Double[] cols = {
-                                rate,
+                                success / total * 100.0D,
+                                canceled / total * 100.0D,
                         };
-                        labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
                         orders.add(cols);
-                    }
-//                    } else {
-//                        orders.add(0.0D);
-//                    } // Gia su startMonth = endMonth
+                    } else {
+                        Double[] cols = {
+                                0.0D,
+                                0.0D
+                        };
+                        orders.add(cols);
+                    } // Gia su startMonth = endMonth
+                    labels.add(formatDate(dateIdx, "dd/MM/yyyy"));
                 }
                 isSuccess = true;
             } else {
@@ -442,18 +448,23 @@ public class HomeController extends AbstractController {
                     long startUnix = this.weekToUnix(curYear, curWeek);
                     long endUnix = this.weekToUnix(curYear, curWeek + 1);
 
-                    double total = (this.homeService.countOrderSuccessBy(startUnix, endUnix) + this.homeService.countOrderCancelBy(startUnix, endUnix)) * 1.0D;
+                    Integer success = this.homeService.countOrderSuccessBy(startUnix, endUnix);
+                    Integer canceled = this.homeService.countOrderCancelBy(startUnix, endUnix);
+                    Double total = (success + canceled) * 1.0D;
                     if (total != 0) {
-                        double rate = this.homeService.countOrderSuccessBy(startUnix, endUnix) / total * 100.0D;
                         Double[] cols = {
-                                rate,
+                                success / total * 100.0D,
+                                canceled / total * 100.0D,
                         };
-                        labels.add(String.format("%02d", curWeek) + "/" + curYear.toString());
                         orders.add(cols);
-                    }
-//                    } else {
-//                        orders.add(0.0D);
-//                    } // Gia su startMonth = endMonth
+                    } else {
+                        Double[] cols = {
+                                0.0D,
+                                0.0D
+                        };
+                        orders.add(cols);
+                    } // Gia su startMonth = endMonth
+                    labels.add(String.format("%02d", curWeek) + "/" + curYear.toString());
                 }
                 isSuccess = true;
             } else {
@@ -470,18 +481,23 @@ public class HomeController extends AbstractController {
                     long startUnix = this.dateToUnix(curYear, curMon, 1, 0, 0, 0);
                     long endUnix = this.dateToUnix(curYear, curMon + 1, 1, 0, 0, 0);
 
-                    double total = (this.homeService.countOrderSuccessBy(startUnix, endUnix) + this.homeService.countOrderCancelBy(startUnix, endUnix)) * 1.0D;
+                    Integer success = this.homeService.countOrderSuccessBy(startUnix, endUnix);
+                    Integer canceled = this.homeService.countOrderCancelBy(startUnix, endUnix);
+                    Double total = (success + canceled) * 1.0D;
                     if (total != 0) {
-                        double rate = this.homeService.countOrderSuccessBy(startUnix, endUnix) / total * 100.0D;
                         Double[] cols = {
-                                rate,
+                                success / total * 100.0D,
+                                canceled / total * 100.0D,
                         };
-                        labels.add(String.format("%02d", curMon) + "/" + curYear.toString());
                         orders.add(cols);
-                    }
-//                    } else {
-//                        orders.add(0.0D);
-//                    } // Gia su startMonth = endMonth
+                    } else {
+                        Double[] cols = {
+                                0.0D,
+                                0.0D
+                        };
+                        orders.add(cols);
+                    } // Gia su startMonth = endMonth
+                    labels.add(String.format("%02d", curMon) + "/" + curYear.toString());
                 }
                 isSuccess = true;
             } else {
@@ -493,18 +509,24 @@ public class HomeController extends AbstractController {
 
                     long startUnix = this.dateToUnix(year, 1, 1, 0, 0, 0);
                     long endUnix = this.dateToUnix(year + 1, 1, 1, 0, 0, 0);
-                    double total = (this.homeService.countOrderSuccessBy(startUnix, endUnix) + this.homeService.countOrderCancelBy(startUnix, endUnix)) * 1.0D;
+
+                    Integer success = this.homeService.countOrderSuccessBy(startUnix, endUnix);
+                    Integer canceled = this.homeService.countOrderCancelBy(startUnix, endUnix);
+                    Double total = (success + canceled) * 1.0D;
                     if (total != 0) {
-                        double rate = this.homeService.countOrderSuccessBy(startUnix, endUnix) / total * 100.0D;
                         Double[] cols = {
-                                rate,
+                                success / total * 100.0D,
+                                canceled / total * 100.0D,
                         };
-                        labels.add(year.toString());
                         orders.add(cols);
-                    }
-//                    } else {
-//                        orders.add(0.0D);
-//                    } // Gia su startMonth = endMonth
+                    } else {
+                        Double[] cols = {
+                                0.0D,
+                                0.0D
+                        };
+                        orders.add(cols);
+                    } // Gia su startMonth = endMonth
+                    labels.add(year.toString());
                 }
                 isSuccess = true;
             } else {

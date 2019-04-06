@@ -54,8 +54,6 @@ public class HomeController extends AbstractController {
         summary.setTotalAmount(this.homeService.sumTotalAmount());
         summary.setPaidShipper(this.homeService.sumShipperEarn());
 
-        summary.setSoldProductCountTDay(this.homeService.sumProductByOrderTDay());
-
 //        summary.setCountOrderLess(this.homeService.countOrderLess()); //Count Order less than 12h
 //        summary.setCountOrderMore(this.homeService.countOrderMore()); //Count Order more than 12h
 //        summary.setCountOrderEqual(this.homeService.countOrderEqual()); //Count Order less than 12h-24h

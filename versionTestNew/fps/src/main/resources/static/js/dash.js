@@ -126,7 +126,7 @@ $(document).ready(function () {
             if (selections.length) {
                 var selection = selections[0];
                 if (selection.row && selection.column) {
-                    console.log(e, mainDataTable.getValue(selection.row, 0));
+                    // console.log(e, mainDataTable.getValue(selection.row, 0));
                     handleBarClick(mainDataTable.getValue(selection.row, 0), selection.column);
                 }
             }

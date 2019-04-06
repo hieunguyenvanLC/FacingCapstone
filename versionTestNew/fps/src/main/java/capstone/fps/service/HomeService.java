@@ -5,9 +5,8 @@ import capstone.fps.entity.FRRole;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.List;
 
@@ -140,6 +139,25 @@ public class HomeService {
         startTime = dateToUnix(years, months, 1, 0, 0, 0);
         return this.sumProductByOrder(startTime, endTime);
     }
+    public int sumProductByOrderTWeek() {
+        long millis = 0;
+        long startTime = 0;
+        LocalDate nowDate = LocalDate.now();
+        LocalDate previousDay = nowDate.with(TemporalAdjusters.previous(DayOfWeek.SUNDAY));
+
+        long endTime = System.currentTimeMillis();
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(millis);
+        int years = c.get(Calendar.YEAR);
+        int months = c.get(Calendar.MONTH);
+        int days = c.get(Calendar.DAY_OF_MONTH);
+        int hours = c.get(Calendar.HOUR);
+        int minutes = c.get(Calendar.MINUTE);
+        int seconds = c.get(Calendar.SECOND);
+        startTime = dateToUnix(years, months, 1, 0, 0, 0);
+        return this.sumProductByOrder(startTime, endTime);
+    }
 
 
     public double allSuccessRate() {
@@ -195,6 +213,7 @@ public class HomeService {
         return this.sumTotalAmount(0L, endTime);
     }
     public Integer sumTotalAmountTDay() {
+
         long endTime = System.currentTimeMillis();
         long millis = 0;
         long startTime = 0;
