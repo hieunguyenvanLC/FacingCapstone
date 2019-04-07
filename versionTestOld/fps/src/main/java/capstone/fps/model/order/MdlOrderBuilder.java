@@ -67,6 +67,7 @@ public class MdlOrderBuilder {
         mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.bookTime = frOrder.getBookTime();
+        mdlOrder.createTime = frOrder.getCreateTime();
         mdlOrder.status = frOrder.getStatus();
         return mdlOrder;
     }

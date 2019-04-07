@@ -121,7 +121,7 @@ $(document).ready(function () {
     }
 
     loadSummary();
-    setInterval(loadSummary, 5000);
+    setInterval(loadSummary, 10000);
 
     // Init chart
     var mainDataTable = null;
@@ -135,13 +135,68 @@ $(document).ready(function () {
         function selectHandler(e) {
             // alert('A table row was selected');
             var selections = mainChart.getSelection();
+            // console.log(selections);
             if (selections.length) {
                 var selection = selections[0];
-                if (selection.row && selection.column) {
+                if (selection.column) {
                     // console.log(e, mainDataTable.getValue(selection.row, 0));
                     var status = selection.column;
+                    var startMoment = null;
+                    var endMoment = null;
+                    var startUnix1 = 0;
+                    var endUnix1 = 0;
 
-                    switch (reportType) {
+                    // Lay start date va end date tu selection.row
+                    if (selection.row) {
+                        switch (chartType) {
+                            case '0':
+                                // la ngay
+                                startMoment = moment(selection.row, "DD/MM/YYYY");
+                                startUnix1 = startMoment.unix() * 1000;
+                                endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
+                                break;
+
+                            case '1':
+                                //la tuan
+                                var parts = selection.row.split("/");
+                                startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
+                                startUnix1 = startMoment.unix() * 1000;
+                                endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
+                                break;
+
+                            case '2':
+                                startMoment = moment('01/' + selection.row, "DD/MM/YYYY");
+                                startUnix1 = startMoment.unix() * 1000;
+                                endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
+                                break;
+
+                            case '3':
+                                startUnix1 = moment("01/01/" + selection.row, "DD/MM/YYYY").unix() * 1000;
+                                endUnix1 = moment("01/01/" + (parseInt(selection.row) + 1), "DD/MM/YYYY").unix() * 1000;
+                                break;
+                        }
+                    } else {
+                        startMoment = moment(startDate, "DD/MM/YYYY");
+                        endMoment = moment(endDate, "DD/MM/YYYY");
+                        switch (chartType) {
+                            case '0':
+                                endMoment.hours(23).minute(59).second(59).millisecond(999);
+                                break;
+                            case '1':
+                                endMoment.hours(23).minute(59).second(59).millisecond(999);
+                                break;
+                            case '2':
+                                endMoment.add(1, 'M');
+                                break;
+                            case '3':
+                                endMoment.add(1, 'Y');
+                                break;
+                        }
+                        startUnix1 = startMoment.unix() * 1000;
+                        endUnix1 = endMoment.unix() * 1000;
+                    }
+
+                    switch (reportType) { // Chuyen status theo legend doi voi chart khac
                         case "productSld":
                             status = 4;
                             break;
@@ -156,8 +211,7 @@ $(document).ready(function () {
                             status = 4;
                             break;
                     }
-
-                    handleBarClick(mainDataTable.getValue(selection.row, 0), status);
+                    handleBarClick(startUnix1, endUnix1, status);
                 }
             }
         }
@@ -211,8 +265,8 @@ $(document).ready(function () {
                 break;
             case '3':
                 formatDatepicker = 'yyyy';
-                prefixStartDate = '01/01';
-                prefixEndDate = '01/01';
+                prefixStartDate = '01/01/';
+                prefixEndDate = '01/01/';
                 break;
         }
 
@@ -243,7 +297,6 @@ $(document).ready(function () {
     });
     var dpkStart = $('#dpkStart').datepicker({
         uiLibrary: 'bootstrap4',
-        // format: 'dd/mm/yyyy',
         format: 'dd/mm/yyyy',
         change: function (e) {
             startDate = dpkStart.value();
@@ -425,9 +478,9 @@ $(document).ready(function () {
         return new Date(y, 0, d);
     }
 
-    function handleBarClick(selectedBar, status) {
+    function handleBarClick(startUnixT, endUnixT, status) {
 
-        if (!selectedBar) {
+        if (!startUnixT || !endUnixT) {
             //     $("#valOrderCnt").html("--");
             //     $("#valCanceledOrderCnt").html("--");
             //     $("#valSuccessOrderCnt").html("--");
@@ -436,9 +489,6 @@ $(document).ready(function () {
             return;
         }
 
-        // var status = 1;
-        var startUnix1 = 0;
-        var endUnix1 = 0;
         var labelOrderList = "List of ";
 
         switch (status) {
@@ -463,53 +513,98 @@ $(document).ready(function () {
         labelOrderList += " by ";
 
         switch (chartType) {
-            case '0':
-                // la ngay
-                startMoment = moment(selectedBar, "DD/MM/YYYY");
-                startUnix1 = startMoment.unix() * 1000;
-                endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
+            case '0': // la ngay
                 labelOrderList += " days";
                 break;
 
-            case '1':
-                //la tuan
+            case '1': //la tuan
                 var parts = selectedBar.split("/");
-                startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
-                startUnix1 = startMoment.unix() * 1000;
-                endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
                 labelOrderList += " weeks";
                 break;
 
             case '2':
-                startMoment = moment('01/' + selectedBar, "DD/MM/YYYY");
-                startUnix1 = startMoment.unix() * 1000;
-                endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
                 labelOrderList += " months";
                 break;
 
             case '3':
-                startUnix1 = moment("01/01/" + selectedBar, "DD/MM/YYYY").unix() * 1000;
-                endUnix1 = moment("01/01/" + (parseInt(selectedBar) + 1), "DD/MM/YYYY").unix() * 1000;
                 labelOrderList += " years";
                 break;
         }
 
-        $("#lbOrderList").text(labelOrderList);
-        console.log(reportType, chartType, startUnix1, endUnix1);
-        // console.log(day);
+        loadReportTable(startUnixT, endUnixT, status, labelOrderList);
+    }
+
+    var dpkStartReport = null;
+    var dpkEndReport = null;
+    var startReport = 0;
+    var endReport = 0;
+    function loadReportTable(startUnixT, endUnixT, status, title) {
+        if (!startUnixT || !endUnixT) {
+            return;
+        }
+
+        startReport = startUnixT;
+        endReport = endUnixT;
+
+        $("#lbOrderList").text(title);
         $.ajax({
-            url: "/any/api/report/orderlist?status=" + status + "&start=" + startUnix1 + "&end=" + endUnix1,
+            url: "/any/api/report/orderlist?status=" + status + "&start=" + startUnixT + "&end=" + endUnixT,
+            // url: "/any/api/report/orderlist?status=" + status + "&start=" + dpkStart + "&end=" + dpkEnd,
             type: "GET",
             dataType: "json",
             success: function (response) {
                 var orders = response.data;
                 orderList = orders;
-                console.log(orders);
-
                 var list = orders;
                 // report-table
                 $("#report-table").DataTable().destroy();
-                var reportTable = $("#report-table").DataTable();
+                var reportTable = $("#report-table").DataTable({
+                    "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-5 char-filter daterange'><'col-sm-12 col-md-4'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    fnInitComplete: function () {
+                        $('div.daterange').html('<input id="dpkStartReport" style="display: inline" autocomplete="off"/>\n' +
+                            '<input id="dpkEndReport" style="display: inline" autocomplete="off"/>');
+                        if (dpkStartReport) {
+                            dpkStartReport.destroy();
+                            dpkStartReport = null;
+                        }
+                        if (dpkEndReport) {
+                            dpkEndReport.destroy();
+                            dpkEndReport = null;
+                        }
+                        dpkStartReport = $('#dpkStartReport').datepicker({
+                            uiLibrary: 'bootstrap4',
+                            format: 'dd/mm/yyyy',
+                            value: moment(new Date(startUnixT)).format('DD/MM/YYYY'),
+                            change: function (e) {
+
+                                var startReportStr = dpkStartReport.value();
+                                var startReportTmp = moment(startReportStr, 'DD/MM/YYYY').unix() * 1000;
+                                console.log(startReportStr);
+
+                                if (startReport != startReportTmp) {
+                                    startReport = startReportTmp;
+                                    loadReportTable(startReport, endReport, status, title);
+                                }
+                            }
+                        });
+                        dpkEndReport = $('#dpkEndReport').datepicker({
+                            uiLibrary: 'bootstrap4',
+                            format: 'dd/mm/yyyy',
+                            value: moment(new Date(endUnixT)).format('DD/MM/YYYY'),
+                            change: function (e) {
+                                var endReportStr = dpkEndReport.value();
+                                var endReportTmp = moment(endReportStr, 'DD/MM/YYYY').unix() * 1000;
+
+                                if (endReport != endReportTmp) {
+                                    endReport = endReportTmp;
+                                    loadReportTable(startReport, endReport, status, title);
+                                }
+                            }
+                        });
+                    }
+                });
                 reportTable.clear().draw();
                 for (var i = 0; i < list.length; i++) {
                     var order = list[i];
@@ -518,7 +613,8 @@ $(document).ready(function () {
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperName + '</span>',
-                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.totalPrice + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.totalPrice) + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.createTime ? moment.unix(order.createTime / 1000).format('DD/MM/YYYY') : '') + '</span>',
                         fpsGetStatMsg(ORD_STAT_LIST, order.status)
                     ]).draw();
                 }
@@ -528,7 +624,6 @@ $(document).ready(function () {
             }
         });
     }
-
     // Xy ly pending
     $('#lbPenLess').click(function () {
         var now = moment();
