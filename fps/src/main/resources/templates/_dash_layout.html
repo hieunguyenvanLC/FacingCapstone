@@ -245,9 +245,9 @@
         xmlHttp.send(null);
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                console.log(xmlHttp.responseText);
+                // console.log(xmlHttp.responseText);
                 var profile = JSON.parse(xmlHttp.responseText).data;
-                console.log(profile);
+                // console.log(profile);
                 txtProfileFullName.innerHTML = profile.name;
                 txtProfileUsername.innerHTML = profile.phone;
                 if (typeof profile.avatar !== 'undefined') {

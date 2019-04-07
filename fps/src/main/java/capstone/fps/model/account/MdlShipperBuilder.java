@@ -6,9 +6,8 @@ import capstone.fps.entity.FRShipper;
 
 public class MdlShipperBuilder {
 
-    public MdlShipper buildFull(FRAccount frAccount){
+    public MdlShipper buildFull(FRAccount frAccount, FRShipper frShipper) {
         Methods methods = new Methods();
-        FRShipper frShipper = frAccount.getShipper();
         MdlShipper mdlShipper = new MdlShipper();
 
         mdlShipper.id = frAccount.getId();
@@ -35,12 +34,12 @@ public class MdlShipperBuilder {
         mdlShipper.sumRevenue = frShipper.getSumRevenue();
         mdlShipper.sourceId = frShipper.getSource().getId();
         mdlShipper.bikeRegFront = methods.bytesToBase64(frShipper.getBikeRegFront());
-        mdlShipper.bikeRegBack =  methods.bytesToBase64(frShipper.getBikeRegBack());
+        mdlShipper.bikeRegBack = methods.bytesToBase64(frShipper.getBikeRegBack());
         mdlShipper.priceLevelId = frShipper.getPriceLevel().getId();
         return mdlShipper;
     }
 
-    public MdlShipper buildTableRowAdm(FRAccount frAccount){
+    public MdlShipper buildTableRowAdm(FRAccount frAccount) {
         FRShipper frShipper = frAccount.getShipper();
         MdlShipper mdlShipper = new MdlShipper();
         mdlShipper.id = frAccount.getId();

@@ -354,7 +354,7 @@ public class AccountService {
         frShipper.setSource(frSource);
         shipperRepo.save(frShipper);
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo));
+        MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo) , shipperRepo.findById(frShipper.getId()).orElse(null));
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }
@@ -451,7 +451,7 @@ public class AccountService {
 
         shipperRepo.save(frShipper);
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount, frShipper);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }
@@ -479,7 +479,7 @@ public class AccountService {
             return response;
         }
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount, frAccount.getShipper());
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }
@@ -670,7 +670,7 @@ public class AccountService {
             return response;
         }
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount);
+        MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount, frAccount.getShipper());
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }

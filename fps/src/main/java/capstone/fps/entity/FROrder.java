@@ -60,7 +60,7 @@ public class FROrder {
     @ManyToOne
     @JoinColumn(name = "editor_id")
     private FRAccount editor;
-    @Column(name = "buyer_token", length = 100)
+    @Column(name = "buyer_token", length = 300)
     private String buyerToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
