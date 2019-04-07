@@ -58,7 +58,7 @@
                 <div class="navbar-holder d-flex align-items-center justify-content-between">
                     <!-- Navbar Header-->
                     <div class="navbar-header">
-                        <!-- Navbar Brand --><a href="/admin" class="navbar-brand d-none d-sm-inline-block">
+                        <!-- Navbar Brand --><a href="/adm" class="navbar-brand d-none d-sm-inline-block">
                         <div class="brand-text d-none d-lg-inline-block">
                             <span></span><strong>FDDF</strong></div>
                         <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>BD</strong></div>
@@ -187,10 +187,10 @@
         <nav class="side-navbar">
             <!-- Sidebar Header-->
             <div class="sidebar-header d-flex align-items-center">
-                <div class="avatar"><img src="/img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
+                <div class="avatar"><img id="imgProfileAvatar" src="" alt="" class="img-fluid rounded-circle"></div>
                 <div class="title">
-                    <h1 class="h4">Mark Stephen</h1>
-                    <p>Web Designer</p>
+                    <h1 id="txtProfileFullName" class="h4"></h1>
+                    <p id="txtProfileUsername"></p>
                 </div>
             </div>
             <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
@@ -233,15 +233,28 @@
 
 <script src="/js/front.js"></script>
 <script>
+    var txtProfileFullName = document.getElementById("txtProfileFullName");
+    var txtProfileUsername = document.getElementById("txtProfileUsername");
+    var imgProfileAvatar = document.getElementById("imgProfileAvatar");
 
+    fpsGetProfile();
 
     function fpsGetProfile() {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", fpsBackEnd + "/adm/api/profile", true); // true for asynchronous
+        xmlHttp.open("GET", "/adm/api/account/profile", true);
         xmlHttp.send(null);
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                var response = JSON.parse(xmlHttp.responseText);
+                console.log(xmlHttp.responseText);
+                var profile = JSON.parse(xmlHttp.responseText).data;
+                console.log(profile);
+                txtProfileFullName.innerHTML = profile.name;
+                txtProfileUsername.innerHTML = profile.phone;
+                if (typeof profile.avatar !== 'undefined') {
+                    imgProfileAvatar.src = profile.avatar;
+                } else {
+                    imgProfileAvatar.src = "https://ui-avatars.com/api/?name=" + profile.name;
+                }
 
             }
         }
