@@ -77,7 +77,7 @@ public class MdlMemberBuilder {
         mdlMember.extraPoint = frAccount.getExtraPoint();
         mdlMember.reportPoint = frAccount.getReportPoint();
         mdlMember.dob = frAccount.getDob();
-        mdlMember.avatar = methods.bytesToBase64(frAccount.getUserImage());
+        mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
         List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
         mdlMember.faceList = new MdlFace[receiveMembers.size()];
         for (int i = 0; i < receiveMembers.size(); i++) {
