@@ -284,12 +284,33 @@ public class AccountService {
     public Response<MdlAdmin> getAdminProfileAdm() {
         Methods methods = new Methods();
         Repo repo = new Repo();
-        FRAccount frAccount =methods.getUser();
+        FRAccount frAccount = methods.getUser();
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAdminBuilder.buildAdmProfile(frAccount));
         return response;
     }
+
+    public Response<MdlAdmin> updateProfileAdm(String password, String name, MultipartFile avatar) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        FRAccount frAccount = methods.getUser();
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        if (password != null) {
+            frAccount.setPassword(methods.hashPass(password));
+        }
+        if (!methods.nullOrSpace(name)) {
+            frAccount.setName(name.trim());
+        }
+        if (avatar != null) {
+            frAccount.setAvatar(methods.multipartToBytes(avatar));
+        }
+        accountRepo.save(frAccount);
+        MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAdminBuilder.buildAdmProfile(frAccount));
+        return response;
+    }
+
     // Web - Admin - End
 
 
@@ -354,7 +375,7 @@ public class AccountService {
         frShipper.setSource(frSource);
         shipperRepo.save(frShipper);
 
-        MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo) , shipperRepo.findById(frShipper.getId()).orElse(null));
+        MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo), shipperRepo.findById(frShipper.getId()).orElse(null));
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
     }

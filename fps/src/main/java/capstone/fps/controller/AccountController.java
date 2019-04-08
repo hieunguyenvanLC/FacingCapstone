@@ -179,12 +179,23 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
 
-
     @GetMapping(Fix.MAP_ADM + API + "/profile")
     public String getAdminProfileAdm() {
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getAdminProfileAdm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_ADM + API + "/profile")
+    public String updateProfileAdm(String password, String name, MultipartFile avatar) {
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateProfileAdm(password, name, avatar);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
