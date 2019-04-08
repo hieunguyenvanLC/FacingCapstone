@@ -58,8 +58,8 @@ public class MdlOrderBuilder {
     }
 
 
-    public MdlOrder buildAdminTableRow(FROrder frOrder) {
-//        FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
+    public MdlOrder buildAdminTableRow(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+        MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
         MdlOrder mdlOrder = new MdlOrder();
         MdlOrderDetail mdlOrderDetail = new MdlOrderDetail();
         mdlOrder.id = frOrder.getId();
@@ -69,11 +69,22 @@ public class MdlOrderBuilder {
         mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
         mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
 
-        mdlOrder.storeName = null;
+        List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
+        if (frOrderDetails.size() > 0) {
+            FRStore store = frOrderDetails.get(0).getProduct().getStore();
+            mdlOrder.storeName = store.getStoreName();
+        }
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.bookTime = frOrder.getBookTime();
         mdlOrder.createTime = frOrder.getCreateTime();
         mdlOrder.status = frOrder.getStatus();
+
+        List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
+        for (FROrderDetail frDetail : frOrderDetails) {
+            MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildFull(frDetail);
+            mdlDetailList.add(mdlDetail);
+        }
+        mdlOrder.detailList = mdlDetailList;
         return mdlOrder;
     }
 

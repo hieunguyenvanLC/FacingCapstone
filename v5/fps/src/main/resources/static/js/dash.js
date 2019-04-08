@@ -92,11 +92,21 @@ $(document).ready(function () {
             success: function (response) {
                 // console.log(response.data);
                 var summary = response.data;
+                //shipper
                 $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
                 $("#lbActivedShipperTDay").html("<strong>" + summary.shipperCountTDay + "</strong>");
+                $("#lbActivedShipperTWeek").html("<strong>" + summary.shipperCountTWeek + "</strong>");
+                $("#lbActivedShipperTMonth").html("<strong>" + summary.shipperCountTMonth + "</strong>");
+                //customer
                 $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
+                $("#lbNewCusTDay").html("<strong>" + summary.CustomerCountTDay + "</strong>");
+                $("#lbNewCusTWeek").html("<strong>" + summary.CustomerCountTWeek + "</strong>");
+                $("#lbNewCusTMonth").html("<strong>" + summary.CustomerCountTMonth + "</strong>");
+                //Store
                 $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
+                //Order
                 $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
+
                 $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");
                 $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");
                 $("#lbSuccessRateW").html("<strong>" + summary.successRateTWeek + "%</strong>");
@@ -149,31 +159,32 @@ $(document).ready(function () {
 
                     // Lay start date va end date tu selection.row
                     if (selection.row) {
+                        var selectedLabel = mainDataTable.getValue(selection.row, 0);
                         switch (chartType) {
                             case '0':
                                 // la ngay
-                                startMoment = moment(selection.row, "DD/MM/YYYY");
+                                startMoment = moment(selectedLabel, "DD/MM/YYYY");
                                 startUnix1 = startMoment.unix() * 1000;
                                 endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                                 break;
 
                             case '1':
                                 //la tuan
-                                var parts = selection.row.split("/");
+                                var parts = selectedLabel.split("/");
                                 startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
                                 startUnix1 = startMoment.unix() * 1000;
                                 endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
                                 break;
 
                             case '2':
-                                startMoment = moment('01/' + selection.row, "DD/MM/YYYY");
+                                startMoment = moment('01/' + selectedLabel, "DD/MM/YYYY");
                                 startUnix1 = startMoment.unix() * 1000;
                                 endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
                                 break;
 
                             case '3':
-                                startUnix1 = moment("01/01/" + selection.row, "DD/MM/YYYY").unix() * 1000;
-                                endUnix1 = moment("01/01/" + (parseInt(selection.row) + 1), "DD/MM/YYYY").unix() * 1000;
+                                startUnix1 = moment("01/01/" + selectedLabel, "DD/MM/YYYY").unix() * 1000;
+                                endUnix1 = moment("01/01/" + (parseInt(selectedLabel) + 1), "DD/MM/YYYY").unix() * 1000;
                                 break;
                         }
                     } else {
@@ -519,7 +530,6 @@ $(document).ready(function () {
                 break;
 
             case '1': //la tuan
-                var parts = selectedBar.split("/");
                 labelOrderList += " weeks";
                 break;
 
@@ -535,10 +545,14 @@ $(document).ready(function () {
         loadReportTable(startUnixT, endUnixT, status, labelOrderList);
     }
 
-    var dpkStartReport = null;
-    var dpkEndReport = null;
-    var startReport = 0;
-    var endReport = 0;
+    // var tblReport = null;
+    var drdTableCol = null;
+    var drdTableColValue = null;
+    var columnMap = {};
+    var columnIndices = ['buyerPhone', 'buyerName', 'shipperPhone', 'shipperName', 'storeName', 'totalPrice', 'createTime', 'status'];
+    var filterCol = '';
+    var filterColVal = '';
+
     function loadReportTable(startUnixT, endUnixT, status, title) {
         if (!startUnixT || !endUnixT) {
             return;
@@ -546,6 +560,9 @@ $(document).ready(function () {
 
         startReport = startUnixT;
         endReport = endUnixT;
+        columnMap = {};
+        filterCol = '';
+        filterColVal = '';
 
         $("#lbOrderList").text(title);
         $.ajax({
@@ -555,54 +572,60 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 var orders = response.data;
+                columnMap = createColMap(orders);
+                // console.log(columnMap);
                 orderList = orders;
                 var list = orders;
                 // report-table
                 $("#report-table").DataTable().destroy();
                 var reportTable = $("#report-table").DataTable({
-                    // "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-5 char-filter daterange'><'col-sm-12 col-md-4'f>>" +
-                    //     "<'row'<'col-sm-12'tr>>" +
-                    //     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-5 char-filter daterange'><'col-sm-12 col-md-4'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                     fnInitComplete: function () {
-                        $('div.daterange').html('<input id="dpkStartReport" style="display: inline" autocomplete="off"/>\n' +
-                            '<input id="dpkEndReport" style="display: inline" autocomplete="off"/>');
-                        if (dpkStartReport) {
-                            dpkStartReport.destroy();
-                            dpkStartReport = null;
+                        $('div.daterange').html('Type:' + '' + '<select id="drdTableCol" width="200px"></select>\n' +
+                            'Value:' + '' + '<select id="drdTableColValue" width="400px"></select>');
+                        if (drdTableCol) {
+                            drdTableCol.destroy();
+                            drdTableCol = null;
                         }
-                        if (dpkEndReport) {
-                            dpkEndReport.destroy();
-                            dpkEndReport = null;
+                        if (drdTableColValue) {
+                            drdTableColValue.destroy();
+                            drdTableColValue = null;
                         }
-                        dpkStartReport = $('#dpkStartReport').datepicker({
-                            uiLibrary: 'bootstrap4',
-                            format: 'dd/mm/yyyy',
-                            value: moment(new Date(startUnixT)).format('DD/MM/YYYY'),
+                        var drdTableCol = $('#drdTableCol').dropdown({
+                            textField: 'name',
+                            dataSource: [
+                                {value: 'buyerPhone', name: 'Buyer Phone'},
+                                {value: 'buyerName', name: 'Buyer Name'},
+                                {value: 'shipperPhone', name: 'Shipper Phone'},
+                                {value: 'shipperName', name: 'Shipper Name'},
+                                {value: 'storeName', name: 'Store'},
+                                {value: 'createTime', name: 'Create Time'}
+                            ],
                             change: function (e) {
-
-                                var startReportStr = dpkStartReport.value();
-                                var startReportTmp = moment(startReportStr, 'DD/MM/YYYY').unix() * 1000;
-                                console.log(startReportStr);
-
-                                if (startReport != startReportTmp) {
-                                    startReport = startReportTmp;
-                                    loadReportTable(startReport, endReport, status, title);
+                                // alert('Change is fired');
+                                // console.log('test', drdTableCol.value());
+                                filterCol = drdTableCol.value();
+                                if (drdTableColValue) {
+                                    drdTableColValue.destroy();
+                                    drdTableColValue = null;
                                 }
+
+                                drdTableColValue = $('#drdTableColValue').dropdown({
+                                    textField: 'name',
+                                    dataSource: columnMap[filterCol],
+                                    change: function (e) {
+                                        filterColVal = drdTableColValue.value();
+                                        console.log(filterCol, filterColVal);
+                                        reportTable.draw();
+                                    }
+                                });
                             }
                         });
-                        dpkEndReport = $('#dpkEndReport').datepicker({
-                            uiLibrary: 'bootstrap4',
-                            format: 'dd/mm/yyyy',
-                            value: moment(new Date(endUnixT)).format('DD/MM/YYYY'),
-                            change: function (e) {
-                                var endReportStr = dpkEndReport.value();
-                                var endReportTmp = moment(endReportStr, 'DD/MM/YYYY').unix() * 1000;
-
-                                if (endReport != endReportTmp) {
-                                    endReport = endReportTmp;
-                                    loadReportTable(startReport, endReport, status, title);
-                                }
-                            }
+                        var drdTableColValue = $('#drdTableColValue').dropdown({
+                            textField: 'name',
+                            dataSource: []
                         });
                     }
                 });
@@ -615,6 +638,7 @@ $(document).ready(function () {
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperPhone + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperName + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.storeName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.totalPrice) + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.createTime ? moment.unix(order.createTime / 1000).format('DD/MM/YYYY') : '') + '</span>',
                         fpsGetStatMsg(ORD_STAT_LIST, order.status)
@@ -626,6 +650,54 @@ $(document).ready(function () {
             }
         });
     }
+
+    function createColMap(orders) {
+        var map = {};
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            var keys = Object.keys(order);
+            for (var j = 0; j < keys.length; j++) {
+                var key = keys[j];
+
+                if (!map[key]) {
+                    map[key] = [];
+                }
+
+                var val = order[key];
+                if (key === 'createTime') {
+                    val = (val ? moment.unix(val / 1000).format('DD/MM/YYYY') : '')
+                }
+
+                if (!map[key].find((item) => item.value === val)) {
+                    map[key].push({
+                        value: val,
+                        name: val
+                    });
+                }
+            }
+        }
+
+        return map;
+    }
+
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            if (settings.sTableId === "report-table") {
+                console.log(data)
+                if (filterCol && filterColVal) {
+                    if ((data[columnIndices.indexOf(filterCol)] === filterColVal)) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    );
+
     // Xy ly pending
     $('#lbPenLess').click(function () {
         var now = moment();

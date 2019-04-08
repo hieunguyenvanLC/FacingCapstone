@@ -1,13 +1,21 @@
 package capstone.fps.service;
 
 import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FROrderDetail;
 import capstone.fps.entity.FRRole;
+import capstone.fps.entity.FRStore;
+import capstone.fps.model.Response;
+import capstone.fps.model.order.MdlOrder;
+import capstone.fps.model.order.MdlOrderBuilder;
+import capstone.fps.model.store.MdlStore;
+import capstone.fps.model.store.MdlStoreBuilder;
 import capstone.fps.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -68,6 +76,10 @@ public class HomeService {
     public int countCus() {
         FRRole role = this.roleRepo.findById(2).get();
         return this.accountRepo.countByRoleAndStatus(role, 1);
+    }
+    public Integer countCus(Long start, Long end) {
+        FRRole role = this.roleRepo.findById(2).get();
+        return this.accountRepo.countByRoleAndStatusAndCreateTimeGreaterThanAndCreateTimeLessThanEqual(role, 1, start, end);
     }
 //
 //    public int countNewStore(int month, int year) {
@@ -191,12 +203,22 @@ public class HomeService {
         return this.orderRepository.countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
     }
 
-    public List<FROrder> getOrderList(Integer status, Long start, Long end) {
+    public List<MdlOrder> getOrderList(Integer status, Long start, Long end) {
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        List<FROrder> orders;
+        List<MdlOrder> mdlOrders = new ArrayList<>();
+
         if (status == -1) {
-            return this.orderRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+            orders = this.orderRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+        } else {
+            orders = this.orderRepository.findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
         }
 
-        return this.orderRepository.findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
+        for (FROrder order : orders) {
+            mdlOrders.add(orderBuilder.buildAdminTableRow(order, this.orderDetailRepository));
+        }
+
+        return mdlOrders;
     }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {

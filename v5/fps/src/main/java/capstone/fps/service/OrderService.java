@@ -170,7 +170,7 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAll();
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder));
+            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder, this.orderDetailRepository));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
         return response;

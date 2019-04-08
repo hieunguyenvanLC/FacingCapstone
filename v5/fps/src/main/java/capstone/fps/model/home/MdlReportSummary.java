@@ -16,7 +16,6 @@ public class MdlReportSummary {
     private int CustomerCount; //count all customer
     @Expose
     private int CustomerCountTDay;
-    ; //count all customer
     @Expose
     private int CustomerCountTWeek; //count all customer
     @Expose

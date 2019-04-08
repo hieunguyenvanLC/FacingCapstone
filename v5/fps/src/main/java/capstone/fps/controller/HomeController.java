@@ -2,12 +2,15 @@ package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
 import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FROrderDetail;
+import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.home.MdlChartData;
 import capstone.fps.model.home.MdlReportSummary;
 import capstone.fps.model.home.MdlReportSummaryDetail;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.model.order.MdlOrderBuilder;
+import capstone.fps.model.store.MdlStore;
 import capstone.fps.service.HomeService;
 import capstone.fps.service.OrderService;
 import org.springframework.stereotype.Controller;
@@ -29,7 +32,6 @@ public class HomeController extends AbstractController {
 
     private HomeService homeService;
     private OrderService orderService;
-
 
     public HomeController(HomeService homeService) {
         this.homeService = homeService;
@@ -54,7 +56,13 @@ public class HomeController extends AbstractController {
         summary.setShipperCountTMonth(this.homeService.countShipper(startTMonthUnix, endUnix));
 
 //        summary.setNewCustomerCount(this.homeService.countNewCus(mon, year));
+
+        //Customer
         summary.setCustomerCount(this.homeService.countCus());  //Count All Customer
+        summary.setCustomerCountTDay(this.homeService.countCus(startTodayUnix, endUnix));  //Count All Customer
+        summary.setCustomerCountTWeek(this.homeService.countCus(startTWeekUnix, endUnix));  //Count All Customer
+        summary.setCustomerCountTMonth(this.homeService.countCus(startTMonthUnix, endUnix));  //Count All Customer
+
 //        summary.setNewOrderCount(this.homeService.countNewOrder(mon, year));
         summary.setOrderCount(this.homeService.countOrder());   //Count All Order
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
@@ -905,21 +913,15 @@ public class HomeController extends AbstractController {
     @GetMapping(Fix.MAP_ANY + API + "/orderlist")
     public String getOrderList(@RequestParam("status") Integer status, @RequestParam("start") Long start, @RequestParam("end") Long end) {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        List<MdlOrder> mdlOrders = new ArrayList<>();
 
         try {
-            List<FROrder> orders = this.homeService.getOrderList(status, start, end);
-            MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-
-            for (FROrder order : orders) {
-                mdlOrders.add(orderBuilder.buildAdminTableRow(order));
-            }
+            List<MdlOrder> orders = this.homeService.getOrderList(status, start, end);
+            response.setResponse(Response.STATUS_SUCCESS, "", orders);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
         }
 
-        response.setResponse(Response.STATUS_SUCCESS, "", mdlOrders);
         return gson.toJson(response);
     }
 
