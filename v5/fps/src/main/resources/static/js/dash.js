@@ -104,8 +104,14 @@ $(document).ready(function () {
                 $("#lbNewCusTMonth").html("<strong>" + summary.CustomerCountTMonth + "</strong>");
                 //Store
                 $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
+                $("#lbNewStoresTDay").html("<strong>" + summary.StoreCountTDay + "</strong>");
+                $("#lbNewStoresTWeek").html("<strong>" + summary.StoreCountTWeek + "</strong>");
+                $("#lbNewStoresTMonth").html("<strong>" + summary.StoreCountTMonth + "</strong>");
                 //Order
                 $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
+                $("#lbNewOrderTDay").html("<strong>" + summary.OrderCountTDay + "</strong>");
+                $("#lbNewOrderTWeek").html("<strong>" + summary.OrderCountTWeek + "</strong>");
+                $("#lbNewOrderTMonth").html("<strong>" + summary.OrderCountTMonth + "</strong>");
 
                 $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");
                 $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");
@@ -583,8 +589,8 @@ $(document).ready(function () {
                         "<'row'<'col-sm-12'tr>>" +
                         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                     fnInitComplete: function () {
-                        $('div.daterange').html('Type:' + '' + '<select id="drdTableCol" width="200px"></select>\n' +
-                            'Value:' + '' + '<select id="drdTableColValue" width="400px"></select>');
+                        $('div.daterange').html('Type:' + '' + '<select id="drdTableCol" width="150px"></select>\n' +
+                            'Value:' + '' + '<select id="drdTableColValue" width="300px"></select>');
                         if (drdTableCol) {
                             drdTableCol.destroy();
                             drdTableCol = null;

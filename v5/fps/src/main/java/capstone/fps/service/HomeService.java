@@ -77,6 +77,7 @@ public class HomeService {
         FRRole role = this.roleRepo.findById(2).get();
         return this.accountRepo.countByRoleAndStatus(role, 1);
     }
+
     public Integer countCus(Long start, Long end) {
         FRRole role = this.roleRepo.findById(2).get();
         return this.accountRepo.countByRoleAndStatusAndCreateTimeGreaterThanAndCreateTimeLessThanEqual(role, 1, start, end);
@@ -90,6 +91,10 @@ public class HomeService {
 
     public int countStore() {
         return this.storeRepo.countByStatus(1);
+    }
+
+    public int countStore(Long start, Long end) {
+        return this.storeRepo.countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(1, start, end);
     }
 
     public int countOrder() {

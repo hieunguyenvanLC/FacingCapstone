@@ -59,15 +59,25 @@ public class HomeController extends AbstractController {
 
         //Customer
         summary.setCustomerCount(this.homeService.countCus());  //Count All Customer
-        summary.setCustomerCountTDay(this.homeService.countCus(startTodayUnix, endUnix));  //Count All Customer
-        summary.setCustomerCountTWeek(this.homeService.countCus(startTWeekUnix, endUnix));  //Count All Customer
-        summary.setCustomerCountTMonth(this.homeService.countCus(startTMonthUnix, endUnix));  //Count All Customer
+        summary.setCustomerCountTDay(this.homeService.countCus(startTodayUnix, endUnix));  //Count  Customer Day
+        summary.setCustomerCountTWeek(this.homeService.countCus(startTWeekUnix, endUnix));  //Count  Customer Week
+        summary.setCustomerCountTMonth(this.homeService.countCus(startTMonthUnix, endUnix));  //Count  Customer Month
 
 //        summary.setNewOrderCount(this.homeService.countNewOrder(mon, year));
+
+        //Order
         summary.setOrderCount(this.homeService.countOrder());   //Count All Order
+        summary.setOrderCountTDay(this.homeService.countOrderBy(startTodayUnix, endUnix));  //Day
+        summary.setOrderCountTWeek(this.homeService.countOrderBy(startTWeekUnix, endUnix));  //Week
+        summary.setOrderCountTMonth(this.homeService.countOrderBy(startTMonthUnix, endUnix));  //Month
+        //Store
 //        summary.setNewStoreCount(this.homeService.countNewStore(mon,year));
         summary.setStoreCount(this.homeService.countStore());   //Count All Store
+        summary.setStoreCountTDay(this.homeService.countStore(startTodayUnix, endUnix));
+        summary.setStoreCountTWeek(this.homeService.countStore(startTWeekUnix, endUnix));
+        summary.setStoreCountTMonth(this.homeService.countStore(startTMonthUnix, endUnix));
 
+        ///
         summary.setSoldProductCount(this.homeService.sumProductByOrder());
         summary.setSuccessRate(this.homeService.allSuccessRate());
         summary.setTotalAmount(this.homeService.sumTotalAmount());
