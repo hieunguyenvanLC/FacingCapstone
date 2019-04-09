@@ -434,7 +434,7 @@ public class OrderService {
                                     orderRepository.save(frOrder);
                                     notifyBuyer(frOrder);
 //                                    notifyShipper(frOrder, shipperToken);
-                                    MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+                                    MdlOrder mdlOrder = orderBuilder.buildDetailShp(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
                                 }

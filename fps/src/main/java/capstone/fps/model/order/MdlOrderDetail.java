@@ -10,6 +10,8 @@ public class MdlOrderDetail {
     @Expose
     String proName;
     @Expose
+    String proImg;
+    @Expose
     Double unitPrice;
     @Expose
     Integer quantity;
