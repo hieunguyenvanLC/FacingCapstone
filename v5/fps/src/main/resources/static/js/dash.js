@@ -84,7 +84,7 @@ $(document).ready(function () {
 //     });
 //
 //     var orderDetailTable = $("#order-detail-table").DataTable({});
-    function loadSummary() {
+    function loadSummary() { //Load Summary
         $.ajax({
             url: "/any/api/report/summary?mon=7&year=2019",
             type: "GET",
@@ -93,42 +93,45 @@ $(document).ready(function () {
                 // console.log(response.data);
                 var summary = response.data;
                 //shipper
-                $("#lbActivedShipper").html("<strong>" + summary.shipperCount + "</strong>");
-                $("#lbActivedShipperTDay").html("<strong>" + summary.shipperCountTDay + "</strong>");
-                $("#lbActivedShipperTWeek").html("<strong>" + summary.shipperCountTWeek + "</strong>");
-                $("#lbActivedShipperTMonth").html("<strong>" + summary.shipperCountTMonth + "</strong>");
+                $("#lbActivedShipper").html("<strong>" + abbrNum(summary.shipperCount) + "</strong>"); //Shipper all
+                $("#lbActivedShipperTDay").html("<strong>" + abbrNum(summary.shipperCountTDay) + "</strong>"); //Shipper day
+                $("#lbActivedShipperTWeek").html("<strong>" + abbrNum(summary.shipperCountTWeek) + "</strong>");//Shipper week
+                $("#lbActivedShipperTMonth").html("<strong>" + abbrNum(summary.shipperCountTMonth) + "</strong>");//Shipper month
                 //customer
-                $("#lbNewCus").html("<strong>" + summary.CustomerCount + "</strong>");
-                $("#lbNewCusTDay").html("<strong>" + summary.CustomerCountTDay + "</strong>");
-                $("#lbNewCusTWeek").html("<strong>" + summary.CustomerCountTWeek + "</strong>");
-                $("#lbNewCusTMonth").html("<strong>" + summary.CustomerCountTMonth + "</strong>");
+                $("#lbNewCus").html("<strong>" + abbrNum(summary.CustomerCount) + "</strong>"); //customer all
+                $("#lbNewCusTDay").html("<strong>" + abbrNum(summary.CustomerCountTDay) + "</strong>");//customer day
+                $("#lbNewCusTWeek").html("<strong>" + abbrNum(summary.CustomerCountTWeek) + "</strong>");//customer week
+                $("#lbNewCusTMonth").html("<strong>" + abbrNum(summary.CustomerCountTMonth) + "</strong>");//customer month
                 //Store
-                $("#lbNewStores").html("<strong>" + summary.StoreCount + "</strong>");
-                $("#lbNewStoresTDay").html("<strong>" + summary.StoreCountTDay + "</strong>");
-                $("#lbNewStoresTWeek").html("<strong>" + summary.StoreCountTWeek + "</strong>");
-                $("#lbNewStoresTMonth").html("<strong>" + summary.StoreCountTMonth + "</strong>");
+                $("#lbNewStores").html("<strong>" + abbrNum(summary.StoreCount) + "</strong>");   //Store all
+                $("#lbNewStoresTDay").html("<strong>" + abbrNum(summary.StoreCountTDay) + "</strong>");//Store day
+                $("#lbNewStoresTWeek").html("<strong>" + abbrNum(summary.StoreCountTWeek) + "</strong>");//Store week
+                $("#lbNewStoresTMonth").html("<strong>" + abbrNum(summary.StoreCountTMonth) + "</strong>");//Store month
                 //Order
-                $("#lbNewOrder").html("<strong>" + summary.OrderCount + "</strong>");
-                $("#lbNewOrderTDay").html("<strong>" + summary.OrderCountTDay + "</strong>");
-                $("#lbNewOrderTWeek").html("<strong>" + summary.OrderCountTWeek + "</strong>");
-                $("#lbNewOrderTMonth").html("<strong>" + summary.OrderCountTMonth + "</strong>");
-
-                $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");
-                $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");
-                $("#lbSuccessRateW").html("<strong>" + summary.successRateTWeek + "%</strong>");
-                $("#lbSuccessRateM").html("<strong>" + summary.successRateTMonth + "%</strong>");
-                $("#lbTotalAmount").html("<strong>" + summary.totalAmount + " VND</strong>");
-                $("#lbTotalAmountD").html("<strong>" + summary.totalAmountTDay + " VND</strong>");
-                $("#lbTotalAmountW").html("<strong>" + summary.totalAmountTWeek + " VND</strong>");
-                $("#lbTotalAmountM").html("<strong>" + summary.totalAmountTMonth + " VND</strong>");
-                $("#lbPaidShipper").html("<strong>" + summary.paidShipper + " VND</strong>");
-                $("#lbPaidShipperD").html("<strong>" + summary.paidShipperTDay + " VND</strong>");
-                $("#lbPaidShipperW").html("<strong>" + summary.paidShipperTWeek + " VND</strong>");
-                $("#lbPaidShipperM").html("<strong>" + summary.paidShipperTMonth + " VND</strong>");
-                $("#lbSoldProduct").html("<strong>" + summary.soldProductCount + "</strong>");
-                $("#lbSoldProductD").html("<strong>" + summary.soldProductCountTDay + "</strong>");
-                $("#lbSoldProductW").html("<strong>" + summary.soldProductCountTWeek + "</strong>");
-                $("#lbSoldProductM").html("<strong>" + summary.soldProductCountTMonth + "</strong>");
+                $("#lbNewOrder").html("<strong>" + abbrNum(summary.OrderCount) + "</strong>");  // all
+                $("#lbNewOrderTDay").html("<strong>" + abbrNum(summary.OrderCountTDay) + "</strong>"); //day
+                $("#lbNewOrderTWeek").html("<strong>" + abbrNum(summary.OrderCountTWeek) + "</strong>"); // week
+                $("#lbNewOrderTMonth").html("<strong>" + abbrNum(summary.OrderCountTMonth) + "</strong>"); // month
+                //Rate
+                $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");// all
+                $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");//day
+                $("#lbSuccessRateW").html("<strong>" + summary.successRateTWeek + "%</strong>");// week
+                $("#lbSuccessRateM").html("<strong>" + summary.successRateTMonth + "%</strong>");// month
+                //Total
+                $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + " VND</strong>");// all
+                $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + " VND</strong>");//day
+                $("#lbTotalAmountW").html("<strong>" + abbrNum(summary.totalAmountTWeek) + " VND</strong>");// week
+                $("#lbTotalAmountM").html("<strong>" + abbrNum(summary.totalAmountTMonth) + " VND</strong>"); // month
+                //Paid
+                $("#lbPaidShipper").html("<strong>" + abbrNum(summary.paidShipper) + " VND</strong>");// all
+                $("#lbPaidShipperD").html("<strong>" + abbrNum(summary.paidShipperTDay) + " VND</strong>");//day
+                $("#lbPaidShipperW").html("<strong>" + abbrNum(summary.paidShipperTWeek) + " VND</strong>");// week
+                $("#lbPaidShipperM").html("<strong>" + abbrNum(summary.paidShipperTMonth) + " VND</strong>");// month
+                //Sold Product
+                $("#lbSoldProduct").html("<strong>" + abbrNum(summary.soldProductCount) + "</strong>");// all
+                $("#lbSoldProductD").html("<strong>" + abbrNum(summary.soldProductCountTDay) + "</strong>");//day
+                $("#lbSoldProductW").html("<strong>" + abbrNum(summary.soldProductCountTWeek) + "</strong>");// week
+                $("#lbSoldProductM").html("<strong>" + abbrNum(summary.soldProductCountTMonth) + "</strong>");// month
 
             },
             error: function (err) {
@@ -138,7 +141,7 @@ $(document).ready(function () {
     }
 
     loadSummary();
-    setInterval(loadSummary, 10000);
+    setInterval(loadSummary, 10000); //Reset time
 
     // Init chart
     var mainDataTable = null;
@@ -149,7 +152,7 @@ $(document).ready(function () {
 
         google.visualization.events.addListener(mainChart, 'select', selectHandler);
 
-        function selectHandler(e) {
+        function selectHandler(e) { //Select click chart
             // alert('A table row was selected');
             var selections = mainChart.getSelection();
             // console.log(selections);
@@ -173,7 +176,10 @@ $(document).ready(function () {
                                 startUnix1 = startMoment.unix() * 1000;
                                 endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                                 break;
-
+                            // IPhone iPhone5 = iPhone4.clone();
+                            // iPhone5.setThietKe(new ThietKe12254512());
+                            // iPhone5.setHeDieuHanh(new HeDieuHanh12355());
+                            // iPhone5.setDungLuongPin(n));
                             case '1':
                                 //la tuan
                                 var parts = selectedLabel.split("/");
@@ -182,13 +188,13 @@ $(document).ready(function () {
                                 endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
                                 break;
 
-                            case '2':
+                            case '2'://thang
                                 startMoment = moment('01/' + selectedLabel, "DD/MM/YYYY");
                                 startUnix1 = startMoment.unix() * 1000;
                                 endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
                                 break;
 
-                            case '3':
+                            case '3': //nam
                                 startUnix1 = moment("01/01/" + selectedLabel, "DD/MM/YYYY").unix() * 1000;
                                 endUnix1 = moment("01/01/" + (parseInt(selectedLabel) + 1), "DD/MM/YYYY").unix() * 1000;
                                 break;
@@ -274,7 +280,7 @@ $(document).ready(function () {
 
         switch (chartType) {
             case '1':
-                calendarWeeks = true;
+                calendarWeeks = true; //doi font
                 break;
             case '2':
                 formatDatepicker = 'mm/yyyy';
@@ -344,7 +350,7 @@ $(document).ready(function () {
     }
 
     function createOrderChartData(xLable, chartData) {
-        console.log(chartData);
+        // console.log(chartData);
         var data = new google.visualization.DataTable();
         data.addColumn('string', xLable);
         data.addColumn('number', 'New Orders');
@@ -589,8 +595,8 @@ $(document).ready(function () {
                         "<'row'<'col-sm-12'tr>>" +
                         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                     fnInitComplete: function () {
-                        $('div.daterange').html('Type:' + '' + '<select id="drdTableCol" width="150px"></select>\n' +
-                            'Value:' + '' + '<select id="drdTableColValue" width="300px"></select>');
+                        $('div.daterange').html('Type: ' + '&ensp;' + '<select id="drdTableCol" width="130px"></select>' +
+                            'Value: ' + '&ensp;' + '<select id="drdTableColValue" width="300px"></select>');
                         if (drdTableCol) {
                             drdTableCol.destroy();
                             drdTableCol = null;
@@ -762,6 +768,44 @@ $(document).ready(function () {
     //     });
     // }
 });
+
+
+function abbrNum(number) {
+    decPlaces = 3;
+    // 2 decimal places => 100, 3 => 1000, etc
+    decPlaces = Math.pow(10, decPlaces);
+
+    // Enumerate number abbreviations
+    var abbrev = ["k", "m", "b", "t"];
+
+    // Go through the array backwards, so we do the largest first
+    for (var i = abbrev.length - 1; i >= 0; i--) {
+
+        // Convert array index to "1000", "1000000", etc
+        var size = Math.pow(10, (i + 1) * 3);
+
+        // If the number is bigger or equal do the abbreviation
+        if (size <= number) {
+            // Here, we multiply by decPlaces, round, and then divide by decPlaces.
+            // This gives us nice rounding to a particular decimal place.
+            number = Math.round(number * decPlaces / size) / decPlaces;
+
+            // Handle special case where we round up to the next abbreviation
+            if ((number == 1000) && (i < abbrev.length - 1)) {
+                number = 1;
+                i++;
+            }
+
+            // Add the letter for the abbreviation
+            number += abbrev[i];
+
+            // We are done... stop
+            break;
+        }
+    }
+
+    return number;
+}
 
 function fpsFormatDate(date) {
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
