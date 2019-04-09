@@ -8,6 +8,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 
+declare var google;
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
