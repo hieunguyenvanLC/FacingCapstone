@@ -352,7 +352,7 @@ public class OrderService {
     }
 
 
-    public Response<MdlOrder> cancelOrderMem(int orderId, int col, int row) {
+    public Response<MdlOrder> cancelOrderMem(int orderId, double longitude, double latitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -365,7 +365,8 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-
+        int col = orderMap.convertLon(longitude);
+        int row = orderMap.convertLat(latitude);
         List<OrderStat> statList = orderMap.getNode(col, row).getStatList();
         OrderStat myOrderStat = null;
         for (OrderStat orderStat : statList) {

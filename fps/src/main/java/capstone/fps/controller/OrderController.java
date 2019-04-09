@@ -98,10 +98,10 @@ public class OrderController extends AbstractController {
     }
 
     @DeleteMapping(Fix.MAP_MEM + API)
-    public String cancelOrderMem(Integer orderId, Integer col, Integer row) {
+    public String cancelOrderMem(int orderId, double longitude, double latitude) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.cancelOrderMem(orderId, col, row);
+            response = orderService.cancelOrderMem(orderId, longitude, latitude);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
