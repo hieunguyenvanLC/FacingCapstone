@@ -1,6 +1,7 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
+import capstone.fps.common.Methods;
 import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
@@ -50,7 +51,7 @@ public class OrderController extends AbstractController {
     public String editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.editOrderAdm(orderId, buyerFace, bill, buyerName, buyerPhone, shipperName, shipperPhone, status, latitude, longitude, totalPrice, shipperEarn, customerDescription, note);
+            response = orderService.editOrderAdm(gson, orderId, buyerFace, bill, buyerName, buyerPhone, shipperName, shipperPhone, status, latitude, longitude, totalPrice, shipperEarn, customerDescription, note);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -157,7 +158,9 @@ public class OrderController extends AbstractController {
     public String checkout(Integer orderId, String face) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.checkout(gson, orderId, face);
+            Methods methods = new Methods();
+            byte[] faceBytes = methods.base64ToBytes(face);
+            response = orderService.checkout(gson, orderId, faceBytes);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

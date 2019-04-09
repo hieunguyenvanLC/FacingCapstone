@@ -188,7 +188,7 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
+    public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -201,9 +201,6 @@ public class OrderService {
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
-        }
-        if (buyerFace != null) {
-            frOrder.setBuyerFace(methods.multipartToBytes(buyerFace));
         }
         if (bill != null) {
             frOrder.setBill(methods.multipartToBytes(bill));
@@ -234,9 +231,10 @@ public class OrderService {
         frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
-
-        MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+        if (buyerFace != null) {
+            return checkout(gson, orderId, methods.multipartToBytes(buyerFace));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
     // Web Admin - Order - Begin
@@ -579,19 +577,16 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face) {
+    public Response<MdlOrder> checkout(Gson gson, Integer orderId, byte[] faceBytes) {
         Methods methods = new Methods();
         Repo repo = new Repo();
-        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-
-        // face to byte[]
-        byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
         String key = frOrder.getId() + "" + methods.getTimeNow();
         Map<String, String> faceResult = AppData.getFaceResult();
