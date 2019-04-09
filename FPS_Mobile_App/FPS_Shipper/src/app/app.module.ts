@@ -24,6 +24,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http/ngx';
+import { GoogleMaps } from '@ionic-native/google-maps/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +52,7 @@ import { HTTP } from '@ionic-native/http/ngx';
     NativeGeocoder,
     FCM,
     Storage,
+    GoogleMaps,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

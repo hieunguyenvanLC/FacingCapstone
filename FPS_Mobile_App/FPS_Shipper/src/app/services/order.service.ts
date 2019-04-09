@@ -12,7 +12,7 @@ export class OrderService {
     private constant: Constant,
   ) { }
 
-  onShipMode(longitudeShipper, latitudeShipper){
+  onShipMode(longitudeShipper, latitudeShipper, tokenDevice){
     // let formData: FormData = new FormData();
     // formData.append("longitude", longitudeShipper);
     // formData.append("latitude", latitudeShipper);
@@ -21,7 +21,8 @@ export class OrderService {
                             this.constant.MAP_API +
                             this.constant.ORDER +
                             "?longitude=" + longitudeShipper +
-                            "&latitude=" + latitudeShipper);
+                            "&latitude=" + latitudeShipper +
+                            "&shipperToken=" + tokenDevice);
   }
 
   offShipperMode(){

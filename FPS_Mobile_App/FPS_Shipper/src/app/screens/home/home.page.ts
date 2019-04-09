@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild,ElementRef } from '@angular/core';
 import { OrderService } from 'src/app/services/order.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Router } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { ToasthandleService } from 'src/app/services/toasthandle.service';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +14,9 @@ import { FCM } from '@ionic-native/fcm/ngx';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+  @ViewChild('map') mapElement: ElementRef;
+  map: any;
+  address:string;
 
   shipperMode = false;
   // longitudeShipper : any;
@@ -27,6 +32,8 @@ export class HomePage implements OnInit {
   myPhotoBinary: string;
   tokenFCM : any;
 
+  
+
   constructor(
     private orderService: OrderService,
     private loading: LoadingService,
@@ -34,6 +41,8 @@ export class HomePage implements OnInit {
     private camera : Camera,
     private toastHandle : ToasthandleService,
     private fcm : FCM,
+    private geolocation: Geolocation,
+    private nativeGeocoder: NativeGeocoder,
   ) {
     this.shipperMode = false;
 
@@ -42,9 +51,9 @@ export class HomePage implements OnInit {
       console.log(token);
       this.tokenFCM = token;
     });
-    // this.fcm.onTokenRefresh().subscribe(token => {
-    //   console.log(token);
-    // });
+    this.fcm.onTokenRefresh().subscribe(token => {
+      // console.log(token);
+    });
     this.fcm.onNotification().subscribe(data => {
       console.log(data);
       if (data.wasTapped) {
@@ -52,8 +61,9 @@ export class HomePage implements OnInit {
         
         //data.order.id
         this.loading.dismiss();
-        this.router.navigate(['check-out', data.order.id]);
+        // this.router.navigate(['check-out', data.order.id]);
       } else {
+        this.loading.dismiss();
         console.log('Received in foreground');
         // this.router.navigate([data.landing_page, data.price]);
       }
@@ -68,7 +78,7 @@ export class HomePage implements OnInit {
     if (this.shipperMode) {
       console.log("onModeShipper");
       //loading 
-      this.loading.present().then(() => {
+      this.loading.present("Finding order...").then(() => {
 
         this.isLoading = true;
         //call api to auto assign order
@@ -136,17 +146,85 @@ export class HomePage implements OnInit {
       console.log(this.myPhotoBinary);
 
       //call api
-      this.orderService.checkOutOrder(this.order[0].data.id, this.myPhotoBinary).subscribe(
-        res => {
-          console.log(res);
-          this.toastHandle.presentToast("Check out success");
-        }, (err) => {
-          this.toastHandle.presentToast("Check out error");
-          console.log("error check out " + err);
-        }
-      );
+      this.loading.present("Waiting for payment...").then(()=> {
+        this.orderService.checkOutOrder(this.order[0].data.id, this.myPhotoBinary).subscribe(
+          res => {
+            console.log(res);
+            this.loading.dismiss();
+            this.toastHandle.presentToast("Check out success");
+            
+          }, (err) => {
+            this.loading.dismiss();
+            this.toastHandle.presentToast("Check out error");
+            console.log("error check out " + err);
+          }
+        );//end api check out
+      })
+      
     }, (err) => {
       console.log("error at takephoto :" + err)
     });
   }
+
+  //#region *************** BEGIN MAP ****************
+
+  loadMap() {
+    this.geolocation.getCurrentPosition().then((resp) => {
+      let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      let mapOptions = {
+        center: {
+ 
+                  lat: resp.coords.latitude,
+                  lng: resp.coords.longitude
+                },
+                zoom: 18,
+                tilt: 30,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+ 
+      this.getAddressFromCoords(resp.coords.latitude, resp.coords.longitude);
+ 
+      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+ 
+      this.map.addListener('tilesloaded', () => {
+        console.log('accuracy',this.map);
+        this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
+      });
+ 
+    }) //end geolocation get current
+    .catch((error) => {
+      console.log('Error getting location', error);
+    });
+  }//end load map
+ 
+  getAddressFromCoords(lattitude, longitude) {
+    console.log("getAddressFromCoords "+lattitude+" "+longitude);
+    let options: NativeGeocoderOptions = {
+      useLocale: true,
+      maxResults: 5
+    };
+ 
+    this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
+      .then((result: NativeGeocoderReverseResult[]) => {
+        this.address = "";
+        let responseAddress = [];
+        for (let [key, value] of Object.entries(result[0])) {
+          if(value.length>0)
+          responseAddress.push(value);
+ 
+        }
+        responseAddress.reverse();
+        for (let value of responseAddress) {
+          this.address += value+", ";
+        }
+        this.address = this.address.slice(0, -2);
+      })
+      .catch((error: any) =>{ 
+        this.address = "Address Not Available!";
+      });
+ 
+  }//end get address
+
+
+  //#endregion END MAP
 }

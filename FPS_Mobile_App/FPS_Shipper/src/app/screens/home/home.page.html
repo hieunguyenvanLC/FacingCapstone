@@ -16,6 +16,17 @@
       <ion-toggle (ionChange)="changeMode()" [(ngModel)]="shipperMode"></ion-toggle>
     </ion-item>
   </ion-list>
+  <!-- start map -->
+  <div class="map-wrapper">
+    <div id="map_center">
+      <!-- <img src="../../../assets/icon/center-marker.png" /> -->
+    </div>
+    <div #map id="map"></div>
+  </div>
+  <div id="address">
+    <span>{{address}}</span>
+  </div>
+  <!-- End Map -->
   <div *ngIf=(isLoaded)>
     <div style="padding: 5px">
       Delivery to

@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.phonenumber = 'shipper';
+    this.phonenumber = '84098734455';
     this.password = 'zzz';
 
   }
