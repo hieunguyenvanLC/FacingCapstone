@@ -46,6 +46,9 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
     await this.storage;
     //this.accountService.logOut();
     this.account.length = 0;
@@ -62,12 +65,12 @@ export class LoginPage implements OnInit {
         //if (role === "ROLE_MEMBER"){
         if (this.account[0].data === "ROLE_MEMBER") {
           this.error = '';
-          this.getDetailAccount().then(value => {
-            setTimeout(() => {
-              this.getStorage();
-            }, 400)
-            
-          });
+          this.getDetailAccount();
+          sleep(1000).then(() => {
+            //get storage
+            this.getStorage();
+          })
+
           this.loading.dismiss();
           //end api get detail
         } else {

@@ -18,7 +18,7 @@ export class CheckOutPage implements OnInit {
   myOrder = [];
   isLoaded = false;
   total : any;
-  constructor(
+   constructor(
     private route: ActivatedRoute,
     private orderService: OrderService,
     private googleAPI: GoogleApiService,
@@ -28,29 +28,25 @@ export class CheckOutPage implements OnInit {
   ) {
     this.myOrder.length = 0;
     this.orderId = this.route.snapshot.params['id'];
+    
 
-    //get order by id
-    // this.orderService.getOrderDetailById(this.orderId).subscribe(res => {
-    //   console.log(res)
-    //   this.myOrder.push(res);
-    //   console.log("-----------");
-    //   if (this.myOrder) {
-
-    //   }//end if check myOrder
-
-    // })//end get order by id
     console.log("1");
     this.getOrderbyID();
   }
 
-  ngOnInit() {
+  
+  async ngOnInit() {
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+    await sleep(1000);
     this.loading.present("Waiting...").then(() => {
       console.log("2");
       this.prepareForData();
     })//end loading
   }
 
-  prepareForData() {
+  async  prepareForData() {
     // if (this.myOrder.length !== 0) {
       console.log("3");
       console.log(this.myOrder);
@@ -59,7 +55,7 @@ export class CheckOutPage implements OnInit {
       // this.geolocation.getCurrentPosition().then((resp) => {
       //   let lati = resp.coords.latitude;
       //   let longi = resp.coords.longitude;
-        this.googleAPI.getAddressGoogle(this.myOrder[0].data.latitude, this.myOrder[0].data.longitude, this.myOrder[0].data.storeLatitude, this.myOrder[0].data.storeLongitude)
+      await  this.googleAPI.getAddressGoogle(this.myOrder[0].data.latitude, this.myOrder[0].data.longitude, this.myOrder[0].data.storeLatitude, this.myOrder[0].data.storeLongitude)
           .then((res) => {
             console.log(res)
 
