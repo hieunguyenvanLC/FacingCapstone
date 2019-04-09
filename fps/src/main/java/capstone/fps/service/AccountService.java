@@ -536,6 +536,7 @@ public class AccountService {
         frAccount.setNote("");
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(null);
+        frAccount.setAvatar(faceBytes);
         accountRepo.save(frAccount);
 
 

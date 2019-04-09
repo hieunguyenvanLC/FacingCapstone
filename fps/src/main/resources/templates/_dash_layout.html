@@ -315,7 +315,7 @@
     var btnEditProfileCloseModal = document.getElementById("btnEditProfileCloseModal");
     var lblEditProfileDisplayMsg = document.getElementById("lblEditProfileDisplayMsg");
 
-    fpsGetProfile();
+    fpsReadProfile();
 
     function fpsGetProfile() {
         var xmlHttp = new XMLHttpRequest();
@@ -323,21 +323,32 @@
         xmlHttp.send(null);
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                // console.log(xmlHttp.responseText);
                 var profile = JSON.parse(xmlHttp.responseText).data;
-                // console.log(profile);
-                txtProfileFullName.innerHTML = profile.name;
-                txtProfileUsername.innerHTML = profile.phone;
-                if (typeof profile.avatar !== 'undefined') {
-                    imgProfileAvatar.src = profile.avatar;
-                } else {
-                    imgProfileAvatar.src = "https://ui-avatars.com/api/?name=" + profile.name;
-                }
-
+                sessionStorage.setItem("profile", JSON.stringify(profile));
+                showProfile(profile);
             }
         }
     }
 
+    function fpsReadProfile() {
+        var profileStr = sessionStorage.getItem("profile");
+        if (profileStr !== null) {
+            var profile = JSON.parse(profileStr);
+            showProfile(profile);
+        } else {
+            fpsGetProfile();
+        }
+    }
+
+    function showProfile(profile) {
+        txtProfileFullName.innerHTML = profile.name;
+        txtProfileUsername.innerHTML = profile.phone;
+        if (typeof profile.avatar !== 'undefined') {
+            imgProfileAvatar.src = profile.avatar;
+        } else {
+            imgProfileAvatar.src = "https://ui-avatars.com/api/?name=" + profile.name;
+        }
+    }
 
     function loadEditProfileForm() {
         txtEditProfilePassword.value = "";
@@ -371,14 +382,9 @@
                 if (response.status_code === RESP_SUCCESS) {
                     var profile = response.data;
                     // console.log(profile);
-                    txtProfileFullName.innerHTML = profile.name;
-                    txtProfileUsername.innerHTML = profile.phone;
-                    if (typeof profile.avatar !== 'undefined') {
-                        imgProfileAvatar.src = profile.avatar;
-                    } else {
-                        imgProfileAvatar.src = "https://ui-avatars.com/api/?name=" + profile.name;
-                    }
+                    showProfile(profile)
                     btnEditProfileCloseModal.click();
+                    sessionStorage.setItem("profile", JSON.stringify(profile));
                 } else {
                 }
             },
@@ -393,6 +399,7 @@
     }
 
     function fpsLogout() {
+        sessionStorage.removeItem("profile");
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "/sign_out", true);
         xmlHttp.send(null);
