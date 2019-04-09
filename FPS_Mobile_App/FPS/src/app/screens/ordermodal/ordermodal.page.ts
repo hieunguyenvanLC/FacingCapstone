@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NavParams, ModalController, ToastController } from 'node_modules/@ionic/angular';
+import { NavParams, ModalController, ToastController, AlertController } from 'node_modules/@ionic/angular';
 import { OrderService } from '../../services/order.service';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Firebase } from '@ionic-native/firebase/ngx';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-ordermodal',
@@ -35,7 +36,7 @@ export class OrdermodalPage implements OnInit {
   orderId: number;
   orderStatus: any;
 
-  tokenFCM : any;
+  tokenFCM: any;
 
   constructor(
     private navParams: NavParams,
@@ -43,17 +44,19 @@ export class OrdermodalPage implements OnInit {
     private orderService: OrderService,
     public router: Router,
     public toastController: ToastController,
-    private storage : Storage,
+    private storage: Storage,
     private modalCtrl: ModalController,
-    private fcm : FCM,
+    private fcm: FCM,
     private loading: LoadingService,
-    private firebase: Firebase
-    
+    private firebase: Firebase,
+    public alertController: AlertController,
+    private alertHandle: AlertService,
+
   ) {
     // componentProps can also be accessed at construction time using NavParams
   }
   ngOnInit() {
-    
+
     console.log(this.myOrder)
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
 
@@ -70,39 +73,46 @@ export class OrdermodalPage implements OnInit {
     this.fcm.onNotification().subscribe(data => {
       // console.log("vo day");
       // console.log(data);
-      
+
       if (data.wasTapped) {
-        console.log('Received in background');
+        console.log('Received in background 1');
         this.dismissModal();
         this.loading.dismiss();
-      this.router.navigate(['check-out', data.orderId]);
+        this.alertHandle.dissmissAlert();
+        this.router.navigate(['check-out', data.orderId]);
         //data.order.id
-       
+
       } else {
-        
+        console.log('Received in background 3');
+        this.dismissModal();
+        this.loading.dismiss();
+        this.alertHandle.dissmissAlert();
+        this.router.navigate(['check-out', data.orderId]);
       }
     });// end fcm
 
 
-this.firebase.onNotificationOpen()
-  .subscribe(data => {
-    console.log('Received in background');
+    this.firebase.onNotificationOpen()
+      .subscribe(data => {
+        console.log('Received in background 2');
         this.dismissModal();
         this.loading.dismiss();
-      this.router.navigate(['check-out', data.orderId]);
-  });
+        this.alertHandle.dissmissAlert();
+        this.router.navigate(['check-out', data.orderId]);
+      });
 
-    
+
 
     console.log(this.myOrder[0].latitudeCus);
     console.log(this.myOrder[0].longitudeCus);
     console.log(this.myOrder[0].distance);
-  }
+  }//end onInit
+
   dismissModal() {
     this.modalController.dismiss();
   }
 
-   async checkout() {
+  async checkout() {
     console.log(this.myOrder[0].products.length)
     for (let i = 0; i < this.myOrder[0].products.length; i++) {
       const element = this.myOrder[0].products[i];
@@ -129,14 +139,15 @@ this.firebase.onNotificationOpen()
           this.presentToast("Error check out ! Try again !");
         } else {
           //handle success api create order
-          this.loading.present("Finding shipper for your order...");
+          //this.loading.present("Finding shipper for your order...");
           //this.presentToast("Order success ! Finding shipper...");
+          this.alertHandle.presentAler();
           console.log(this.temp[0].data);
 
           //get id order
           this.orderId = this.temp[0].data;
           console.log(this.orderId);
-          
+
           //this.router.navigateByUrl("order");
 
           //-----get status order
@@ -151,15 +162,15 @@ this.firebase.onNotificationOpen()
             //     console.log("in temp");
             //     this.temp = [];
             //     this.temp.push(res);
-                
+
             //     console.log(this.temp[0].data);
             //     //start if status
             //     if (this.temp[0].data.status !== undefined){
             //       this.orderStatus = this.temp[0].data.status;
             //       console.log("order status - " + this.orderStatus + " - " + this.temp[0].data.status);
-                
-                
-                
+
+
+
             //     // while(this.orderStatus === 1){
             //     //   console.log("in while loop");
             //     //   setTimeout(()=> {
@@ -189,8 +200,8 @@ this.firebase.onNotificationOpen()
             //     // }, 5*1000)
 
             //   }// end if status
-               
-                
+
+
             //   }
             // });
             console.log("done request status !");
@@ -203,9 +214,9 @@ this.firebase.onNotificationOpen()
       });
 
     //get user status
-    
 
-  }
+
+  }//end checkout
 
   //for loading finding shipper
   async presentLoading() {
@@ -228,7 +239,44 @@ this.firebase.onNotificationOpen()
     toast.present();
   }
 
-  async showAddressModal () {
+  async presentAlertConfirm() {
+    // let countDown = Date.now() + 15*1000;
+    // console.log(Date.now())
+    // console.log(countDown - Date.now());
+    const alert = await this.alertController.create({
+      header: '',
+      message: `<ion-list lines="none">
+                <ion-item>
+                <ion-label>Finding your shipper</ion-label>
+                <ion-spinner name="dots"></ion-spinner>
+                </ion-item>
+                </ion-list>`,
+      buttons: [
+        // {
+        //   text: 'Cancel',
+        //   role: 'cancel',
+
+        //   cssClass: 'secondary',
+        //   handler: (blah) => {
+        //     console.log('Confirm Cancel: blah');
+        //     return false;
+        //   }
+        // },
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Confirm Okay');
+            // return false;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+    alert.dismiss();
+  }
+
+  async showAddressModal() {
     // let modal = this.modalCtrl.create(AutocompletePage);
     // let me = this;
     // await modal.onDidDismiss(data => {
@@ -264,5 +312,5 @@ this.firebase.onNotificationOpen()
     //   this.currentModal = modal;
     // });
   }
-  
+
 }

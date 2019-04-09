@@ -110,27 +110,28 @@
               <ion-checkbox></ion-checkbox>
             </ion-item>
           </ion-list> -->
-            <ion-list margin-bottom>
+            <ion-list margin-bottom lines="none">
               <ion-list-header color="light">
                 <ion-label class="fw700">Your member</ion-label>
               </ion-list-header>
 
-              <ion-item>
-                <ion-label color="dark" position="stacked">Full Name:</ion-label>
-                </ion-input>
+              <ion-item *ngFor="let member of userDetail.faceList">
+                <div class="card-drop">
+                  <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+                  <img src="{{member.face}}" class="card-drop__image" />
+                  <div class="card-drop__content">
+                    <h1 class="card-drop__content--title">
+                      {{member.name}}
+                    </h1>
+                    <div class="card-drop__content--body">
+                      <div class="card-drop__content--text">
+                        <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face)">Edit</ion-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </ion-item>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Email:</ion-label>
-                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail.email }}">
-                </ion-input>
-              </ion-item>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail.phone }}">
-                </ion-input>
-              </ion-item>
+              <ion-button expand="block" (click)="addMember('add','','','')">Add new face's member</ion-button>
             </ion-list>
           </ion-col>
         </ion-row>

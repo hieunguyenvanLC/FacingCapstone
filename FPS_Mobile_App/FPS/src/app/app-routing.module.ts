@@ -14,7 +14,8 @@ const routes: Routes = [
   { path: 'profile', loadChildren: './screens/profile/profile.module#ProfilePageModule' },
   // { path: 'autocomplete', loadChildren: './screens/autocomplete/autocomplete.module#AutocompletePageModule' },
   { path: 'check-out', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
-  { path: 'check-out/:id', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' }
+  { path: 'check-out/:id', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
+  { path: 'add-member', loadChildren: './screens/add-member/add-member.module#AddMemberPageModule' }
 ];
 
 @NgModule({

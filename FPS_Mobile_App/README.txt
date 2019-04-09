@@ -95,7 +95,17 @@ fcm
 ionic cordova plugin add cordova-plugin-fcm-with-dependecy-updated
 npm install @ionic-native/fcm
 
+FIREBASE plugin cordova
+ionic cordova plugin add cordova-plugin-firebase
+npm install @ionic-native/firebase
+***
+cp google-services.json platforms/android/
 -----------------
 HTTP
 ionic cordova plugin add cordova-plugin-advanced-http
 npm install @ionic-native/http
+
+-----------------
+Native geocoder
+npm install @ionic-native/native-geocoder
+ionic cordova plugin add cordova-plugin-nativegeocoder

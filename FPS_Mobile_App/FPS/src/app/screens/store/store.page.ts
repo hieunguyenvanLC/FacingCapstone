@@ -40,42 +40,6 @@ export class StorePage implements OnInit {
   currentAddress: any;
   isLoaded = false;
 
-  // {
-  //   id: "AL1",
-  //   img: "../../assets/image/trasua1.jpg",
-  //   name: "Trà sữa chân trâu đường đen - size M (500ml)",
-  //   price: "100000",
-  //   quantity: 0
-  // },
-  // {
-  //   id: "AL2",
-  //   img: "../../assets/image/trasua1.jpg",
-  //   name: "Trà sữa chân trâu đường đen - size L (750ml)",
-  //   price: "500000",
-  //   quantity: 0
-  // },
-  // {
-  //   id: "AL3",
-  //   img: "../../assets/image/trasua1.jpg",
-  //   name: "Trà sữa chân trâu đường đen - size XL (1050ml)",
-  //   price: "100000",
-  //   quantity: 0
-  // },
-  // {
-  //   id: "AL4",
-  //   img: "../../assets/image/trasua1.jpg",
-  //   name: "Trà sữa chân trâu đường đen - size XXL (1200ml)",
-  //   price: "100000",
-  //   quantity: 0
-  // },
-  // {
-  //   id: "AL5",
-  //   img: "../../assets/image/trasua1.jpg",
-  //   name: "Trà sữa chân trâu đường đen - size S (500ml)",
-  //   price: "100000",
-  //   quantity: 0
-  // }
-
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -157,6 +121,7 @@ export class StorePage implements OnInit {
     console.log("o trong openModalOder");
     console.log("currentAddress");
     console.log(this.currentAddress);
+    setTimeout(() => {},1000);
     await this.modalController.create({
       animated: true,
       component: OrdermodalPage,
@@ -178,7 +143,7 @@ export class StorePage implements OnInit {
       }
     }).then(modal => {
       modal.present();
-      this.currentModal = modal;
+      // this.currentModal = modal;
     });
   }
 

@@ -63,4 +63,15 @@ export class AccountService {
     return this.apiHttpService.get(this.constant.LOGOUT);
   }
 
+  updateMemberFace(memId, memName, face){
+    let formData : FormData = new FormData();
+    formData.append("revMemId", memId);
+    formData.append("revMemName", memName);
+    formData.append("face", face);
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT +
+                                   this.constant.FACE, formData);
+  }
+
 }

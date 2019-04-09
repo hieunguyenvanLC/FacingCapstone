@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from '../../services/account.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { element } from '../../../../node_modules/protractor';
 import { Storage } from '@ionic/storage';
 import { StorageApiService } from 'src/app/services/storage-api.service';
 import { GoogleApiService } from 'src/app/services/google-api.service';
 import { async } from 'q';
 import { getHostElement } from '@angular/core/src/render3';
+import { LoadingService } from 'src/app/services/loading.service';
+import { ToastHandleService } from 'src/app/services/toasthandle.service';
 // import { setTimeout } from 'timers';
 
 @Component({
@@ -26,11 +28,12 @@ export class LoginPage implements OnInit {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private toastCtrl: ToastController,
+    private toastHandle: ToastHandleService,
     private storage: StorageApiService,
-    private googleAPI: GoogleApiService
+    private googleAPI: GoogleApiService,
+    private loading : LoadingService,
   ) {
-    this.phonenumber = '222';
+    this.phonenumber = '84965142724';
     this.password = 'zzz';
     this.error = '';
 
@@ -38,25 +41,15 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
-
-
     this.googleAPI.getCurrentLocation();
     console.log(this.googleAPI.getCurrentLocation());
-    // this.getStorage();
-
-
-
   }
 
   async login() {
-
-
-
     await this.storage;
     //this.accountService.logOut();
     this.account.length = 0;
-    //  this.accountDetail.length =0;
-    //  console.log("truoc khi login"+this.account);
+    this.loading.present("Waiting...").then(() => {
     this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
       // console.log(this.phonenumber + "  " + this.password);
       // console.log(res);
@@ -69,44 +62,28 @@ export class LoginPage implements OnInit {
         //if (role === "ROLE_MEMBER"){
         if (this.account[0].data === "ROLE_MEMBER") {
           this.error = '';
-
-
           this.getDetailAccount().then(value => {
-            //  console.log("value tra ve")
-            //  console.log(value);
-
             setTimeout(() => {
-
               this.getStorage();
-
             }, 400)
-
-
-
+            
           });
+          this.loading.dismiss();
           //end api get detail
-
-
         } else {
+          this.loading.dismiss();
           this.error = "Wrong username or password";
         }
-
-
       } else {
 
       }
-
-
-    }), err => {
+    }), //end api login
+    err => {
+      this.loading.dismiss()
+      this.toastHandle.presentToast("Error connection! Please check your connection");
       console.log(err);
     };
-
-
-
-
-
-
-
+    })//end loading
   }
 
 
@@ -134,16 +111,7 @@ export class LoginPage implements OnInit {
     await this.accountService.getDetailUser().subscribe(res => {
 
       userAccountDetail.push(res);
-      // console.log(userAccountDetail);
-
-      // console.log("---Get detail account here----")
-
-      // console.log(userAccountDetail[0].data);
-
       this.storage.set("ACCOUNT", userAccountDetail[0].data).then(() => {
-        // console.log("------------Truoc khi tra result------------------")
-        // console.log(result);
-        // console.log("------------Sau khi tra result------------------")
         result = "Success";
 
         //  console.log(result);

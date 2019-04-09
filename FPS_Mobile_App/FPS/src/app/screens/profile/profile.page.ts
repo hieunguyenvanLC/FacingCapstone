@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
+import { NavController, ToastController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Storage } from '@ionic/storage';
 import { Constant } from 'src/app/common/constant';
+import { AddMemberPage } from '../add-member/add-member.page';
 
 @Component({
   selector: 'app-profile',
@@ -32,7 +33,7 @@ export class ProfilePage implements OnInit {
     private camera: Camera,
     private storage : Storage,
     private constant : Constant,
-
+    private modalController: ModalController,
   ) { }
 
   ngOnInit() {
@@ -116,6 +117,24 @@ export class ProfilePage implements OnInit {
       // this.accountService.updateImageMember()
     }, (err) => {
       console.log("error at takephoto :" + err)
+    });
+  }//end take photo
+
+  async addMember(status, id,name, face){
+    await this.modalController.create({
+      animated: true,
+      component: AddMemberPage,
+      componentProps: {
+        myMem: [{
+          status: status,
+          id: id,
+          name: name,
+          face: face,
+        }]
+
+      }
+    }).then(modal => {
+      modal.present();
     });
   }
 }

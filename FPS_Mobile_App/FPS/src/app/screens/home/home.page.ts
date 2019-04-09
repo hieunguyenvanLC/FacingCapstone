@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { StoreService } from 'src/app/services/store.service';
-import {Store} from 'src/app/models/store.model';
+import { Store } from 'src/app/models/store.model';
 import { TouchSequence } from 'selenium-webdriver';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
@@ -10,6 +10,12 @@ import { AccountService } from 'src/app/services/account.service';
 import { AppComponent } from '../../app.component'
 import { Constant } from 'src/app/common/constant';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {
+  NativeGeocoder,
+  NativeGeocoderReverseResult,
+  NativeGeocoderForwardResult,
+  NativeGeocoderOptions
+} from '@ionic-native/native-geocoder/ngx';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +28,7 @@ export class HomePage {
   };
 
   searchValue: string;
-  storesObj= [];
+  storesObj = [];
   stores = [];
   longitude = 106.67927390539103;
   latitude = 10.82767617410066;
@@ -30,23 +36,24 @@ export class HomePage {
   isLoaded = false;
   userDetail = [];
   status_code = 0;
-  username : any;
+  username: any;
 
-  myAccount : any;
+  myAccount: any;
 
   constructor(
-    private storeService : StoreService,
-    private loading : LoadingService,
+    private storeService: StoreService,
+    private loading: LoadingService,
     private toastHandle: ToastHandleService,
     private storage: Storage,
-    private accountService : AccountService,
-    private appComponent : AppComponent,
+    private accountService: AccountService,
+    private appComponent: AppComponent,
     private constant: Constant,
     private geolocation: Geolocation,
-  ){
+    private nativeGeocoder: NativeGeocoder,
+  ) {
     console.log('contructor')
     this.storage.get("MYLOCATION").then(value => {
-      if (value === null){
+      if (value === null) {
         // console.log("in null, set location");
         // console.log(value);
         // this.appComponent.getLocataion();
@@ -54,6 +61,8 @@ export class HomePage {
           console.log(resp)
           let lati = resp.coords.latitude;
           let longi = resp.coords.longitude;
+
+
           this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
           // resp.coords.latitude
           // resp.coords.longitude
@@ -68,7 +77,7 @@ export class HomePage {
 
   ngOnInit() {
     console.log("da tao");
-    this.loading.present(this.constant.LOADINGMSG).then( () => {
+    this.loading.present(this.constant.LOADINGMSG).then(() => {
       this.storeService.getList(this.longitude, this.latitude).subscribe(
         res => {
           //this.stores = Array.prototype.slice.call(data.toString);
@@ -80,7 +89,7 @@ export class HomePage {
             this.stores.push(element);
           });
           // console.log(this.stores);
-          if (this.stores){
+          if (this.stores) {
             this.isLoaded = true;
           }
         }, (err) => {
@@ -89,27 +98,27 @@ export class HomePage {
           console.log(err);
         }, () => {
           //stop process loading
-          if (this.isLoaded){
+          if (this.isLoaded) {
             this.loading.dismiss();
           }
         }
       )//end get list store api
-      
+
     })//end loading process
-    
+
 
     this.storage.get("ACCOUNT").then(value => {
       console.log("ACCOUNT-ieikei");
 
-      if (value){
+      if (value) {
         // console.log("not empty");
         // console.log(value);
         this.username = value.name;
         this.appComponent.refreshSlideMenu(value.name, value.avatar, value.extraPoint);
-      }else{
+      } else {
         console.log("empty");
       }
-      
+
     });
     // this.storage.get("MYLOCATION").then(value => {
     //   // if (value === null){
@@ -125,10 +134,10 @@ export class HomePage {
     // if (this.username){
     //   this.appComponent.refreshSlideMenu(this.username);
     // } 
-    
+
   }
 
-  getUser(){
+  getUser() {
     this.accountService.getDetailUser().subscribe(
       res => {
         this.userDetail.push(res);
@@ -152,8 +161,8 @@ export class HomePage {
     slides.startAutoplay();
   }
 
-  search(event){
+  search(event) {
     console.log("search value: " + event.target.value);
   }
-  
+
 }

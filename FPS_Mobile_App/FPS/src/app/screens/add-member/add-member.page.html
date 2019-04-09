@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add member'face</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        Close
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item>
+    <ion-label color="dark" position="floating">
+      <ion-icon name="create"></ion-icon>
+      Name
+    </ion-label>
+    <ion-input type="text" value="" [(ngModel)]="name"></ion-input>
+  </ion-item>
+  <ion-item>
+      <img src= "{{face}}"/>
+      <ion-button expand="block">Take photo</ion-button>
+  </ion-item>
+  <ion-button expand="full">{{myMem[0].status}}</ion-button>
+</ion-content>

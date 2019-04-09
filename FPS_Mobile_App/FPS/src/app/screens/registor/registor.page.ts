@@ -164,7 +164,7 @@ export class RegistorPage implements OnInit {
     }, (err) => {
       console.log("error at takephoto :" + err)
     });
-  }
+  }//end take photo
 
   // changeListener($event): void {
   //   this.file = $event.target.files[0];

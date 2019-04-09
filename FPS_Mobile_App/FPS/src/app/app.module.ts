@@ -48,6 +48,8 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { from } from 'rxjs';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { StorageApiService } from './services/storage-api.service';
+import { AlertService } from './services/alert.service';
+import { AddMemberPageModule } from './screens/add-member/add-member.module';
 
 
 @NgModule({
@@ -59,6 +61,7 @@ import { StorageApiService } from './services/storage-api.service';
     IonicStorageModule.forRoot(),
     AppRoutingModule,
     OrdermodalPageModule,
+    AddMemberPageModule,
     HttpClientModule,
     HttpModule,
 
@@ -79,6 +82,7 @@ import { StorageApiService } from './services/storage-api.service';
     ToastHandleService,
     GoogleApiService,
     StorageApiService,
+    AlertService,
     HTTP,  
     Geolocation,
     NativeGeocoder,
