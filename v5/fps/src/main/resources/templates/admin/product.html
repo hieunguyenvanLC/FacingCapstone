@@ -143,8 +143,8 @@
 
         function fpsFetchData() {
             store = JSON.parse(sessionStorage.getItem("store"));
-            console.log(store);
-            // sessionStorage.removeItem("store");
+            // console.log(store);
+            sessionStorage.removeItem("store");
             if (!isStoreExist()) {
                 btnAdd.style.display = "none";
 

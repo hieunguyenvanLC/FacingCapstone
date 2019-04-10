@@ -1,21 +1,16 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
-import capstone.fps.model.account.MdlAccount;
+import capstone.fps.model.account.MdlAdmin;
+import capstone.fps.model.account.MdlMember;
 import capstone.fps.model.account.MdlShipper;
 import capstone.fps.service.AccountService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class AccountController extends AbstractController {
@@ -29,40 +24,52 @@ public class AccountController extends AbstractController {
     }
 
 
-    @DeleteMapping(Fix.MAP_ADM + API)
-    public String deactivateAccount(Integer accountId, String reason) {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            if (accountService.banAccount(accountId, reason)) {
-                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
-
-    @PutMapping(Fix.MAP_ADM + API + "/activate")
-    public String activateAccount(Integer accountId, String reason) {
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            if (accountService.activateAccount(accountId, reason)) {
-                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
+//    @DeleteMapping(Fix.MAP_ADM + API)
+//    public String deactivateAccount(Integer accountId, String reason) {
+//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        try {
+//            if (accountService.banAccount(accountId, reason)) {
+//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+//        }
+//        return gson.toJson(response);
+//    }
+//
+//    @PutMapping(Fix.MAP_ADM + API + "/activate")
+//    public String activateAccount(Integer accountId, String reason) {
+//        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        try {
+//            if (accountService.activateAccount(accountId, reason)) {
+//                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+//        }
+//        return gson.toJson(response);
+//    }
 
     // Admin Web - Member - Begin
-    @GetMapping(Fix.MAP_ADM + API + "/mem")
-    public String getAccountMemberList() {
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+    @GetMapping(Fix.MAP_ADM + API + "/mem/list")
+    public String getMemberListAdm() {
+        Response<List<MdlMember>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.getListMember();
+            response = accountService.getMemberList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ADM + API + "/mem/detail")
+    public String getMemberDetailAdm(int accId) {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getMemberDetailAdm(accId);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -71,10 +78,10 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/mem")
-    public String editAccountMember(Integer accId, String fullName, String email, long dob, String note) {
+    public String updateMemberAdm(int accId, String name, String email, Long dob, String note, Integer status) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.editAccountMember(accId, fullName, email, dob, note);
+            response = accountService.updateMemberAdm(accId, name, email, dob, note, status);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -98,7 +105,7 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/shp")
-    public String updateShipper(Integer accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+    public String updateShipper(int accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateShipper(accId, phone, sumRevenue, name, sourceId, dob, email, note, priceLevelId, userFace, introduce, extraPoint, reportPoint, status, natId, natDate, bikeRegId, bikeRegDate, natFront, natBack, bikeRegFront, bikeRegBack);
@@ -122,7 +129,7 @@ public class AccountController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_ADM + API + "/shp/detail")
-    public String getShipperDetailAdm(Integer accId) {
+    public String getShipperDetailAdm(int accId) {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getShipperDetailAdm(accId);
@@ -137,8 +144,8 @@ public class AccountController extends AbstractController {
 
     // Admin Web - Admin - Begin
     @GetMapping(Fix.MAP_ADM + API + "/adm")
-    public String getAccountAdminList() {
-        Response<List<MdlAccount>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+    public String getAdminList() {
+        Response<List<MdlAdmin>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getListAdmin();
         } catch (Exception e) {
@@ -149,10 +156,10 @@ public class AccountController extends AbstractController {
     }
 
     @PostMapping(Fix.MAP_ADM + API + "/adm")
-    public String createAccountAdmin(String username, String password, String fullName, String email, String natId, long natDate, long dob, String note) {
+    public String createAdmin(String username, String password, String name, String email, String natId, Long natDate, Long dob, String note) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.createAccountAdmin(username, password, fullName, email, natId, natDate, dob, note);
+            response = accountService.createAccountAdmin(username, password, name, email, natId, natDate, dob, note);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -161,10 +168,34 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API + "/adm")
-    public String editAccountAdmin(Integer accId, String fullName, String email, String natId, long natDate, long dob, String note) {
+    public String updateAdmin(int accId, String name, String email, String natId, Long natDate, Long dob, String note) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.editAccountAdmin(accId, fullName, email, natId, natDate, dob, note);
+            response = accountService.editAccountAdmin(accId, name, email, natId, natDate, dob, note);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_ADM + API + "/profile")
+    public String getAdminProfileAdm() {
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getAdminProfileAdm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_ADM + API + "/profile")
+    public String updateProfileAdm(String password, String name, MultipartFile avatar) {
+        Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateProfileAdm(password, name, avatar);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -191,8 +222,8 @@ public class AccountController extends AbstractController {
 
     // Mobile Mem - Profile - Begin
     @GetMapping(Fix.MAP_MEM + API + "/detail")
-    public String getMemberDetailMem() {
-        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+    public String getMemberProfileMem() {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.getMemberDetailMem();
         } catch (Exception e) {
@@ -204,9 +235,21 @@ public class AccountController extends AbstractController {
 
     @PutMapping(Fix.MAP_MEM + API)
     public String updateMemberDetailMem(String name, String email, Long dob) {
-        Response<MdlAccount> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = accountService.updateMemberDetailMem(name, email, dob);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PutMapping(Fix.MAP_MEM + API + "/avatar")
+    public String updateAvatarMem(String avatar) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.updateAvatar(avatar);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -227,5 +270,18 @@ public class AccountController extends AbstractController {
     }
     // Mobile Mem - Profile - End
 
+    // Mobile Shipper - Begin
+    @GetMapping(Fix.MAP_SHP + API + "/shp/detail")
+    public String getShipperDetailShp() {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getShipperDetailShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - End
 
 }

@@ -19,10 +19,6 @@ section.dashboard-counts .row {
     margin: 0;
 }
 
-section.dashboard-header div[class*='row'] .item {
-    padding: 15px 0;
-}
-
 .padding-0 {
     padding-right:10px;
     padding-left:0;
@@ -73,12 +69,6 @@ section.dashboard-header div[class*='row'] .item {
     background-color: #f4f4f4;
 }
 
-#statistic-detail-modal .modal-dialog .modal-content img {
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
-}
-
 @media (min-width: 900px) {
     #order-detail-modal .modal-dialog {
         max-width: 700px;
@@ -88,9 +78,6 @@ section.dashboard-header div[class*='row'] .item {
     }
     #edit-order-detail-modal .modal-dialog {
         max-width: 900px;
-    }
-    #statistic-detail-modal .modal-dialog {
-        max-width: 1000px;
     }
 }
 
@@ -108,4 +95,31 @@ section.dashboard-header div[class*='row'] .item {
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+.chart .gj-dropdown-bootstrap-4 {
+    float: right;
+}
+
+.daterange {
+    align-self: baseline;
+}
+
+.daterange .item-flex-auto {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.daterange .item-flex-fill {
+    display: flex;
+    flex: 1 1 100%;
+}
+
+.daterange .gj-dropdown {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.daterange .gj-dropdown button {
+    width: 100%;
 }

@@ -138,7 +138,7 @@
                                             </div>
                                         </div>
                                         <div class="text-center">
-                                            <img src="/img/no_img.png" alt="portrait" id="imgUserFace">
+                                            <img src="/img/no_img.png" style="width: 100%" alt="portrait" id="imgUserFace">
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +152,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row row-eq-height no-padding" id="divStatus">
                                     <div class="col-4 padding-0">
                                         <div class="form-group">
@@ -170,7 +169,7 @@
                                     </div>
                                     <div class="col-4 padding-0">
                                         <label for="cbbStatus">Status</label>
-                                        <select id="cbbStatus" class="form-control mb-3">
+                                        <select id="cbbStatus" class="form-control">
                                         </select>
                                     </div>
                                 </div>
@@ -418,7 +417,7 @@
         function loadEditForm() {
             divPassword.style.display = "none";
             divSumRevenue.style.display = "block";
-            divStatus.style.display = "block";
+            divStatus.style.visibility = "visible";
 
             txtPhone.value = accEdit.phone;
 
@@ -462,7 +461,7 @@
         function loadAddForm() {
             divPassword.style.display = "block";
             divSumRevenue.style.display = "none";
-            divStatus.style.display = "none";
+            divStatus.style.visibility = "hidden";
             accEditPos = -1;
 
             txtPhone.value = "";

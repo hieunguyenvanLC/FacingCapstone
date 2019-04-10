@@ -2,7 +2,9 @@ package capstone.fps.model.account;
 
 import com.google.gson.annotations.Expose;
 
-public class MdlAccount {
+import java.util.List;
+
+public class MdlMember {
 
     @Expose
     Integer id;
@@ -42,5 +44,6 @@ public class MdlAccount {
     String editor;
     @Expose
     String avatar;
-
+    @Expose
+    MdlFace[] faceList;
 }

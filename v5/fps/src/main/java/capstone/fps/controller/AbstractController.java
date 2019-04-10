@@ -12,6 +12,6 @@ public class AbstractController {
     final Gson gson;
 
     protected AbstractController() {
-        this.gson = (new GsonBuilder()).excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
+        this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
     }
 }

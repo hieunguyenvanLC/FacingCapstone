@@ -21,14 +21,14 @@ public class WebPageController {
         return "error";
     }
 
+//    @GetMapping("/sign_up_page")
+//    public String signUpPage() {
+//        return "sign_up";
+//    }
+
     @GetMapping("/access_denied")
     public String accessDenied() {
         return "no_access";
-    }
-
-    @GetMapping("/sign_up_page")
-    public String signUpPage() {
-        return "sign_up";
     }
 
     @GetMapping("/adm/")

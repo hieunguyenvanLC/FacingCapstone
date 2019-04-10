@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface StoreRepo extends JpaRepository<FRStore, Integer> {
     public int countByStatus(int status);
 
-    public int countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(int status,long start, long end);
+    public int countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(int status, long start, long end);
 }

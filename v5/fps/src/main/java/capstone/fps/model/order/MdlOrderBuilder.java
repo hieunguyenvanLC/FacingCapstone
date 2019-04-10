@@ -28,7 +28,7 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        mdlOrder.bookTime = frOrder.getBookTime();
+        mdlOrder.bookTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.longitude = frOrder.getLongitude();
@@ -42,7 +42,7 @@ public class MdlOrderBuilder {
         mdlOrder.editor = frOrder.getEditor();
 
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
-        FRStore store = frOrderDetails.get(0).getProduct().getStore();
+        FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
         mdlOrder.storeName = store.getStoreName();
         mdlOrder.storeAddress = store.getAddress() + " " + store.getDistrict().getName();
         mdlOrder.storeLongitude = store.getLongitude();
@@ -75,13 +75,57 @@ public class MdlOrderBuilder {
             mdlOrder.storeName = store.getStoreName();
         }
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
-        mdlOrder.bookTime = frOrder.getBookTime();
         mdlOrder.createTime = frOrder.getCreateTime();
         mdlOrder.status = frOrder.getStatus();
 
         List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
         for (FROrderDetail frDetail : frOrderDetails) {
             MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildFull(frDetail);
+            mdlDetailList.add(mdlDetail);
+        }
+        mdlOrder.detailList = mdlDetailList;
+        return mdlOrder;
+    }
+
+    public MdlOrder buildDetailShp(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+        Methods methods = new Methods();
+        MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
+        MdlOrder mdlOrder = new MdlOrder();
+        mdlOrder.id = frOrder.getId();
+        mdlOrder.buyerName = frOrder.getAccount().getName();
+        mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
+        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
+        FRShipper shipper = frOrder.getShipper();
+        if (shipper != null) {
+            mdlOrder.shipperName = shipper.getAccount().getName();
+            mdlOrder.shipperPhone = shipper.getAccount().getPhone();
+        }
+        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
+        mdlOrder.orderCode = frOrder.getOrderCode();
+        mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.bookTime = frOrder.getBuyTime();
+        mdlOrder.receiveTime = frOrder.getReceiveTime();
+        mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.longitude = frOrder.getLongitude();
+        mdlOrder.latitude = frOrder.getLatitude();
+        mdlOrder.customerDescription = frOrder.getCustomerDescription();
+        mdlOrder.createTime = frOrder.getCreateTime();
+        mdlOrder.updateTime = frOrder.getUpdateTime();
+        mdlOrder.deleteTime = frOrder.getDeleteTime();
+        mdlOrder.note = frOrder.getNote();
+        mdlOrder.status = frOrder.getStatus();
+        mdlOrder.editor = frOrder.getEditor();
+
+        List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
+        FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
+        mdlOrder.storeName = store.getStoreName();
+        mdlOrder.storeAddress = store.getAddress() + " " + store.getDistrict().getName();
+        mdlOrder.storeLongitude = store.getLongitude();
+        mdlOrder.storeLatitude = store.getLatitude();
+
+        List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
+        for (FROrderDetail frDetail : frOrderDetails) {
+            MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildDetailShp(frDetail);
             mdlDetailList.add(mdlDetail);
         }
         mdlOrder.detailList = mdlDetailList;

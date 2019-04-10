@@ -1,22 +1,20 @@
 package capstone.fps.model.ordermatch;
 
+import capstone.fps.common.Fix;
 import capstone.fps.entity.FROrder;
-import capstone.fps.entity.FROrderDetail;
-import capstone.fps.entity.FRStore;
-import capstone.fps.repository.OrderDetailRepo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OrderMap {
 
     private final OrderNode[][] map;
 
-    private final ArrayList<Delta> layer0;
-    private final ArrayList<Delta> layer1;
-    private final ArrayList<Delta> layer2;
-    private final ArrayList<Delta> layer3;
-    private final ArrayList<Delta> layer4;
+    //    private final ArrayList<Delta> layer0;
+//    private final ArrayList<Delta> layer1;
+//    private final ArrayList<Delta> layer2;
+//    private final ArrayList<Delta> layer3;
+//    private final ArrayList<Delta> layer4;
+    private ArrayList<ArrayList<Delta>> layers;
 
     public OrderMap() {
         this.map = new OrderNode[1483][732];
@@ -25,116 +23,147 @@ public class OrderMap {
                 map[i][j] = new OrderNode();
             }
         }
-        layer0 = new ArrayList<>();
-        layer0.add(new Delta(0, 0));
-
-        layer1 = new ArrayList<>();
-        layer1.add(new Delta(0, -1));
-        layer1.add(new Delta(0, 1));
-        layer1.add(new Delta(-1, 0));
-        layer1.add(new Delta(1, 0));
-
-        layer1.add(new Delta(-1, -1));
-        layer1.add(new Delta(1, -1));
-        layer1.add(new Delta(-1, 1));
-        layer1.add(new Delta(1, 1));
-
-
-        layer2 = new ArrayList<>();
-        layer2.add(new Delta(2, -1));
-        layer2.add(new Delta(2, 0));
-        layer2.add(new Delta(2, 1));
-
-        layer2.add(new Delta(-2, -1));
-        layer2.add(new Delta(-2, 0));
-        layer2.add(new Delta(-2, 1));
-
-        layer2.add(new Delta(-1, 2));
-        layer2.add(new Delta(0, 2));
-        layer2.add(new Delta(1, 2));
-
-        layer2.add(new Delta(-1, -2));
-        layer2.add(new Delta(0, -2));
-        layer2.add(new Delta(1, -2));
-
-
-        layer3 = new ArrayList<>();
-        layer3.add(new Delta(3, -1));
-        layer3.add(new Delta(3, 0));
-        layer3.add(new Delta(3, 1));
-
-        layer3.add(new Delta(-3, -1));
-        layer3.add(new Delta(-3, 0));
-        layer3.add(new Delta(-3, 1));
-
-        layer3.add(new Delta(-1, 3));
-        layer3.add(new Delta(0, 3));
-        layer3.add(new Delta(1, 3));
-
-        layer3.add(new Delta(-1, -3));
-        layer3.add(new Delta(0, -3));
-        layer3.add(new Delta(1, -3));
-
-        layer3.add(new Delta(-2, -2));
-        layer3.add(new Delta(-2, 2));
-        layer3.add(new Delta(2, -2));
-        layer3.add(new Delta(2, 2));
-
-
-        layer4 = new ArrayList<>();
-        layer4.add(new Delta(4, -1));
-        layer4.add(new Delta(4, 0));
-        layer4.add(new Delta(4, 1));
-
-        layer4.add(new Delta(-4, -1));
-        layer4.add(new Delta(-4, 0));
-        layer4.add(new Delta(-4, 1));
-
-        layer4.add(new Delta(-1, 4));
-        layer4.add(new Delta(0, 4));
-        layer4.add(new Delta(1, 4));
-
-        layer4.add(new Delta(-1, -4));
-        layer4.add(new Delta(0, -4));
-        layer4.add(new Delta(1, -4));
-
-
-        layer4.add(new Delta(3, 2));
-        layer4.add(new Delta(3, 3));
-        layer4.add(new Delta(2, 3));
-
-        layer4.add(new Delta(-3, 2));
-        layer4.add(new Delta(-3, 3));
-        layer4.add(new Delta(-2, 3));
-
-        layer4.add(new Delta(3, -2));
-        layer4.add(new Delta(3, -3));
-        layer4.add(new Delta(2, -3));
-
-        layer4.add(new Delta(-3, -2));
-        layer4.add(new Delta(-3, -3));
-        layer4.add(new Delta(-2, -3));
-
-
+//        layer0 = new ArrayList<>();
+//        layer0.add(new Delta(0, 0));
+//
+//        layer1 = new ArrayList<>();
+//        layer1.add(new Delta(0, -1));
+//        layer1.add(new Delta(0, 1));
+//        layer1.add(new Delta(-1, 0));
+//        layer1.add(new Delta(1, 0));
+//
+//        layer1.add(new Delta(-1, -1));
+//        layer1.add(new Delta(1, -1));
+//        layer1.add(new Delta(-1, 1));
+//        layer1.add(new Delta(1, 1));
+//
+//
+//        layer2 = new ArrayList<>();
+//        layer2.add(new Delta(2, -1));
+//        layer2.add(new Delta(2, 0));
+//        layer2.add(new Delta(2, 1));
+//
+//        layer2.add(new Delta(-2, -1));
+//        layer2.add(new Delta(-2, 0));
+//        layer2.add(new Delta(-2, 1));
+//
+//        layer2.add(new Delta(-1, 2));
+//        layer2.add(new Delta(0, 2));
+//        layer2.add(new Delta(1, 2));
+//
+//        layer2.add(new Delta(-1, -2));
+//        layer2.add(new Delta(0, -2));
+//        layer2.add(new Delta(1, -2));
+//
+//
+//        layer3 = new ArrayList<>();
+//        layer3.add(new Delta(3, -1));
+//        layer3.add(new Delta(3, 0));
+//        layer3.add(new Delta(3, 1));
+//
+//        layer3.add(new Delta(-3, -1));
+//        layer3.add(new Delta(-3, 0));
+//        layer3.add(new Delta(-3, 1));
+//
+//        layer3.add(new Delta(-1, 3));
+//        layer3.add(new Delta(0, 3));
+//        layer3.add(new Delta(1, 3));
+//
+//        layer3.add(new Delta(-1, -3));
+//        layer3.add(new Delta(0, -3));
+//        layer3.add(new Delta(1, -3));
+//
+//        layer3.add(new Delta(-2, -2));
+//        layer3.add(new Delta(-2, 2));
+//        layer3.add(new Delta(2, -2));
+//        layer3.add(new Delta(2, 2));
+//
+//
+//        layer4 = new ArrayList<>();
+//        layer4.add(new Delta(4, -1));
+//        layer4.add(new Delta(4, 0));
+//        layer4.add(new Delta(4, 1));
+//
+//        layer4.add(new Delta(-4, -1));
+//        layer4.add(new Delta(-4, 0));
+//        layer4.add(new Delta(-4, 1));
+//
+//        layer4.add(new Delta(-1, 4));
+//        layer4.add(new Delta(0, 4));
+//        layer4.add(new Delta(1, 4));
+//
+//        layer4.add(new Delta(-1, -4));
+//        layer4.add(new Delta(0, -4));
+//        layer4.add(new Delta(1, -4));
+//
+//
+//        layer4.add(new Delta(3, 2));
+//        layer4.add(new Delta(3, 3));
+//        layer4.add(new Delta(2, 3));
+//
+//        layer4.add(new Delta(-3, 2));
+//        layer4.add(new Delta(-3, 3));
+//        layer4.add(new Delta(-2, 3));
+//
+//        layer4.add(new Delta(3, -2));
+//        layer4.add(new Delta(3, -3));
+//        layer4.add(new Delta(2, -3));
+//
+//        layer4.add(new Delta(-3, -2));
+//        layer4.add(new Delta(-3, -3));
+//        layer4.add(new Delta(-2, -3));
+        initLayer(Fix.shipperRange);
     }
 
-    public ArrayList<Delta> getLayer(int layer) {
-        switch (layer) {
-            case 0:
-                return layer0;
-            case 1:
-                return layer1;
-            case 2:
-                return layer2;
-            case 3:
-                return layer3;
-            case 4:
-                return layer4;
-            default:
-                return null;
+
+    private void initLayer(int range) {
+        layers = new ArrayList<>();
+        for (int i = 0; i <= range; i++) {
+            layers.add(new ArrayList<>());
+        }
+        layers.get(0).add(new Delta(0, 0));
+        for (int i = 1; i <= range; i++) {
+            layers.get(i).add(new Delta(i, 0));
+            layers.get(i).add(new Delta(0, -i));
+            layers.get(i).add(new Delta(-i, 0));
+            layers.get(i).add(new Delta(0, i));
+        }
+        for (int x = 1; x <= range; x++) {
+            for (int y = range; y >= 1; y--) {
+                int dis = (int) Math.round(Math.sqrt(x * x + y * y));
+                if (dis <= range) {
+                    layers.get(dis).add(new Delta(x, y));
+                    layers.get(dis).add(new Delta(-y, x));
+                    layers.get(dis).add(new Delta(-x, -y));
+                    layers.get(dis).add(new Delta(y, -x));
+                }
+            }
         }
     }
 
+
+//    public ArrayList<Delta> getLayer(int layer) {
+//        return layers.get(layer);
+////        switch (layer) {
+////            case 0:
+////                return layer0;
+////            case 1:
+////                return layer1;
+////            case 2:
+////                return layer2;
+////            case 3:
+////                return layer3;
+////            case 4:
+////                return layer4;
+////            default:
+////                return null;
+////        }
+//    }
+
+
+    public ArrayList<ArrayList<Delta>> getLayers() {
+        return layers;
+    }
 
     public OrderStat addOrder(FROrder frOrder, double storeLon, double storeLat) {
         int col = convertLon(storeLon);
@@ -153,13 +182,11 @@ public class OrderMap {
 
 
     public int convertLon(double longitude) {
-        int col = (int) (longitude * 100) - 10214;
-        return col;
+        return (int) (longitude * 100) - 10214;
     }
 
     public int convertLat(double latitude) {
-        int row = (int) (latitude * 100) - 856;
-        return row;
+        return (int) (latitude * 100) - 856;
     }
 
     public OrderNode getNode(int col, int row) {

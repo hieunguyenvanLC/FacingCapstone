@@ -16,10 +16,15 @@ public interface Fix {
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
-//    String PAY_SERVER_URL = "http://192.168.100.99:8084/";
-    String PAY_SERVER_URL = "http://192.168.43.244:8084/";
+    String PAY_SERVER_URL = "http://192.168.100.107:8084/";
+
+    int shipperRange = 15;// * 1.1km
 
 
+    String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    String FCM_KEY = "AAAAQE2HpyA:APA91bHSMzhajeXcYtWn6iE83V_SYX_CSqAP57zUxMLbrFmwToKsxpW8bsBL6pOX05tXJQeVOBziYmPqguQF1NFRqU03Wy8qdwbh4gYsqNmJzVwfsNhK5Uadnvbs_-KiB8mX_UV_o0oH";
+
+    String FACE_RESULT_TAG = "<result>";
 
 
 //    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
@@ -76,6 +81,7 @@ public interface Fix {
     Stat STO_NEW = new Stat(1, "new");
     Stat STO_HID = new Stat(2, "hidden");
     Stat[] STO_STAT_LIST = {STO_NEW, STO_HID};
+
 
 
 }

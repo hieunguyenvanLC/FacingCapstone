@@ -13,46 +13,42 @@ import capstone.fps.model.ordermatch.OrderStat;
 import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @Service
 public class OrderService {
 
-    private DistrictRepo districtRepository;
     private OrderRepo orderRepository;
     private OrderDetailRepo orderDetailRepository;
     private ProductRepo productRepository;
     private AccountRepo accountRepository;
     private PaymentInfoRepo paymentInfoRepo;
     private ReceiveMemberRepo receiveMemberRepo;
+    private ShipperRepo shipperRepo;
     private OrderMap orderMap;
     private TransactionRepo transactionRepo;
+    private final ShipperWait shipperWait;
+
+
     @Autowired
-    private ShipperWait shipperWait;
-
-
-
-    public OrderService(DistrictRepo districtRepository, OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
-        this.districtRepository = districtRepository;
+    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -60,8 +56,10 @@ public class OrderService {
 
         this.paymentInfoRepo = paymentInfoRepo;
         this.receiveMemberRepo = receiveMemberRepo;
+        this.shipperRepo = shipperRepo;
         this.orderMap = orderMap;
         this.transactionRepo = transactionRepo;
+        this.shipperWait = shipperWait;
     }
 
 
@@ -190,7 +188,7 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
+    public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -203,9 +201,6 @@ public class OrderService {
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
-        }
-        if (buyerFace != null) {
-            frOrder.setBuyerFace(methods.multipartToBytes(buyerFace));
         }
         if (bill != null) {
             frOrder.setBill(methods.multipartToBytes(bill));
@@ -236,16 +231,17 @@ public class OrderService {
         frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
-
-        MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+        if (buyerFace != null) {
+            checkout(gson, orderId, methods.multipartToBytes(buyerFace));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(orderRepository.getOne(orderId), orderDetailRepository));
         return response;
     }
     // Web Admin - Order - Begin
 
 
     // Mobile Member - Order Booking - Begin
-    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance) {
+    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance, String deviceToken) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -290,7 +286,7 @@ public class OrderService {
         frOrder.setBill(null);
         frOrder.setOrderCode(null);
         frOrder.setTotalPrice(totalPrice);
-        frOrder.setBookTime(time);
+        frOrder.setBuyTime(time);
         frOrder.setReceiveTime(null);
         frOrder.setShipperEarn(methods.calculateShpEarn(distance));
         frOrder.setShipAddress(null);
@@ -304,6 +300,7 @@ public class OrderService {
         frOrder.setNote("");
         frOrder.setStatus(Fix.ORD_NEW.index);
         frOrder.setEditor(null);
+        frOrder.setBuyerToken(deviceToken);
         orderRepository.save(frOrder);
 
         for (MdlDetailCreate detail : detailList) {
@@ -353,7 +350,7 @@ public class OrderService {
     }
 
 
-    public Response<MdlOrder> cancelOrderMem(int orderId, int col, int row) {
+    public Response<MdlOrder> cancelOrderMem(int orderId, double longitude, double latitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -366,7 +363,8 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-
+        int col = orderMap.convertLon(longitude);
+        int row = orderMap.convertLat(latitude);
         List<OrderStat> statList = orderMap.getNode(col, row).getStatList();
         OrderStat myOrderStat = null;
         for (OrderStat orderStat : statList) {
@@ -398,7 +396,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Matching - Begin
-    public Response<MdlOrder> autoAssign(double longitude, double latitude) {
+    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken) {
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         Methods methods = new Methods();
@@ -411,9 +409,7 @@ public class OrderService {
         shipperWait.setCancel(false);
 
         while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
-            for (int layerNo = 0; layerNo <= 4; layerNo++) {
-                ArrayList<Delta> layer = orderMap.getLayer(layerNo);
-//                Collections.shuffle(layer);
+            for (ArrayList<Delta> layer : orderMap.getLayers()) {
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
                     int rowNode = row + delta.row;
@@ -421,7 +417,6 @@ public class OrderService {
                     if (node.size() > 0) {
                         for (OrderStat order : node) {
                             if (!order.isCancel() && order.getLockBy() == 0) {
-
                                 order.setLockBy(accId);
                                 try {
                                     Thread.sleep(500);
@@ -433,8 +428,11 @@ public class OrderService {
                                     FROrder frOrder = order.getFrOrder();
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setStatus(Fix.ORD_ASS.index);
+                                    frOrder.setPriceLevel(currentUser.getShipper().getPriceLevel().getPrice());
                                     orderRepository.save(frOrder);
-                                    MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+                                    notifyBuyer(frOrder);
+//                                    notifyShipper(frOrder, shipperToken);
+                                    MdlOrder mdlOrder = orderBuilder.buildDetailShp(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
                                 }
@@ -444,6 +442,41 @@ public class OrderService {
                     }
                 }
             }
+//            for (int layerNo = 0; layerNo <= 4; layerNo++) {
+//                ArrayList<Delta> layer = orderMap.getLayer(layerNo);
+////                Collections.shuffle(layer);
+//                for (Delta delta : layer) {
+//                    int colNode = col + delta.col;
+//                    int rowNode = row + delta.row;
+//                    List<OrderStat> node = orderMap.getNode(colNode, rowNode).getStatList();
+//                    if (node.size() > 0) {
+//                        for (OrderStat order : node) {
+//                            if (!order.isCancel() && order.getLockBy() == 0) {
+//
+//                                order.setLockBy(accId);
+//                                try {
+//                                    Thread.sleep(500);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                if (!order.isCancel() && order.getLockBy() == accId) {
+//                                    orderMap.removeOrder(order, colNode, rowNode);
+//                                    FROrder frOrder = order.getFrOrder();
+//                                    frOrder.setShipper(currentUser.getShipper());
+//                                    frOrder.setStatus(Fix.ORD_ASS.index);
+//                                    orderRepository.save(frOrder);
+//                                    notifyBuyer(gson, frOrder);
+//                                    notifyShipper(frOrder, shipperToken);
+//                                    MdlOrder mdlOrder = orderBuilder.buildFull(frOrder, orderDetailRepository);
+//                                    response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
+//                                    return response;
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -460,6 +493,61 @@ public class OrderService {
         }
     }
 
+    private String notifyBuyer(FROrder frOrder) {
+        Methods methods = new Methods();
+        JsonParser parser = new JsonParser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Your order has been taken by shipper " + frOrder.getShipper().getAccount().getName());
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+//        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+        data.addProperty("orderId", frOrder.getId());
+
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("restricted_package_name", "");
+
+        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
+    }
+
+
+    private String notifyShipper(FROrder frOrder, String shipperToken) {
+        Methods methods = new Methods();
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "You has taken order" + frOrder.getId());
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", shipperToken);
+        body.addProperty("restricted_package_name", "");
+
+        return methods.sendHttpRequest(Fix.FCM_URL, header, body);
+    }
+
     public Response<Integer> stopQueue() {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         shipperWait.setCancel(true);
@@ -469,71 +557,64 @@ public class OrderService {
     // Mobile Shipper - Order Matching - End
 
 
-    // Mobile Shipper - Order Checkout - Begin
-    public Response<String> checkout(Gson gson, Integer orderId, String face) {
+    // Mobile Shipper - Post Bill - Begin
+    public Response<String> postBill(Integer orderId, String bill) {
         Methods methods = new Methods();
         Repo repo = new Repo();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        frOrder.setBill(methods.base64ToBytes(bill));
+        frOrder.setStatus(Fix.ORD_BUY.index);
+        orderRepository.save(frOrder);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+    // Mobile Shipper - Post Bill - End
+
+
+    // Mobile Shipper - Order Checkout - Begin
+    public Response<MdlOrder> checkout(Gson gson, Integer orderId, byte[] faceBytes) {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-        // face to byte[]
-        byte[] faceBytes = methods.base64ToBytes(face);
         // test face here
-        String key = UUID.randomUUID().toString();
-        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
+        String key = frOrder.getId() + "" + methods.getTimeNow();
+        Map<String, String> faceResult = AppData.getFaceResult();
+        faceResult.remove(key);
+        faceRecognise(faceBytes, key);
 
-//        String key = UUID.randomUUID().toString();
-
-//        CommandPrompt commandPrompt = faceRecognise(faceBytes, key);
-
-//        String s = commandPrompt.getResult().get(commandPrompt.getResult().size() - 2);
+        while (faceResult.get(key) == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        String faceListStr = faceResult.get(key);
+        faceResult.remove(key);
         FRAccount buyer = frOrder.getAccount();
         List<FRPaymentInformation> informationList = paymentInfoRepo.findAllByAccount(buyer);
         FRPaymentInformation frPayInfo = informationList.get(0);
         String payUsername = frPayInfo.getUsername();
         String payPassword = frPayInfo.getPassword();
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
-        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
 
 
-        String rep=null;
-//        while ((rep = (String) session.getAttribute("faceTest")) == null) {
-//            try {
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-        while(AppData.faceReceive == null ){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        System.out.println("---------Get Result here-------"+ AppData.faceReceive.get(key));
-
-        rep = AppData.faceReceive.get(key);
-        System.out.println("--------------------------PayID-----------------");
-        String payId = handlingFaceResult(rep, gson, buyer, payUsername, payPassword, priceStr, description);
-
-        // remove face and key proccessed
-
-
-            AppData.faceReceive.remove(key);
-
-
-
+        String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-
             return response;
         } else {
             long time = methods.getTimeNow();
@@ -548,30 +629,42 @@ public class OrderService {
             frOrder.setBuyerFace(faceBytes);
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
+
+            double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
+            FRShipper frShipper = methods.getUser().getShipper();
+            frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
+            shipperRepo.save(frShipper);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
             return response;
         }
     }
 
+    // Receive HttpReq from Python
+    public String receiveFaceResult(String key, String faceListStr) {
+        AppData.getFaceResult().put(key, faceListStr);
+        return "ok";
+    }
+
     // Compare Member List with buyer
-    private String handlingFaceResult(String rep, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
+    private String handlingFaceResult(String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
-        rep = rep.replace("fps", "");
-        String[] strList = rep.split("|");
+        memListStr = memListStr.replace("fps", "");
+        String[] strList = memListStr.split("\\|");
+        int buyerId = buyer.getId();
         for (String idStr : strList) {
             int revMemId = Integer.parseInt(idStr);
             FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
             if (receiveMember != null) {
-                if (receiveMember.getAccount().getId() == buyer.getId()) {
-                    return callPaypal(gson, payUsername, payPassword, priceStr, description);
+                if (buyerId == receiveMember.getAccount().getId()) {
+                    return callEmulatorServer(gson, payUsername, payPassword, priceStr, description);
                 }
             }
         }
         return "fail";
     }
 
-    // Send HttpReq to Paypal Emulator
-    private String callPaypal(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
+    // Send HttpReq to PayPal Emulator
+    private String callEmulatorServer(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
         Methods methods = new Methods();
         URL url;
         HttpURLConnection urlConnection;
@@ -585,39 +678,28 @@ public class OrderService {
             urlConnection.setRequestMethod(method);
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
-            if (paramName.length > 0) {
-                String urlParameters = paramName[0] + "=" + paramValue[0];
-                for (int i = 1; i < paramName.length; i++) {
-                    urlParameters = urlParameters + "&" + paramName[i] + "=" + paramValue[i];
-                }
-                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.flush();
-                wr.close();
+
+            StringBuilder urlParameters = new StringBuilder(paramName[0] + "=" + paramValue[0]);
+            for (int i = 1; i < paramName.length; i++) {
+                urlParameters.append("&").append(paramName[i]).append("=").append(paramValue[i]);
             }
-            System.out.println("----------------------------Connect----------------");
+            DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+            wr.writeBytes(urlParameters.toString());
+            wr.flush();
+            wr.close();
 
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
-            System.out.println("----------------------------Response----------------"+ responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return "fail";
     }
 
-//     public String receiveFaceTestResult(String rep) {
-//
-// //        session.setAttribute("faceTest", rep);
-//         return rep;
-//     }
-
-    public CommandPrompt faceRecognise(byte[] faceBytes, String key) {
+    private CommandPrompt faceRecognise(byte[] faceBytes, String key) {
         Methods methods = new Methods();
         String folderName = Fix.TEST_FACE_FOLDER + "fpsTestFile";
         String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
@@ -631,12 +713,12 @@ public class OrderService {
         try {
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+
             commandPrompt = new CommandPrompt();
             String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
             commandPrompt.execute(cutAndRecenter);
-            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5 --key-gen "+key;
+            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5 --key-gen " + key;
             commandPrompt.execute(testFaceAI);
-//            System.out.println(commandPrompt);
             //delete folder generated by Python
             methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
         } catch (IOException e) {
@@ -649,6 +731,37 @@ public class OrderService {
             e.printStackTrace();
         }
         return commandPrompt;
+    }
+
+    public Response<String> testNotify(Gson gson, int orderId, String shipperToken) {
+        Methods methods = new Methods();
+        JsonParser parser = new JsonParser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = orderRepository.findById(orderId).orElse(null);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Your order has been taken by shipper Test");
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+        data.add("order", parser.parse(gson.toJson(orderBuilder.buildFull(frOrder, orderDetailRepository))).getAsJsonObject());
+
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", shipperToken);
+        body.addProperty("restricted_package_name", "");
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+        return response;
     }
     // Mobile Shipper - Order Checkout - End
 

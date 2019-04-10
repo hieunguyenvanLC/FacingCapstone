@@ -4,13 +4,14 @@ import capstone.fps.common.Fix;
 import capstone.fps.common.Methods;
 import capstone.fps.common.Repo;
 import capstone.fps.common.Validator;
-import capstone.fps.entity.*;
+import capstone.fps.entity.FRAccount;
+import capstone.fps.entity.FRDistrict;
+import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
 import capstone.fps.model.store.MdlStoreBuilder;
 import capstone.fps.model.store.StoreDis;
 import capstone.fps.repository.DistrictRepo;
-import capstone.fps.repository.OrderDetailRepo;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
 import org.springframework.stereotype.Controller;
@@ -156,7 +157,7 @@ public class StoreService {
     public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        double dis = 5 * Fix.DEGREE_PER_KM;
+        double dis = 15 * Fix.DEGREE_PER_KM;
         double minLon = longitude - dis;
         double maxLon = longitude + dis;
         double minLat = latitude - dis;

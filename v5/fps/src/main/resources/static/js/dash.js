@@ -1,5 +1,4 @@
 var barChartExample;
-// var reportTable = null;
 var uplBuyerFace = document.getElementById("uplBuyerFace");
 var imgBuyerFace = document.getElementById("imgBuyerFace");
 
@@ -57,33 +56,7 @@ $(document).ready(function () {
 
     btnCloseModal = document.getElementById("btnCloseModal");
     tblBodyDetail = document.getElementById("tblBodyDetail");
-//     // $('body').bootstrapMaterialDesign();
-//     var accountTable = $('#account-table').DataTable({
-//         "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-9'f<'filter-group status-group'><'filter-group active-group'>>>" +
-//             "<'row'<'col-sm-12'tr>>" +
-//             "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-//         fnInitComplete: function () {
-//             $('div.status-group').html('<label>Status\n' +
-//                 '<select class="form-control form-control-sm">\n' +
-//                 '  <option>Any</option>\n' +
-//                 '  <option>Delivered</option>\n' +
-//                 '  <option>Shipped</option>\n' +
-//                 '  <option>Pending</option>\n' +
-//                 '  <option>Cancelled</option>\n' +
-//                 '</select></label>');
-//
-//         }
-//     });
-//
-//     $('#account-table tbody').on('click', 'tr', function () {
-//         $(this).toggleClass('selected');
-//         $("#delete-sel").text("Delete (" + accountTable.rows('.selected').data().length + ")");
-//         $("#deactive-sel").text("Deactive (" + accountTable.rows('.selected').data().length + ")");
-//         $("#cancel-sel").text("Cancel (" + accountTable.rows('.selected').data().length + ")");
-//
-//     });
-//
-//     var orderDetailTable = $("#order-detail-table").DataTable({});
+
     function loadSummary() { //Load Summary
         $.ajax({
             url: "/any/api/report/summary?mon=7&year=2019",
@@ -294,7 +267,7 @@ $(document).ready(function () {
                 break;
         }
 
-        loadChart(reportType, chartType, null, null);
+        clearChart(); // reset chart
 
         dpkStart = $('#dpkStart').datepicker({
             uiLibrary: 'bootstrap4',
@@ -335,6 +308,15 @@ $(document).ready(function () {
             loadChart(reportType, chartType, startDate, endDate);
         }
     });
+
+    function clearChart() {
+        if (mainChart) {
+            // Clear chart
+            // mainChart.clearChart();
+            // Clear data table
+            loadReportTable(null, null, '', '');
+        }
+    }
 
     function drawChart(data, title, subtitle) {
         var options = {
@@ -388,21 +370,17 @@ $(document).ready(function () {
         return data;
     }
 
-    function processChartData(data) {
+    function processChartData(data) { // { labels, data[] } => [label, data1, data2, data 3, ...]
         var labels = data.labels;
         var data = data.data;
 
-        return data.map((row, idx) => {
+        return data.map(function (row, idx) {
             return [labels[idx]].concat(row);
         });
     }
 
     function loadChart(reportT, charT, start, end) {
         if (!start || !end) {
-            // barChartExample.data.labels = [];
-            // barChartExample.data.datasets = [];
-            // barChartExample.update();
-            // $("#chartName").text("");
             return;
         }
 
@@ -488,6 +466,7 @@ $(document).ready(function () {
                 }
 
                 drawChart(dataTable, charNameT, '');
+                loadReportTable(null, null, '', '');
             },
             error: function (err) {
                 console.log(err);
@@ -557,7 +536,7 @@ $(document).ready(function () {
         loadReportTable(startUnixT, endUnixT, status, labelOrderList);
     }
 
-    // var tblReport = null;
+    var tblMainReport = null;
     var drdTableCol = null;
     var drdTableColValue = null;
     var columnMap = {};
@@ -567,6 +546,9 @@ $(document).ready(function () {
 
     function loadReportTable(startUnixT, endUnixT, status, title) {
         if (!startUnixT || !endUnixT) {
+            if (tblMainReport) {
+                tblMainReport.clear().draw();
+            }
             return;
         }
 
@@ -590,13 +572,13 @@ $(document).ready(function () {
                 var list = orders;
                 // report-table
                 $("#report-table").DataTable().destroy();
-                var reportTable = $("#report-table").DataTable({
+                tblMainReport = $("#report-table").DataTable({
                     "dom": "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-5 char-filter daterange'><'col-sm-12 col-md-4'f>>" +
                         "<'row'<'col-sm-12'tr>>" +
                         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                     fnInitComplete: function () {
-                        $('div.daterange').html('Type: ' + '&ensp;' + '<select id="drdTableCol" width="130px"></select>' +
-                            'Value: ' + '&ensp;' + '<select id="drdTableColValue" width="300px"></select>');
+                        $('div.daterange').html('<label class="item-flex-auto">Type:</label><select class="item-flex-auto" id="drdTableCol" width="130px"></select>' +
+                            '<label class="item-flex-auto">Value:</label><select class="item-flex-fill" id="drdTableColValue" width="200px"></select>');
                         if (drdTableCol) {
                             drdTableCol.destroy();
                             drdTableCol = null;
@@ -630,7 +612,7 @@ $(document).ready(function () {
                                     change: function (e) {
                                         filterColVal = drdTableColValue.value();
                                         console.log(filterCol, filterColVal);
-                                        reportTable.draw();
+                                        tblMainReport.draw();
                                     }
                                 });
                             }
@@ -641,10 +623,10 @@ $(document).ready(function () {
                         });
                     }
                 });
-                reportTable.clear().draw();
+                tblMainReport.clear().draw();
                 for (var i = 0; i < list.length; i++) {
                     var order = list[i];
-                    reportTable.row.add([
+                    tblMainReport.row.add([
                         // '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
@@ -681,7 +663,9 @@ $(document).ready(function () {
                     val = (val ? moment.unix(val / 1000).format('DD/MM/YYYY') : '')
                 }
 
-                if (!map[key].find((item) => item.value === val)) {
+                if (!map[key].find(function (item) {
+                    return item.value === val
+                })) {
                     map[key].push({
                         value: val,
                         name: val
@@ -709,66 +693,7 @@ $(document).ready(function () {
             return true;
         }
     );
-
-    // Xy ly pending
-    $('#lbPenLess').click(function () {
-        var now = moment();
-        var low = now.clone().subtract(12, 'hours').unix() * 1000;
-        var up = now.unix() * 1000;
-        loadPendingOrders(low, up);
-    });
-    $('#lbPenEqual').click(function () {
-        var now = moment();
-        var low = now.clone().subtract(24, 'hours').unix() * 1000;
-        var up = now.clone().subtract(12, 'hours').unix() * 1000;
-        loadPendingOrders(low, up);
-    });
-    $('#lbPenMore').click(function () {
-        var now = moment();
-        var low = 0;
-        var up = now.clone().subtract(24, 'hours').unix() * 1000;
-        loadPendingOrders(low, up);
-    });
-    // low: chan duoi, up: chan tren
-    // current local time: now
-    // [now - 12, now)
-    // [now - 24, now - 12]
-    // [0, now - 24)
-    // function loadPendingOrders(low, up) {
-    //     $("#lbOrderList").text("List of pending order");
-    //
-    //     $.ajax({
-    //         url: "/any/api/report/orderlist?status=1&start=" + low + "&end=" + up,
-    //         type: "GET",
-    //         dataType: "json",
-    //         success: function (response) {
-    //             var orders = response.data;
-    //             orderList = orders;
-    //
-    //             // report-table
-    //             $("#report-table").DataTable().destroy();
-    //             var reportTable = $("#report-table").DataTable();
-    //             reportTable.clear().draw();
-    //             for (var i = 0; i < orderList.length; i++) {
-    //                 var order = orderList[i];
-    //                 reportTable.row.add([
-    //                     '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
-    //                     '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
-    //                     '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
-    //
-    //                     '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.totalPrice + '</span>',
-    //                     '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.status + '</span>',
-    //                     fpsGetStatMsg(ORD_STAT_LIST, order.status)
-    //                 ]).draw();
-    //             }
-    //         },
-    //         error: function (err) {
-    //             console.log(err);
-    //         }
-    //     });
-    // }
 });
-
 
 function abbrNum(number) {
     decPlaces = 3;

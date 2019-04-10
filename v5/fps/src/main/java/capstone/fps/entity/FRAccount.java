@@ -43,7 +43,7 @@ public class FRAccount implements UserDetails {
     @Column(name = "national_id_created_date")
     private Long natDate;
     @Column(name = "date_of_birth")
-    private Long dateOfBirth;
+    private Long dob;
     @Column(name = "create_time")
     private Long createTime;
     @Column(name = "update_time")
@@ -204,12 +204,12 @@ public class FRAccount implements UserDetails {
         this.natDate = nationalIdCreatedDate;
     }
 
-    public Long getDateOfBirth() {
-        return dateOfBirth;
+    public Long getDob() {
+        return dob;
     }
 
-    public void setDateOfBirth(Long dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDob(Long dateOfBirth) {
+        this.dob = dateOfBirth;
     }
 
     public Long getCreateTime() {

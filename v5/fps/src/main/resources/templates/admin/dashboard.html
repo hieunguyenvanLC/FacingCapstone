@@ -15,22 +15,19 @@
     <!-- Page Header-->
     <header class="page-header">
         <div class="container-fluid">
-            <h2 class="no-margin-bottom" style="font-size: 40px; font-family:Consolas; color: #000000">Report and Statictis</h2>
+            <h2 class="no-margin-bottom" style="font-size: 40px; font-family:Consolas; color: #000000">Report and
+                Statictis</h2>
         </div>
     </header>
     <!-- Dashboard Counts Section-->
     <section class="dashboard-counts no-padding-bottom">
         <div class="container-fluid" id="accordion">
-
             <!--<div class="row bg-white has-shadow" id="headingOne" style="margin-left: -15px; margin-right: -15px">-->
             <!--<button class="btn btn-link " data-toggle="collapse" data-target="#collapseOne"-->
             <!--aria-expanded="false" aria-controls="collapseOne" style="margin: 0 auto; font-size: 30px;">-->
             <!--<p>Shipper <sub> and </sub> Customer</p>-->
             <!--</button>-->
-
-            <!--</div>-->
-
-            <div class="row bg-white has-shadow" style="margin-left: -15px; margin-right: -15px">
+            <div class="row bg-white has-shadow" style="margin-left: -15px; margin-right: -15px; margin-bottom: 15px">
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
                     <!--<div class="item d-flex align-items-center">-->
@@ -42,245 +39,350 @@
                     <!--</div>-->
                     <!--<div class="number" id="lbActivedShipper"><strong>0</strong></div>-->
                     <!--</div>-->
-                    <div class="item d-flex align-items-center">
-                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Actived<br>Shippers</span>
-                            </strong>
-                        </div>
-
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbActivedShipper"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbActivedShipperTDay"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbActivedShipperTWeek"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbActivedShipperTMonth"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-
-                        </div>
-                        <!--<div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>-->
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Actived Shippers</span>
+                        </strong>
                     </div>
+
+                    <div class="item d-flex align-items-center row">
+                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text  col-6" id="lbActivedShipper" style="color: #009cd4">
+                                    <strong>0</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbActivedShipperTDay"
+                                     style="color: #009cd4">
+                                    <strong>0</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbActivedShipperTWeek"
+                                     style="color: #009cd4">
+                                    <strong>0</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbActivedShipperTMonth"
+                                     style="color: #009cd4">
+                                    <strong>0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>-->
+
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
-
-                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Customer<br>Registration</span>
-                            </strong>
-                        </div>
-
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbNewCus" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbNewCusTDay" style="color: #009cd4">
-                                <strong>0</strong></div>
-
-                            This Week:
-                            <div class="number filter-sm-text" id="lbNewCusTWeek"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbNewCusTMonth"
-                                 style="color: #009cd4">
-                                <strong>0</strong></div>
-                        </div>
-                        <!--<div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>-->
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Customer Registration</span>
+                        </strong>
                     </div>
+
+                    <div class="item d-flex align-items-center row">
+                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewCus" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewCusTDay" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewCusTWeek"
+                                     style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewCusTMonth"
+                                     style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>-->
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Store Partners</span>
+                        </strong>
+                    </div>
+
+                    <div class="item d-flex align-items-center row">
                         <!--<div class="icon bg-green"><i class="icon-bill"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Store<br>Partners</span>
-                            </strong>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewStores" style="color: #009cd4">
+                                    <strong class="fixFontsize">0</strong></div>
+                            </div>
                         </div>
-                        <div class="fixx" style="width: 50%">
-                            All :
-                            <div class="number filter-sm-text" id="lbNewStores" style="color: #009cd4">
-                                <strong class="fixFontsize">0</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbNewStoresTDay" style="color: #009cd4">
-                                <strong class="fixFontsize">0</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbNewStoresTWeek" style="color: #009cd4">
-                                <strong class="fixFontsize">0</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbNewStoresTMonth" style="color: #009cd4">
-                                <strong class="fixFontsize">0</strong></div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewStoresTDay" style="color: #009cd4">
+                                    <strong class="fixFontsize">0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewStoresTWeek" style="color: #009cd4">
+                                    <strong class="fixFontsize">0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewStoresTMonth" style="color: #009cd4">
+                                    <strong class="fixFontsize">0</strong></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Orders Created</span>
+                        </strong>
+                    </div>
+                    <div class="item d-flex align-items-center row">
                         <!--<div class="icon bg-orange"><i class="icon-check"></i></div>-->
-                        <!--<div class="title"><span>All Orders<br></span>-->
-                        <!--&lt;!&ndash;<div class="progress">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div role="progressbar" style="width: 50%; height: 4px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-orange"></div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--</div>-->
-
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Orders<br>Created</span>
-                            </strong>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewOrder" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
                         </div>
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbNewOrder" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbNewOrderTDay" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbNewOrderTWeek" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbNewOrderTMonth" style="color: #009cd4">
-                                <strong>0</strong></div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewOrderTDay" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewOrderTWeek" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbNewOrderTMonth" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </br>
-
 
             <div class="row bg-white has-shadow" style="margin-left: -15px; margin-right: -15px">
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
-                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Ratio<br>(Success)</span>
-                            </strong>
-                        </div>
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Ratio (Success)</span>
+                        </strong>
+                    </div>
 
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbSuccessRate" style="color: #009cd4">
-                                <strong>0%</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbSuccessRateD" style="color: #009cd4">
-                                <strong>0%</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbSuccessRateW" style="color: #009cd4">
-                                <strong>0%</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbSuccessRateM" style="color: #009cd4">
-                                <strong>0%</strong></div>
+                    <div class="item d-flex align-items-center row">
+                        <!--<div class="icon bg-warning"><i class="icon-user"></i></div>-->
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSuccessRate" style="color: #009cd4">
+                                    <strong>0%</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSuccessRateD" style="color: #009cd4">
+                                    <strong>0%</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSuccessRateW" style="color: #009cd4">
+                                    <strong>0%</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSuccessRateM" style="color: #009cd4">
+                                    <strong>0%</strong></div>
+                            </div>
                         </div>
                         <!--<div class="number filter-sm-text" id="lbSuccessRate"><strong>0%</strong></div>-->
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Sold Products</span>
+                        </strong>
+                    </div>
+                    <div class="item d-flex align-items-center row">
                         <!--<div class="icon bg-orange"><i class="icon-check"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Sold<br/>Products</span>
-                            </strong>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSoldProduct" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
                         </div>
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbSoldProduct" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbSoldProductD" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbSoldProductW" style="color: #009cd4">
-                                <strong>0</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbSoldProductM" style="color: #009cd4">
-                                <strong>0</strong></div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSoldProductD" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
                         </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSoldProductW" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbSoldProductM" style="color: #009cd4">
+                                    <strong>0</strong></div>
+                            </div>
+                        </div>
+
                         <!--<div class="number filter-sm-text" id="lbSoldProduct"><strong>0</strong></div>-->
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Revenue<br/>Amount</span>
-                            </strong>
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Revenue Amount</span>
+                        </strong>
+                    </div>
+                    <div class="item d-flex align-items-center row">
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbTotalAmount" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
                         </div>
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbTotalAmount" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbTotalAmountD" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbTotalAmountW" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbTotalAmountM" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbTotalAmountD" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbTotalAmountW" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbTotalAmountM" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
                         </div>
                         <!--<div class="number filter-sm-text" id="lbTotalAmount"><strong>0 VND</strong></div>-->
                     </div>
                 </div>
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6">
-                    <div class="item d-flex align-items-center">
+                    <div class="title">
+                        <strong style="font-size: 20px; color: black">
+                            <span style="font-family: Lucida Sans Unicode">Paid Shipper Amount</span>
+                        </strong>
+                    </div>
+                    <div class="item d-flex align-items-center row">
                         <!--<div class="icon bg-green"><i class="icon-bill"></i></div>-->
-                        <div class="title">
-                            <strong style="font-size: 20px; color: black">
-                                <span style="font-family: Lucida Sans Unicode">Paid Shipper<br/>Amount</span>
-                            </strong>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>All</span></div>
+                                <div class="number filter-sm-text col-6" id="lbPaidShipper" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
                         </div>
-                        <div style="width: 60%">
-                            All :
-                            <div class="number filter-sm-text" id="lbPaidShipper" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            Today:
-                            <div class="number filter-sm-text" id="lbPaidShipperD" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            This Week:
-                            <div class="number filter-sm-text" id="lbPaidShipperW" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
-                            This Month:
-                            <div class="number filter-sm-text" id="lbPaidShipperM" style="color: #009cd4">
-                                <strong>0
-                                    VND</strong></div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>Today</span></div>
+                                <div class="number filter-sm-text col-6" id="lbPaidShipperD" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Week</span></div>
+                                <div class="number filter-sm-text col-6" id="lbPaidShipperW" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding">
+                            <div class="row no-padding">
+                                <div class="col-6 no-padding"><span>This Month</span></div>
+                                <div class="number filter-sm-text col-6" id="lbPaidShipperM" style="color: #009cd4">
+                                    <strong>0
+                                        VND</strong></div>
+                            </div>
                         </div>
                         <!--<div class="number filter-sm-text" id="lbPaidShipper"><strong>0 VND</strong></div>-->
                     </div>
                 </div>
             </div>
-
-            </br>
-
-
         </div>
     </section>
     <!-- Dashboard Header Section    -->
@@ -290,13 +392,11 @@
             <!--<div class="row"></div>-->
 
             <div class="row bg-white has-shadow">
-                <div class="item col-12">
-
-
+                <div class="item col-12" style="padding-top: 15px;">
                     <div class="row" style="margin: 0px">
                         <div class="chart col-lg-3 col-12">
-                            <label>Type:</label>
-                            <select id="selReportType" width="220px">
+                            <label class="float-left">Type:</label>
+                            <select class="float-right" id="selReportType" width="220px">
                                 <option value="order">Order</option>
                                 <option value="productSld">Product Sold</option>
                                 <option value="rateScc">Rate Successfull</option>
@@ -305,8 +405,8 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="chart col-lg-2 col-12">
-                            <label>Date:</label>
-                            <select id="selChartType" width="120px">
+                            <label class="float-left">Date:</label>
+                            <select class="float-right" id="selChartType" width="120px">
                                 <option value="0">Day</option>
                                 <option value="1">Week</option>
                                 <option value="2">Month</option>
