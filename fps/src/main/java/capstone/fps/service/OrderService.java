@@ -232,9 +232,9 @@ public class OrderService {
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
         if (buyerFace != null) {
-            return checkout(gson, orderId, methods.multipartToBytes(buyerFace));
+            checkout(gson, orderId, methods.multipartToBytes(buyerFace));
         }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(orderRepository.getOne(orderId), orderDetailRepository));
         return response;
     }
     // Web Admin - Order - Begin
