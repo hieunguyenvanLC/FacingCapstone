@@ -156,7 +156,7 @@ public class OrderController extends AbstractController {
     // Mobile Shipper - Checkout - Begin
     @PutMapping(Fix.MAP_ANY + API + "/checkout")
     public String checkout(Integer orderId, String face) {
-        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             Methods methods = new Methods();
             byte[] faceBytes = methods.base64ToBytes(face);

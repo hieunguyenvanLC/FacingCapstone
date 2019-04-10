@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -232,9 +233,9 @@ public class OrderService {
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
         if (buyerFace != null) {
-            checkout(gson, orderId, methods.multipartToBytes(buyerFace));
+            return checkout(gson, orderId, methods.multipartToBytes(buyerFace));
         }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(orderRepository.getOne(orderId), orderDetailRepository));
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
     // Web Admin - Order - Begin
@@ -277,14 +278,13 @@ public class OrderService {
             detailList.add(new MdlDetailCreate(frProduct, quantity));
             totalPrice += frProduct.getPrice() * quantity;
         }
-
         FROrder frOrder = new FROrder();
 
         frOrder.setAccount(currentUser);
         frOrder.setShipper(null);
         frOrder.setBuyerFace(null);
         frOrder.setBill(null);
-        frOrder.setOrderCode(null);
+        frOrder.setOrderCode(new BigInteger(currentUser.getId() + "A" + time, 11).toString(36).toUpperCase());
         frOrder.setTotalPrice(totalPrice);
         frOrder.setBuyTime(time);
         frOrder.setReceiveTime(null);
@@ -431,7 +431,7 @@ public class OrderService {
                                     frOrder.setPriceLevel(currentUser.getShipper().getPriceLevel().getPrice());
                                     orderRepository.save(frOrder);
                                     notifyBuyer(frOrder);
-//                                    notifyShipper(frOrder, shipperToken);
+                                    notifyShipper(frOrder, shipperToken);
                                     MdlOrder mdlOrder = orderBuilder.buildDetailShp(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
@@ -580,6 +580,7 @@ public class OrderService {
     public Response<MdlOrder> checkout(Gson gson, Integer orderId, byte[] faceBytes) {
         Methods methods = new Methods();
         Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         FROrder frOrder = repo.getOrder(orderId, orderRepository);
@@ -634,7 +635,7 @@ public class OrderService {
             FRShipper frShipper = methods.getUser().getShipper();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
             shipperRepo.save(frShipper);
-            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
     }
