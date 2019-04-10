@@ -776,7 +776,7 @@ function loadEditForm() {
     txtBuyerPhone.value = orderEdit.buyerPhone;
     txtShipperName.value = orderEdit.shipperName;
     txtShipperPhone.value = orderEdit.shipperPhone;
-    cbbStatus.value = orderEdit.status;
+    cbbStatus.value = changeStatus(orderEdit.status);
 
     txtLatitude.value = orderEdit.latitude;
     txtLongitude.value = orderEdit.longitude;
@@ -856,6 +856,24 @@ function fpsSetImgSrc(img, srcStr) {
     }
 }
 
+function changeStatus(status) {
+    if (status == 1) {
+        status = "New";
+    }
+    if (status == 2) {
+        status = "Assigned";
+    }
+    if (status == 3) {
+        status = "Bought";
+    }
+    if (status == 4) {
+        status = "Done";
+    }
+    if (status == 5) {
+        status = "Canceled";
+    }
+    return status;
+}
 
 function fpsSetImgFromInput(img, input) {
     var url = input.value;

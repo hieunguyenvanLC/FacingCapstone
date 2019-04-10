@@ -452,7 +452,7 @@
                                 <th>Buyer Name</th>
                                 <th>Shipper Phone</th>
                                 <th>Shipper Name</th>
-                                <th>Store</th>
+                                <th>Store Name</th>
                                 <th>Total Price</th>
                                 <th>Create Time</th>
                                 <th>Status</th>
@@ -477,8 +477,7 @@
                              aria-labelledby="exampleModalLabel"
                              aria-hidden="true" class="modal fade text-left">
                             <div role="document" class="modal-dialog">
-                                <div class="modal-content">
-
+                                <div class="modal-content" style="max-width: 1000px">
                                     <div class="modal-header">
                                         <h4 id="exampleModalLabelStore" class="modal-title"></h4>
                                         <button type="button" data-dismiss="modal" aria-label="Close"
@@ -490,37 +489,37 @@
                                         <div class="row row-eq-height no-padding">
                                             <div class="col-4  padding-0">
                                                 <label>Customer Face</label>
-                                                <div class="input-group">
-                                                    <!--<div class="input-group-prepend">-->
-                                                    <!--<span class="input-group-text"-->
-                                                    <!--id="inputGroupFileAddon01">Upload</span>-->
-                                                    <!--</div>-->
-                                                    <div class="custom-file">
-                                                        <input type="file" class="custom-file-input"
-                                                               id="uplBuyerFace"
-                                                               onchange="uplStoreThumbOnChange()">
-                                                        <label class="custom-file-label" for="uplBuyerFace"
-                                                               style="border-radius: 0">Choose file</label>
-                                                    </div>
+
+                                                <!--<div class="input-group-prepend">-->
+                                                <!--<span class="input-group-text"-->
+                                                <!--id="inputGroupFileAddon01">Upload</span>-->
+                                                <!--</div>-->
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input"
+                                                           id="uplBuyerFace"
+                                                           onchange="uplStoreThumbOnChange()">
+                                                    <label class="custom-file-label" for="uplBuyerFace"
+                                                           style="border-radius: 0">Choose file</label>
                                                 </div>
+
                                                 <img id="imgBuyerFace" src="" alt="Buyer">
                                             </div>
 
                                             <div class="col-4 padding-0">
                                                 <label>Bill</label>
-                                                <div class="input-group">
-                                                    <!--<div class="input-group-prepend">-->
-                                                    <!--<span class="input-group-text"-->
-                                                    <!--id="inputGroupFileAddon02">Upload</span>-->
-                                                    <!--</div>-->
-                                                    <div class="custom-file">
-                                                        <input type="file" class="custom-file-input"
-                                                               id="uplBill"
-                                                               onchange="uplStoreThumbOnChange()">
-                                                        <label class="custom-file-label" for="uplBill"
-                                                               style="border-radius: 0">Choose file</label>
-                                                    </div>
+
+                                                <!--<div class="input-group-prepend">-->
+                                                <!--<span class="input-group-text"-->
+                                                <!--id="inputGroupFileAddon02">Upload</span>-->
+                                                <!--</div>-->
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input"
+                                                           id="uplBill"
+                                                           onchange="uplStoreThumbOnChange()">
+                                                    <label class="custom-file-label" for="uplBill"
+                                                           style="border-radius: 0">Choose file</label>
                                                 </div>
+
                                                 <img id="imgBill" src="" alt="Bill" style="width: 100%;">
                                             </div>
 
@@ -529,37 +528,40 @@
                                                 <div class="form-group">
                                                     <label>Order ID</label>
                                                     <input type="text" placeholder="Id" class="form-control"
-                                                           id="txtOrderId">
+                                                           id="txtOrderId" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Buyer Phone</label>
                                                     <input type="text" placeholder="Buyer Phone"
                                                            class="form-control"
-                                                           id="txtBuyerPhone">
+                                                           id="txtBuyerPhone" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Buyer Name</label>
                                                     <input type="text" placeholder="Buyer Name"
                                                            class="form-control"
-                                                           id="txtBuyerName">
+                                                           id="txtBuyerName" readonly="true">
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Shipper Phone</label>
                                                     <input type="text" placeholder="Shipper Phone"
                                                            class="form-control"
-                                                           id="txtShipperPhone">
+                                                           id="txtShipperPhone" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Shipper Name</label>
                                                     <input type="text" placeholder="Shipper Name"
                                                            class="form-control"
-                                                           id="txtShipperName">
+                                                           id="txtShipperName" readonly="true">
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="cbbStatus">Status</label>
-                                                    <select class="form-control" id="cbbStatus"></select>
+                                                    <input type="text" placeholder="Not Found"
+                                                           class="form-control"
+                                                           id="cbbStatus" readonly="true">
+                                                    <!--<select class="form-control" id="cbbStatus"></select>-->
                                                 </div>
 
                                             </div>
@@ -576,13 +578,13 @@
                                                     <label>Longitude</label>
                                                     <input type="text" placeholder="Longitude"
                                                            class="form-control"
-                                                           id="txtLongitude">
+                                                           id="txtLongitude" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Latitude</label>
                                                     <input type="text" placeholder="Latitude"
                                                            class="form-control"
-                                                           id="txtLatitude">
+                                                           id="txtLatitude" readonly="true">
                                                 </div>
 
                                             </div>
@@ -591,13 +593,13 @@
                                                     <label>Total Price</label>
                                                     <input type="text" placeholder="Total Price"
                                                            class="form-control"
-                                                           id="txtTotalPrice">
+                                                           id="txtTotalPrice" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Shipper Earn</label>
                                                     <input type="text" placeholder="Shipper Earn"
                                                            class="form-control"
-                                                           id="txtShipperEarn">
+                                                           id="txtShipperEarn" readonly="true">
                                                 </div>
                                             </div>
                                             <div class="col-4 padding-0">
@@ -605,13 +607,13 @@
                                                     <label>Store Name</label>
                                                     <input type="text" placeholder="Store Name"
                                                            class="form-control"
-                                                           id="txtStoreName">
+                                                           id="txtStoreName" readonly="true">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Customer Description</label>
                                                     <input type="text" placeholder="Customer Description"
                                                            class="form-control"
-                                                           id="txtCustomerDescription">
+                                                           id="txtCustomerDescription" readonly="true">
                                                 </div>
                                                 <!--<div class="form-group">-->
                                                 <!--<label>Note</label>-->
@@ -626,7 +628,7 @@
                                                     <label>Create Time</label>
                                                     <input type="text" placeholder="Create time"
                                                            class="form-control"
-                                                           id="txtCreateTime">
+                                                           id="txtCreateTime" readonly="true">
                                                 </div>
                                             </div>
                                             <div class="col-4 padding-0">
@@ -634,7 +636,7 @@
                                                     <label>Receive Time</label>
                                                     <input type="text" placeholder="Receive time"
                                                            class="form-control"
-                                                           id="txtReceiveTime">
+                                                           id="txtReceiveTime" readonly="true">
                                                 </div>
 
                                             </div>
@@ -644,7 +646,7 @@
                                                 <div class="form-group">
                                                     <label>Note</label>
                                                     <textarea type="text" placeholder="Note" class="form-control"
-                                                              id="txtNote"></textarea>
+                                                              id="txtNote" readonly="true"></textarea>
                                                 </div>
                                             </div>
                                         </div>
