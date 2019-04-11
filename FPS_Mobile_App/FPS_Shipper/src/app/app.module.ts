@@ -25,6 +25,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http/ngx';
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
+import { StorageApiService } from './services/storage-api.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,6 +47,7 @@ import { GoogleMaps } from '@ionic-native/google-maps/ngx';
     AccountService,
     OrderService,
     LoadingService,
+    StorageApiService,
     HTTP,
     Camera,
     Geolocation,

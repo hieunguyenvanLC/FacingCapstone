@@ -53,4 +53,7 @@ export class AccountService {
                                    "/detail");
   }
 
+  logOut(){
+    return this.apiHttpService.get(this.constant.LOGOUT);
+  }
 }
