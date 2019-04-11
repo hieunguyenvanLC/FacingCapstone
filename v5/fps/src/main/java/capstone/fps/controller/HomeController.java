@@ -40,7 +40,6 @@ public class HomeController extends AbstractController {
         int nowWeek = now.get(Calendar.WEEK_OF_YEAR);
         long startTodayUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         long startTWeekUnix = this.weekToUnix(now.get(Calendar.YEAR), nowWeek);
-        ;
         long startTMonthUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, 1, 0, 0, 0);
         //Shipper
         summary.setShipperCount(this.homeService.countShipper()); //Count All Shipper
@@ -979,6 +978,47 @@ public class HomeController extends AbstractController {
     private Calendar unixToCalendar(Long timestamp) {
         Date date = new Date(timestamp); // neu start la milisec thi khong can nhan 1000
         Calendar calendar = Calendar.getInstance();
+//        Calendar calendar=new Calendar() {
+//            @Override
+//            protected void computeTime() {
+//
+//            }
+//
+//            @Override
+//            protected void computeFields() {
+//
+//            }
+//
+//            @Override
+//            public void add(int field, int amount) {
+//
+//            }
+//
+//            @Override
+//            public void roll(int field, boolean up) {
+//
+//            }
+//
+//            @Override
+//            public int getMinimum(int field) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getMaximum(int field) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getGreatestMinimum(int field) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getLeastMaximum(int field) {
+//                return 0;
+//            }
+//        }
         calendar.setTime(date);
 
         return calendar;

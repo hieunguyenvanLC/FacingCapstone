@@ -1,30 +1,3 @@
-var barChartExample;
-var uplBuyerFace = document.getElementById("uplBuyerFace");
-var imgBuyerFace = document.getElementById("imgBuyerFace");
-
-var uplBill = document.getElementById("uplBill");
-var imgBill = document.getElementById("imgBill");
-
-var txtOrderId = document.getElementById("txtOrderId");
-var txtBuyerName = document.getElementById("txtBuyerName");
-var txtBuyerPhone = document.getElementById("txtBuyerPhone");
-var txtShipperName = document.getElementById("txtShipperName");
-var txtShipperPhone = document.getElementById("txtShipperPhone");
-var cbbStatus = document.getElementById("cbbStatus");
-
-var txtLatitude = document.getElementById("txtLatitude");
-var txtLongitude = document.getElementById("txtLongitude");
-
-var txtTotalPrice = document.getElementById("txtTotalPrice");
-var txtShipperEarn = document.getElementById("txtShipperEarn");
-
-var txtStoreName = document.getElementById("txtStoreName");
-var txtCustomerDescription = document.getElementById("txtCustomerDescription");
-var txtNote = document.getElementById("txtNote");
-
-var btnCloseModal = document.getElementById("btnCloseModal");
-var tblBodyDetail = document.getElementById("tblBodyDetail");
-////
 var orderList;
 var orderEdit;
 var orderEditPos;
@@ -785,6 +758,7 @@ function loadEditForm() {
     txtShipperEarn.value = orderEdit.shipperEarn;
 
     txtStoreName.value = orderEdit.storeName;
+    txtStoreAddress.value = orderEdit.storeAddress;
     txtCustomerDescription.value = orderEdit.customerDescription;
 
     $("#txtCreateTime").val(orderEdit.createTime ? moment.unix(orderEdit.createTime / 1000).format('DD/MM/YYYY') : '');
