@@ -2,7 +2,10 @@ package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
 import capstone.fps.model.Response;
-import capstone.fps.model.home.*;
+//import capstone.fps.model.home.*;
+import capstone.fps.model.home.MdlChartData;
+import capstone.fps.model.home.MdlReportSummary;
+import capstone.fps.model.home.MdlReportSummaryDetail;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.HomeService;
 import capstone.fps.service.OrderService;
@@ -12,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
@@ -38,9 +38,12 @@ public class HomeController extends AbstractController {
         long endUnix = System.currentTimeMillis();
         Calendar now = unixToCalendar(endUnix);
         int nowWeek = now.get(Calendar.WEEK_OF_YEAR);
-        long startTodayUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+//        long startTodayUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        long startTodayUnix = this.dayToUnix();
         long startTWeekUnix = this.weekToUnix(now.get(Calendar.YEAR), nowWeek);
-        long startTMonthUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, 1, 0, 0, 0);
+//        long startTMonthUnix = this.dateToUnix(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, 1, 0, 0, 0);
+        long startTMonthUnix = this.MonthToUnix();
+
         //Shipper
         summary.setShipperCount(this.homeService.countShipper()); //Count All Shipper
         summary.setShipperCountTDay(this.homeService.countShipper(startTodayUnix, endUnix));
@@ -308,7 +311,6 @@ public class HomeController extends AbstractController {
             if (days <= 31) {
                 Calendar dateIdx = (Calendar) startCal.clone();
                 for (; dateIdx.compareTo(endCal) <= 0; dateIdx.add(Calendar.DAY_OF_MONTH, 1)) {
-
                     long startUnix = dateIdx.getTimeInMillis();
                     Calendar tempEnd = (Calendar) dateIdx.clone();
                     tempEnd.add(Calendar.DAY_OF_MONTH, 1);
@@ -940,24 +942,23 @@ public class HomeController extends AbstractController {
     }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
-        if (month > 12) {
-            month = 1;
-            year++;
-        }
-
-        YearMonth yearMonthObject = YearMonth.of(year, month);
-        Integer daysInMonth = yearMonthObject.lengthOfMonth();
-
-        if (days > daysInMonth) {
-            days = 1;
-            if (month == 12) {
-                month = 1;
-                year++;
-            } else {
-                month++;
-            }
-        }
-
+//        if (month > 12) {
+//            month = 1;
+//            year++;
+//        }
+//
+//        YearMonth yearMonthObject = YearMonth.of(year, month);
+//        Integer daysInMonth = yearMonthObject.lengthOfMonth();
+//
+//        if (days > daysInMonth) {
+//            days = 1;
+//            if (month == 12) {
+//                month = 1;
+//                year++;
+//            } else {
+//                month++;
+//            }
+//        }
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);
         return dateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }
@@ -973,6 +974,27 @@ public class HomeController extends AbstractController {
                 .withSecond(0)
                 .withNano(0);
         return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    private long dayToUnix() {
+        LocalDateTime ldt = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        System.out.println("Day" + ldt.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+        return ldt.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
+    }
+
+    private long MonthToUnix() {
+        LocalDateTime ldt1 = LocalDateTime.now()
+                .withDayOfMonth(1)
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        System.out.println("Month" + ldt1.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+        return ldt1.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }
 
     private Calendar unixToCalendar(Long timestamp) {
