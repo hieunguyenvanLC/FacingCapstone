@@ -40,9 +40,16 @@ public class FRShipper implements Serializable {
     @ManyToOne
     @JoinColumn(name = "FR_Price_Level_id")
     private FRPriceLevel priceLevel;
+    @Column(name = "rating")
+    private Double rating;
+    @Column(name = "rating_count")
+    private Integer ratingCount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
     private Collection<FROrder> orderCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
+    private Collection<FRRating> ratingCollection;
+
 
     public FRShipper() {
     }
@@ -141,5 +148,21 @@ public class FRShipper implements Serializable {
 
     public void setPriceLevel(FRPriceLevel priceLevel) {
         this.priceLevel = priceLevel;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }

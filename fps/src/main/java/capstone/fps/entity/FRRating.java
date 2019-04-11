@@ -15,13 +15,10 @@ public class FRRating {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "FR_Account_id")
-    private FRAccount account;
+    private FRAccount customer;
     @ManyToOne
-    @JoinColumn(name = "FR_Store_id")
-    private FRStore store;
-    @ManyToOne
-    @JoinColumn(name = "FR_Product_id")
-    private FRProduct product;
+    @JoinColumn(name = "FR_Shipper_id")
+    private FRShipper shipper;
     @Column(name = "rating")
     private Integer rating;
 
@@ -36,28 +33,20 @@ public class FRRating {
         this.id = id;
     }
 
-    public FRAccount getAccount() {
-        return account;
+    public FRAccount getCustomer() {
+        return customer;
     }
 
-    public void setAccount(FRAccount account) {
-        this.account = account;
+    public void setCustomer(FRAccount customer) {
+        this.customer = customer;
     }
 
-    public FRStore getStore() {
-        return store;
+    public FRShipper getShipper() {
+        return shipper;
     }
 
-    public void setStore(FRStore store) {
-        this.store = store;
-    }
-
-    public FRProduct getProduct() {
-        return product;
-    }
-
-    public void setProduct(FRProduct product) {
-        this.product = product;
+    public void setShipper(FRShipper shipper) {
+        this.shipper = shipper;
     }
 
     public Integer getRating() {

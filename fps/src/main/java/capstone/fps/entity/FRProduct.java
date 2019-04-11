@@ -27,10 +27,6 @@ public class FRProduct {
     private Double price;
     @Column(name = "description", length = 300)
     private String description;
-    @Column(name = "rating")
-    private Double rating;
-    @Column(name = "rating_count")
-    private Integer ratingCount;
     @Column(name = "create_time")
     private Long createTime;
     @Column(name = "update_time")
@@ -97,22 +93,6 @@ public class FRProduct {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public Integer getRatingCount() {
-        return ratingCount;
-    }
-
-    public void setRatingCount(Integer ratingCount) {
-        this.ratingCount = ratingCount;
     }
 
     public Long getCreateTime() {

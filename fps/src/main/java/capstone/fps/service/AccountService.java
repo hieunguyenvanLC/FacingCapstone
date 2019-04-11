@@ -368,11 +368,13 @@ public class AccountService {
         frShipper.setIntroduce(valid.nullProof(introduce));
         frShipper.setNatIdFrontImage(methods.multipartToBytes(natFront));
         frShipper.setNatIdBackImage(methods.multipartToBytes(natBack));
-        frShipper.setSumRevenue(0D);
+        frShipper.setSumRevenue(0d);
         frShipper.setBikeRegFront(methods.multipartToBytes(bikeRegFront));
         frShipper.setBikeRegBack(methods.multipartToBytes(bikeRegBack));
         frShipper.setPriceLevel(frPriceLevel);
         frShipper.setSource(frSource);
+        frShipper.setRating(0d);
+        frShipper.setRatingCount(0);
         shipperRepo.save(frShipper);
 
         MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo), shipperRepo.findById(frShipper.getId()).orElse(null));

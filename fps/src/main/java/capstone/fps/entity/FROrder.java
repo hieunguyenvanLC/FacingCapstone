@@ -38,9 +38,6 @@ public class FROrder {
     private Double priceLevel;
     @Column(name = "ship_address", length = 300)
     private String shipAddress;
-    @ManyToOne
-    @JoinColumn(name = "FR_District_id")
-    private FRDistrict district;
     @Column(name = "longitude")
     private Double longitude;
     @Column(name = "latitude")
@@ -62,6 +59,8 @@ public class FROrder {
     private FRAccount editor;
     @Column(name = "buyer_token", length = 300)
     private String buyerToken;
+    @Column(name = "shipper_token", length = 300)
+    private String shipperToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
@@ -139,14 +138,6 @@ public class FROrder {
 
     public void setShipAddress(String shipAddress) {
         this.shipAddress = shipAddress;
-    }
-
-    public FRDistrict getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(FRDistrict district) {
-        this.district = district;
     }
 
     public Double getLongitude() {
@@ -251,5 +242,13 @@ public class FROrder {
 
     public void setPriceLevel(Double priceLevel) {
         this.priceLevel = priceLevel;
+    }
+
+    public String getShipperToken() {
+        return shipperToken;
+    }
+
+    public void setShipperToken(String shipperToken) {
+        this.shipperToken = shipperToken;
     }
 }

@@ -290,7 +290,6 @@ public class OrderService {
         frOrder.setReceiveTime(null);
         frOrder.setShipperEarn(methods.calculateShpEarn(distance));
         frOrder.setShipAddress(null);
-        frOrder.setDistrict(null);
         frOrder.setLongitude(longitude);
         frOrder.setLatitude(latitude);
         frOrder.setCustomerDescription(valid.nullProof(customerDescription));

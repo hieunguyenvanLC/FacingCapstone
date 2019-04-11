@@ -31,9 +31,7 @@ public class MdlStoreBuilder {
         mdlStore.longitude = frStore.getLongitude();
         mdlStore.latitude = frStore.getLatitude();
         mdlStore.image = methods.bytesToBase64(frStore.getStoreImage());
-        mdlStore.rating = frStore.getRating();
         mdlStore.phone = frStore.getPhone();
-        mdlStore.ratingCount = frStore.getRatingCount();
         mdlStore.createTime = frStore.getCreateTime();
         mdlStore.updateTime = frStore.getUpdateTime();
         mdlStore.deleteTime = frStore.getDeleteTime();
