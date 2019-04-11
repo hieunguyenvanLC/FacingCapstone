@@ -61,6 +61,8 @@ public class FROrder {
     private String buyerToken;
     @Column(name = "shipper_token", length = 300)
     private String shipperToken;
+    @Column(name = "rating")
+    private Integer rating;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
@@ -250,5 +252,13 @@ public class FROrder {
 
     public void setShipperToken(String shipperToken) {
         this.shipperToken = shipperToken;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }

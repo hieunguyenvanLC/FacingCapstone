@@ -47,9 +47,6 @@ public class FRShipper implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
     private Collection<FROrder> orderCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
-    private Collection<FRRating> ratingCollection;
-
 
     public FRShipper() {
     }

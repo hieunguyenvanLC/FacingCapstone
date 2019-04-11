@@ -70,8 +70,6 @@ public class FRAccount implements UserDetails {
     private Collection<FROrder> orderCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private Collection<FRReceiveMember> receiveMemberCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
-    private Collection<FRRating> ratingCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "editor")
     private Collection<FRAccount> accountCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "editor")

@@ -112,6 +112,21 @@ public class OrderController extends AbstractController {
     // Mobile Member - Order Booking - End
 
 
+    // Mobile Member - Order Rating - Begin
+    @PutMapping(Fix.MAP_MEM + API + "/rate")
+    public String rateOrderMem(int orderId, int rating) {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.rateOrder(orderId, rating);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Order Rating - End
+
+
     // Mobile Shipper - Queue - Begin
     @DeleteMapping(Fix.MAP_SHP + API)
     public String cancelQueue() {

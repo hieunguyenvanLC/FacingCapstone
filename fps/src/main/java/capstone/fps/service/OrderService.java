@@ -390,8 +390,30 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
-
     // Mobile Member - Order Booking - End
+
+    // Mobile Member - Order Rating - Begin
+    public Response<Integer> rateOrder(int orderId, int rating) {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = orderRepository.findById(orderId).orElse(null);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        if (frOrder.getRating() != null) {
+            response.setResponse(Response.STATUS_FAIL, "This order had already been rated");
+            return response;
+        }
+        frOrder.setRating(rating);
+        FRShipper frShipper = frOrder.getShipper();
+        frShipper.setRating((frShipper.getRating() * frShipper.getRatingCount() + rating) / (frShipper.getRatingCount() + 1));
+        frShipper.setRatingCount(frShipper.getRatingCount() + 1);
+        orderRepository.save(frOrder);
+        shipperRepo.save(frShipper);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+    // Mobile Member - Order Rating - End
 
 
     // Mobile Shipper - Order Matching - Begin
