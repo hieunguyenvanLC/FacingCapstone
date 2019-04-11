@@ -22,7 +22,7 @@ $(document).ready(function () {
 
     txtTotalPrice = document.getElementById("txtTotalPrice");
     txtShipperEarn = document.getElementById("txtShipperEarn");
-
+    txtStoreAddress = document.getElementById("txtStoreAddress");
     txtStoreName = document.getElementById("txtStoreName");
     txtCustomerDescription = document.getElementById("txtCustomerDescription");
     txtNote = document.getElementById("txtNote");
@@ -32,7 +32,8 @@ $(document).ready(function () {
 
     function loadSummary() { //Load Summary
         $.ajax({
-            url: "/any/api/report/summary?mon=7&year=2019",
+            // url: "/any/api/report/summary?mon=7&year=2019",
+            url: "/any/api/report/summary",
             type: "GET",
             dataType: "json",
             success: function (response) {

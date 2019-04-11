@@ -32,7 +32,8 @@ public class HomeController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_ANY + API + "/summary")
-    public String showSummaryReport(@RequestParam("mon") Integer mon, @RequestParam("year") Integer year/*, @RequestParam("day") Integer day*/) {
+    public String showSummaryReport() {
+//        @RequestParam("mon") Integer mon, @RequestParam("year") Integer year/*, @RequestParam("day") Integer day*/
         MdlReportSummary summary = new MdlReportSummary();
         Response response = new Response<MdlReportSummary>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         long endUnix = System.currentTimeMillis();
@@ -296,6 +297,7 @@ public class HomeController extends AbstractController {
         Calendar startCal = unixToCalendar(start); // neu start la milisec thi khong can nhan 1000
         int startYear = startCal.get(Calendar.YEAR);
         int startMonth = startCal.get(Calendar.MONTH) + 1; // start from 0, mon 0 = thang 1
+//        System.out.println("Monthsss:" + startMonth);
         int startDay = startCal.get(Calendar.DAY_OF_MONTH);
 
         Calendar endCal = unixToCalendar(end); // neu start la milisec thi khong can nhan 1000
@@ -982,7 +984,7 @@ public class HomeController extends AbstractController {
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0);
-        System.out.println("Day" + ldt.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+//        System.out.println("Day" + ldt.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
         return ldt.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }
 
@@ -993,7 +995,7 @@ public class HomeController extends AbstractController {
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0);
-        System.out.println("Month" + ldt1.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+//        System.out.println("Month" + ldt1.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
         return ldt1.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }
 
