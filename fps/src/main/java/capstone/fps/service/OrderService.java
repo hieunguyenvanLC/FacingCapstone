@@ -428,6 +428,7 @@ public class OrderService {
                                     frOrder.setShipper(currentUser.getShipper());
                                     frOrder.setStatus(Fix.ORD_ASS.index);
                                     frOrder.setPriceLevel(currentUser.getShipper().getPriceLevel().getPrice());
+                                    frOrder.setShipperToken(shipperToken);
                                     orderRepository.save(frOrder);
                                     notifyBuyer(frOrder);
                                     notifyShipper(frOrder, shipperToken);
