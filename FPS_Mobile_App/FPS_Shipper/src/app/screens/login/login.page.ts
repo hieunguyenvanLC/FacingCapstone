@@ -37,10 +37,10 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-    await this.storage;
+    // const sleep = (milliseconds) => {
+    //   return new Promise(resolve => setTimeout(resolve, milliseconds))
+    // }
+    //await this.storage;
     //this.accountService.logOut();
     this.account.length = 0;
     this.loading.present("Waiting...").then(() => {
@@ -54,14 +54,14 @@ export class LoginPage implements OnInit {
 
       if (this.account) {
         //if (role === "ROLE_MEMBER"){
-        if (this.account[0].data === "ROLE_MEMBER") {
+        if (this.account[0].data === "ROLE_SHIPPER") {
           this.error = '';
-          this.getDetailAccount();
-          sleep(1000).then(() => {
+          // this.getDetailAccount();
+          // sleep(1000).then(() => {
             //get storage
-            this.getStorage();
-          })
-
+            // this.getStorage();
+          // })
+          this.router.navigateByUrl('home');
           this.loading.dismiss();
           //end api get detail
         } else {
