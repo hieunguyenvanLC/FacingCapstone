@@ -73,10 +73,15 @@ public class MdlOrderBuilder {
         if (frOrderDetails.size() > 0) {
             FRStore store = frOrderDetails.get(0).getProduct().getStore();
             mdlOrder.storeName = store.getStoreName();
+            mdlOrder.storeAddress = store.getAddress() + " " + store.getDistrict().getName();
         }
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.createTime = frOrder.getCreateTime();
         mdlOrder.status = frOrder.getStatus();
+        mdlOrder.longitude = frOrder.getLongitude();
+        mdlOrder.latitude = frOrder.getLatitude();
+        mdlOrder.note = frOrder.getNote();
+        mdlOrder.customerDescription = frOrder.getCustomerDescription();
 
         List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
         for (FROrderDetail frDetail : frOrderDetails) {

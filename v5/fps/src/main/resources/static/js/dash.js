@@ -450,7 +450,8 @@ $(document).ready(function () {
     }
 
     function getDateOfWeek(w, y) {
-        var d = ((w - 1) * 7 - 1); // 1st of January + 7 days for each week
+        var dowOfFirstDay = (new Date(y, 0, 1)).getDay(); // 0 (sun) -> 6 (sat)
+        var d = ((w - 1) * 7 - dowOfFirstDay + 1); // 1st of January + 7 days for each week
 
         return new Date(y, 0, d);
     }
@@ -526,8 +527,6 @@ $(document).ready(function () {
             return;
         }
 
-        startReport = startUnixT;
-        endReport = endUnixT;
         columnMap = {};
         filterCol = '';
         filterColVal = '';
