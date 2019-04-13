@@ -161,7 +161,7 @@ public class OrderService {
 
 
     // Web Admin - Order - Begin
-    public Response<List<MdlOrder>> getOrderList() {
+    public Response<List<MdlOrder>> getOrderListAdm() {
 
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -242,6 +242,24 @@ public class OrderService {
         return response;
     }
     // Web Admin - Order - Begin
+
+
+    // Mobile Member - Order History - Begin
+    public Response<List<MdlOrder>> getOrderListMem(){
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        List<FROrder> frOrderList = orderRepository.findAllByAccount(currentUser);
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+    // Mobile Member - Order History - End
 
 
     // Mobile Member - Order Booking - Begin
@@ -399,6 +417,7 @@ public class OrderService {
     }
     // Mobile Member - Order Booking - End
 
+
     // Mobile Member - Order Rating - Begin
     public Response<Integer> rateOrder(int orderId, int rating) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -421,6 +440,23 @@ public class OrderService {
         return response;
     }
     // Mobile Member - Order Rating - End
+
+
+    // Mobile Shipper - Order History - Begin
+    public Response<List<MdlOrder>> getOrderListShp(){
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        List<FROrder> frOrderList = orderRepository.findAllByShipper(currentUser.getShipper());
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+    // Mobile Shipper - Order History - End
 
 
     // Mobile Shipper - Order Matching - Begin
@@ -559,7 +595,7 @@ public class OrderService {
         header.put("Authorization", "key=" + Fix.FCM_KEY);
 
         JsonObject notification = new JsonObject();
-        notification.addProperty("title", "FPS");
+        notification.addProperty("title", "FPS Shipper");
         notification.addProperty("body", "You has taken order" + frOrder.getId());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
