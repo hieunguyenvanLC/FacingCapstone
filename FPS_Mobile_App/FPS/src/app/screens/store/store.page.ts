@@ -51,6 +51,7 @@ export class StorePage implements OnInit {
     private storage: Storage,
     private constant: Constant,
   ) {
+    this.products.length = 0;
   }
 
   ngOnInit() {
@@ -152,6 +153,7 @@ export class StorePage implements OnInit {
   }
 
   getStoreByid(id: number) {
+    this.products.length = 0;
     this.storeService.getStorebyid(id).subscribe(
       res => {
         this.products.push(res);

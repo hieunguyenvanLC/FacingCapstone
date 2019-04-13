@@ -15,7 +15,7 @@ import { AddMemberPage } from '../add-member/add-member.page';
 })
 export class ProfilePage implements OnInit {
 
-  userDetail : any;
+  userDetail = [];
   status_code = 0;
 
   myPhoto:any;
@@ -34,7 +34,9 @@ export class ProfilePage implements OnInit {
     private storage : Storage,
     private constant : Constant,
     private modalController: ModalController,
-  ) { }
+  ) { 
+    this.userDetail.length = 0;
+  }
 
   ngOnInit() {
     this.loadingService.present(this.constant.LOADINGMSG).then( () => {
@@ -45,36 +47,36 @@ export class ProfilePage implements OnInit {
   }
 
   getUser(){
-    // this.accountService.getDetailUser().subscribe(
-    //   res => {
-    //     this.userDetail.push(res);
-    //     console.log(this.userDetail[0].data);
-    //     this.status_code = this.userDetail[0].status_code;
-
-    //   }, error => {
-    //     console.log(error);
-    //   },
-    //   () => {
-    //     if (this.status_code === 1){
-    //       this.loadingService.dismiss();
-    //     }else{
-    //       //handle error
-    //     }
+    this.accountService.getDetailUser().subscribe(
+      res => {
+        this.userDetail.push(res);
+        console.log(this.userDetail[0].data);
+        if (this.userDetail[0].data.avatar !== undefined){
+          this.isImg = true;
+        }
+        console.log(this.userDetail[0].data.name);
+        this.isLoaded = true;
+        if (this.isLoaded){
+          this.loadingService.dismiss();
+        }
+        // this.loadingService.dismiss();
+      }, error => {
+        console.log(error);
+      }
+    );
+    // this.storage.get("ACCOUNT").then(value => {
+    //   console.log("---Profile---")
+    //   console.log(value);
+    //   this.userDetail = value;
+    //   if (this.userDetail.avatar !== undefined){
+    //     this.isImg = true;
     //   }
-    // );
-    this.storage.get("ACCOUNT").then(value => {
-      console.log("---Profile---")
-      console.log(value);
-      this.userDetail = value;
-      if (this.userDetail.avatar !== undefined){
-        this.isImg = true;
-      }
-      console.log(this.userDetail.name);
-      this.isLoaded = true;
-      if (this.isLoaded){
-        this.loadingService.dismiss();
-      }
-    })
+    //   console.log(this.userDetail.name);
+    //   this.isLoaded = true;
+    //   if (this.isLoaded){
+    //     this.loadingService.dismiss();
+    //   }
+    // })
   }
 
   goToHome(){

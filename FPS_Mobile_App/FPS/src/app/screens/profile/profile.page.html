@@ -12,21 +12,21 @@
     <div *ngIf=(isLoaded)>
       <ion-card-content class="bg-profile">
         <div *ngIf=(isImg)>
-          <img src="{{ userDetail.avatar }}">
+          <img src="{{ userDetail[0].data.avatar }}">
         </div>
         <div *ngIf=(!isImg)>
           <img src="../../../assets/image/default-user.png">
         </div>
-        <h1 class="fw500">{{ userDetail.name }}</h1>
-        <h2 margin-bottom>Extra point: {{ userDetail.extraPoint }}</h2>
+        <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
+        <h2 margin-bottom>Extra point: {{ userDetail[0].data.extraPoint }}</h2>
         <ion-button icon-left color="light">
           <ion-icon name="photos"></ion-icon>
           Edit / Add Avatar
         </ion-button>
-        <ion-button icon-left color="light">
+        <!-- <ion-button icon-left color="light">
           <ion-icon name="photos"></ion-icon>
           Edit face for payment
-        </ion-button>
+        </ion-button> -->
       </ion-card-content>
 
       <ion-grid fixed no-padding>
@@ -40,19 +40,19 @@
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Full Name:</ion-label>
-                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" value="{{ userDetail.name }}">
+                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" value="{{ userDetail[0].data.name }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Email:</ion-label>
-                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail.email }}">
+                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail[0].data.email }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail.phone }}">
+                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail[0].data.phone }}">
                 </ion-input>
               </ion-item>
 
@@ -115,7 +115,7 @@
                 <ion-label class="fw700">Your member</ion-label>
               </ion-list-header>
 
-              <ion-item *ngFor="let member of userDetail.faceList">
+              <ion-item *ngFor="let member of userDetail[0].data.faceList">
                 <div class="card-drop">
                   <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
                   <img src="{{member.face}}" class="card-drop__image" />

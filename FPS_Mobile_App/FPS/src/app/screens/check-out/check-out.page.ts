@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from 'src/app/services/order.service';
 import { GoogleApiService } from 'src/app/services/google-api.service';
 import { async } from '@angular/core/testing';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 @Component({
   selector: 'app-check-out',
@@ -25,10 +26,32 @@ export class CheckOutPage implements OnInit {
     private loading: LoadingService,
     private storage: Storage,
     private geolocation: Geolocation,
+    private fcm: FCM,
+    private router : Router,
   ) {
     this.myOrder.length = 0;
     this.orderId = this.route.snapshot.params['id'];
     
+    this.fcm.onNotification().subscribe(data => {
+      // console.log("vo day");
+      // console.log(data);
+
+      if (data.wasTapped) {
+        console.log('Received in rating background 1');
+        //this.dismissModal();
+        //this.loading.dismiss();
+        //this.alertHandle.dissmissAlert();
+        this.router.navigate(['rating', data.orderId]);
+        //data.order.id
+
+      } else {
+        console.log('Received in rating background 3');
+        //this.dismissModal();
+        //this.loading.dismiss();
+        //this.alertHandle.dissmissAlert();
+        this.router.navigate(['rating', data.orderId]);
+      }
+    });// end fcm
 
     console.log("1");
     this.getOrderbyID();

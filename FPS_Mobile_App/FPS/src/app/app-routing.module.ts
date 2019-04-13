@@ -15,7 +15,9 @@ const routes: Routes = [
   // { path: 'autocomplete', loadChildren: './screens/autocomplete/autocomplete.module#AutocompletePageModule' },
   { path: 'check-out', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
   { path: 'check-out/:id', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
-  { path: 'add-member', loadChildren: './screens/add-member/add-member.module#AddMemberPageModule' }
+  { path: 'add-member', loadChildren: './screens/add-member/add-member.module#AddMemberPageModule' },
+  { path: 'rating', loadChildren: './screens/rating/rating.module#RatingPageModule' },
+  { path: 'rating/:id', loadChildren: './screens/rating/rating.module#RatingPageModule' }
 ];
 
 @NgModule({

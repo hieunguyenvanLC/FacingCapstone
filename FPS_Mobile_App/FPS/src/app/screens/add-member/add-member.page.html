@@ -17,9 +17,16 @@
     </ion-label>
     <ion-input type="text" value="" [(ngModel)]="name"></ion-input>
   </ion-item>
-  <ion-item>
-      <img src= "{{face}}"/>
-      <ion-button expand="block">Take photo</ion-button>
-  </ion-item>
+  
+  <ion-list lines="none">
+    <ion-item>
+        <img src="{{face}}" />
+    </ion-item>
+    <ion-item>
+        <ion-button expand="block">Take photo</ion-button>
+      </ion-item>
+  </ion-list>
+  
+
   <ion-button expand="full">{{myMem[0].status}}</ion-button>
 </ion-content>

@@ -29,4 +29,26 @@ export class OrderService {
                              this.constant.ORDER +
                              "/detail?orderId=" + orderID);
   }
+  
+  cancelOrder(orderId, longitude, latitude){
+    let formData : FormData = new FormData();
+    formData.append("orderId", orderId);
+    formData.append("longitude", longitude);
+    formData.append("latitude", latitude);
+
+    return this.apihttp.deletes(this.constant.MAP_MEM + 
+                                this.constant.MAP_API + 
+                                this.constant.ORDER, formData);
+  }
+
+  rateOrder(orderId,rating){
+    let formData : FormData = new FormData();
+    formData.append("orderId", orderId);
+    formData.append("rating", rating);
+
+    return this.apihttp.put(this.constant.MAP_MEM + 
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            "/rate", formData);
+  }
 }

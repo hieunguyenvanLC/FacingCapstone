@@ -29,8 +29,8 @@ export class AppComponent {
       icon: 'list'
     },
     {
-      title: 'Login',
-      url: '/login',
+      title: 'Rating',
+      url: '/rating',
       icon: 'log-in'
     },
     {

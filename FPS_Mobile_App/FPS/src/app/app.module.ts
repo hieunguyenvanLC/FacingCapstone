@@ -50,7 +50,8 @@ import { FCM } from '@ionic-native/fcm/ngx';
 import { StorageApiService } from './services/storage-api.service';
 import { AlertService } from './services/alert.service';
 import { AddMemberPageModule } from './screens/add-member/add-member.module';
-
+// import { StarRatingModule } from 'ionic3-star-rating';
+// import { IonicRatingModule } from 'ionic-rating';
 
 @NgModule({
   declarations: [AppComponent],

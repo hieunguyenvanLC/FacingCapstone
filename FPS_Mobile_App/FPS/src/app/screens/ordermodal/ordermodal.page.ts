@@ -267,6 +267,11 @@ export class OrdermodalPage implements OnInit {
           handler: () => {
             console.log('Confirm Okay');
             // return false;
+            //cancel order
+            this.orderService.cancelOrder(this.orderId,this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
+                             .subscribe(res => {
+                              console.log(res)
+                             })//end api cancel
           }
         }
       ]
