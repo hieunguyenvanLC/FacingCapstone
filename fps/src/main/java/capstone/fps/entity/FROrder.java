@@ -28,6 +28,8 @@ public class FROrder {
     private String orderCode;
     @Column(name = "total_price")
     private Double totalPrice;
+    @Column(name = "taken_time")
+    private Long assignTime;
     @Column(name = "buy_time")
     private Long buyTime;
     @Column(name = "receive_time")
@@ -260,5 +262,13 @@ public class FROrder {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public Long getAssignTime() {
+        return assignTime;
+    }
+
+    public void setAssignTime(Long assignTime) {
+        this.assignTime = assignTime;
     }
 }

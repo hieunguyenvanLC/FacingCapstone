@@ -16,7 +16,7 @@ class MdlOrderDetailBuilder {
         return mdlOrderDetail;
     }
 
-    MdlOrderDetail buildDetailShp(FROrderDetail frDetail) {
+    MdlOrderDetail buildDetailWthImg(FROrderDetail frDetail) {
         Methods methods = new Methods();
         FRProduct frProduct = frDetail.getProduct();
         MdlOrderDetail mdlOrderDetail = new MdlOrderDetail();

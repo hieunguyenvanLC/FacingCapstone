@@ -44,6 +44,8 @@ public class FRShipper implements Serializable {
     private Double rating;
     @Column(name = "rating_count")
     private Integer ratingCount;
+    @Column(name = "order_count")
+    private Integer orderCount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shipper")
     private Collection<FROrder> orderCollection;
@@ -161,5 +163,13 @@ public class FRShipper implements Serializable {
 
     public void setRatingCount(Integer ratingCount) {
         this.ratingCount = ratingCount;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
     }
 }

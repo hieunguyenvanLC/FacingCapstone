@@ -70,7 +70,7 @@ public class MdlOrderBuilder {
         return mdlOrder;
     }
 
-    public MdlOrder buildDetailShp(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+    public MdlOrder buildDetailWthImg(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
         Methods methods = new Methods();
         MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
         MdlOrder mdlOrder = new MdlOrder();
@@ -108,7 +108,7 @@ public class MdlOrderBuilder {
 
         List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
         for (FROrderDetail frDetail : frOrderDetails) {
-            MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildDetailShp(frDetail);
+            MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildDetailWthImg(frDetail);
             mdlDetailList.add(mdlDetail);
         }
         mdlOrder.detailList = mdlDetailList;

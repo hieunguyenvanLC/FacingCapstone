@@ -57,7 +57,7 @@ public interface Fix {
     /* Order status */
     Stat ORD_NEW = new Stat(1, "new");
     Stat ORD_ASS = new Stat(2, "assigned");
-    Stat ORD_BUY = new Stat(3, "bought");
+    Stat ORD_BUY = new Stat(3, "on delivery");
     Stat ORD_COM = new Stat(4, "done");
     Stat ORD_CXL = new Stat(5, "cancel");
     Stat[] ORD_STAT_LIST = {ORD_NEW, ORD_ASS, ORD_BUY, ORD_COM, ORD_CXL};

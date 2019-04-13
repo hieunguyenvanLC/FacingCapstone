@@ -32,7 +32,7 @@ var ROL_SHP = "ROLE_SHIPPER";
 /* Order status */
 var ORD_NEW = new Stat(1, "new");
 var ORD_ASS = new Stat(2, "assigned");
-var ORD_BUY = new Stat(3, "bought");
+var ORD_BUY = new Stat(3, "on delivery");
 var ORD_COM = new Stat(4, "done");
 var ORD_CXL = new Stat(5, "cancel");
 var ORD_STAT_LIST = [ORD_NEW, ORD_ASS, ORD_BUY, ORD_COM, ORD_CXL];

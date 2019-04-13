@@ -47,8 +47,6 @@ public class FRStore {
     private FRAccount editor;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<FRSchedule> scheduleCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<FRProduct> productCollection;
 
     public FRStore() {

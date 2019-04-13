@@ -242,7 +242,7 @@ public class OrderService {
 
 
     // Mobile Member - Order Booking - Begin
-    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance, String deviceToken) {
+    public Response<Integer> createOrder(Double longitude, Double latitude, String customerDescription, String proListStr, double distance, String deviceToken, String buyerAddress) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -286,10 +286,12 @@ public class OrderService {
         frOrder.setBill(null);
         frOrder.setOrderCode(new BigInteger(currentUser.getId() + "A" + time, 11).toString(36).toUpperCase());
         frOrder.setTotalPrice(totalPrice);
-        frOrder.setBuyTime(time);
+        frOrder.setAssignTime(null);
+        frOrder.setBuyTime(null);
         frOrder.setReceiveTime(null);
         frOrder.setShipperEarn(methods.calculateShpEarn(distance));
-        frOrder.setShipAddress(null);
+        frOrder.setPriceLevel(null);
+        frOrder.setShipAddress(buyerAddress);
         frOrder.setLongitude(longitude);
         frOrder.setLatitude(latitude);
         frOrder.setCustomerDescription(valid.nullProof(customerDescription));
@@ -300,6 +302,8 @@ public class OrderService {
         frOrder.setStatus(Fix.ORD_NEW.index);
         frOrder.setEditor(null);
         frOrder.setBuyerToken(deviceToken);
+        frOrder.setShipperToken(null);
+        frOrder.setRating(null);
         orderRepository.save(frOrder);
 
         for (MdlDetailCreate detail : detailList) {
@@ -344,7 +348,7 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
         return response;
     }
 
@@ -454,7 +458,7 @@ public class OrderService {
                                     orderRepository.save(frOrder);
                                     notifyBuyer(frOrder);
                                     notifyShipper(frOrder, shipperToken);
-                                    MdlOrder mdlOrder = orderBuilder.buildDetailShp(frOrder, orderDetailRepository);
+                                    MdlOrder mdlOrder = orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository);
                                     response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrder);
                                     return response;
                                 }
@@ -653,22 +657,29 @@ public class OrderService {
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
 
-            double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             FRShipper frShipper = methods.getUser().getShipper();
+            double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
+            frShipper.setOrderCount(frShipper.getOrderCount() + 1);
+            FRPriceLevel nextLevel = frShipper.getPriceLevel().getNextLevel();
+            if(nextLevel != null){
+                if(frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()){
+                    frShipper.setPriceLevel(nextLevel);
+                }
+            }
             shipperRepo.save(frShipper);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
     }
 
-    // Receive HttpReq from Python
+    /* Receive HttpReq from Python */
     public String receiveFaceResult(String key, String faceListStr) {
         AppData.getFaceResult().put(key, faceListStr);
         return "ok";
     }
 
-    // Compare Member List with buyer
+    /* Compare Member List with buyer */
     private String handlingFaceResult(String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
         memListStr = memListStr.replace("fps", "");
@@ -686,7 +697,7 @@ public class OrderService {
         return "fail";
     }
 
-    // Send HttpReq to PayPal Emulator
+    /* Send HttpReq to PayPal Emulator */
     private String callEmulatorServer(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
         Methods methods = new Methods();
         URL url;
@@ -756,7 +767,7 @@ public class OrderService {
         return commandPrompt;
     }
 
-    public Response<String> testNotify(Gson gson, int orderId, String shipperToken) {
+    public Response<String> testNotify(Gson gson, int orderId, String deviceToken) {
         Methods methods = new Methods();
         JsonParser parser = new JsonParser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -765,7 +776,7 @@ public class OrderService {
 
         JsonObject notification = new JsonObject();
         notification.addProperty("title", "FPS");
-        notification.addProperty("body", "Your order has been taken by shipper Test");
+        notification.addProperty("body", "This is test notification");
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
         notification.addProperty("icon", "fcm_push_icon");
@@ -777,7 +788,7 @@ public class OrderService {
         body.add("notification", notification);
         body.add("data", data);
         body.addProperty("priority", "high");
-        body.addProperty("to", shipperToken);
+        body.addProperty("to", deviceToken);
         body.addProperty("restricted_package_name", "");
 
         Map<String, String> header = new HashMap<>();
