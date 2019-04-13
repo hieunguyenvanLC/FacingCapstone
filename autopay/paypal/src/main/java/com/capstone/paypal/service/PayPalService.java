@@ -81,8 +81,12 @@ public class PayPalService {
             Simulator s = new Simulator();
 //            Simulator.PixelColor pixLog = s.createPixelColor(1, 880, 267, 880, 267, loginDarkBlue, 1);
 //            Simulator.PixelColor pixBil = s.createPixelColor(2, 585, 232, 585, 232, billDarkBlue, 1);
-            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 241, 885, 241, loginDarkBlue, 1);
-            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 198, 584, 198, billDarkBlue, 1);
+            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 274, 885, 274, loginDarkBlue, 1);
+            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 232, 584, 232, billDarkBlue, 1);
+
+//            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 241, 885, 241, loginDarkBlue, 1);
+//            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 198, 584, 198, billDarkBlue, 1);
+
 //            Simulator.PixelColor pixBil = s.createPixelColor(2, 1150, 320, 1150, 320, billLightBlue, 1);
             Simulator.PixelColor pixErr = s.createPixelColor(3, 764, 391, 764, 391, logFailRed, 1);
             s.clickInBox(200, 500, 10, 10);
@@ -108,7 +112,7 @@ public class PayPalService {
             s.delayRandomMedium();
             s.copyParseString(password);
             s.delay(1000);
-            s.moveAndClickInBox(800, 520, 200, 10);
+            s.moveAndClickInBox(800, 550, 200, 10);
 
             id = s.waitForMultiPixel(pixErr, pixBil);
             System.out.println("step 2 - " + id);
@@ -116,7 +120,7 @@ public class PayPalService {
                 // confirm bill
                 s.delayRandomMedium();
                 s.delay(2000);
-                s.moveAndClickInBox(650, 820, 200, 10);
+                s.moveAndClickInBox(650, 850, 200, 10);
                 while (payPalData.getResult() == null) {
                     try {
                         Thread.sleep(50);
