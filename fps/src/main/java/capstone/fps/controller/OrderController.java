@@ -62,7 +62,7 @@ public class OrderController extends AbstractController {
 
 
     // Mobile Member - Order History - Begin
-    @GetMapping(Fix.MAP_MEM + API)
+    @GetMapping(Fix.MAP_MEM + API + "/history")
     public String getOrderListMem() {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
@@ -143,7 +143,7 @@ public class OrderController extends AbstractController {
 
 
     // Mobile Shipper - Order History - Begin
-    @GetMapping(Fix.MAP_SHP + API)
+    @GetMapping(Fix.MAP_SHP + API + "/history")
     public String getOrderListShp() {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
