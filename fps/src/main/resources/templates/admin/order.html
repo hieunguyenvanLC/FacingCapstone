@@ -22,10 +22,10 @@
                 <table id="account-table" class="table">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Code</th>
                         <th>Buyer Phone</th>
                         <th>Buyer Name</th>
-                        <th>Total Price</th>
+                        <th>Total</th>
                         <th>Status</th>
                     </tr>
                     </thead>
@@ -94,30 +94,30 @@
                                     <div class="col-4 padding-0">
 
                                         <div class="form-group">
-                                            <label>Order ID</label>
+                                            <label>Order Code</label>
                                             <input type="text" placeholder="Id" class="form-control"
-                                                   id="txtOrderId">
+                                                 disabled  id="txtOrderCode">
                                         </div>
                                         <div class="form-group">
                                             <label>Customer Phone</label>
                                             <input type="text" placeholder="Customer Phone" class="form-control"
-                                                   id="txtBuyerPhone">
+                                                   disabled   id="txtBuyerPhone">
                                         </div>
                                         <div class="form-group">
                                             <label>Customer Name</label>
                                             <input type="text" placeholder="Customer Name" class="form-control"
-                                                   id="txtBuyerName">
+                                                   disabled  id="txtBuyerName">
                                         </div>
 
                                         <div class="form-group">
                                             <label>Shipper Phone</label>
                                             <input type="text" placeholder="Shipper Phone" class="form-control"
-                                                   id="txtShipperPhone">
+                                                   disabled   id="txtShipperPhone">
                                         </div>
                                         <div class="form-group">
                                             <label>Shipper Name</label>
                                             <input type="text" placeholder="Shipper Name" class="form-control"
-                                                   id="txtShipperName">
+                                                   disabled   id="txtShipperName">
                                         </div>
 
                                         <div class="form-group">
@@ -233,7 +233,8 @@
         var uplBill = document.getElementById("uplBill");
         var imgBill = document.getElementById("imgBill");
 
-        var txtOrderId = document.getElementById("txtOrderId");
+        var txtOrderCode = document.getElementById("txtOrderCode");
+
         var txtBuyerName = document.getElementById("txtBuyerName");
         var txtBuyerPhone = document.getElementById("txtBuyerPhone");
         var txtShipperName = document.getElementById("txtShipperName");
@@ -283,10 +284,10 @@
                 var order = list[i];
 // console.log(order);
                 accountTable.row.add([
-                    '<span data-target="#edit-order-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')" >' + order.id + '</span>',
+                    '<span data-target="#edit-order-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')" >' + order.orderCode + '</span>',
                     '<span data-target="#edit-order-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')" >' + order.buyerPhone + '</span>',
                     order.buyerName,
-                    order.totalPrice,
+                    order.totalPrice + order.shipperEarn,
                     fpsGetStatMsg(ORD_STAT_LIST, order.status)
                 ]).draw();
             }
@@ -338,7 +339,7 @@
             uplBill.value = "";
             fpsSetImgSrc(imgBill, orderEdit.bill);
 
-            txtOrderId.value = orderEdit.id;
+            txtOrderCode.value = orderEdit.orderCode;
             txtBuyerName.value = orderEdit.buyerName;
             txtBuyerPhone.value = orderEdit.buyerPhone;
             txtShipperName.value = orderEdit.shipperName;
@@ -358,7 +359,7 @@
             // txtTotalPrice.value = orderEdit.totalPrice;
             // txtShipperEarn.value = orderEdit.shipperEarn;
 
-            
+
             txtNote.value = orderEdit.note;
 
 
