@@ -23,10 +23,10 @@
         <img src="{{face}}" />
     </ion-item>
     <ion-item>
-        <ion-button expand="block">Take photo</ion-button>
+        <ion-button expand="block" (click)="takePhoto()" >Take photo</ion-button>
       </ion-item>
   </ion-list>
   
 
-  <ion-button expand="full">{{myMem[0].status}}</ion-button>
+  <ion-button expand="full" (click)="addUpdateMemberFace()">{{myMem[0].status}}</ion-button>
 </ion-content>
