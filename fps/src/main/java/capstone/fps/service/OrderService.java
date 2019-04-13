@@ -583,6 +583,13 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
+
+    public Response<Integer> cancelOrderA() {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        shipperWait.setCancel(true);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
     // Mobile Shipper - Order Matching - End
 
 
@@ -671,6 +678,7 @@ public class OrderService {
                 }
             }
             shipperRepo.save(frShipper);
+            notifyBuyerCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
@@ -770,6 +778,35 @@ public class OrderService {
         return commandPrompt;
     }
 
+    public Response<String> notifyBuyerCheckout(FROrder frOrder) {
+        Methods methods = new Methods();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Order checkout successfully");
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+        data.addProperty("orderId", frOrder.getId());
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("restricted_package_name", "");
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+        return response;
+    }
+    // Mobile Shipper - Order Checkout - End
+
+
     public Response<String> testNotify(Gson gson, int orderId, String deviceToken) {
         Methods methods = new Methods();
         JsonParser parser = new JsonParser();
@@ -800,7 +837,6 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
         return response;
     }
-    // Mobile Shipper - Order Checkout - End
 
 
 }
