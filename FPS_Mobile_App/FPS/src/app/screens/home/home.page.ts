@@ -12,8 +12,8 @@ import { Constant } from 'src/app/common/constant';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
   NativeGeocoder,
-  NativeGeocoderReverseResult,
-  NativeGeocoderForwardResult,
+  // NativeGeocoderReverseResult,
+  // NativeGeocoderForwardResult,
   NativeGeocoderOptions
 } from '@ionic-native/native-geocoder/ngx';
 

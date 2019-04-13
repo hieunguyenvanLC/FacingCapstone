@@ -6,26 +6,40 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { ToasthandleService } from 'src/app/services/toasthandle.service';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-import { Marker, GoogleMapsAnimation } from '@ionic-native/google-maps/ngx';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Platform, NavController } from "@ionic/angular";
 
+import {
+  GoogleMaps,
+  GoogleMap,
+  MyLocation,
+  Marker,
+  GoogleMapsAnimation,
+  GoogleMapsEvent,
+  Environment,
+  GoogleMapOptions,
+  Polyline,
+  PolylineOptions,
+  ILatLng,
+} from '@ionic-native/google-maps/ngx';
+// import { GoogleMap, GoogleMaps } from '@ionic-native/google-maps/ngx';
+import { element } from '@angular/core/src/render3';
+import { GoogleApiService } from 'src/app/services/google-api.service';
 declare var google;
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage  {
   @ViewChild('map') mapElement: ElementRef;
-  map: any;
+  map: GoogleMap;
   address: string;
 
   shipperMode = false;
   stateOrder: number;
-  //0 -> finding
-  //1 -> finded
-  // longitudeShipper : any;
-  // latitudeShipper : any;
+
   longitudeShp = "106.67927390539103";
   latitudeShp = "10.83767617410066";
 
@@ -40,6 +54,7 @@ export class HomePage implements OnInit {
 
 
   constructor(
+    public platform: Platform,
     private orderService: OrderService,
     private loading: LoadingService,
     private router: Router,
@@ -48,6 +63,8 @@ export class HomePage implements OnInit {
     private fcm: FCM,
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
+    private GoogleApiService: GoogleApiService
+
   ) {
     this.shipperMode = false;
     this.stateOrder = 0;
@@ -76,13 +93,20 @@ export class HomePage implements OnInit {
     });// end fcm
   }
 
-  ngOnInit() {
-    this.loadMap();
+
+//  async ngOnInit() {
+//    await this.loadMap();
+//   }
+ async ionViewDidEnter() {
+    console.log("call ionViewDidLoad");
+   await this.platform.ready().then(() => {
+      this.loadMap();
+    });
   }
 
   changeMode() {
     if (this.shipperMode) {
-      console.log("onModeShipper");
+
       this.findOrder();
       this.toastHandle.presentToast("Finding order");
       //loading 
@@ -121,8 +145,7 @@ export class HomePage implements OnInit {
     } else {
       //if mode is off
       this.orderService.offShipperMode().subscribe(res => {
-        console.log("in off: ");
-        console.log(res);
+
         this.isLoaded = false;
       });//end api
       this.stateOrder = 0;
@@ -136,14 +159,18 @@ export class HomePage implements OnInit {
     //call api to auto assign order
     this.orderService.onShipMode(this.longitudeShp, this.latitudeShp, this.tokenFCM).subscribe(
       res => {
-        console.log("Begin res: ");
-        console.log(res);
+        // console.log("Begin res: ");
+        // console.log(res);
+        this.order.length = 0;
         this.order.push(res);
 
 
         if (this.order[0].message === "Success") {
           if (this.order[0].data) {
             this.isLoaded = true;
+            // add routing function here
+            this.routingForShipper(this.order);
+
             // this.isLoading = false;
             // this.loading.dismiss();
             console.log("in if success :" + this.order[0].data);
@@ -163,7 +190,94 @@ export class HomePage implements OnInit {
     ); //end api auto assign order
   }//end find order
 
-  cancelFindOrder(){
+  routingForShipper(order) {
+  // loadMap() {
+    // console.log(order[0].data.latitude, order[0].data.longitude);
+    this.GoogleApiService.getAddressGoogle( order[0].data.storeLatitude, order[0].data.storeLongitude,order[0].data.latitude, order[0].data.longitude).then((resp) => {
+    // this.GoogleApiService.getAddressGoogle(10.831481, 106.676775, 10.827835, 106.679275).then((resp) => {
+
+      // get resp
+      let positionList = [];
+      positionList.length = 0;
+      positionList.push(resp);
+      // get step
+
+      //let steps = [];
+
+      let direct = [];
+      let steps = JSON.parse(resp.data);
+      console.log("-----------");
+      console.log(steps)
+      let stepsChild = steps.routes[0].legs[0].steps;
+      console.log("steps here");
+      console.log(stepsChild);
+      stepsChild.forEach(element => {
+        direct.push(element.start_location);
+        direct.push(element.end_location);
+      });
+      console.log("direct here:");
+      console.log(direct);
+      // draw map 
+      let latLng = new google.maps.LatLng(order[0].data.storeLatitude, order[0].data.storeLongitude);
+      // let latLng = new google.maps.LatLng(10.831481, 106.676775);
+      let mapOptions = {
+        center: latLng,
+
+        zoom: 17,
+        tilt: 30,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      this.map = null;
+      var map1: any;
+      map1 = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      map1.addListener('tilesloaded', () => {
+        console.log('accuracy', map1);
+        this.getAddressFromCoords(map1.center.lat(), map1.center.lng())
+      });
+
+      let marker = new google.maps.Marker({
+        title: 'Store here',
+        map: map1,
+        position: latLng,
+
+      })
+
+      // draw rooting
+      const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+      }
+      
+  
+      var polyline = new google.maps.Polyline({
+        path: direct,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 5
+        });
+
+      
+      
+        polyline.setMap(map1);
+      
+
+      this.map = map1;
+
+
+
+
+
+
+      // and resp
+    });
+
+
+
+
+
+  }
+
+  cancelFindOrder() {
     this.orderService.offShipperMode().subscribe(res => {
       console.log("in off: ");
       console.log(res);
@@ -218,6 +332,7 @@ export class HomePage implements OnInit {
 
   loadMap() {
     this.geolocation.getCurrentPosition().then((resp) => {
+
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
       let mapOptions = {
         center: latLng,
@@ -235,27 +350,25 @@ export class HomePage implements OnInit {
 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-      this.map.addListener('tilesloaded', () => {
-        console.log('accuracy', this.map);
-        this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
-      });
+      // this.map.addListener('tilesloaded', () => {
+      //   console.log('accuracy', this.map);
+      //   this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
+      // });
 
-      let marker: google.maps.Marker = new google.maps.Marker({
+      let marker = new google.maps.Marker({
         title: 'You are here',
         map: this.map,
         position: latLng,
 
       })
-
-
-
-
-
     }) //end geolocation get current
       .catch((error) => {
         console.log('Error getting location', error);
       });
-  }//end load map
+  }
+
+
+  //end load map
 
   getAddressFromCoords(lattitude, longitude) {
     console.log("getAddressFromCoords " + lattitude + " " + longitude);
@@ -265,7 +378,7 @@ export class HomePage implements OnInit {
     };
 
     this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
-      .then((result: NativeGeocoderReverseResult[]) => {
+      .then((result: NativeGeocoderResult[]) => {
         this.address = "";
         let responseAddress = [];
         for (let [key, value] of Object.entries(result[0])) {

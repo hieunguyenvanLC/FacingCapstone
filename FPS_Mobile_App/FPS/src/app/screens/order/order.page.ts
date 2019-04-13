@@ -6,7 +6,10 @@ import {
   ElementRef
 } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { NativeGeocoder,  NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import {
+  NativeGeocoderResult
+} from '@ionic-native/native-geocoder/ngx'
 
 // import {
 //   NativeGeocoder,
@@ -65,6 +68,7 @@ export class OrderPage implements OnInit{
   loadMap() {
     this.geolocation.getCurrentPosition().then((resp) => {
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      console.log(latLng);
       let mapOptions = {
         center: {
  
@@ -99,7 +103,7 @@ export class OrderPage implements OnInit{
     };
  
     this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
-      .then((result: NativeGeocoderReverseResult[]) => {
+      .then((result: NativeGeocoderResult[]) => {
         this.address = "";
         let responseAddress = [];
         for (let [key, value] of Object.entries(result[0])) {

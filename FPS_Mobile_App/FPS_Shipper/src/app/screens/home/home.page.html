@@ -114,9 +114,7 @@
     <ion-button expand="full" (click)="findOrder()">Find order</ion-button>
   </div>
   <div *ngIf="stateOrder === 1">
-    <ion-button expand="full">
       <!-- <ion-spinner color="primary" name="crescent"></ion-spinner> -->
-      <ion-label (click)="cancelFindOrder()">Cancel</ion-label>
-    </ion-button>
+      <ion-button color="danger" expand="full" (click)="cancelFindOrder()">Cancel</ion-button>
   </div>
 </ion-footer>
