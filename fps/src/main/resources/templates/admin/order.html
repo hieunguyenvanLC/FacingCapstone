@@ -8,7 +8,7 @@
         <div class="flex-grow-1">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active">Store Manage</a>
+                    <a class="nav-link active">Order Manage</a>
                 </li>
             </ul>
         </div>
@@ -57,7 +57,7 @@
 
                             <div class="modal-body">
                                 <div class="row row-eq-height no-padding">
-                                    <div class="col-4  padding-0">
+                                    <div class="col-4 padding-0">
                                         <label>Customer Face</label>
                                         <div class="input-group">
                                             <!--<div class="input-group-prepend">-->
@@ -66,12 +66,12 @@
                                             <!--</div>-->
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="uplBuyerFace"
-                                                       onchange="uplStoreThumbOnChange()">
+                                                       onchange="uplBuyerFaceOnChange()">
                                                 <label class="custom-file-label" for="uplBuyerFace"
                                                        style="border-radius: 0">Choose file</label>
                                             </div>
                                         </div>
-                                        <img id="imgBuyerFace" src="" alt="Buyer" style="width: 256px; height: 256px">
+                                        <img id="imgBuyerFace" src="" alt="Buyer" style="width: 100%;">
                                     </div>
 
                                     <div class="col-4 padding-0">
@@ -83,7 +83,7 @@
                                             <!--</div>-->
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="uplBill"
-                                                       onchange="uplStoreThumbOnChange()">
+                                                       onchange="uplBillOnChange()">
                                                 <label class="custom-file-label" for="uplBill"
                                                        style="border-radius: 0">Choose file</label>
                                             </div>
@@ -99,13 +99,13 @@
                                                    id="txtOrderId">
                                         </div>
                                         <div class="form-group">
-                                            <label>Buyer Phone</label>
-                                            <input type="text" placeholder="Buyer Phone" class="form-control"
+                                            <label>Customer Phone</label>
+                                            <input type="text" placeholder="Customer Phone" class="form-control"
                                                    id="txtBuyerPhone">
                                         </div>
                                         <div class="form-group">
-                                            <label>Buyer Name</label>
-                                            <input type="text" placeholder="Buyer Name" class="form-control"
+                                            <label>Customer Name</label>
+                                            <input type="text" placeholder="Customer Name" class="form-control"
                                                    id="txtBuyerName">
                                         </div>
 
@@ -133,27 +133,24 @@
                                 <div class="row row-eq-height no-padding">
                                     <div class="col-4 padding-0">
                                         <div class="form-group">
-                                            <label>Longitude</label>
+                                            <label>Customer Description</label>
+                                            <input type="text" placeholder="Customer Description" class="form-control"
+                                                   id="txtCustomerDescription">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Customer Address</label>
+                                            <input type="text" placeholder="Longitude" class="form-control"
+                                                   id="txtAddress">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Customer Longitude</label>
                                             <input type="text" placeholder="Longitude" class="form-control"
                                                    id="txtLongitude">
                                         </div>
                                         <div class="form-group">
-                                            <label>Latitude</label>
+                                            <label>Customer Latitude</label>
                                             <input type="text" placeholder="Latitude" class="form-control"
                                                    id="txtLatitude">
-                                        </div>
-
-                                    </div>
-                                    <div class="col-4 padding-0">
-                                        <div class="form-group">
-                                            <label>Total Price</label>
-                                            <input type="text" placeholder="Total Price" class="form-control"
-                                                   id="txtTotalPrice">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Shipper Earn</label>
-                                            <input type="text" placeholder="Shipper Earn" class="form-control"
-                                                   id="txtShipperEarn">
                                         </div>
                                     </div>
                                     <div class="col-4 padding-0">
@@ -163,10 +160,33 @@
                                                    id="txtStoreName">
                                         </div>
                                         <div class="form-group">
-                                            <label>Customer Description</label>
-                                            <input type="text" placeholder="Customer Description" class="form-control"
-                                                   id="txtCustomerDescription">
+                                            <label>Store Address</label>
+                                            <input type="text" placeholder="Longitude" class="form-control"
+                                                   id="txtStoreAddress">
                                         </div>
+                                        <div class="form-group">
+                                            <label>Store Longitude</label>
+                                            <input type="text" placeholder="Longitude" class="form-control"
+                                                   id="txtStoreLongitude">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Store Latitude</label>
+                                            <input type="text" placeholder="Latitude" class="form-control"
+                                                   id="txtStoreLatitude">
+                                        </div>
+                                    </div>
+                                    <div class="col-4 padding-0">
+
+                                        <!--<div class="form-group">-->
+                                        <!--<label>Total Price</label>-->
+                                        <!--<input type="text" placeholder="Total Price" class="form-control"-->
+                                        <!--id="txtTotalPrice">-->
+                                        <!--</div>-->
+                                        <!--<div class="form-group">-->
+                                        <!--<label>Shipper Earn</label>-->
+                                        <!--<input type="text" placeholder="Shipper Earn" class="form-control"-->
+                                        <!--id="txtShipperEarn">-->
+                                        <!--</div>-->
                                         <div class="form-group">
                                             <label>Note</label>
                                             <input type="text" placeholder="Note" class="form-control"
@@ -220,14 +240,21 @@
         var txtShipperPhone = document.getElementById("txtShipperPhone");
         var cbbStatus = document.getElementById("cbbStatus");
 
+        var txtCustomerDescription = document.getElementById("txtCustomerDescription");
+        var txtAddress  = document.getElementById("txtAddress");
         var txtLatitude = document.getElementById("txtLatitude");
         var txtLongitude = document.getElementById("txtLongitude");
 
-        var txtTotalPrice = document.getElementById("txtTotalPrice");
-        var txtShipperEarn = document.getElementById("txtShipperEarn");
 
         var txtStoreName = document.getElementById("txtStoreName");
-        var txtCustomerDescription = document.getElementById("txtCustomerDescription");
+        var txtStoreAddress  = document.getElementById("txtStoreAddress");
+        var txtStoreLatitude = document.getElementById("txtStoreLatitude");
+        var txtStoreLongitude = document.getElementById("txtStoreLongitude");
+
+        // var txtTotalPrice = document.getElementById("txtTotalPrice");
+        // var txtShipperEarn = document.getElementById("txtShipperEarn");
+
+
         var txtNote = document.getElementById("txtNote");
 
         var btnCloseModal = document.getElementById("btnCloseModal");
@@ -318,14 +345,20 @@
             txtShipperPhone.value = orderEdit.shipperPhone;
             cbbStatus.value = orderEdit.status;
 
+            txtCustomerDescription.value = orderEdit.customerDescription;
+            txtAddress.value = orderEdit.address;
             txtLatitude.value = orderEdit.latitude;
             txtLongitude.value = orderEdit.longitude;
 
-            txtTotalPrice.value = orderEdit.totalPrice;
-            txtShipperEarn.value = orderEdit.shipperEarn;
-
             txtStoreName.value = orderEdit.storeName;
-            txtCustomerDescription.value = orderEdit.customerDescription;
+            txtStoreAddress.value = orderEdit.storeAddress;
+            txtStoreLatitude.value = orderEdit.storeLatitude;
+            txtStoreLongitude.value = orderEdit.storeLongitude;
+
+            // txtTotalPrice.value = orderEdit.totalPrice;
+            // txtShipperEarn.value = orderEdit.shipperEarn;
+
+            
             txtNote.value = orderEdit.note;
 
 
@@ -337,9 +370,29 @@
                     '            <td>' + pro.proName + '</td>\n' +
                     '            <td>' + pro.unitPrice + '</td>\n' +
                     '            <td>' + pro.quantity + '</td>\n' +
-                    '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n';
+                    '            <td align="right">' + (pro.unitPrice * pro.quantity) + '</td>\n';
                 tblBodyDetail.innerHTML += row;
             }
+            var rowSubTotal = '  <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td>Sub total</td>\n' +
+                '            <td align="right">' + orderEdit.totalPrice + '</td>\n';
+            tblBodyDetail.innerHTML += rowSubTotal;
+
+            var rowShippingFee = '  <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td>Shipping Fee</td>\n' +
+                '            <td align="right">' + orderEdit.shipperEarn + '</td>\n';
+            tblBodyDetail.innerHTML += rowShippingFee;
+
+            var rowTotal = '  <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td></td>\n' +
+                '            <td>Total</td>\n' +
+                '            <td align="right">' + (orderEdit.totalPrice + orderEdit.shipperEarn) + '</td>\n';
+            tblBodyDetail.innerHTML += rowTotal;
 
         }
 
@@ -350,17 +403,17 @@
             fpsFormAppend(formData, "buyerFace", uplBuyerFace.files[0]);
             fpsFormAppend(formData, "bill", uplBill.files[0]);
 
-            fpsFormAppend2(formData, "buyerName", txtBuyerName.value, orderEdit.buyerName);
-            fpsFormAppend2(formData, "buyerPhone", txtBuyerPhone.value, orderEdit.buyerPhone);
-            fpsFormAppend2(formData, "shipperName", txtShipperName.value, orderEdit.shipperName);
-            fpsFormAppend2(formData, "shipperPhone", txtShipperPhone.value, orderEdit.shipperPhone);
+            // fpsFormAppend2(formData, "buyerName", txtBuyerName.value, orderEdit.buyerName);
+            // fpsFormAppend2(formData, "buyerPhone", txtBuyerPhone.value, orderEdit.buyerPhone);
+            // fpsFormAppend2(formData, "shipperName", txtShipperName.value, orderEdit.shipperName);
+            // fpsFormAppend2(formData, "shipperPhone", txtShipperPhone.value, orderEdit.shipperPhone);
             fpsFormAppend2(formData, "status", cbbStatus.value, orderEdit.status);
 
             fpsFormAppend2(formData, "latitude", txtLatitude.value, orderEdit.latitude);
             fpsFormAppend2(formData, "longitude", txtLongitude.value, orderEdit.longitude);
 
-            fpsFormAppend2(formData, "totalPrice", txtTotalPrice.value, orderEdit.totalPrice);
-            fpsFormAppend2(formData, "shipperEarn", txtShipperEarn.value, orderEdit.shipperEarn);
+            // fpsFormAppend2(formData, "totalPrice", txtTotalPrice.value, orderEdit.totalPrice);
+            // fpsFormAppend2(formData, "shipperEarn", txtShipperEarn.value, orderEdit.shipperEarn);
 
             fpsFormAppend2(formData, "customerDescription", txtCustomerDescription.value, orderEdit.customerDescription);
             fpsFormAppend2(formData, "note", txtNote.value, orderEdit.note);
@@ -385,6 +438,13 @@
             })
         }
 
+        function uplBuyerFaceOnChange() {
+            fpsSetImgFromInput(imgBuyerFace, uplBuyerFace);
+        }
+
+        function uplBillOnChange() {
+            fpsSetImgFromInput(imgBill, uplBill);
+        }
 
     </script>
 </div>

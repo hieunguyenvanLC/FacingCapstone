@@ -28,9 +28,11 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        mdlOrder.bookTime = frOrder.getBuyTime();
+        mdlOrder.assignTime = frOrder.getAssignTime();
+        mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
         mdlOrder.customerDescription = frOrder.getCustomerDescription();
@@ -61,11 +63,12 @@ public class MdlOrderBuilder {
     public MdlOrder buildAdminTableRow(FROrder frOrder) {
         MdlOrder mdlOrder = new MdlOrder();
         mdlOrder.id = frOrder.getId();
+        mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.buyerName = frOrder.getAccount().getName();
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
-        mdlOrder.bookTime = frOrder.getBuyTime();
+        mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.status = frOrder.getStatus();
         return mdlOrder;
     }
@@ -86,9 +89,11 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        mdlOrder.bookTime = frOrder.getBuyTime();
+        mdlOrder.assignTime = frOrder.getAssignTime();
+        mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
         mdlOrder.customerDescription = frOrder.getCustomerDescription();
