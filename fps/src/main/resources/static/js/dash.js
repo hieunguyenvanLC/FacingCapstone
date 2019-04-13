@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     uplBill = document.getElementById("uplBill");
     imgBill = document.getElementById("imgBill");
-
+    txtOrderCode = document.getElementById("txtOrderCode");
     txtOrderId = document.getElementById("txtOrderId");
     txtBuyerName = document.getElementById("txtBuyerName");
     txtBuyerPhone = document.getElementById("txtBuyerPhone");
@@ -750,9 +750,10 @@ function loadEditForm() {
     txtShipperName.value = orderEdit.shipperName;
     txtShipperPhone.value = orderEdit.shipperPhone;
     cbbStatus.value = changeStatus(orderEdit.status);
-
+    txtOrderCode.value = orderEdit.orderCode;
     txtLatitude.value = orderEdit.latitude;
     txtLongitude.value = orderEdit.longitude;
+    txtAddress.value = orderEdit.address;
 
     txtTotalPrice.value = orderEdit.totalPrice;
     txtShipperEarn.value = orderEdit.shipperEarn;
