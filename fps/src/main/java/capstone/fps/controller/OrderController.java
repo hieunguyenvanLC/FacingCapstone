@@ -182,13 +182,14 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
-    // Mobile Shipper - Checkout - End
-
 
     @PostMapping(Fix.MAP_ANY + "/python")
     public String receiveFaceResult(@RequestBody MapFaceResult map) {
         return orderService.receiveFaceResult(map.key, map.faceListStr);
     }
+    // Mobile Shipper - Checkout - End
+
+
 
     @GetMapping(Fix.MAP_ANY + API + "/notify")
     public String testNotify(int orderId, String shipperToken) {
