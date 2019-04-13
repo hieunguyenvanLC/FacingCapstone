@@ -35,7 +35,6 @@ export class HomePage {
 
   isLoaded = false;
   userDetail = [];
-  status_code = 0;
   username: any;
 
   myAccount: any;
@@ -78,13 +77,12 @@ export class HomePage {
   ngOnInit() {
     console.log("da tao");
     this.loading.present(this.constant.LOADINGMSG).then(() => {
-      this.storeService.getList(this.longitude, this.latitude).subscribe(
+      this.geolocation.getCurrentPosition().then((resp) => {
+        console.log(resp.coords.latitude)
+        console.log(resp.coords.longitude)
+      this.storeService.getList(resp.coords.longitude, resp.coords.latitude).subscribe(
         res => {
-          //this.stores = Array.prototype.slice.call(data.toString);
-          //console.log(res[0].data);
           this.storesObj.push(res);
-          // console.log(res);
-          // console.log(this.storesObj[0].data);
           this.storesObj[0].data.forEach(element => {
             this.stores.push(element);
           });
@@ -103,47 +101,43 @@ export class HomePage {
           }
         }
       )//end get list store api
+      })//end geolocation getcurrent location
 
     })//end loading process
 
+    //********** getUserDetail ***************/
+    // this.accountService.getDetailUser().subscribe(res => {
+    //   let tempArr = [];
+    //   tempArr.push(res);
+    //   console.log(tempArr[0].data);
+    // })//end api getUserDetail
+    this.getUser();
+    // this.storage.get("ACCOUNT").then(value => {
+    //   console.log("ACCOUNT-ieikei");
 
-    this.storage.get("ACCOUNT").then(value => {
-      console.log("ACCOUNT-ieikei");
+    //   if (value) {
+    //     // console.log("not empty");
+    //     // console.log(value);
+    //     this.username = value.name;
+    //     this.appComponent.refreshSlideMenu(value.name, value.avatar, value.extraPoint);
+    //   } else {
+    //     console.log("empty");
+    //   }
 
-      if (value) {
-        // console.log("not empty");
-        // console.log(value);
-        this.username = value.name;
-        this.appComponent.refreshSlideMenu(value.name, value.avatar, value.extraPoint);
-      } else {
-        console.log("empty");
-      }
-
-    });
-    // this.storage.get("MYLOCATION").then(value => {
-    //   // if (value === null){
-    //   //   console.log("in null, set location");
-    //   //   console.log(value);
-    //   //   this.appComponent.getLocataion();
-    //   // }
-    //   console.log("MYLOCATION IS ")
-    //   console.log(value);
-    // });
-
-    //refresh slide menu
-    // if (this.username){
-    //   this.appComponent.refreshSlideMenu(this.username);
-    // } 
+    // }); //end call storage for account
+    
 
   }
 
   getUser() {
     this.accountService.getDetailUser().subscribe(
       res => {
-        this.userDetail.push(res);
-        // console.log(this.userDetail[0].data);
-        this.status_code = this.userDetail[0].status_code;
-
+        //this.userDetail.push(res);
+        let tempArr = [];
+        tempArr.push(res);
+        console.log("in get user----")
+        console.log(tempArr[0].data);
+        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.extraPoint);
       }, error => {
         console.log(error);
       },
