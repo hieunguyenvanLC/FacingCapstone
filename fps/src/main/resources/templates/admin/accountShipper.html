@@ -94,13 +94,11 @@
                                         <div class="form-group">
                                             <label for="cbbSource">Source</label>
                                             <select id="cbbSource" class="form-control mb-3">
-                                                <option value="1" title="Facebook ads, Facebook homepage...">facebook
-                                                </option>
+                                                <option value="1" title="Facebook ads, homepage...">facebook</option>
                                                 <option value="2" title="Articles about FPS">magazine</option>
                                                 <option value="3" title="From friends, family...">social</option>
                                                 <option value="4" title="">other</option>
                                                 <option value="5" title="Prefer not to say">none</option>
-                                                <option>2</option>
                                             </select>
                                         </div>
                                     </div>
@@ -138,7 +136,8 @@
                                             </div>
                                         </div>
                                         <div class="text-center">
-                                            <img src="/img/no_img.png" style="width: 100%" alt="portrait" id="imgUserFace">
+                                            <img src="/img/no_img.png" style="width: 100%" alt="portrait"
+                                                 id="imgUserFace">
                                         </div>
                                     </div>
                                 </div>
@@ -153,20 +152,20 @@
                                     </div>
                                 </div>
                                 <div class="row row-eq-height no-padding" id="divStatus">
-                                    <div class="col-4 padding-0">
-                                        <div class="form-group">
-                                            <label>Extra Point</label>
-                                            <input type="text" placeholder="Extra Point" class="form-control"
-                                                   id="txtExtraPoint">
-                                        </div>
-                                    </div>
-                                    <div class="col-4 padding-0">
-                                        <div class="form-group">
-                                            <label>Report Point</label>
-                                            <input type="text" placeholder="Report Point" class="form-control"
-                                                   id="txtReportPoint">
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-4 padding-0">-->
+                                    <!--<div class="form-group">-->
+                                    <!--<label>Extra Point</label>-->
+                                    <!--<input type="text" placeholder="Extra Point" class="form-control"-->
+                                    <!--id="txtExtraPoint">-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-4 padding-0">-->
+                                    <!--<div class="form-group">-->
+                                    <!--<label>Report Point</label>-->
+                                    <!--<input type="text" placeholder="Report Point" class="form-control"-->
+                                    <!--id="txtReportPoint">-->
+                                    <!--</div>-->
+                                    <!--</div>-->
                                     <div class="col-4 padding-0">
                                         <label for="cbbStatus">Status</label>
                                         <select id="cbbStatus" class="form-control">
@@ -319,8 +318,8 @@
 
         var txtIntroduce = document.getElementById("txtIntroduce");
 
-        var txtExtraPoint = document.getElementById("txtExtraPoint");
-        var txtReportPoint = document.getElementById("txtReportPoint");
+        // var txtExtraPoint = document.getElementById("txtExtraPoint");
+        // var txtReportPoint = document.getElementById("txtReportPoint");
         var cbbStatus = document.getElementById("cbbStatus");
 
         var txtNatId = document.getElementById("txtNatId");
@@ -435,8 +434,8 @@
 
             txtIntroduce.value = accEdit.introduce;
 
-            txtExtraPoint.value = accEdit.extraPoint;
-            txtReportPoint.value = accEdit.reportPoint;
+            // txtExtraPoint.value = accEdit.extraPoint;
+            // txtReportPoint.value = accEdit.reportPoint;
             cbbStatus.value = accEdit.status;
 
             txtNatId.value = accEdit.natId;
@@ -480,8 +479,8 @@
 
             txtIntroduce.value = "";
 
-            txtExtraPoint.value = "";
-            txtReportPoint.value = "";
+            // txtExtraPoint.value = "";
+            // txtReportPoint.value = "";
             cbbStatus.value = 1;
 
             txtNatId.value = "";
@@ -525,8 +524,8 @@
             fpsFormAppend(formData, "userFace", uplUserFace.files[0]);
             fpsFormAppend2(formData, "introduce", txtIntroduce.value, accEdit.introduce);
 
-            fpsFormAppend2(formData, "extraPoint", txtExtraPoint.value, accEdit.extraPoint);
-            fpsFormAppend2(formData, "reportPoint", txtReportPoint.value, accEdit.reportPoint);
+            // fpsFormAppend2(formData, "extraPoint", txtExtraPoint.value, accEdit.extraPoint);
+            // fpsFormAppend2(formData, "reportPoint", txtReportPoint.value, accEdit.reportPoint);
             fpsFormAppend2(formData, "status", cbbStatus.value, accEdit.status);
 
             fpsFormAppend2(formData, "natId", txtNatId.value, accEdit.natId);
