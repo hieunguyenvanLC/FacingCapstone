@@ -36,6 +36,8 @@ public class MdlShipperBuilder {
         mdlShipper.bikeRegFront = methods.bytesToBase64(frShipper.getBikeRegFront());
         mdlShipper.bikeRegBack = methods.bytesToBase64(frShipper.getBikeRegBack());
         mdlShipper.priceLevelId = frShipper.getPriceLevel().getId();
+        mdlShipper.rating = frShipper.getRating();
+        mdlShipper.orderCount = frShipper.getOrderCount();
         return mdlShipper;
     }
 

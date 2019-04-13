@@ -70,7 +70,7 @@
 
                             <div class="modal-body">
                                 <div class="row row-eq-height no-padding">
-                                    <div class="col-8 no-padding">
+                                    <div class="col-8 padding-0">
                                         <div class="row row-eq-height no-padding">
                                             <div class="col-6 padding-0">
                                                 <div class="form-group">
@@ -94,17 +94,16 @@
                                                            id="txtFullName">
                                                 </div>
 
-                                                <div class="form-group">
-                                                    <label for="cbbSource">Source</label>
-                                                    <select id="cbbSource" class="form-control mb-3">
-                                                        <option value="1" title="Facebook ads, homepage...">facebook
-                                                        </option>
-                                                        <option value="2" title="Articles about FPS">magazine</option>
-                                                        <option value="3" title="From friends, family...">social
-                                                        </option>
-                                                        <option value="4" title="">other</option>
-                                                        <option value="5" title="Prefer not to say">none</option>
+                                                <div class="form-group" id="divStatus">
+                                                    <label for="cbbStatus">Status</label>
+                                                    <select id="cbbStatus" class="form-control">
                                                     </select>
+                                                </div>
+
+                                                <div class="form-group" id="divRating">
+                                                    <label>Rating</label>
+                                                    <input type="text" placeholder="Rating" class="form-control"
+                                                           disabled id="txtRating">
                                                 </div>
                                             </div>
 
@@ -120,12 +119,20 @@
                                                            id="txtEmail">
                                                 </div>
 
-                                                <div class="form-group" id="divStatus">
-                                                    <label for="cbbStatus">Status</label>
-                                                    <select id="cbbStatus" class="form-control">
+
+                                                <div class="form-group">
+                                                    <label for="cbbSource">Source</label>
+                                                    <select id="cbbSource" class="form-control mb-3">
+                                                        <option value="1" title="Facebook ads, homepage...">facebook
+                                                        </option>
+                                                        <option value="2" title="Articles about FPS">magazine</option>
+                                                        <option value="3" title="From friends, family...">social
+                                                        </option>
+                                                        <option value="4" title="">other</option>
+                                                        <option value="5" title="Prefer not to say">none</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group">
+                                                <div class="form-group" id="divPriceLevel">
                                                     <label for="cbbPriceLevel">Price Level</label>
                                                     <select id="cbbPriceLevel" class="form-control mb-3">
                                                         <option value="1" title="Fresh recruited">0.6</option>
@@ -133,7 +140,23 @@
                                                         <option value="3" title="2 years exp">0.8</option>
                                                     </select>
                                                 </div>
+
+                                                <div class="form-group" id="divOrderCount">
+                                                    <label>Order delivered</label>
+                                                    <input type="text" placeholder="" class="form-control"
+                                                           disabled id="txtOrderCount">
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" placeholder="Note" class="form-control" id="txtNote">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Introduce</label>
+                                            <input type="text" placeholder="Introduce" class="form-control"
+                                                   id="txtIntroduce">
                                         </div>
                                     </div>
 
@@ -153,17 +176,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Note</label>
-                                    <input type="text" placeholder="Note" class="form-control" id="txtNote">
-                                </div>
+
                                 <div class="row row-eq-height no-padding">
                                     <div class="col-12 padding-0">
-                                        <div class="form-group">
-                                            <label>Introduce</label>
-                                            <input type="text" placeholder="Introduce" class="form-control"
-                                                   id="txtIntroduce">
-                                        </div>
+
                                     </div>
                                 </div>
                                 <!--<div class="row row-eq-height no-padding" id="divStatus">-->
@@ -317,20 +333,24 @@
         var txtSumRevenue = document.getElementById("txtSumRevenue");
         var txtFullName = document.getElementById("txtFullName");
         var cbbSource = document.getElementById("cbbSource");
+        var txtRating = document.getElementById("txtRating");
 
         var dpDob = document.getElementById("dpDob");
         var txtEmail = document.getElementById("txtEmail");
-        var txtNote = document.getElementById("txtNote");
+        var cbbStatus = document.getElementById("cbbStatus");
         var cbbPriceLevel = document.getElementById("cbbPriceLevel");
+        var txtOrderCount = document.getElementById("txtOrderCount");
+
+        var txtNote = document.getElementById("txtNote");
+        var txtIntroduce = document.getElementById("txtIntroduce");
 
         var uplUserFace = document.getElementById("uplUserFace");
         var imgUserFace = document.getElementById("imgUserFace");
 
-        var txtIntroduce = document.getElementById("txtIntroduce");
 
         // var txtExtraPoint = document.getElementById("txtExtraPoint");
         // var txtReportPoint = document.getElementById("txtReportPoint");
-        var cbbStatus = document.getElementById("cbbStatus");
+
 
         var txtNatId = document.getElementById("txtNatId");
         var dpNatDate = document.getElementById("dpNatDate");
@@ -350,8 +370,10 @@
         var divPassword = document.getElementById("divPassword");
         var divSumRevenue = document.getElementById("divSumRevenue");
         var divStatus = document.getElementById("divStatus");
+        var divPriceLevel = document.getElementById("divPriceLevel");
+        var divRating = document.getElementById("divRating");
+        var divOrderCount = document.getElementById("divOrderCount");
         var btnCloseModal = document.getElementById("btnCloseModal");
-        var tblBodyAcc = document.getElementById("tblBodyAcc");
 
 
         var accList;
@@ -426,23 +448,30 @@
         function loadEditForm() {
             divPassword.style.display = "none";
             divSumRevenue.style.display = "block";
-            divStatus.style.visibility = "visible";
+            divStatus.style.display = "block";
+            divPriceLevel.style.display = "block";
+            divOrderCount.style.display = "block";
+            divRating.style.display = "block";
 
             txtPhone.disabled = true;
             txtSumRevenue.disabled = true;
             cbbPriceLevel.disabled = true;
             cbbSource.disabled = true;
+            txtNatId.disabled = true;
+
 
             txtPhone.value = accEdit.phone;
 
             txtSumRevenue.value = accEdit.sumRevenue;
             txtFullName.value = accEdit.name;
             cbbSource.value = accEdit.sourceId;
+            txtRating.value = accEdit.rating;
 
             dpDob.valueAsNumber = accEdit.dateOfBirth;
             txtEmail.value = accEdit.email;
             txtNote.value = accEdit.note;
             cbbPriceLevel.value = accEdit.priceLevelId;
+            txtOrderCount.value = accEdit.orderCount;
 
             uplUserFace.value = "";
             fpsSetImgSrc(imgUserFace, accEdit.userImage);
@@ -475,12 +504,16 @@
         function loadAddForm() {
             divPassword.style.display = "block";
             divSumRevenue.style.display = "none";
-            divStatus.style.visibility = "hidden";
+            divStatus.style.display = "none";
+            divPriceLevel.style.display = "none";
+            divOrderCount.style.display = "none";
+            divRating.style.display = "none";
 
             txtPhone.disabled = false;
             txtSumRevenue.disabled = false;
             cbbPriceLevel.disabled = false;
             cbbSource.disabled = false;
+            txtNatId.disabled = false;
 
             accEditPos = -1;
 
@@ -535,12 +568,12 @@
             fpsFormAppend2(formData, "phone", txtPhone.value, accEdit.phone);
             fpsFormAppend2(formData, "sumRevenue", txtSumRevenue.value, accEdit.sumRevenue);
             fpsFormAppend2(formData, "name", txtFullName.value, accEdit.name);
-            fpsFormAppend2(formData, "sourceId", cbbSource.value, accEdit.sourceId);
+            // fpsFormAppend2(formData, "sourceId", cbbSource.value, accEdit.sourceId);
 
             fpsFormAppend2(formData, "dob", dpDob.valueAsNumber, accEdit.dateOfBirth);
             fpsFormAppend2(formData, "email", txtEmail.value, accEdit.email);
             fpsFormAppend2(formData, "note", txtNote.value, accEdit.note);
-            fpsFormAppend2(formData, "priceLevelId", cbbPriceLevel.value, accEdit.priceLevelId);
+            // fpsFormAppend2(formData, "priceLevelId", cbbPriceLevel.value, accEdit.priceLevelId);
 
             fpsFormAppend(formData, "userFace", uplUserFace.files[0]);
             fpsFormAppend2(formData, "introduce", txtIntroduce.value, accEdit.introduce);
@@ -549,10 +582,10 @@
             // fpsFormAppend2(formData, "reportPoint", txtReportPoint.value, accEdit.reportPoint);
             fpsFormAppend2(formData, "status", cbbStatus.value, accEdit.status);
 
-            fpsFormAppend2(formData, "natId", txtNatId.value, accEdit.natId);
+            // fpsFormAppend2(formData, "natId", txtNatId.value, accEdit.natId);
             fpsFormAppend2(formData, "natDate", dpNatDate.valueAsNumber, accEdit.natDate);
             fpsFormAppend2(formData, "bikeRegId", txtBikeRegId.value, accEdit.bikeRegId);
-            fpsFormAppend2(formData, "bikeRegDate", dpNatDate.valueAsNumber, accEdit.bikeRegDate);
+            fpsFormAppend2(formData, "bikeRegDate", dpBikeRegDate.valueAsNumber, accEdit.bikeRegDate);
 
             fpsFormAppend(formData, "natFront", uplNatFront.files[0]);
             fpsFormAppend(formData, "natBack", uplNatBack.files[0]);
