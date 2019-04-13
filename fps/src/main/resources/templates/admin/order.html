@@ -96,42 +96,46 @@
                                         <div class="form-group">
                                             <label>Order Code</label>
                                             <input type="text" placeholder="Id" class="form-control"
-                                                 disabled  id="txtOrderCode">
+                                                   disabled id="txtOrderCode">
                                         </div>
                                         <div class="form-group">
                                             <label>Customer Phone</label>
                                             <input type="text" placeholder="Customer Phone" class="form-control"
-                                                   disabled   id="txtBuyerPhone">
+                                                   disabled id="txtBuyerPhone">
                                         </div>
                                         <div class="form-group">
                                             <label>Customer Name</label>
                                             <input type="text" placeholder="Customer Name" class="form-control"
-                                                   disabled  id="txtBuyerName">
+                                                   disabled id="txtBuyerName">
                                         </div>
 
                                         <div class="form-group">
                                             <label>Shipper Phone</label>
                                             <input type="text" placeholder="Shipper Phone" class="form-control"
-                                                   disabled   id="txtShipperPhone">
+                                                   disabled id="txtShipperPhone">
                                         </div>
                                         <div class="form-group">
                                             <label>Shipper Name</label>
                                             <input type="text" placeholder="Shipper Name" class="form-control"
-                                                   disabled   id="txtShipperName">
+                                                   disabled id="txtShipperName">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="cbbStatus">Status</label>
                                             <select class="form-control" id="cbbStatus"></select>
                                         </div>
-
+                                        <div class="form-group">
+                                            <label>Note</label>
+                                            <input type="text" placeholder="Note" class="form-control"
+                                                   id="txtNote">
+                                        </div>
                                     </div>
 
                                 </div>
 
 
                                 <div class="row row-eq-height no-padding">
-                                    <div class="col-4 padding-0">
+                                    <div class="col-8 padding-0">
                                         <div class="form-group">
                                             <label>Customer Description</label>
                                             <input type="text" placeholder="Customer Description" class="form-control"
@@ -143,6 +147,18 @@
                                                    id="txtAddress">
                                         </div>
                                         <div class="form-group">
+                                            <label>Store Name</label>
+                                            <input type="text" placeholder="Store Name" class="form-control"
+                                                   disabled id="txtStoreName">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Store Address</label>
+                                            <input type="text" placeholder="Longitude" class="form-control"
+                                                   disabled id="txtStoreAddress">
+                                        </div>
+                                    </div>
+                                    <div class="col-4 padding-0">
+                                        <div class="form-group">
                                             <label>Customer Longitude</label>
                                             <input type="text" placeholder="Longitude" class="form-control"
                                                    id="txtLongitude">
@@ -152,47 +168,31 @@
                                             <input type="text" placeholder="Latitude" class="form-control"
                                                    id="txtLatitude">
                                         </div>
-                                    </div>
-                                    <div class="col-4 padding-0">
-                                        <div class="form-group">
-                                            <label>Store Name</label>
-                                            <input type="text" placeholder="Store Name" class="form-control"
-                                                   id="txtStoreName">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Store Address</label>
-                                            <input type="text" placeholder="Longitude" class="form-control"
-                                                   id="txtStoreAddress">
-                                        </div>
+
                                         <div class="form-group">
                                             <label>Store Longitude</label>
                                             <input type="text" placeholder="Longitude" class="form-control"
-                                                   id="txtStoreLongitude">
+                                                   disabled id="txtStoreLongitude">
                                         </div>
                                         <div class="form-group">
                                             <label>Store Latitude</label>
                                             <input type="text" placeholder="Latitude" class="form-control"
-                                                   id="txtStoreLatitude">
+                                                   disabled id="txtStoreLatitude">
                                         </div>
                                     </div>
-                                    <div class="col-4 padding-0">
 
-                                        <!--<div class="form-group">-->
-                                        <!--<label>Total Price</label>-->
-                                        <!--<input type="text" placeholder="Total Price" class="form-control"-->
-                                        <!--id="txtTotalPrice">-->
-                                        <!--</div>-->
-                                        <!--<div class="form-group">-->
-                                        <!--<label>Shipper Earn</label>-->
-                                        <!--<input type="text" placeholder="Shipper Earn" class="form-control"-->
-                                        <!--id="txtShipperEarn">-->
-                                        <!--</div>-->
-                                        <div class="form-group">
-                                            <label>Note</label>
-                                            <input type="text" placeholder="Note" class="form-control"
-                                                   id="txtNote">
-                                        </div>
-                                    </div>
+
+                                    <!--<div class="form-group">-->
+                                    <!--<label>Total Price</label>-->
+                                    <!--<input type="text" placeholder="Total Price" class="form-control"-->
+                                    <!--id="txtTotalPrice">-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group">-->
+                                    <!--<label>Shipper Earn</label>-->
+                                    <!--<input type="text" placeholder="Shipper Earn" class="form-control"-->
+                                    <!--id="txtShipperEarn">-->
+                                    <!--</div>-->
+
                                 </div>
 
 
@@ -242,13 +242,13 @@
         var cbbStatus = document.getElementById("cbbStatus");
 
         var txtCustomerDescription = document.getElementById("txtCustomerDescription");
-        var txtAddress  = document.getElementById("txtAddress");
+        var txtAddress = document.getElementById("txtAddress");
         var txtLatitude = document.getElementById("txtLatitude");
         var txtLongitude = document.getElementById("txtLongitude");
 
 
         var txtStoreName = document.getElementById("txtStoreName");
-        var txtStoreAddress  = document.getElementById("txtStoreAddress");
+        var txtStoreAddress = document.getElementById("txtStoreAddress");
         var txtStoreLatitude = document.getElementById("txtStoreLatitude");
         var txtStoreLongitude = document.getElementById("txtStoreLongitude");
 
@@ -409,15 +409,15 @@
             // fpsFormAppend2(formData, "shipperName", txtShipperName.value, orderEdit.shipperName);
             // fpsFormAppend2(formData, "shipperPhone", txtShipperPhone.value, orderEdit.shipperPhone);
             fpsFormAppend2(formData, "status", cbbStatus.value, orderEdit.status);
+            fpsFormAppend2(formData, "note", txtNote.value, orderEdit.note);
 
+            fpsFormAppend2(formData, "customerDescription", txtCustomerDescription.value, orderEdit.customerDescription);
+            fpsFormAppend2(formData, "address", txtAddress.value, orderEdit.address);
             fpsFormAppend2(formData, "latitude", txtLatitude.value, orderEdit.latitude);
             fpsFormAppend2(formData, "longitude", txtLongitude.value, orderEdit.longitude);
 
             // fpsFormAppend2(formData, "totalPrice", txtTotalPrice.value, orderEdit.totalPrice);
             // fpsFormAppend2(formData, "shipperEarn", txtShipperEarn.value, orderEdit.shipperEarn);
-
-            fpsFormAppend2(formData, "customerDescription", txtCustomerDescription.value, orderEdit.customerDescription);
-            fpsFormAppend2(formData, "note", txtNote.value, orderEdit.note);
             $.ajax({
                 type: 'PUT',
                 url: fpsApiOrd,

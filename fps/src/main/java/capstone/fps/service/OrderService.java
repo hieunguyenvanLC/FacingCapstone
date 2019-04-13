@@ -189,7 +189,7 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
+    public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, Integer status, String note, String customerDescription, String address, Double latitude, Double longitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -206,9 +206,12 @@ public class OrderService {
         if (bill != null) {
             frOrder.setBill(methods.multipartToBytes(bill));
         }
-        FRAccount shipper = repo.getAccountByPhone(shipperPhone, accountRepository);
-        if (shipper != null) {
-            frOrder.setShipper(shipper.getShipper());
+//        FRAccount shipper = repo.getAccountByPhone(shipperPhone, accountRepository);
+//        if (shipper != null) {
+//            frOrder.setShipper(shipper.getShipper());
+//        }
+        if (address != null) {
+            frOrder.setShipAddress(address);
         }
         if (longitude != null) {
             frOrder.setLongitude(longitude);
@@ -216,12 +219,12 @@ public class OrderService {
         if (latitude != null) {
             frOrder.setLatitude(latitude);
         }
-        if (totalPrice != null) {
-            frOrder.setTotalPrice(totalPrice);
-        }
-        if (shipperEarn != null) {
-            frOrder.setShipperEarn(shipperEarn);
-        }
+//        if (totalPrice != null) {
+//            frOrder.setTotalPrice(totalPrice);
+//        }
+//        if (shipperEarn != null) {
+//            frOrder.setShipperEarn(shipperEarn);
+//        }
         if (customerDescription != null) {
             frOrder.setCustomerDescription(valid.nullProof(customerDescription));
         }
@@ -662,8 +665,8 @@ public class OrderService {
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
             frShipper.setOrderCount(frShipper.getOrderCount() + 1);
             FRPriceLevel nextLevel = frShipper.getPriceLevel().getNextLevel();
-            if(nextLevel != null){
-                if(frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()){
+            if (nextLevel != null) {
+                if (frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()) {
                     frShipper.setPriceLevel(nextLevel);
                 }
             }
