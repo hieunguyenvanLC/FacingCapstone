@@ -37,6 +37,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.stereotype.Component;
+
 @RestController
 @Configuration
 @EnableWebSecurity
@@ -44,28 +48,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private AccountService accountService;
-
-
+    
     @Autowired
     public WebSecurityConfig(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;
         this.accountService = accountService;
     }
-
-    @Bean
-    EmbeddedServletContainerCustomizer containerCustomizer() throws Exception {
-        return (ConfigurableEmbeddedServletContainer container) -> {
-            if (container instanceof TomcatEmbeddedServletContainerFactory) {
-                TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) container;
-                tomcat.addConnectorCustomizers(
-                        (connector) -> {
-                            connector.setMaxPostSize(10000000); // 10 MB
-                        }
-                );
-            }
-        };
-    }
-
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
