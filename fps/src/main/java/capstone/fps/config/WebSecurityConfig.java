@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private AccountService accountService;
-    
+
     @Autowired
     public WebSecurityConfig(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;

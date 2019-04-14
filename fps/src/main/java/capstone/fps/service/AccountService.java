@@ -356,25 +356,29 @@ public class AccountService {
         frAccount.setNatDate(natDate);
         frAccount.setDob(dob);
         frAccount.setCreateTime(methods.getTimeNow());
+        frAccount.setUpdateTime(null);
+        frAccount.setDeleteTime(null);
         frAccount.setNote(valid.nullProof(note));
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(methods.getUser());
+        frAccount.setAvatar(null);
         accountRepo.save(frAccount);
 
         FRShipper frShipper = new FRShipper();
-        frShipper.setAccount(frAccount);
-        frShipper.setBikeRegId(bikeRegId);
-        frShipper.setBikeRegDate(bikeRegDate);
         frShipper.setIntroduce(valid.nullProof(introduce));
+        frShipper.setSumRevenue(0d);
         frShipper.setNatIdFrontImage(methods.multipartToBytes(natFront));
         frShipper.setNatIdBackImage(methods.multipartToBytes(natBack));
-        frShipper.setSumRevenue(0d);
+        frShipper.setBikeRegId(bikeRegId);
+        frShipper.setBikeRegDate(bikeRegDate);
         frShipper.setBikeRegFront(methods.multipartToBytes(bikeRegFront));
         frShipper.setBikeRegBack(methods.multipartToBytes(bikeRegBack));
-        frShipper.setPriceLevel(frPriceLevel);
+        frShipper.setAccount(frAccount);
         frShipper.setSource(frSource);
+        frShipper.setPriceLevel(frPriceLevel);
         frShipper.setRating(0d);
         frShipper.setRatingCount(0);
+        frShipper.setOrderCount(0);
         shipperRepo.save(frShipper);
 
         MdlShipper mdlShipper = shipperBuilder.buildFull(repo.getAccount(frAccount.getId(), accountRepo), shipperRepo.findById(frShipper.getId()).orElse(null));
@@ -540,6 +544,9 @@ public class AccountService {
         frAccount.setEditor(null);
         frAccount.setAvatar(faceBytes);
         accountRepo.save(frAccount);
+
+
+
 
 
         frAccount = accountRepo.findById(frAccount.getId()).get();
