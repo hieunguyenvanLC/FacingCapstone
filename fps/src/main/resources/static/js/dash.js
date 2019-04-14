@@ -60,10 +60,10 @@ $(document).ready(function () {
                 $("#lbNewOrderTWeek").html("<strong>" + abbrNum(summary.OrderCountTWeek) + "</strong>"); // week
                 $("#lbNewOrderTMonth").html("<strong>" + abbrNum(summary.OrderCountTMonth) + "</strong>"); // month
                 //Rate
-                $("#lbSuccessRate").html("<strong>" + summary.successRate + "%</strong>");// all
-                $("#lbSuccessRateD").html("<strong>" + summary.successRateTDay + "%</strong>");//day
-                $("#lbSuccessRateW").html("<strong>" + summary.successRateTWeek + "%</strong>");// week
-                $("#lbSuccessRateM").html("<strong>" + summary.successRateTMonth + "%</strong>");// month
+                $("#lbSuccessRate").html("<strong>" + formatNumber(summary.successRate) + "%</strong>");// all
+                $("#lbSuccessRateD").html("<strong>" + formatNumber(summary.successRateTDay) + "%</strong>");//day
+                $("#lbSuccessRateW").html("<strong>" + formatNumber(summary.successRateTWeek) + "%</strong>");// week
+                $("#lbSuccessRateM").html("<strong>" + formatNumber(summary.successRateTMonth) + "%</strong>");// month
                 //Total
                 $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + " VND</strong>");// all
                 $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + " VND</strong>");//day
@@ -728,6 +728,11 @@ function abbrNum(number) {
         }
     }
 
+    return number;
+}
+
+function formatNumber(number) {// = 1 * 10^5 = 100000.
+    number = Math.round(number * 100) / 100;
     return number;
 }
 

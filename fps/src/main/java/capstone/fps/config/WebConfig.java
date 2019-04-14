@@ -21,6 +21,6 @@ public class WebConfig {
     @Scope("singleton")
     public ShipperWait shipperWait() {
         return new ShipperWait();
-    };
+    }
 
 }
