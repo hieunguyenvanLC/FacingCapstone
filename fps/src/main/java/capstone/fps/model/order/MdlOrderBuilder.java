@@ -32,6 +32,7 @@ public class MdlOrderBuilder {
         mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.priceLevel = frOrder.getPriceLevel();
         mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
@@ -42,6 +43,7 @@ public class MdlOrderBuilder {
         mdlOrder.note = frOrder.getNote();
         mdlOrder.status = frOrder.getStatus();
         mdlOrder.editor = frOrder.getEditor();
+        mdlOrder.rating = frOrder.getRating();
 
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
@@ -128,6 +130,7 @@ public class MdlOrderBuilder {
         mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.priceLevel = frOrder.getPriceLevel();
         mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
@@ -138,6 +141,7 @@ public class MdlOrderBuilder {
         mdlOrder.note = frOrder.getNote();
         mdlOrder.status = frOrder.getStatus();
         mdlOrder.editor = frOrder.getEditor();
+        mdlOrder.rating = frOrder.getRating();
 
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();

@@ -11,7 +11,6 @@ import java.util.Optional;
 @Repository
 public interface AccountRepo extends JpaRepository<FRAccount, Integer> {
 
-
     Optional<FRAccount> findByPhone(String phone);
 
     List<FRAccount> findAllByRole(FRRole role);

@@ -34,6 +34,8 @@ public class MdlOrder {
     @Expose
     Double shipperEarn;
     @Expose
+    Double priceLevel;
+    @Expose
     String address;
     @Expose
     Double longitude;
@@ -54,6 +56,8 @@ public class MdlOrder {
     @Expose
     FRAccount editor;
     @Expose
+    Integer rating;
+    @Expose
     String storeName;
     @Expose
     String storeAddress;
@@ -63,5 +67,7 @@ public class MdlOrder {
     double storeLatitude;
     @Expose
     List<MdlOrderDetail> detailList;
+
+
 
 }

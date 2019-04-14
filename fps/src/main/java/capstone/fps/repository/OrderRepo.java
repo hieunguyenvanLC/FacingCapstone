@@ -56,4 +56,3 @@ public interface OrderRepo extends JpaRepository<FROrder, Integer> {
             "where o.status = :stt and o.create_time >= :start and o.create_time < :end", nativeQuery = true)
     public Integer sumShipperEarn(@Param("stt") Integer status, @Param("start") Long start, @Param("end") Long end);
 }
-

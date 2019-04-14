@@ -37,6 +37,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.stereotype.Component;
+
 @RestController
 @Configuration
 @EnableWebSecurity
@@ -44,7 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private AccountService accountService;
-
 
     @Autowired
     public WebSecurityConfig(LoginService loginService, AccountService accountService) {

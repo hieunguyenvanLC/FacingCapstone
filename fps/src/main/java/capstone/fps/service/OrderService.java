@@ -176,18 +176,6 @@ public class OrderService {
 
     }
 
-    public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
-        Repo repo = new Repo();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
-        return response;
-    }
     public Response<MdlOrder> getOrderDetailStatic(Integer orderId) {
         Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -200,6 +188,20 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
+
+    public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+    }
+
     public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, Integer status, String note, String customerDescription, String address, Double latitude, Double longitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -256,7 +258,7 @@ public class OrderService {
 
 
     // Mobile Member - Order History - Begin
-    public Response<List<MdlOrder>> getOrderListMem(){
+    public Response<List<MdlOrder>> getOrderListMem() {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -454,7 +456,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order History - Begin
-    public Response<List<MdlOrder>> getOrderListShp(){
+    public Response<List<MdlOrder>> getOrderListShp() {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -607,7 +609,7 @@ public class OrderService {
 
         JsonObject notification = new JsonObject();
         notification.addProperty("title", "FPS Shipper");
-        notification.addProperty("body", "You has taken order" + frOrder.getId());
+        notification.addProperty("body", "You has taken order" + frOrder.getOrderCode());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
         notification.addProperty("icon", "fcm_push_icon");
@@ -675,7 +677,7 @@ public class OrderService {
         String key = frOrder.getId() + "" + methods.getTimeNow();
         Map<String, String> faceResult = AppData.getFaceResult();
         faceResult.remove(key);
-        faceRecognise(faceBytes, key);
+        System.out.println(faceRecognise(faceBytes, key));
 
         while (faceResult.get(key) == null) {
             try {
@@ -697,6 +699,7 @@ public class OrderService {
 
 
         String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
+        System.out.println("PayPal resp " + payId);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
             return response;
@@ -708,12 +711,12 @@ public class OrderService {
             frTransaction.setTime(time);
             frTransaction.setPaymentInformation(frPayInfo);
             transactionRepo.save(frTransaction);
-
+            System.out.println("save frTransaction");
             frOrder.setStatus(Fix.ORD_COM.index);
             frOrder.setBuyerFace(faceBytes);
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
-
+            System.out.println("save frOrder");
             FRShipper frShipper = methods.getUser().getShipper();
             double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
@@ -725,7 +728,9 @@ public class OrderService {
                 }
             }
             shipperRepo.save(frShipper);
+            System.out.println("save frShipper");
             notifyBuyerCheckout(frOrder);
+            notifyShipperCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
@@ -761,6 +766,10 @@ public class OrderService {
         URL url;
         HttpURLConnection urlConnection;
         String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
+        System.out.println(uri);
+        System.out.println(payUsername);
+        System.out.println(priceStr);
+        System.out.println(description);
         String method = "POST";
         String[] paramName = {"username", "password", "price", "description"};
         String[] paramValue = {payUsername, payPassword, priceStr, description};
@@ -783,7 +792,9 @@ public class OrderService {
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+                String readStream = methods.readStream(urlConnection.getInputStream());
+                System.out.println("response " + readStream);
+                return gson.fromJson(readStream, String.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -843,6 +854,33 @@ public class OrderService {
         body.add("data", data);
         body.addProperty("priority", "high");
         body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("restricted_package_name", "");
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+        return response;
+    }
+
+    public Response<String> notifyShipperCheckout(FROrder frOrder) {
+        Methods methods = new Methods();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS Shipper");
+        notification.addProperty("body", "Order checkout successfully");
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+        data.addProperty("orderId", frOrder.getId());
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", frOrder.getShipperToken());
         body.addProperty("restricted_package_name", "");
 
         Map<String, String> header = new HashMap<>();
