@@ -596,7 +596,7 @@ public class OrderService {
 
         JsonObject notification = new JsonObject();
         notification.addProperty("title", "FPS Shipper");
-        notification.addProperty("body", "You has taken order" + frOrder.getId());
+        notification.addProperty("body", "You has taken order" + frOrder.getOrderCode());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
         notification.addProperty("icon", "fcm_push_icon");

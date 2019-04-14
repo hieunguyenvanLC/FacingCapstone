@@ -107,7 +107,7 @@ public class MdlOrderBuilder {
         mdlOrder.status = frOrder.getStatus();
         mdlOrder.editor = frOrder.getEditor();
         mdlOrder.rating = frOrder.getRating();
-        
+
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
         mdlOrder.storeName = store.getStoreName();
