@@ -243,7 +243,9 @@
         }
 
         function cbbUserFaceOnChange() {
-            fpsSetImgSrc(imgUserFace, accEdit.faceList[cbbUserFace.selectedIndex].face);
+            var index = cbbUserFace.selectedIndex;
+            console.log(index);
+            fpsSetImgSrc(imgUserFace, accEdit.faceList[index].face);
         }
 
 
