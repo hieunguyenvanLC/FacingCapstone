@@ -109,3 +109,12 @@ npm install @ionic-native/http
 Native geocoder
 npm install @ionic-native/native-geocoder
 ionic cordova plugin add cordova-plugin-nativegeocoder
+
+------
+paypal account
+dpt321997-buyer@gmail.com
+dpt321997-facilitator@gmail.com
+
+password 12345678
+-------
+

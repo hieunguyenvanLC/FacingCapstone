@@ -4,6 +4,7 @@
       <ion-icon name="arrow-back"></ion-icon>
     </ion-buttons>
     <ion-title>Edit Profile</ion-title>
+    <ion-button slot="end" fill="outline" (click)="saveProfile()">Save</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -39,22 +40,29 @@
               </ion-list-header>
 
               <ion-item>
+                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
+                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail[0].data.phone }}"
+                  readonly>
+                </ion-input>
+              </ion-item>
+
+              <ion-item>
                 <ion-label color="dark" position="stacked">Full Name:</ion-label>
-                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" value="{{ userDetail[0].data.name }}">
+                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" [(ngModel)]="fullName" value="{{ userDetail[0].data.name }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Email:</ion-label>
-                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail[0].data.email }}">
+                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" [(ngModel)]="email" value="{{ userDetail[0].data.email }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
-                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail[0].data.phone }}">
-                </ion-input>
+                <ion-label color="dark" position="stacked">Date of birth:</ion-label>
+                <ion-datetime display-format="DD/MM/YYYY" picker-format="DD MM  YYYY" [(ngModel)]="cusDOB" value="{{ userDetail[0].data.dateOfBirth }}"></ion-datetime>
               </ion-item>
+
 
               <!-- <ion-item> -->
               <!-- <ion-label color="dark" position="stacked">Extra point: {{ userDetail[0].data.extraPoint }}</ion-label> -->
@@ -125,7 +133,8 @@
                     </h1>
                     <div class="card-drop__content--body">
                       <div class="card-drop__content--text">
-                        <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face)">Edit</ion-button>
+                        <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face)">
+                          Edit</ion-button>
                       </div>
                     </div>
                   </div>
@@ -137,7 +146,7 @@
         </ion-row>
       </ion-grid>
 
-      <ion-button size="" expand="full" color="primary" no-margin>Edit</ion-button>
+      <!-- <ion-button size="" expand="full" color="primary" no-margin>Save</ion-button> -->
     </div>
   </ion-card>
 </ion-content>

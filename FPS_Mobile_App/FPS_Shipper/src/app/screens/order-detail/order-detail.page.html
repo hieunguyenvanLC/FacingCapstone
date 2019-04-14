@@ -1,28 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <!-- <ion-buttons slot="start" (click)="dismissModal()">
+    <ion-buttons slot="start" (click)="back()">
       <ion-icon name="arrow-back"></ion-icon>
-    </ion-buttons> -->
+    </ion-buttons>
     <ion-title class="title-md hydrated">Your Order</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div *ngIf=(isLoaded)>
-    <ion-list margin-bottom>
+    <ion-list>
       <ion-list-header color="light">
         <ion-label class="fw700">Order Code: {{myOrder[0].data.orderCode}}</ion-label>
       </ion-list-header>
     </ion-list>
     <div style="padding: 5px">
-      Delivery to
+      Customer destination :
       <!-- <p class="primary-text">{{myOrder[0].currentAddress}}</p> -->
-      <ion-textarea no-padding type="text" color="primary" value="{{myOrder[0].data.address}}" position="fixed" readonly>
+      <ion-textarea no-padding type="text" color="primary" value="{{myOrder[0].data.address}}" position="fixed"
+        readonly>
       </ion-textarea>
-      Your order from <strong>{{myOrder[0].data.storeAddress}}</strong>
-      <br>
-      <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
-      </ion-label>
+      Order from <strong>{{myOrder[0].data.storeName}} - {{myOrder[0].data.storeAddress}}</strong>
+      <!-- <br>
+        <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
+        </ion-label> -->
     </div>
     <br>
     <!-- item group -->
@@ -86,11 +87,19 @@
       </ion-row>
     </ion-grid>
     <ion-list margin-bottom>
-      <ion-list-header color="light">
-        <ion-label class="fw700">Shipper infomation</ion-label>
+      <ion-list-header color="light" no-padding>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="9">
+                <ion-icon class="margin--2" name="cash"></ion-icon>Shipper Earn
+            </ion-col>
+            <ion-col size="3">
+                {{myOrder[0].data.shipperMoney}} VND
+              </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-list-header>
-
-      <ion-item>
+      <!-- <ion-item>
         <ion-label color="dark" position="stacked">Full Name:</ion-label>
         <ion-input readonly inputmode="text" value="{{myOrder[0].data.shipperName}}">
         </ion-input>
@@ -99,7 +108,7 @@
         <ion-label color="dark" position="stacked">Phone Number:</ion-label>
         <ion-input readonly inputmode="text" value="{{myOrder[0].data.shipperPhone}}">
         </ion-input>
-      </ion-item>
+      </ion-item> -->
     </ion-list>
   </div>
 </ion-content>

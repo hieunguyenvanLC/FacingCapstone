@@ -54,6 +54,7 @@ export class OrdermodalPage implements OnInit {
 
   ) {
     // componentProps can also be accessed at construction time using NavParams
+    this.prodList = "";
   }
   ngOnInit() {
 
@@ -128,7 +129,13 @@ export class OrdermodalPage implements OnInit {
     }
     //this.router.navigateByUrl("order");
     console.log("cb create")
-    await this.orderService.createOrder(this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus, "", this.prodList, this.myOrder[0].distance, this.tokenFCM)
+    await this.orderService.createOrder(this.myOrder[0].longitudeCus, 
+                                        this.myOrder[0].latitudeCus, 
+                                        "", 
+                                        this.prodList, 
+                                        this.myOrder[0].distance, 
+                                        this.tokenFCM, 
+                                        this.myOrder[0].currentAddress)
       .subscribe(data => {
         console.log(data);
         console.log("in create order ----");

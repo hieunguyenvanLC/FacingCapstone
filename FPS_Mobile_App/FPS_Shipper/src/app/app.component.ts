@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { AccountService } from './services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +21,17 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'List',
-      url: '/list',
+      title: 'Order history',
+      url: '/order-history',
       icon: 'list'
     }
   ];
+
+  isLoaded = false;
+  isLoadImg = false;
+  username: any;
+  avatar: any;
+  extraPoint: any;
 
   constructor(
     private platform: Platform,
@@ -31,6 +39,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private storage: Storage,
     private geolocation: Geolocation,
+    private accountService: AccountService,
+    private router: Router,
   ) {
     this.initializeApp();
   }
@@ -40,16 +50,54 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      this.geolocation.getCurrentPosition().then((resp) => {
-        console.log(resp)
-        let lati = resp.coords.latitude;
-        let longi = resp.coords.longitude;
-        this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
-        // resp.coords.latitude
-        // resp.coords.longitude
-      }).catch((error) => {
-        console.log('Error getting location: ', error);
-      });
+      // this.geolocation.getCurrentPosition().then((resp) => {
+      //   console.log(resp)
+      //   let lati = resp.coords.latitude;
+      //   let longi = resp.coords.longitude;
+      //   this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+      //   // resp.coords.latitude
+      //   // resp.coords.longitude
+      // }).catch((error) => {
+      //   console.log('Error getting location: ', error);
+      // });
     });
+  }
+
+  refreshSlideMenu(name, avatar, extraPoint) {
+    this.isLoaded = true;
+    this.username = name;
+    this.extraPoint = extraPoint;
+    if (avatar) {
+      this.isLoadImg = true;
+      this.avatar = avatar;
+    }
+    console.log("refresh menu")
+  }
+
+  goToEditProgile() {
+    this.router.navigateByUrl("profile");
+  }
+
+  // getLocataion(){
+  //   this.geolocation.getCurrentPosition().then((resp) => {
+  //     console.log(resp)
+  //     let lati = resp.coords.latitude;
+  //     let longi = resp.coords.longitude;
+  //     this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
+  //     // resp.coords.latitude
+  //     // resp.coords.longitude
+  //   }).catch((error) => {
+  //     console.log('Error getting location: ', error);
+  //   });
+  // }
+
+   async logout() {
+    await this.accountService.logOut().subscribe(res => {
+      console.log(res);
+      
+      this.storage.clear();
+      
+      this.router.navigateByUrl("login");
+    }); //end api log out
   }
 }

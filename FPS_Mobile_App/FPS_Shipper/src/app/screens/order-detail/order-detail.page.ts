@@ -1,63 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderService } from 'src/app/services/order.service';
-import { GoogleApiService } from 'src/app/services/google-api.service';
-import { async } from '@angular/core/testing';
 import { LoadingService } from 'src/app/services/loading.service';
-import { Storage } from '@ionic/storage';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { FCM } from '@ionic-native/fcm/ngx';
+import { ToasthandleService } from 'src/app/services/toasthandle.service';
+import { Constant } from 'src/app/common/constant';
+import { OrderService } from 'src/app/services/order.service';
+import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
+import { GoogleApiService } from 'src/app/services/google-api.service';
 
 @Component({
-  selector: 'app-check-out',
-  templateUrl: './check-out.page.html',
-  styleUrls: ['./check-out.page.scss'],
+  selector: 'app-order-detail',
+  templateUrl: './order-detail.page.html',
+  styleUrls: ['./order-detail.page.scss'],
 })
-export class CheckOutPage implements OnInit {
+export class OrderDetailPage implements OnInit {
 
-  orderId: any;
+  orderId : number;
   myOrder = [];
   isLoaded = false;
   total : any;
-   constructor(
-    private route: ActivatedRoute,
-    private orderService: OrderService,
-    private googleAPI: GoogleApiService,
-    private loading: LoadingService,
-    private storage: Storage,
-    private geolocation: Geolocation,
-    private fcm: FCM,
+  constructor(
+    private activatedRoute : ActivatedRoute,
     private router : Router,
-  ) {
+    private loading : LoadingService,
+    private toastHandle : ToasthandleService,
+    private constant : Constant,
+    private orderService : OrderService,
+    private nativeGeocoder: NativeGeocoder,
+    private googleAPI : GoogleApiService,
+  ) { 
+    this.orderId = 0;
     this.myOrder.length = 0;
-    this.orderId = this.route.snapshot.params['id'];
-    
-    this.fcm.onNotification().subscribe(data => {
-      // console.log("vo day");
-      // console.log(data);
-
-      if (data.wasTapped) {
-        console.log('Received in rating background 1');
-        //this.dismissModal();
-        //this.loading.dismiss();
-        //this.alertHandle.dissmissAlert();
-        this.router.navigate(['rating', data.orderId]);
-        //data.order.id
-
-      } else {
-        console.log('Received in rating background 3');
-        //this.dismissModal();
-        //this.loading.dismiss();
-        //this.alertHandle.dissmissAlert();
-        this.router.navigate(['rating', data.orderId]);
-      }
-    });// end fcm
-
-    console.log("1");
-    this.getOrderbyID();
+    this.activatedRoute.paramMap
+      .subscribe(param => {
+        this.orderId = parseInt(param.get('id'));
+          // this.getOrderbyID();
+        })
   }
 
-  
   async ngOnInit() {
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -108,11 +87,13 @@ export class CheckOutPage implements OnInit {
 
   async getOrderbyID(){
     //get order by id
+    console.log("4");
     await this.orderService.getOrderDetailById(this.orderId).subscribe(res => {
       this.myOrder.push(res);
+      console.log(this.myOrder)
       this.myOrder[0].data["total"] = this.myOrder[0].data.totalPrice + this.myOrder[0].data.shipperEarn
+      this.myOrder[0].data["shipperMoney"] = this.myOrder[0].data.priceLevel * this.myOrder[0].data.shipperEarn
       if (this.myOrder) {
-        console.log(this.myOrder[0].data.address);
         this.isLoaded = true;
         this.loading.dismiss();
       }//end if check myOrder
@@ -120,4 +101,9 @@ export class CheckOutPage implements OnInit {
     })//end api get order by id
   }//end get order by id
 
+
+  back(){
+    this.router.navigateByUrl("order-history")
+  }
+  
 }

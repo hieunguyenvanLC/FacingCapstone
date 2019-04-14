@@ -7,6 +7,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Storage } from '@ionic/storage';
 import { Constant } from 'src/app/common/constant';
 import { AddMemberPage } from '../add-member/add-member.page';
+import { ToastHandleService } from 'src/app/services/toasthandle.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +25,12 @@ export class ProfilePage implements OnInit {
   isLoaded = false;
   isImg = false;
 
+  fullName : any;
+  email : any;
+  cusDOB : any;
+
+
+
   constructor(
     public navCtrl: NavController,
     public router : Router,
@@ -34,8 +41,12 @@ export class ProfilePage implements OnInit {
     private storage : Storage,
     private constant : Constant,
     private modalController: ModalController,
+    private toastHandle : ToastHandleService,
   ) { 
     this.userDetail.length = 0;
+    // this.fullName = "";
+    // this.email = "";
+    // this.cusDOB = "";
   }
 
   ngOnInit() {
@@ -55,6 +66,13 @@ export class ProfilePage implements OnInit {
           this.isImg = true;
         }
         console.log(this.userDetail[0].data.name);
+
+          this.fullName = this.userDetail[0].data.name;
+          this.email = this.userDetail[0].data.email;
+          if (this.userDetail[0].data.dob !== undefined || this.userDetail[0].data.dob !== null){
+            this.cusDOB = new Date(this.userDetail[0].data.dob).toLocaleDateString()
+          }
+        
         this.isLoaded = true;
         if (this.isLoaded){
           this.loadingService.dismiss();
@@ -138,5 +156,28 @@ export class ProfilePage implements OnInit {
     }).then(modal => {
       modal.present();
     });
-  }
+  } //end add member
+
+  saveProfile(){
+    console.log(this.fullName);
+    console.log(this.email);
+    console.log(this.cusDOB);
+    if (this.cusDOB === "Invalid Date"){
+      this.toastHandle.presentToast("Date of birth cannot null !");
+    }else{
+      let newDob = new Date(this.cusDOB).getTime();
+      // let longDob = newDob.;
+      this.loadingService.present("Waiting...").then(()=> {
+        this.accountService.updateMemberDetail(this.fullName, this.email, newDob).subscribe(
+          res => {
+            let temp = [];
+            temp.push(res);
+            if (temp[0].message == "Success"){
+              this.toastHandle.presentToast("Updated !");
+              this.loadingService.dismiss();
+            }
+          })//end api update member detail
+      })//end loading
+    }//end if cusDOB
+  }//end save profile
 }

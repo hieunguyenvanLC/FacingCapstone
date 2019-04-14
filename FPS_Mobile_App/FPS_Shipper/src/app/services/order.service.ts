@@ -41,4 +41,29 @@ export class OrderService {
                             this.constant.ORDER +
                             this.constant.CHECKOUT, formData);
   }
+
+  getListOrder(){
+    return this.apiHttp.get(this.constant.MAP_SHP + 
+                            this.constant.MAP_API +
+                            this.constant.ORDER + 
+                            "/history");
+  }
+
+  getOrderDetailById(orderID){
+    return this.apiHttp.get( this.constant.MAP_SHP +
+                             this.constant.MAP_API +
+                             this.constant.ORDER +
+                             "/detail?orderId=" + orderID);
+  }
+
+  takeBill(orderId, bill){
+    let formData : FormData = new FormData();
+    formData.append("orderId", orderId);
+    formData.append("bill", bill);
+
+    return this.apiHttp.put(this.constant.MAP_ANY +
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            "/bill", formData);
+  }
 }

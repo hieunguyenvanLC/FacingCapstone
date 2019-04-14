@@ -24,9 +24,12 @@ export class RatingPage implements OnInit {
   ) {
     this.rate = 0;
     this.orderId = this.route.snapshot.params['id'];
+
+    
   }
 
   ngOnInit() {
+    document.getElementById("rate2").nodeValue = "checked";
   }
 
   starmark(rateStar) {

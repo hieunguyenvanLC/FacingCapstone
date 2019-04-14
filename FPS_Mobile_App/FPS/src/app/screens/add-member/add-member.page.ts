@@ -71,31 +71,29 @@ export class AddMemberPage implements OnInit {
       this.faceBinary = "";
 
       /* ------------ RESIZE IMAGE --------------- */
-      let options = {
-        uri: imageData,
-        folderName: 'Protonet',
-        quality: 90,
-        width: 1280,
-        height: 1280
-      } as ImageResizerOptions;
+      // let options = {
+      //   uri: imageData,
+      //   folderName: 'Protonet',
+      //   quality: 90,
+      //   width: 1280,
+      //   height: 1280
+      // } as ImageResizerOptions;
 
-      this.imageResizer
-        .resize(options)
-        .then((filePath) => {
-          console.log('FilePath', filePath);
-          this.face = 'data:image/jpeg;base64,' + filePath;
-          this.faceBinary = filePath;
-        })
-        .catch(e => console.log(e));
+      // this.imageResizer
+      //   .resize(options)
+      //   .then((filePath) => {
+      //     console.log('FilePath', filePath);
+      //     this.face = 'data:image/jpeg;base64,' + filePath;
+      //     this.faceBinary = filePath;
+      //   })
+      //   .catch(e => console.log(e));
 
       /* ------------ END RESIZE IMAGE --------------- */
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
-      // this.face = 'data:image/jpeg;base64,' + imageData;
-      // this.faceBinary = imageData;
+      this.face = 'data:image/jpeg;base64,' + imageData;
+      this.faceBinary = imageData;
       // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
-      //console.log(imageData);
-      // console.log(this.myPhotoBinary);
     }, (err) => {
       console.log("error at takephoto :" + err)
     });
@@ -110,10 +108,13 @@ export class AddMemberPage implements OnInit {
           .subscribe(res => {
             myArr.push(res)
             if (myArr[0].message === "Success") {
-              this.loading.dismiss();
+              // this.loading.dismiss();
               this.modalController.dismiss();
               this.toastHandle.presentToast("Added");
-              this.router.navigateByUrl("profile");
+              this.accountService.getDetailUser().subscribe(res => {
+                this.loading.dismiss();
+              })
+              // this.router.navigateByUrl("profile");
             }
           });//end api update
 
@@ -126,7 +127,10 @@ export class AddMemberPage implements OnInit {
               this.loading.dismiss();
               this.modalController.dismiss();
               this.toastHandle.presentToast("Updated");
-              this.router.navigateByUrl("profile");
+              // this.router.navigateByUrl("profile");
+              this.accountService.getDetailUser().subscribe(res => {
+                this.loading.dismiss();
+              })
             }
           })//end api update
       }//end else update

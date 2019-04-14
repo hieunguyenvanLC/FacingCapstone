@@ -1,15 +1,15 @@
 <ion-header>
   <ion-toolbar>
-    <!-- <ion-buttons slot="start" (click)="dismissModal()">
+    <ion-buttons slot="start" (click)="back()">
       <ion-icon name="arrow-back"></ion-icon>
-    </ion-buttons> -->
+    </ion-buttons>
     <ion-title class="title-md hydrated">Your Order</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div *ngIf=(isLoaded)>
-    <ion-list margin-bottom>
+    <ion-list>
       <ion-list-header color="light">
         <ion-label class="fw700">Order Code: {{myOrder[0].data.orderCode}}</ion-label>
       </ion-list-header>
@@ -17,12 +17,12 @@
     <div style="padding: 5px">
       Delivery to
       <!-- <p class="primary-text">{{myOrder[0].currentAddress}}</p> -->
-      <ion-textarea no-padding type="text" color="primary" value="{{myOrder[0].data.address}}" position="fixed" readonly>
+      <ion-textarea no-padding type="text" value="{{myOrder[0].data.address}}" position="fixed" readonly>
       </ion-textarea>
-      Your order from <strong>{{myOrder[0].data.storeAddress}}</strong>
-      <br>
-      <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
-      </ion-label>
+      Your order from <strong>{{myOrder[0].data.storeName}} - {{myOrder[0].data.storeAddress}}</strong>
+      <!-- <br>
+        <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
+        </ion-label> -->
     </div>
     <br>
     <!-- item group -->

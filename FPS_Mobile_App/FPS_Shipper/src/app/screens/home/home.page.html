@@ -17,8 +17,8 @@
     </ion-item>
   </ion-list>
   <div *ngIf="!isLoaded && stateOrder === 1" class="findText">
-      <ion-spinner color="primary" name="crescent"></ion-spinner>
-      <ion-label color="primary">Finding Order</ion-label>
+    <ion-spinner color="primary" name="crescent"></ion-spinner>
+    <ion-label color="primary">Finding Order</ion-label>
   </div>
   <!-- start map -->
   <div class="map-wrapper">
@@ -31,12 +31,17 @@
     <span>{{address}}</span>
   </div> -->
   <!-- End Map -->
-  
+
   <div *ngIf=(isLoaded)>
+    <ion-list>
+      <ion-list-header color="light">
+        <ion-label class="fw700">Order Code: {{order[0].data.orderCode}}</ion-label>
+      </ion-list-header>
+    </ion-list>
     <div style="padding: 5px">
-      Delivery to
-      <p class="primary-text">Khu Phần mềm Quang Trung</p>
-      Your order from <strong>{{ order[0].data.storeName}} - {{ order[0].data.storeAddress}}</strong>
+      Customer destination is :
+      <p class="primary-text">{{order[0].data.address}}</p>
+      Take order from <strong>{{ order[0].data.storeName}} - {{ order[0].data.storeAddress}}</strong>
     </div>
     <br>
     <!-- item group -->
@@ -46,10 +51,10 @@
         <ion-grid>
           <ion-row>
             <ion-col size="3">
-            <ion-thumbnail>
-              <img src="{{item.image}}">
-            </ion-thumbnail>
-          </ion-col>
+              <ion-thumbnail>
+                <img src="{{item.proImg}}">
+              </ion-thumbnail>
+            </ion-col>
             <ion-col size="4" class="prod-title">
               <strong>{{item.proName}}</strong>
 
@@ -72,7 +77,7 @@
     <ion-grid>
       <ion-row>
         <ion-col size="9">
-          Total
+          Subtotal
         </ion-col>
         <ion-col size="3">
           {{order[0].data.totalPrice}}
@@ -80,7 +85,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="9">
-          Shipper earn
+          Delivery fees
         </ion-col>
         <ion-col size="3">
           {{order[0].data.shipperEarn}}
@@ -89,22 +94,73 @@
     </ion-grid>
     <!-- </ion-item> -->
     <ion-grid>
+        <br>
+        <ion-row>
+          <ion-col size="9">
+            Total
+          </ion-col>
+          <ion-col size="3">
+            {{order[0].data.total}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    <!-- shipper earn -->
+    <ion-list>
+        <ion-list-header color="light" no-padding>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="9">
+                  <ion-icon class="margin--2" name="cash"></ion-icon>Shipper Earn
+              </ion-col>
+              <ion-col size="3">
+                  {{order[0].data.shipperMoney}} VND
+                </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-list-header>
+      </ion-list>
+    <!-- end shipper earn -->
+    <!-- customer info  -->
+    <ion-list margin-bottom>
+      <ion-list-header color="light">
+        <ion-label class="fw700">Customer infomation</ion-label>
+      </ion-list-header>
+
+      <ion-item>
+        <ion-label color="dark" position="stacked">Full Name:</ion-label>
+        <ion-input readonly inputmode="text" value="{{order[0].data.buyerName}}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="dark" position="stacked">Phone Number:</ion-label>
+        <ion-input readonly inputmode="text" value="{{order[0].data.buyerPhone}}">
+        </ion-input>
+      </ion-item>
+    </ion-list>
+    <!-- end customer info -->
+
+    <ion-grid>
       <ion-row>
         <ion-col size="12">
-          <ion-button expand="full" color="primary">Ready for shipping</ion-button>
+          <div *ngIf="stateOrder === 1">
+            <ion-button expand="full" color="primary" (click)="takeBill()">Take bill</ion-button>
+          </div>
+          <div *ngIf="stateOrder === 2">
+              <ion-button expand="full" color="danger" (click)="checkout()">Check out</ion-button>
+          </div>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <!-- <ion-row>
         <ion-col size="12">
           <ion-button expand="full" color="danger" (click)="checkout()">Check out</ion-button>
         </ion-col>
-      </ion-row>
-      <ion-row>
+      </ion-row> -->
+      <!-- <ion-row>
         <ion-col size="12">
           <ion-button expand="full" color="light">Cancel</ion-button>
         </ion-col>
 
-      </ion-row>
+      </ion-row> -->
     </ion-grid>
   </div>
 </ion-content>
@@ -113,8 +169,8 @@
   <div *ngIf="stateOrder === 0">
     <ion-button expand="full" (click)="findOrder()">Find order</ion-button>
   </div>
-  <div *ngIf="stateOrder === 1">
-      <!-- <ion-spinner color="primary" name="crescent"></ion-spinner> -->
-      <ion-button color="danger" expand="full" (click)="cancelFindOrder()">Cancel</ion-button>
-  </div>
+  <!-- <div *ngIf="stateOrder === 1"> -->
+  <!-- <ion-spinner color="primary" name="crescent"></ion-spinner> -->
+  <!-- <ion-button color="danger" expand="full" (click)="cancelFindOrder()">Cancel</ion-button> -->
+  <!-- </div> -->
 </ion-footer>

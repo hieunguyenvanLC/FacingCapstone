@@ -17,7 +17,10 @@ const routes: Routes = [
   { path: 'check-out/:id', loadChildren: './screens/check-out/check-out.module#CheckOutPageModule' },
   { path: 'add-member', loadChildren: './screens/add-member/add-member.module#AddMemberPageModule' },
   { path: 'rating', loadChildren: './screens/rating/rating.module#RatingPageModule' },
-  { path: 'rating/:id', loadChildren: './screens/rating/rating.module#RatingPageModule' }
+  { path: 'rating/:id', loadChildren: './screens/rating/rating.module#RatingPageModule' },
+  { path: 'order-history', loadChildren: './screens/order-history/order-history.module#OrderHistoryPageModule' },
+  { path: 'order-detail', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' },
+  { path: 'order-detail/:id', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' }
 ];
 
 @NgModule({

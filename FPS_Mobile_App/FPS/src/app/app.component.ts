@@ -24,24 +24,9 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'List',
-      url: '/list',
+      title: 'Order History',
+      url: '/order-history',
       icon: 'list'
-    },
-    {
-      title: 'Rating',
-      url: '/rating',
-      icon: 'log-in'
-    },
-    {
-      title: 'Store',
-      url: '/store',
-      icon: 'basket'
-    },
-    {
-      title: 'Order',
-      url: '/order',
-      icon: 'basket'
     }
   ];
 

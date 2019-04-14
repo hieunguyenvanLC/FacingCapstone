@@ -74,4 +74,14 @@ export class AccountService {
                                    this.constant.FACE, formData);
   }
 
+  updateMemberDetail(name, email, dob){
+    let formData : FormData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("dob", dob);
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT, formData);
+  }
+
 }

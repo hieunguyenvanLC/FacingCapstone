@@ -121,7 +121,7 @@ export class OrderPage implements OnInit{
         this.address = "Address Not Available!";
       });
  
-  }
+  }//end get address from coords
  
 
 }
