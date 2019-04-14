@@ -229,7 +229,7 @@ public class PayPalService {
             Payment executePayment = payment.execute(apiContext, paymentExecute);
             if (executePayment.getState().equals("approved")) {
                 payPalData.setResult(paymentId);
-                return "index";
+//                return "index";
             }
         } catch (PayPalRESTException e) {
             e.printStackTrace();

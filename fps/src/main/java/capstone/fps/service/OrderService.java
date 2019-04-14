@@ -245,7 +245,7 @@ public class OrderService {
 
 
     // Mobile Member - Order History - Begin
-    public Response<List<MdlOrder>> getOrderListMem(){
+    public Response<List<MdlOrder>> getOrderListMem() {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -443,7 +443,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order History - Begin
-    public Response<List<MdlOrder>> getOrderListShp(){
+    public Response<List<MdlOrder>> getOrderListShp() {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -664,7 +664,7 @@ public class OrderService {
         String key = frOrder.getId() + "" + methods.getTimeNow();
         Map<String, String> faceResult = AppData.getFaceResult();
         faceResult.remove(key);
-        faceRecognise(faceBytes, key);
+        System.out.println(faceRecognise(faceBytes, key));
 
         while (faceResult.get(key) == null) {
             try {
@@ -750,6 +750,10 @@ public class OrderService {
         URL url;
         HttpURLConnection urlConnection;
         String uri = Fix.PAY_SERVER_URL + Fix.MAP_API + "/pay/input";
+        System.out.println(uri);
+        System.out.println(payUsername);
+        System.out.println(priceStr);
+        System.out.println(description);
         String method = "POST";
         String[] paramName = {"username", "password", "price", "description"};
         String[] paramValue = {payUsername, payPassword, priceStr, description};
