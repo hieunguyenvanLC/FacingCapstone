@@ -717,7 +717,7 @@ public class OrderService {
             shipperRepo.save(frShipper);
             System.out.println("save frShipper");
             notifyBuyerCheckout(frOrder);
-            notifyBuyerCheckout(frOrder);
+            notifyShipperCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
@@ -840,7 +840,7 @@ public class OrderService {
         body.add("notification", notification);
         body.add("data", data);
         body.addProperty("priority", "high");
-        body.addProperty("to", frOrder.getShipperToken());
+        body.addProperty("to", frOrder.getBuyerToken());
         body.addProperty("restricted_package_name", "");
 
         Map<String, String> header = new HashMap<>();
@@ -867,7 +867,7 @@ public class OrderService {
         body.add("notification", notification);
         body.add("data", data);
         body.addProperty("priority", "high");
-        body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("to", frOrder.getShipperToken());
         body.addProperty("restricted_package_name", "");
 
         Map<String, String> header = new HashMap<>();
