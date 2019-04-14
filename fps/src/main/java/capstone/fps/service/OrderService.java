@@ -828,7 +828,7 @@ public class OrderService {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         JsonObject notification = new JsonObject();
-        notification.addProperty("title", "FPS Shipper");
+        notification.addProperty("title", "FPS");
         notification.addProperty("body", "Order checkout successfully");
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
@@ -855,7 +855,7 @@ public class OrderService {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         JsonObject notification = new JsonObject();
-        notification.addProperty("title", "FPS");
+        notification.addProperty("title", "FPS Shipper");
         notification.addProperty("body", "Order checkout successfully");
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
