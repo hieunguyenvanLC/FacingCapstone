@@ -632,7 +632,7 @@ $(document).ready(function () {
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperPhone + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.storeName + '</span>',
-                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.totalPrice) + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.totalPrice + order.shipperEarn) + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.createTime ? moment.unix(order.createTime / 1000).format('DD/MM/YYYY') : '') + '</span>',
                         fpsGetStatMsg(ORD_STAT_LIST, order.status)
                     ]).draw();
