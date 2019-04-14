@@ -778,7 +778,9 @@ public class OrderService {
             urlConnection.connect();
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                return gson.fromJson(methods.readStream(urlConnection.getInputStream()), String.class);
+                String readStream = methods.readStream(urlConnection.getInputStream());
+                System.out.println("response " + readStream);
+                return gson.fromJson(readStream, String.class);
             }
         } catch (IOException e) {
             e.printStackTrace();

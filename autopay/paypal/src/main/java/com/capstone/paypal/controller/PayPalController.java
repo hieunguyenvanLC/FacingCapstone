@@ -22,11 +22,13 @@ public class PayPalController extends AbstractController {
         System.out.println(price);
         System.out.println(description);
         try {
-            return gson.toJson(paymentService.receivePaymentInput(username, password, price, description));
+            String s = gson.toJson(paymentService.receivePaymentInput(username, password, price, description));
+            System.out.println(s);
+            return s;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return gson.toJson(0);
+        return gson.toJson("fail");
     }
 
 
