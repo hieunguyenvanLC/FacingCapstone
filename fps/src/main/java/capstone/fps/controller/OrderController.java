@@ -154,6 +154,18 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+    @GetMapping(Fix.MAP_SHP + API + "/detail")
+    public String getOrderDetailShp(Integer orderId) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderDetailMem(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
     // Mobile Shipper - Order History - End
 
 
