@@ -52,6 +52,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.accountService = accountService;
     }
 
+    @Bean
+    EmbeddedServletContainerCustomizer containerCustomizer() throws Exception {
+        return (ConfigurableEmbeddedServletContainer container) -> {
+            if (container instanceof TomcatEmbeddedServletContainerFactory) {
+                TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) container;
+                tomcat.addConnectorCustomizers(
+                        (connector) -> {
+                            connector.setMaxPostSize(10000000); // 10 MB
+                        }
+                );
+            }
+        };
+    }
+
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(loginService).passwordEncoder(passwordEncoder());
