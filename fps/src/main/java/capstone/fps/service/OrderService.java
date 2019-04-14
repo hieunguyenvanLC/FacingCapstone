@@ -686,6 +686,7 @@ public class OrderService {
 
 
         String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
+        System.out.println("PayPal resp " + payId);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
             return response;
@@ -697,12 +698,12 @@ public class OrderService {
             frTransaction.setTime(time);
             frTransaction.setPaymentInformation(frPayInfo);
             transactionRepo.save(frTransaction);
-
+            System.out.println("save frTransaction");
             frOrder.setStatus(Fix.ORD_COM.index);
             frOrder.setBuyerFace(faceBytes);
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
-
+            System.out.println("save frOrder");
             FRShipper frShipper = methods.getUser().getShipper();
             double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
@@ -714,6 +715,7 @@ public class OrderService {
                 }
             }
             shipperRepo.save(frShipper);
+            System.out.println("save frShipper");
             notifyBuyerCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
