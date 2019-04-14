@@ -248,8 +248,12 @@ $(document).ready(function () {
             format: formatDatepicker,
             calendarWeeks: calendarWeeks,
             change: function (e) {
-                startDate = prefixStartDate + dpkStart.value();
-                loadChart(reportType, chartType, startDate, endDate);
+                var startDateTemp = prefixStartDate + dpkStart.value();
+
+                if (startDateTemp !== startDate || !startDate) {
+                    startDate = startDateTemp;
+                    loadChart(reportType, chartType, startDate, endDate);
+                }
             }
         });
 
@@ -258,8 +262,12 @@ $(document).ready(function () {
             format: formatDatepicker,
             calendarWeeks: calendarWeeks,
             change: function (e) {
-                endDate = prefixEndDate + dpkEnd.value();
-                loadChart(reportType, chartType, startDate, endDate);
+                var endDateTemp = prefixEndDate + dpkEnd.value();
+
+                if (endDateTemp !== endDate || !endDate) {
+                    endDate = endDateTemp;
+                    loadChart(reportType, chartType, startDate, endDate);
+                }
             }
         });
 
@@ -270,16 +278,24 @@ $(document).ready(function () {
         uiLibrary: 'bootstrap4',
         format: 'dd/mm/yyyy',
         change: function (e) {
-            startDate = dpkStart.value();
-            loadChart(reportType, chartType, startDate, endDate);
+            var startDateTemp = dpkStart.value();
+
+            if (startDateTemp !== startDate || !startDate) {
+                startDate = startDateTemp;
+                loadChart(reportType, chartType, startDate, endDate);
+            }
         }
     });
     var dpkEnd = $('#dpkEnd').datepicker({
         uiLibrary: 'bootstrap4',
         format: 'dd/mm/yyyy',
         change: function (e) {
-            endDate = dpkEnd.value();
-            loadChart(reportType, chartType, startDate, endDate);
+            var endDateTemp = dpkEnd.value();
+
+            if (endDateTemp !== endDate || !endDate) {
+                endDate = endDateTemp;
+                loadChart(reportType, chartType, startDate, endDate);
+            }
         }
     });
 
@@ -413,7 +429,12 @@ $(document).ready(function () {
         }
 
         charNameT += " chart";
-        // $("#chartName").text(charNameT);
+
+        // Validate start date and end date
+        if (endUnix < startUnix) {
+            alert("End date must after start date!");
+            return;
+        }
 
         $.ajax({
             url: "/any/api/report/" + apiEndpoint + "?type=" + charT + "&start=" + startUnix + "&end=" + endUnix,
@@ -422,6 +443,11 @@ $(document).ready(function () {
             success: function (response) {
                 // console.log(response.data);
                 var chartData = response.data;
+
+                if (!chartData) {
+                    alert(response.message);
+                    return;
+                }
                 var dataTable;
                 chartData = processChartData(chartData);
 
@@ -744,7 +770,7 @@ function loadEditForm() {
     uplBill.value = "";
     fpsSetImgSrc(imgBill, orderEdit.bill);
 
-    txtOrderId.value = orderEdit.id;
+    // txtOrderId.value = orderEdit.id;
     txtBuyerName.value = orderEdit.buyerName;
     txtBuyerPhone.value = orderEdit.buyerPhone;
     txtShipperName.value = orderEdit.shipperName;
@@ -791,6 +817,25 @@ function changeTimeWeek() {
     var dif = Math.round((_final - _initial) / (1000 * 60));
 }
 
+function changeStatus(status) {
+    if (status == 1) {
+        status = "New";
+    }
+    if (status == 2) {
+        status = "Assigned";
+    }
+    if (status == 3) {
+        status = "Bought";
+    }
+    if (status == 4) {
+        status = "Done";
+    }
+    if (status == 5) {
+        status = "Canceled";
+    }
+    return status;
+}
+
 function fpsShowMsg(lblMsg, msgStr) {
     // var lblMsg = document.getElementById("lblDisplayMsg");
     lblMsg.innerHTML = msgStr;
@@ -831,24 +876,6 @@ function fpsSetImgSrc(img, srcStr) {
     }
 }
 
-function changeStatus(status) {
-    if (status == 1) {
-        status = "New";
-    }
-    if (status == 2) {
-        status = "Assigned";
-    }
-    if (status == 3) {
-        status = "Bought";
-    }
-    if (status == 4) {
-        status = "Done";
-    }
-    if (status == 5) {
-        status = "Canceled";
-    }
-    return status;
-}
 
 function fpsSetImgFromInput(img, input) {
     var url = input.value;

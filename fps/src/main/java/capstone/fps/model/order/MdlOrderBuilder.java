@@ -28,9 +28,11 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.assignTime = frOrder.getAssignTime();
         mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
         mdlOrder.customerDescription = frOrder.getCustomerDescription();
@@ -58,6 +60,19 @@ public class MdlOrderBuilder {
     }
 
 
+    public MdlOrder buildAdminTableRow(FROrder frOrder) {
+        MdlOrder mdlOrder = new MdlOrder();
+        mdlOrder.id = frOrder.getId();
+        mdlOrder.orderCode = frOrder.getOrderCode();
+        mdlOrder.buyerName = frOrder.getAccount().getName();
+        mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
+        mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.buyTime = frOrder.getBuyTime();
+        mdlOrder.status = frOrder.getStatus();
+        return mdlOrder;
+    }
+
     public MdlOrder buildAdminTableRow(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
         MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
         MdlOrder mdlOrder = new MdlOrder();
@@ -68,7 +83,7 @@ public class MdlOrderBuilder {
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
         mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
-
+        mdlOrder.orderCode = frOrder.getOrderCode();
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         if (frOrderDetails.size() > 0) {
             FRStore store = frOrderDetails.get(0).getProduct().getStore();
@@ -109,9 +124,11 @@ public class MdlOrderBuilder {
         mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.assignTime = frOrder.getAssignTime();
         mdlOrder.buyTime = frOrder.getBuyTime();
         mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
         mdlOrder.customerDescription = frOrder.getCustomerDescription();

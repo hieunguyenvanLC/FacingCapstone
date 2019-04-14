@@ -161,7 +161,7 @@ public class OrderService {
 
 
     // Web Admin - Order - Begin
-    public Response<List<MdlOrder>> getOrderList() {
+    public Response<List<MdlOrder>> getOrderListAdm() {
 
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -169,7 +169,7 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAll();
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder, this.orderDetailRepository));
+            mdlOrderList.add(orderBuilder.buildAdminTableRow(frOrder));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
         return response;
@@ -188,7 +188,18 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
-
+    public Response<MdlOrder> getOrderDetailStatic(Integer orderId) {
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+    }
     public Response<MdlOrder> editOrderAdm(Gson gson, Integer orderId, MultipartFile buyerFace, MultipartFile bill, Integer status, String note, String customerDescription, String address, Double latitude, Double longitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -242,6 +253,24 @@ public class OrderService {
         return response;
     }
     // Web Admin - Order - Begin
+
+
+    // Mobile Member - Order History - Begin
+    public Response<List<MdlOrder>> getOrderListMem(){
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        List<FROrder> frOrderList = orderRepository.findAllByAccount(currentUser);
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+    // Mobile Member - Order History - End
 
 
     // Mobile Member - Order Booking - Begin
@@ -399,6 +428,7 @@ public class OrderService {
     }
     // Mobile Member - Order Booking - End
 
+
     // Mobile Member - Order Rating - Begin
     public Response<Integer> rateOrder(int orderId, int rating) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -421,6 +451,23 @@ public class OrderService {
         return response;
     }
     // Mobile Member - Order Rating - End
+
+
+    // Mobile Shipper - Order History - Begin
+    public Response<List<MdlOrder>> getOrderListShp(){
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        List<FROrder> frOrderList = orderRepository.findAllByShipper(currentUser.getShipper());
+        List<MdlOrder> mdlOrderList = new ArrayList<>();
+        for (FROrder frOrder : frOrderList) {
+            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+    // Mobile Shipper - Order History - End
 
 
     // Mobile Shipper - Order Matching - Begin
@@ -559,7 +606,7 @@ public class OrderService {
         header.put("Authorization", "key=" + Fix.FCM_KEY);
 
         JsonObject notification = new JsonObject();
-        notification.addProperty("title", "FPS");
+        notification.addProperty("title", "FPS Shipper");
         notification.addProperty("body", "You has taken order" + frOrder.getId());
         notification.addProperty("sound", "default");
         notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
@@ -578,6 +625,13 @@ public class OrderService {
     }
 
     public Response<Integer> stopQueue() {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        shipperWait.setCancel(true);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
+    public Response<Integer> cancelOrderA() {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         shipperWait.setCancel(true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
@@ -665,12 +719,13 @@ public class OrderService {
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
             frShipper.setOrderCount(frShipper.getOrderCount() + 1);
             FRPriceLevel nextLevel = frShipper.getPriceLevel().getNextLevel();
-            if(nextLevel != null){
-                if(frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()){
+            if (nextLevel != null) {
+                if (frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()) {
                     frShipper.setPriceLevel(nextLevel);
                 }
             }
             shipperRepo.save(frShipper);
+            notifyBuyerCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
             return response;
         }
@@ -770,6 +825,35 @@ public class OrderService {
         return commandPrompt;
     }
 
+    public Response<String> notifyBuyerCheckout(FROrder frOrder) {
+        Methods methods = new Methods();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        JsonObject notification = new JsonObject();
+        notification.addProperty("title", "FPS");
+        notification.addProperty("body", "Order checkout successfully");
+        notification.addProperty("sound", "default");
+        notification.addProperty("click_action", "FCM_PLUGIN_ACTIVITY");
+        notification.addProperty("icon", "fcm_push_icon");
+
+        JsonObject data = new JsonObject();
+        data.addProperty("orderId", frOrder.getId());
+        JsonObject body = new JsonObject();
+        body.add("notification", notification);
+        body.add("data", data);
+        body.addProperty("priority", "high");
+        body.addProperty("to", frOrder.getBuyerToken());
+        body.addProperty("restricted_package_name", "");
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("Authorization", "key=" + Fix.FCM_KEY);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
+        return response;
+    }
+    // Mobile Shipper - Order Checkout - End
+
+
     public Response<String> testNotify(Gson gson, int orderId, String deviceToken) {
         Methods methods = new Methods();
         JsonParser parser = new JsonParser();
@@ -800,7 +884,6 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, methods.sendHttpRequest(Fix.FCM_URL, header, body));
         return response;
     }
-    // Mobile Shipper - Order Checkout - End
 
 
 }

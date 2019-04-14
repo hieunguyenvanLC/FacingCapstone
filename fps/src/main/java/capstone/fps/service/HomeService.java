@@ -226,6 +226,25 @@ public class HomeService {
         return mdlOrders;
     }
 
+
+    public List<MdlOrder> getOrderListStatic(Integer status, Long start, Long end) {
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        List<FROrder> orders;
+        List<MdlOrder> mdlOrders = new ArrayList<>();
+
+        if (status == -1) {
+            orders = this.orderRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThan(start, end);
+        } else {
+            orders = this.orderRepository.findByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(status, start, end);
+        }
+
+        for (FROrder order : orders) {
+            mdlOrders.add(orderBuilder.buildAdminTableRow(order, this.orderDetailRepository));
+        }
+
+        return mdlOrders;
+    }
+
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
         YearMonth yearMonthObject = YearMonth.of(year, month);
         Integer daysInMonth = yearMonthObject.lengthOfMonth();

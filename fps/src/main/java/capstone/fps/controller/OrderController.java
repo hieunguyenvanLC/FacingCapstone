@@ -27,7 +27,7 @@ public class OrderController extends AbstractController {
     public String getOrderListAdm() {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.getOrderList();
+            response = orderService.getOrderListAdm();
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -59,6 +59,21 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
     // Web Admin - Order - End
+
+
+    // Mobile Member - Order History - Begin
+    @GetMapping(Fix.MAP_MEM + API + "/history")
+    public String getOrderListMem() {
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderListMem();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Order History - End
 
 
     // Mobile Member - Order Booking - Begin
@@ -125,6 +140,21 @@ public class OrderController extends AbstractController {
         return gson.toJson(response);
     }
     // Mobile Member - Order Rating - End
+
+
+    // Mobile Shipper - Order History - Begin
+    @GetMapping(Fix.MAP_SHP + API + "/history")
+    public String getOrderListShp() {
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderListShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - Order History - End
 
 
     // Mobile Shipper - Queue - Begin

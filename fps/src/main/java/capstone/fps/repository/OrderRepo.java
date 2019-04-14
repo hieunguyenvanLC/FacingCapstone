@@ -2,6 +2,7 @@ package capstone.fps.repository;
 
 import capstone.fps.entity.FRAccount;
 import capstone.fps.entity.FROrder;
+import capstone.fps.entity.FRShipper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,10 @@ import java.util.Optional;
 public interface OrderRepo extends JpaRepository<FROrder, Integer> {
 
     List<FROrder> findAllByAccountAndStatusIn(FRAccount account, int[] status);
+
+    List<FROrder> findAllByAccount(FRAccount account);
+
+    List<FROrder> findAllByShipper(FRShipper shipper);
 
     public Integer countByStatusAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(Integer status, Long start, Long end);
 
@@ -51,3 +56,4 @@ public interface OrderRepo extends JpaRepository<FROrder, Integer> {
             "where o.status = :stt and o.create_time >= :start and o.create_time < :end", nativeQuery = true)
     public Integer sumShipperEarn(@Param("stt") Integer status, @Param("start") Long start, @Param("end") Long end);
 }
+

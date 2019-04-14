@@ -11,8 +11,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepo extends JpaRepository<FRProduct, Integer> {
 
-//    List<FRProduct> findAllByStatusOrderByRatingDesc(int status);
-
     List<FRProduct> findAllByStoreAndStatusNotOrderByUpdateTimeDesc(FRStore store, int status);
 
     List<FRProduct> findAllByStore(FRStore store);

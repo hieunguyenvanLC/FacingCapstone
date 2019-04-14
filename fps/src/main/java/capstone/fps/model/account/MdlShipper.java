@@ -58,5 +58,8 @@ public class MdlShipper {
     String bikeRegBack;
     @Expose
     int priceLevelId;
-
+    @Expose
+    double rating;
+    @Expose
+    int orderCount;
 }

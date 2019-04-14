@@ -834,7 +834,7 @@ public class HomeController extends AbstractController {
             if (weeks <= 52) {
                 for (Integer weekIdx = 0; weekIdx < weeks; weekIdx++) {
                     Integer curWeek = startWeek + weekIdx > 52 ? weekIdx : startWeek + weekIdx;
-                    Integer curYear = startWeek + weekIdx > 12 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
+                    Integer curYear = startWeek + weekIdx > 52 ? endYear : startYear; // boi vi gioi han la 12 thang nen chi co 2 nam lien tiep nhau (vd 2018 - 2019)
                     long startUnix = this.weekToUnix(curYear, curWeek);
                     long endUnix = this.weekToUnix(curYear, curWeek + 1);
                     Integer[] cols = {
@@ -926,7 +926,7 @@ public class HomeController extends AbstractController {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         try {
-            List<MdlOrder> orders = this.homeService.getOrderList(status, start, end);
+            List<MdlOrder> orders = this.homeService.getOrderListStatic(status, start, end);
             response.setResponse(Response.STATUS_SUCCESS, "", orders);
         } catch (Exception e) {
             e.printStackTrace();
@@ -940,7 +940,7 @@ public class HomeController extends AbstractController {
     public String getOrderDetail(Integer orderId) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.getOrderDetailAdm(orderId);
+            response = orderService.getOrderDetailStatic(orderId);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

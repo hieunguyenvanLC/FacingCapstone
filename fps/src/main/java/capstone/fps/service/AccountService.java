@@ -643,23 +643,22 @@ public class AccountService {
         Repo repo = new Repo();
         FRAccount currentUser = methods.getUser();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        if (face == null) {
-            response.setResponse(Response.STATUS_FAIL, "Face is null");
-            return response;
-        }
 
         FRReceiveMember frReceiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
         if (frReceiveMember == null) {
             frReceiveMember = new FRReceiveMember();
             frReceiveMember.setAccount(currentUser);
         }
-        frReceiveMember.setName(revMemName);
-        byte[] faceBytes = methods.base64ToBytes(face);
-        frReceiveMember.setFace(faceBytes);
+        if (revMemName != null) {
+            frReceiveMember.setName(revMemName);
+        }
+        if (face != null) {
+            byte[] faceBytes = methods.base64ToBytes(face);
+            frReceiveMember.setFace(faceBytes);
+            // train here
+            trainingFaceRecognise(frReceiveMember);
+        }
         receiveMemberRepo.save(frReceiveMember);
-        // train here
-        trainingFaceRecognise(frReceiveMember);
-
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }

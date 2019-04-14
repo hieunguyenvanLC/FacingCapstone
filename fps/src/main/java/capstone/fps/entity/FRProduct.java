@@ -35,34 +35,6 @@ public class FRProduct {
     private Long deleteTime;
     @Column(name = "note", length = 300)
     private String note;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Collection<FROrderDetail> getOrderDetailCollection() {
-        return orderDetailCollection;
-    }
-
-    public void setOrderDetailCollection(Collection<FROrderDetail> orderDetailCollection) {
-        this.orderDetailCollection = orderDetailCollection;
-    }
-
-    public FRProduct(FRStore store, String productName, byte[] productImage, Double price, String description, Long createTime, Long updateTime, Long deleteTime, String note, Integer status, FRAccount editor, Collection<FROrderDetail> orderDetailCollection) {
-        this.store = store;
-        this.productName = productName;
-        this.productImage = productImage;
-        this.price = price;
-        this.description = description;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.deleteTime = deleteTime;
-        this.note = note;
-        this.status = status;
-        this.editor = editor;
-        this.orderDetailCollection = orderDetailCollection;
-    }
-
     @Column(name = "status")
     private Integer status;
     @ManyToOne
