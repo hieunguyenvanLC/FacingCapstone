@@ -399,6 +399,7 @@
         }
 
         function sendEdit() {
+            fpsHideMsg(lblMsg);
             var formData = new FormData();
             fpsFormAppend(formData, "orderId", orderEdit.id);
 

@@ -708,7 +708,7 @@ public class OrderService {
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
             System.out.println("save frOrder");
-            FRShipper frShipper = methods.getUser().getShipper();
+            FRShipper frShipper = frOrder.getShipper();
             double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
             frShipper.setOrderCount(frShipper.getOrderCount() + 1);
