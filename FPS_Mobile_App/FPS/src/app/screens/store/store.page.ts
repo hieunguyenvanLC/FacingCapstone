@@ -199,7 +199,7 @@ export class StorePage implements OnInit {
               this.distance = myArr.routes[0].legs[0].distance.text.split(" ",1);
               // console.log(distanceArr);
               // this.distance = distanceArr[0];
-              this.shpEarn = this.calculateShpEarn(parseInt(this.distance));
+              this.shpEarn = this.calculateShpEarn(parseFloat(this.distance));
               // console.log(this.distance)
             });//end google api
         });//end storage
@@ -228,11 +228,12 @@ export class StorePage implements OnInit {
   calculateShpEarn(dis) {
     let price = 14000;
     let kms;
-    if (dis < 1) {
-      kms = 1
-    } else {
-      kms = dis
-    }
+    // if (dis < 1) {
+    //   kms = 1
+    // } else {
+    //   kms = dis
+    // }
+    kms = dis;
     // let kms = Math.ceil(dis);
     if (kms > 0) {
       price += kms * 1000;
