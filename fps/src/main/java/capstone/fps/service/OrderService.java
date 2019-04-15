@@ -666,12 +666,17 @@ public class OrderService {
         faceResult.remove(key);
         System.out.println(faceRecognise(faceBytes, key));
 
-        while (faceResult.get(key) == null) {
+        Long maxWait = methods.getTimeNow() + 1 * 60 * 1000;
+        while (faceResult.get(key) == null && methods.getTimeNow() < maxWait) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        if (methods.getTimeNow() >= maxWait) {
+            response.setResponse(Response.STATUS_FAIL, "Python connection error");
+            return response;
         }
         String faceListStr = faceResult.get(key);
         faceResult.remove(key);
@@ -683,7 +688,6 @@ public class OrderService {
         String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
-
 
         String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         System.out.println("PayPal resp " + payId);

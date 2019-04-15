@@ -214,6 +214,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
+                                <label id="lblMsg" style="color: red"></label>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="button" class="btn btn-primary" onclick="sendEdit()">Save</button>
                             </div>
@@ -332,7 +333,7 @@
         }
 
         function loadEditForm() {
-
+            fpsHideMsg(lblMsg);
             uplBuyerFace.value = "";
             fpsSetImgSrc(imgBuyerFace, orderEdit.buyerFace);
 
@@ -430,7 +431,7 @@
                         orderList[orderEditPos] = response.data;
                         drawTblOrder();
                     } else {
-
+                        fpsShowMsg(lblMsg, response.message);
                     }
                 },
                 error: function (response) {
