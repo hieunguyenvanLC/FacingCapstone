@@ -254,9 +254,22 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAllByAccount(currentUser);
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+            mdlOrderList.add(orderBuilder.buildHistoryBuyer(frOrder));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+
+    public Response<MdlOrder> getOrderDetailMem(Integer orderId) {
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Repo repo = new Repo();
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
         return response;
     }
     // Mobile Member - Order History - End
@@ -360,20 +373,6 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> getOrderDetailMem(Integer orderId) {
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        Repo repo = new Repo();
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
-        return response;
-    }
-
-
     public Response<MdlOrder> cancelOrderMem(int orderId, double longitude, double latitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -451,7 +450,7 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAllByShipper(currentUser.getShipper());
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+            mdlOrderList.add(orderBuilder.buildHistoryBuyer(frOrder));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
         return response;

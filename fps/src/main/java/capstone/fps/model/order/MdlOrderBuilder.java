@@ -62,6 +62,18 @@ public class MdlOrderBuilder {
     }
 
 
+    public MdlOrder buildHistoryBuyer(FROrder frOrder) {
+        MdlOrder mdlOrder = new MdlOrder();
+        mdlOrder.id = frOrder.getId();
+        mdlOrder.orderCode = frOrder.getOrderCode();
+        mdlOrder.createTime = frOrder.getCreateTime();
+        mdlOrder.totalPrice = frOrder.getTotalPrice();
+        mdlOrder.shipperEarn = frOrder.getShipperEarn();
+        mdlOrder.priceLevel = frOrder.getPriceLevel();
+        mdlOrder.status = frOrder.getStatus();
+        return mdlOrder;
+    }
+
     public MdlOrder buildAdminTableRow(FROrder frOrder) {
         MdlOrder mdlOrder = new MdlOrder();
         mdlOrder.id = frOrder.getId();
