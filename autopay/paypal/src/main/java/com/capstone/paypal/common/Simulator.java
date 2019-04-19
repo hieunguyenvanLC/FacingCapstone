@@ -1,5 +1,6 @@
 package com.capstone.paypal.common;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -7,13 +8,19 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
 public class Simulator {
 
-    public final Robot robot;
-    public final Clipboard clipboard;
+    private final Robot robot;
+    private final Clipboard clipboard;
+
+    private int imgW;
+    private int imgPixSize;
+    private DataBuffer imgDB;
 
     public Simulator() throws AWTException {
         this.robot = new Robot();
@@ -21,19 +28,19 @@ public class Simulator {
     }
 
     public class PixelColor {
-        public int id;
-        public int xFrom;
-        public int yFrom;
-        public int xTo;
-        public int yTo;
-        public int redMin;
-        public int redMax;
-        public int greenMin;
-        public int greenMax;
-        public int blueMin;
-        public int blueMax;
+        int id;
+        int xFrom;
+        int yFrom;
+        int xTo;
+        int yTo;
+        int redMin;
+        int redMax;
+        int greenMin;
+        int greenMax;
+        int blueMin;
+        int blueMax;
 
-        public PixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {
+        PixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {
             this.id = id;
             this.xFrom = xFrom;
             this.yFrom = yFrom;
@@ -41,7 +48,7 @@ public class Simulator {
             this.yTo = yTo;
             int red = (color >> 16) & 0xFF;
             int green = (color >> 8) & 0xFF;
-            int blue = (color >> 0) & 0xFF;
+            int blue = color & 0xFF;
             this.redMin = Math.max(0, red - delta);
             this.redMax = Math.min(255, red + delta);
             this.greenMin = Math.max(0, green - delta);
@@ -55,7 +62,7 @@ public class Simulator {
         return new PixelColor(id, xFrom, yFrom, xTo, yTo, color, delta);
     }
 
-    public int waitForMultiPixel(PixelColor... pixelColors) throws InterruptedException {
+    public int waitForMultiPixel(PixelColor... pixelColors) {
         int dxMax;
         int dyMax;
         int red;
@@ -90,7 +97,7 @@ public class Simulator {
         }
     }
 
-    public void delay(int milisecs) {
+    public void delay(long milisecs) {
         try {
             Thread.sleep(milisecs);
         } catch (InterruptedException e) {
@@ -116,8 +123,7 @@ public class Simulator {
         }
     }
 
-
-    public void waitForPixel(int x, int y, int rgb) throws InterruptedException {
+    public void waitForPixel(int x, int y, int rgb) {
         while (true) {
             if (rgb == robot.getPixelColor(x, y).getRGB()) {
                 return;
@@ -127,7 +133,7 @@ public class Simulator {
         }
     }
 
-    public void clickInBox(int x0, int y0, int dx, int dy) throws InterruptedException {
+    public void clickInBox(int x0, int y0, int dx, int dy) {
         Random ran = new Random();
         int x = x0 + ran.nextInt(dx + 1);
         int y = y0 + ran.nextInt(dy + 1);
@@ -141,7 +147,7 @@ public class Simulator {
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
-    public void moveMouseFast(int x, int y) throws InterruptedException {
+    public void moveMouseFast(int x, int y) {
         Point p = MouseInfo.getPointerInfo().getLocation();
         double dis = Math.sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));
         double jump = dis / 10;
@@ -158,7 +164,7 @@ public class Simulator {
         robot.mouseMove(x, y);
     }
 
-    public void moveAndClickInBox(int x0, int y0, int dx, int dy) throws InterruptedException {
+    public void moveAndClickInBox(int x0, int y0, int dx, int dy) {
         Random ran = new Random();
         int x = x0 + ran.nextInt(dx + 1);
         int y = y0 + ran.nextInt(dy + 1);
@@ -169,7 +175,7 @@ public class Simulator {
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
-    public Point waitForColor(int xFrom, int yFrom, int xTo, int yTo, int rgb, long maxWait) throws InterruptedException {
+    public Point waitForColor(int xFrom, int yFrom, int xTo, int yTo, int rgb, long maxWait) {
         long time0 = new Date().getTime();
         long timeMax = time0 + maxWait;
 
@@ -207,6 +213,329 @@ public class Simulator {
 
     }
 
+    private int getRGBFromImg(int x, int y) {
+        int rgb = 0;
+        int pos = imgPixSize * (y * imgW + x);
+        try {
+            if (imgPixSize == 4) {
+                rgb = 0xFF000000 | (imgDB.getElem(pos + 3) << 16) | (imgDB.getElem(pos + 2) << 8) | imgDB.getElem(pos + 1);
+            }
+            if (imgPixSize == 3) {
+                rgb = 0xFF000000 | (imgDB.getElem(pos + 2) << 16) | (imgDB.getElem(pos + 1) << 8) | imgDB.getElem(pos);
+            }
+        } catch (Exception e) {
+            System.out.println("Error x " + x + " y " + y + " p " + pos);
+            throw e;
+        }
+        return rgb;
+    }
+
+    private void setPixel(int[][] difRGB, int[][] difX, int[][] difY, int[] count, int dif, int rgb, int x, int y) {
+        int pos = count[dif];
+        difRGB[dif][pos] = rgb;
+        difX[dif][pos] = x;
+        difY[dif][pos] = y;
+        count[dif] = count[dif] + 1;
+    }
+
+    private int isDiffUp(int rgb, int x, int y) {
+        return rgb != getRGBFromImg(x, y - 1) ? 1 : 0;
+    }
+
+    private int isDiffDown(int rgb, int x, int y) {
+        return rgb != getRGBFromImg(x, y + 1) ? 1 : 0;
+    }
+
+    private int isDiffLeft(int rgb, int x, int y) {
+        return rgb != getRGBFromImg(x - 1, y) ? 1 : 0;
+    }
+
+    private int isDiffRight(int rgb, int x, int y) {
+        return rgb != getRGBFromImg(x + 1, y) ? 1 : 0;
+    }
+
+    public Point waitForImage(int xFrom, int yFrom, int xTo, int yTo, String path, long maxWait) throws IOException {
+        long time0 = new Date().getTime();
+        long timeMax = time0 + maxWait;
+        int sWth = xTo - xFrom + 1;
+        BufferedImage image = ImageIO.read(new File(path));
+        imgDB = image.getData().getDataBuffer();
+        imgW = image.getWidth();
+        int imgH = image.getHeight();
+        int imgSize = imgDB.getSize();
+        imgPixSize = imgSize / imgH / imgW;
+
+        int[][] difRGB = new int[5][imgW * imgH];
+        int[][] difX = new int[5][imgW * imgH];
+        int[][] difY = new int[5][imgW * imgH];
+        int[] count = new int[5];
+
+        int xImgMax = imgW - 1;
+        int yImgMax = imgH - 1;
+        int xImgMid = xImgMax / 2;
+        int yImgMid = yImgMax / 2;
+
+        int xStop = xTo - xFrom + 1 - imgW;
+        int yStop = yTo - yFrom + 1 - imgH;
+
+        int dif;
+        int rgb;
+        // Top Left
+        rgb = getRGBFromImg(0, 0);
+        dif = isDiffDown(rgb, 0, 0) + isDiffRight(rgb, 0, 0);
+        setPixel(difRGB, difX, difY, count, dif, rgb, 0, 0);
+
+        // Bot Left
+        rgb = getRGBFromImg(0, yImgMax);
+        dif = isDiffUp(rgb, 0, yImgMax) + isDiffRight(rgb, 0, yImgMax);
+        setPixel(difRGB, difX, difY, count, dif, rgb, 0, yImgMax);
+
+        // Top Right
+        rgb = getRGBFromImg(xImgMax, 0);
+        dif = isDiffDown(rgb, xImgMax, 0) + isDiffLeft(rgb, xImgMax, 0);
+        setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, 0);
+
+        // Bot Right
+        rgb = getRGBFromImg(xImgMax, yImgMax);
+        dif = isDiffUp(rgb, xImgMax, yImgMax) + isDiffLeft(rgb, xImgMax, yImgMax);
+        setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, yImgMax);
+
+        for (int x = 1; x < xImgMax; x++) {
+            // Top Side
+            rgb = getRGBFromImg(x, 0);
+            dif = isDiffDown(rgb, x, 0) + isDiffLeft(rgb, x, 0) + isDiffRight(rgb, x, 0);
+            setPixel(difRGB, difX, difY, count, dif, rgb, x, 0);
+
+            // Bot Side
+            rgb = getRGBFromImg(x, yImgMax);
+            dif = isDiffUp(rgb, x, yImgMax) + isDiffLeft(rgb, x, yImgMax) + isDiffRight(rgb, x, yImgMax);
+            setPixel(difRGB, difX, difY, count, dif, rgb, x, yImgMax);
+        }
+
+        for (int y = 1; y < yImgMax; y++) {
+            // Left Side
+            rgb = getRGBFromImg(0, y);
+            dif = isDiffUp(rgb, 0, y) + isDiffDown(rgb, 0, y) + isDiffRight(rgb, 0, y);
+            setPixel(difRGB, difX, difY, count, dif, rgb, 0, y);
+
+            // Right Side
+            rgb = getRGBFromImg(xImgMax, y);
+            dif = isDiffUp(rgb, xImgMax, y) + isDiffDown(rgb, xImgMax, y) + isDiffLeft(rgb, xImgMax, y);
+            setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, y);
+        }
+
+        for (int y = 1; y < yImgMax; y++) {
+            for (int x = 1; x < xImgMax; x++) {
+                rgb = getRGBFromImg(x, y);
+                dif = isDiffLeft(rgb, x, y) + isDiffRight(rgb, x, y) + isDiffUp(rgb, x, y) + isDiffDown(rgb, x, y);
+                setPixel(difRGB, difX, difY, count, dif, rgb, x, y);
+            }
+        }
+
+        int st = 0;
+        for (int i = 4; i > 0 && st == 0; i--) {
+            if (count[i] > 0) {
+                st = i;
+            }
+        }
+        long time1 = new Date().getTime();
+        long time3 = 0;
+        long cost;
+        long mod = 0;
+        long wait;
+        boolean match;
+        Rectangle captureSize = new Rectangle(xFrom, yFrom, xTo - xFrom + 1, yTo - yFrom + 1);
+        BufferedImage screen;
+        DataBuffer sdb;
+        while (true) {
+            screen = robot.createScreenCapture(captureSize);
+            sdb = screen.getData().getDataBuffer();
+
+            for (int y = 0; y <= yStop; y++) {
+                for (int x = 0; x <= xStop; x++) {
+                    match = true;
+                    for (int i = st; i >= 0 && match; i--) {
+                        for (int j = count[i] - 1; j >= 0 && match; j--) {
+                            if (difRGB[i][j] != sdb.getElem((y + difY[i][j]) * sWth + x + difX[i][j])) {
+                                match = false;
+                            }
+                        }
+                    }
+                    if (match) {
+                        long time4 = new Date().getTime();
+                        System.out.println("x " + (x + xFrom + xImgMid) + ", y " + (y + yFrom + yImgMid) + ", time total " + (time4 - time0) + " time loop " + (time4 - (time3 - mod + 100)));
+                        return new Point(x + xFrom + xImgMid, y + yFrom + yImgMid);
+                    }
+                }
+            }
+            time3 = new Date().getTime();
+            cost = time3 - time0;
+            mod = cost % 100L;
+            wait = 100L - mod;
+            if ((time3 + wait) >= timeMax) {
+                System.out.println("Not found, time total " + (time3 - time0) + "  time loop  " + (time3 - time1));
+                return null;
+            }
+            if (mod != 0) {
+                delay(wait);
+            }
+        }
+    }
+
+    public class ImgData {
+        int id;
+        int[][] difRGB;
+        int[][] difX;
+        int[][] difY;
+        int[] count;
+        int xMid;
+        int yMid;
+        int xStop;
+        int yStop;
+        int highestTier;
+    }
+
+    public int waitForImages(int xFrom, int yFrom, int xTo, int yTo, int[] ids, String[] paths, long maxWait) throws IOException {
+        long time0 = new Date().getTime();
+        long timeMax = time0 + maxWait;
+        int sWth = xTo - xFrom + 1;
+        ImgData[] imgList = new ImgData[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            ImgData imgData = new ImgData();
+            BufferedImage image = ImageIO.read(new File(paths[i]));
+            imgDB = image.getData().getDataBuffer();
+            imgW = image.getWidth();
+            int imgH = image.getHeight();
+            int imgSize = imgDB.getSize();
+            imgPixSize = imgSize / imgH / imgW;
+
+            int[][] difRGB = new int[5][imgW * imgH];
+            int[][] difX = new int[5][imgW * imgH];
+            int[][] difY = new int[5][imgW * imgH];
+            int[] count = new int[5];
+
+            int xImgMax = imgW - 1;
+            int yImgMax = imgH - 1;
+
+            int dif;
+            int rgb;
+            // Top Left
+            rgb = getRGBFromImg(0, 0);
+            dif = isDiffDown(rgb, 0, 0) + isDiffRight(rgb, 0, 0);
+            setPixel(difRGB, difX, difY, count, dif, rgb, 0, 0);
+
+            // Bot Left
+            rgb = getRGBFromImg(0, yImgMax);
+            dif = isDiffUp(rgb, 0, yImgMax) + isDiffRight(rgb, 0, yImgMax);
+            setPixel(difRGB, difX, difY, count, dif, rgb, 0, yImgMax);
+
+            // Top Righ
+            rgb = getRGBFromImg(xImgMax, 0);
+            dif = isDiffDown(rgb, xImgMax, 0) + isDiffLeft(rgb, xImgMax, 0);
+            setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, 0);
+
+            // Bot Right
+            rgb = getRGBFromImg(xImgMax, yImgMax);
+            dif = isDiffUp(rgb, xImgMax, yImgMax) + isDiffLeft(rgb, xImgMax, yImgMax);
+            setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, yImgMax);
+
+            for (int x = 1; x < xImgMax; x++) {
+                // Bot Side
+                rgb = getRGBFromImg(x, yImgMax);
+                dif = isDiffUp(rgb, x, yImgMax) + isDiffLeft(rgb, x, yImgMax) + isDiffRight(rgb, x, yImgMax);
+                setPixel(difRGB, difX, difY, count, dif, rgb, x, yImgMax);
+                // Top Side
+                rgb = getRGBFromImg(x, 0);
+                dif = isDiffDown(rgb, x, 0) + isDiffLeft(rgb, x, 0) + isDiffRight(rgb, x, 0);
+                setPixel(difRGB, difX, difY, count, dif, rgb, x, 0);
+            }
+
+            for (int y = 1; y < yImgMax; y++) {
+                // Right Side
+                rgb = getRGBFromImg(xImgMax, y);
+                dif = isDiffUp(rgb, xImgMax, y) + isDiffDown(rgb, xImgMax, y) + isDiffLeft(rgb, xImgMax, y);
+                setPixel(difRGB, difX, difY, count, dif, rgb, xImgMax, y);
+                // Left Side
+                rgb = getRGBFromImg(0, y);
+                dif = isDiffUp(rgb, 0, y) + isDiffDown(rgb, 0, y) + isDiffRight(rgb, 0, y);
+                setPixel(difRGB, difX, difY, count, dif, rgb, 0, y);
+            }
+
+            for (int y = 1; y < yImgMax; y++) {
+                for (int x = 1; x < xImgMax; x++) {
+                    rgb = getRGBFromImg(x, y);
+                    dif = isDiffUp(rgb, x, y) + isDiffDown(rgb, x, y) + isDiffLeft(rgb, x, y) + isDiffRight(rgb, x, y);
+                    setPixel(difRGB, difX, difY, count, dif, rgb, x, y);
+                }
+            }
+
+            int st = 0;
+            for (int j = 4; j > 0 && st == 0; j--) {
+                if (count[j] > 0) {
+                    st = j;
+                }
+            }
+
+            imgData.id = ids[i];
+            imgData.difRGB = difRGB;
+            imgData.difX = difX;
+            imgData.difY = difY;
+            imgData.count = count;
+            imgData.xMid = xImgMax / 2;
+            imgData.yMid = yImgMax / 2;
+            imgData.xStop = xTo - xFrom + 1 - imgW;
+            imgData.yStop = yTo - yFrom + 1 - imgH;
+            imgData.highestTier = st;
+            imgList[i] = imgData;
+        }
+
+
+        long time1 = new Date().getTime();
+        long time3;
+        long cost;
+        long mod;
+        long wait;
+        boolean match;
+        Rectangle captureSize = new Rectangle(xFrom, yFrom, xTo - xFrom + 1, yTo - yFrom + 1);
+        BufferedImage screen;
+        DataBuffer sdb;
+        while (true) {
+            screen = robot.createScreenCapture(captureSize);
+            sdb = screen.getData().getDataBuffer();
+
+            for (ImgData imgData : imgList) {
+                for (int y = 0; y <= imgData.yStop; y++) {
+                    for (int x = 0; x <= imgData.xStop; x++) {
+                        match = true;
+                        for (int i = imgData.highestTier; i >= 0 && match; i--) {
+                            for (int j = imgData.count[i] - 1; j >= 0 && match; j--) {
+                                if (imgData.difRGB[i][j] != sdb.getElem((y + imgData.difY[i][j]) * sWth + x + imgData.difX[i][j])) {
+                                    match = false;
+                                }
+                            }
+                        }
+                        if (match) {
+//                            long time4 = new Date().getTime();
+//                            System.out.println("x " + (x + xFrom + imgData.xMid) + ", y " + (y + yFrom + imgData.yMid) + ", time total " + (time4 - time0) + " time loop " + (time4 - (time3 - mod + 100)));
+                            return imgData.id;
+                        }
+                    }
+                }
+            }
+
+            time3 = new Date().getTime();
+            cost = time3 - time0;
+            mod = cost % 100L;
+            wait = 100L - mod;
+            if ((time3 + wait) >= timeMax) {
+                System.out.println("Not found, time total " + (time3 - time0) + "  time loop  " + (time3 - time1));
+                return -1;
+            }
+            if (mod != 0) {
+                delay(wait);
+            }
+        }
+    }
 
     public void type(char character) {
         switch (character) {

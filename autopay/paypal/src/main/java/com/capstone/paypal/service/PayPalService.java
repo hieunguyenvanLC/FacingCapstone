@@ -119,7 +119,7 @@ public class PayPalService {
             if (id == pixBil.id) {
                 // confirm bill
                 s.delayRandomMedium();
-                s.delay(2000);
+                s.delay(4000);
                 s.moveAndClickInBox(650, 850, 200, 10);
                 while (payPalData.getResult() == null) {
                     try {
