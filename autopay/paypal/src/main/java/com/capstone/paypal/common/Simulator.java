@@ -28,7 +28,7 @@ public class Simulator {
     }
 
     public class PixelColor {
-        int id;
+        public int id;
         int xFrom;
         int yFrom;
         int xTo;
@@ -56,6 +56,10 @@ public class Simulator {
             this.blueMin = Math.max(0, blue - delta);
             this.blueMax = Math.min(255, blue + delta);
         }
+    }
+
+    public Dimension getScreenSize(){
+        return Toolkit.getDefaultToolkit().getScreenSize();
     }
 
     public PixelColor createPixelColor(int id, int xFrom, int yFrom, int xTo, int yTo, int color, int delta) {

@@ -9,6 +9,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,28 +72,35 @@ public class PayPalService {
         payPalData.setPrice(price);
         payPalData.setDescription(description);
 
-        int billDarkBlue = 0xFF002069;
-//        int billLightBlue = 0xFF7F86DD;
-        int loginDarkBlue = new Color(1, 33, 105).getRGB(); //0xFF003087;
-//        int logFailPink = 0xFFFFF7F7;
-        int logFailRed = 0xFFC72E2E;
+
+        String markLogin = Fix.IMG_DIR + "markLogin" + Fix.PNG;
+        String markBill = Fix.IMG_DIR + "markBill" + Fix.PNG;
+        String markLoginFail = Fix.IMG_DIR + "markLoginFail" + Fix.PNG;
+        String btnLogin = Fix.IMG_DIR + "btnLogin" + Fix.PNG;
+        String btnBill = Fix.IMG_DIR + "btnBill" + Fix.PNG;
+
+        System.out.println(markLogin);
 
         try {
             Simulator s = new Simulator();
-//            Simulator.PixelColor pixLog = s.createPixelColor(1, 880, 267, 880, 267, loginDarkBlue, 1);
-//            Simulator.PixelColor pixBil = s.createPixelColor(2, 585, 232, 585, 232, billDarkBlue, 1);
-            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 274, 885, 274, loginDarkBlue, 1);
-            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 232, 584, 232, billDarkBlue, 1);
+            Dimension screen = s.getScreenSize();
+            int screenH = screen.height;
+            int screenW = screen.width;
+            Point p = null;
 
-//            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 241, 885, 241, loginDarkBlue, 1);
-//            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 198, 584, 198, billDarkBlue, 1);
-
-//            Simulator.PixelColor pixBil = s.createPixelColor(2, 1150, 320, 1150, 320, billLightBlue, 1);
-            Simulator.PixelColor pixErr = s.createPixelColor(3, 764, 391, 764, 391, logFailRed, 1);
             s.clickInBox(200, 500, 10, 10);
-            int id = s.waitForMultiPixel(pixLog, pixBil);
+            int[] ids1 = {1, 2};
+            String[] paths1 = {markLogin, markBill};
+
+
+            int id = s.waitForImages(1, 1, screenW, screenH, ids1, paths1, 60000);
+
+            int[] ids2 = {1, 2};
+            String[] paths2 = {markLoginFail, markBill};
+
+
             System.out.println("step 1 - " + id);
-            if (id == pixBil.id) {
+            if (id == 2) {
                 // logout
                 s.delayRandomShort();
                 s.type('\t');
@@ -100,7 +108,7 @@ public class PayPalService {
                 s.type('\t');
                 s.delayRandomShort();
                 s.type('\n');
-                s.waitForMultiPixel(pixLog);
+                p = s.waitForImage(1, 1, screenW, screenH, btnLogin, 60000);
             }
             // login
             s.delayRandomShort();
@@ -112,15 +120,19 @@ public class PayPalService {
             s.delayRandomMedium();
             s.copyParseString(password);
             s.delay(1000);
-            s.moveAndClickInBox(800, 550, 200, 10);
+            if (id == 1) {
+                p = s.waitForImage(1, 1, screenW, screenH, btnLogin, 60000);
+            }
+            s.moveAndClickInBox(p.x - 50, p.y - 5, 100, 10);
 
-            id = s.waitForMultiPixel(pixErr, pixBil);
+            id = s.waitForImages(1, 1, screenW, screenH, ids2, paths2, 60000);
             System.out.println("step 2 - " + id);
-            if (id == pixBil.id) {
+            if (id == 2) {
                 // confirm bill
                 s.delayRandomMedium();
                 s.delay(4000);
-                s.moveAndClickInBox(650, 850, 200, 10);
+                p = s.waitForImage(1, 1, screenW, screenH, btnBill, 60000);
+                s.moveAndClickInBox(p.x - 50, p.y - 5, 100, 10);
                 while (payPalData.getResult() == null) {
                     try {
                         Thread.sleep(50);
@@ -135,17 +147,60 @@ public class PayPalService {
                 s.type('\n');
                 return "fail";
             }
-//            // logout
-//            s.waitForPixel(585, 232, billDarkBlue);
-//            s.delayRandomShort();
-//            s.type('\t');
-//            s.delayRandomShort();
-//            s.type('\t');
-//            s.delayRandomShort();
-//            s.type('\n');
+
+        } catch (AWTException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "fail";
+    }
+
+
+//    public String receivePaymentInput(String username, String password, String price, String description) {
+//        payPalData.setResult(null);
+//        payPalData.setPrice(price);
+//        payPalData.setDescription(description);
 //
+//        int billDarkBlue = 0xFF002069;
+////        int billLightBlue = 0xFF7F86DD;
+//        int loginDarkBlue = new Color(1, 33, 105).getRGB(); //0xFF003087;
+////        int logFailPink = 0xFFFFF7F7;
+//        int logFailRed = 0xFFC72E2E;
+//
+//
+//        String markLogin = "D:/pic/login1.png";
+//        String markBill = "D:/pic/bill1.png";
+//        String markLoginFail = "D:/pic/loginFail1.png";
+//        String btnLogin = "D:/pic/login2.png";
+//        String btnBill = "D:/pic/bill2.png";
+//
+//        try {
+//            Simulator s = new Simulator();
+////            Simulator.PixelColor pixLog = s.createPixelColor(1, 880, 267, 880, 267, loginDarkBlue, 1);
+////            Simulator.PixelColor pixBil = s.createPixelColor(2, 585, 232, 585, 232, billDarkBlue, 1);
+//            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 274, 885, 274, loginDarkBlue, 1);
+//            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 232, 584, 232, billDarkBlue, 1);
+//
+////            Simulator.PixelColor pixLog = s.createPixelColor(1, 885, 241, 885, 241, loginDarkBlue, 1);
+////            Simulator.PixelColor pixBil = s.createPixelColor(2, 584, 198, 584, 198, billDarkBlue, 1);
+//
+////            Simulator.PixelColor pixBil = s.createPixelColor(2, 1150, 320, 1150, 320, billLightBlue, 1);
+//            Simulator.PixelColor pixErr = s.createPixelColor(3, 764, 391, 764, 391, logFailRed, 1);
+//            s.clickInBox(200, 500, 10, 10);
+//            int id = s.waitForMultiPixel(pixLog, pixBil);
+//            System.out.println("step 1 - " + id);
+//            if (id == pixBil.id) {
+//                // logout
+//                s.delayRandomShort();
+//                s.type('\t');
+//                s.delayRandomShort();
+//                s.type('\t');
+//                s.delayRandomShort();
+//                s.type('\n');
+//                s.waitForMultiPixel(pixLog);
+//            }
 //            // login
-//            s.waitForPixel(880, 267, loginDarkBlue);
 //            s.delayRandomShort();
 //            s.type('\t');
 //            s.delayRandomShort();
@@ -155,18 +210,61 @@ public class PayPalService {
 //            s.delayRandomMedium();
 //            s.copyParseString(password);
 //            s.delay(1000);
-//            s.moveAndClickInBox(860, 550, 120, 30);
+//            s.moveAndClickInBox(800, 550, 200, 10);
 //
-//            // confirm bill
-//            s.waitForPixel(585, 232, billDarkBlue);
-//            s.delayRandomMedium();
-//            s.delay(1000);
-//            s.moveAndClickInBox(650, 840, 200, 30);
-        } catch (AWTException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "fail";
-    }
+//            id = s.waitForMultiPixel(pixErr, pixBil);
+//            System.out.println("step 2 - " + id);
+//            if (id == pixBil.id) {
+//                // confirm bill
+//                s.delayRandomMedium();
+//                s.delay(4000);
+//                s.moveAndClickInBox(650, 850, 200, 10);
+//                while (payPalData.getResult() == null) {
+//                    try {
+//                        Thread.sleep(50);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return payPalData.getResult();
+//            } else {
+//                s.clickInBox(1500, 50, 0, 0);
+//                s.copyParseString(Fix.LOCAL_URL);
+//                s.type('\n');
+//                return "fail";
+//            }
+////            // logout
+////            s.waitForPixel(585, 232, billDarkBlue);
+////            s.delayRandomShort();
+////            s.type('\t');
+////            s.delayRandomShort();
+////            s.type('\t');
+////            s.delayRandomShort();
+////            s.type('\n');
+////
+////            // login
+////            s.waitForPixel(880, 267, loginDarkBlue);
+////            s.delayRandomShort();
+////            s.type('\t');
+////            s.delayRandomShort();
+////            s.copyParseString(username);
+////            s.delayRandomMedium();
+////            s.type('\t');
+////            s.delayRandomMedium();
+////            s.copyParseString(password);
+////            s.delay(1000);
+////            s.moveAndClickInBox(860, 550, 120, 30);
+////
+////            // confirm bill
+////            s.waitForPixel(585, 232, billDarkBlue);
+////            s.delayRandomMedium();
+////            s.delay(1000);
+////            s.moveAndClickInBox(650, 840, 200, 30);
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
+//        return "fail";
+//    }
 
     public String initPayment(String cancelUrl, String successUrl) {
         try {
