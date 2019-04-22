@@ -72,33 +72,24 @@ public class PayPalService {
         payPalData.setPrice(price);
         payPalData.setDescription(description);
 
-
         String markLogin = Fix.IMG_DIR + "markLogin" + Fix.PNG;
         String markBill = Fix.IMG_DIR + "markBill" + Fix.PNG;
         String markLoginFail = Fix.IMG_DIR + "markLoginFail" + Fix.PNG;
         String btnLogin = Fix.IMG_DIR + "btnLogin" + Fix.PNG;
         String btnBill = Fix.IMG_DIR + "btnBill" + Fix.PNG;
-
-        System.out.println(markLogin);
-
+        String markStart = Fix.IMG_DIR + "mapExplain" + Fix.PNG;
+//        System.out.println(markLogin);
         try {
             Simulator s = new Simulator();
             Dimension screen = s.getScreenSize();
             int screenH = screen.height;
             int screenW = screen.width;
-            Point p = null;
-
-            s.clickInBox(200, 500, 10, 10);
+            Point p;
+            p = s.waitForImage(1, 1, screenW, screenH, markStart, 60000);
+            s.clickInBox(p.x, p.y, 0, 0);
             int[] ids1 = {1, 2};
             String[] paths1 = {markLogin, markBill};
-
-
             int id = s.waitForImages(1, 1, screenW, screenH, ids1, paths1, 60000);
-
-            int[] ids2 = {1, 2};
-            String[] paths2 = {markLoginFail, markBill};
-
-
             System.out.println("step 1 - " + id);
             if (id == 2) {
                 // logout
@@ -125,6 +116,8 @@ public class PayPalService {
             }
             s.moveAndClickInBox(p.x - 50, p.y - 5, 100, 10);
 
+            int[] ids2 = {1, 2};
+            String[] paths2 = {markLoginFail, markBill};
             id = s.waitForImages(1, 1, screenW, screenH, ids2, paths2, 60000);
             System.out.println("step 2 - " + id);
             if (id == 2) {
@@ -147,7 +140,6 @@ public class PayPalService {
                 s.type('\n');
                 return "fail";
             }
-
         } catch (AWTException e) {
             e.printStackTrace();
         } catch (IOException e) {
