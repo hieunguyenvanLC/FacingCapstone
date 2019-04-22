@@ -107,7 +107,18 @@ section.dashboard-counts .row {
 }
 
 .chart .gj-dropdown-bootstrap-4 {
-    float: right;
+    flex-grow: 1!important;
+    display: flex;
+    flex-direction: row;
+}
+
+.chart .gj-dropdown-bootstrap-4 .btn {
+    flex-grow: 1!important;
+}
+
+.chart label {
+    margin-bottom: 0;
+    padding-right: 8px;
 }
 
 .daterange {

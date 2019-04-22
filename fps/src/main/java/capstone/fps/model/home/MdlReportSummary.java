@@ -52,6 +52,8 @@ public class MdlReportSummary {
     @Expose
     private double successRate;
     @Expose
+    private int successOrders;
+    @Expose
     private int totalAmount;
     @Expose
     private int paidShipper;
@@ -60,6 +62,8 @@ public class MdlReportSummary {
     private int soldProductCountTDay;
     @Expose
     private double successRateTDay;
+    @Expose
+    private int successOrdersTDay;
     @Expose
     private int totalAmountTDay;
     @Expose
@@ -70,6 +74,8 @@ public class MdlReportSummary {
     @Expose
     private double successRateTWeek;
     @Expose
+    private int successOrdersTWeek;
+    @Expose
     private int totalAmountTWeek;
     @Expose
     private int paidShipperTWeek;
@@ -79,6 +85,8 @@ public class MdlReportSummary {
     private int soldProductCountTMonth;
     @Expose
     private double successRateTMonth;
+    @Expose
+    private int successOrdersTMonth;
     @Expose
     private int totalAmountTMonth;
     @Expose
@@ -365,5 +373,37 @@ public class MdlReportSummary {
 
     public void setPaidShipper(int paidShipper) {
         this.paidShipper = paidShipper;
+    }
+
+    public int getSuccessOrders() {
+        return successOrders;
+    }
+
+    public void setSuccessOrders(int successOrders) {
+        this.successOrders = successOrders;
+    }
+
+    public int getSuccessOrdersTDay() {
+        return successOrdersTDay;
+    }
+
+    public void setSuccessOrdersTDay(int successOrdersTDay) {
+        this.successOrdersTDay = successOrdersTDay;
+    }
+
+    public int getSuccessOrdersTWeek() {
+        return successOrdersTWeek;
+    }
+
+    public void setSuccessOrdersTWeek(int successOrdersTWeek) {
+        this.successOrdersTWeek = successOrdersTWeek;
+    }
+
+    public int getSuccessOrdersTMonth() {
+        return successOrdersTMonth;
+    }
+
+    public void setSuccessOrdersTMonth(int successOrdersTMonth) {
+        this.successOrdersTMonth = successOrdersTMonth;
     }
 }

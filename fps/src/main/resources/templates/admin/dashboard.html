@@ -234,8 +234,9 @@
                         <div class="col-12 no-padding">
                             <div class="row no-padding">
                                 <div class="col-6 no-padding"><span>Today</span></div>
-                                <div class="number filter-sm-text col-6" id="lbSuccessRateD" style="color: #009cd4">
-                                    <strong>0%</strong></div>
+                                <div class="number filter-sm-text col-6" id="lbSuccessRateD" data-tooltip="true" data-html="true" title="" style="color: #009cd4">
+                                    <strong>0%</strong>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 no-padding">
@@ -395,27 +396,23 @@
             <div class="row bg-white has-shadow">
                 <div class="item col-12" style="padding-top: 15px;">
                     <div class="row" style="margin: 0px">
-                        <div class="chart col-lg-3 col-12">
-                            <label class="float-left">Type:</label>
-                            <select class="float-right" id="selReportType" width="220px">
+                        <div class="chart col-lg-3 col-12 d-flex flex-row align-items-center">
+                            <label class="">Type:</label>
+                            <select id="selReportType">
                                 <option value="order">Order</option>
                                 <option value="productSld">Product Sold</option>
                                 <option value="rateScc">Rate Successfull</option>
                                 <option value="totalAmt">Total Amount</option>
                             </select>
-                            <div class="clearfix"></div>
                         </div>
-                        <div class="chart col-lg-2 col-12">
-                            <label class="float-left">Date:</label>
-                            <select class="float-right" id="selChartType" width="120px">
+                        <div class="chart col-lg-3 col-12 d-flex flex-row align-items-center">
+                            <label class="">Date:</label>
+                            <select class="flex-grow-1" id="selChartType" width="120px">
                                 <option value="0">Day</option>
                                 <option value="1">Week</option>
                                 <option value="2">Month</option>
                                 <option value="3">Year</option>
                             </select>
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="chart col-lg-1 col-12">
                         </div>
                         <div class="chart char-filter col-lg-6 col-12">
                             <input id="dpkStart" width="50%" style="display: inline" autocomplete="off"/>

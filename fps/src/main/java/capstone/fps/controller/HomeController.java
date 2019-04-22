@@ -79,25 +79,26 @@ public class HomeController extends AbstractController {
         summary.setStoreCountTWeek(this.homeService.countStore(startTWeekUnix, endUnix));
         summary.setStoreCountTMonth(this.homeService.countStore(startTMonthUnix, endUnix));
 
-        ///
-        summary.setSoldProductCount(this.homeService.sumProductByOrder());
-        summary.setSuccessRate(this.homeService.allSuccessRate());
-        summary.setTotalAmount(this.homeService.sumTotalAmount());
-        summary.setPaidShipper(this.homeService.sumShipperEarn());
-
         // Success Rate
+        summary.setSuccessRate(this.homeService.allSuccessRate());
         summary.setSuccessRateTDay(this.homeService.successRate(startTodayUnix, endUnix));
         summary.setSuccessRateTWeek(this.homeService.successRate(startTWeekUnix, endUnix));
         summary.setSuccessRateTMonth(this.homeService.successRate(startTMonthUnix, endUnix));
+        summary.setSuccessOrdersTDay(this.homeService.countOrderSuccessBy(startTodayUnix, endUnix));
+        summary.setSuccessOrdersTWeek(this.homeService.countOrderSuccessBy(startTWeekUnix, endUnix));
+        summary.setSuccessOrdersTMonth(this.homeService.countOrderSuccessBy(startTMonthUnix, endUnix));
         // Total Amount
+        summary.setTotalAmount(this.homeService.sumTotalAmount());
         summary.setTotalAmountTDay(this.homeService.sumTotalAmount(startTodayUnix, endUnix));
         summary.setTotalAmountTWeek(this.homeService.sumTotalAmount(startTWeekUnix, endUnix));
         summary.setTotalAmountTMonth(this.homeService.sumTotalAmount(startTMonthUnix, endUnix));
         // Paid Shipper Amount
+        summary.setPaidShipper(this.homeService.sumShipperEarn());
         summary.setPaidShipperTDay(this.homeService.sumShipperEarn(startTodayUnix, endUnix));
         summary.setPaidShipperTWeek(this.homeService.sumShipperEarn(startTWeekUnix, endUnix));
         summary.setPaidShipperTMonth(this.homeService.sumShipperEarn(startTMonthUnix, endUnix));
         // Sold Products
+        summary.setSoldProductCount(this.homeService.sumProductByOrder());
         summary.setSoldProductCountTDay(this.homeService.sumProductByOrder(startTodayUnix, endUnix));
         summary.setSoldProductCountTWeek(this.homeService.sumProductByOrder(startTWeekUnix, endUnix));
         summary.setSoldProductCountTMonth(this.homeService.sumProductByOrder(startTMonthUnix, endUnix));

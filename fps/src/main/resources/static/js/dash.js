@@ -30,6 +30,10 @@ $(document).ready(function () {
     btnCloseModal = document.getElementById("btnCloseModal");
     tblBodyDetail = document.getElementById("tblBodyDetail");
 
+    // Khoi tao tooltip
+    $('[data-tooltip="true"]').tooltip();
+
+    // Load summary
     function loadSummary() { //Load Summary
         $.ajax({
             // url: "/any/api/report/summary?mon=7&year=2019",
@@ -64,6 +68,9 @@ $(document).ready(function () {
                 $("#lbSuccessRateD").html("<strong>" + formatNumber(summary.successRateTDay) + "%</strong>");//day
                 $("#lbSuccessRateW").html("<strong>" + formatNumber(summary.successRateTWeek) + "%</strong>");// week
                 $("#lbSuccessRateM").html("<strong>" + formatNumber(summary.successRateTMonth) + "%</strong>");// month
+                var successTDayWeek = formatNumber(summary.successOrdersTWeek === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTWeek);
+                var successTDayMon = formatNumber(summary.successOrdersTMonth === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTMonth);
+                $("#lbSuccessRateD").attr('data-original-title', '<div>Success today over this week: ' + successTDayWeek + '%</div><div>Success today over this month: ' + successTDayMon + '%</div>');
                 //Total
                 $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + " VND</strong>");// all
                 $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + " VND</strong>");//day
@@ -79,7 +86,6 @@ $(document).ready(function () {
                 $("#lbSoldProductD").html("<strong>" + abbrNum(summary.soldProductCountTDay) + "</strong>");//day
                 $("#lbSoldProductW").html("<strong>" + abbrNum(summary.soldProductCountTWeek) + "</strong>");// week
                 $("#lbSoldProductM").html("<strong>" + abbrNum(summary.soldProductCountTMonth) + "</strong>");// month
-
             },
             error: function (err) {
                 console.log(err);
@@ -90,7 +96,7 @@ $(document).ready(function () {
     loadSummary();
     setInterval(loadSummary, 10000); //Reset time
 
-    // Init chart
+    // Khoi tao chart
     var mainDataTable = null;
     var mainChart = null;
     google.charts.load('current', {'packages': ['line']}); // bar => line (doi chart)
@@ -809,6 +815,26 @@ function loadEditForm() {
             '            <td>' + pro.quantity + '</td>\n' +
             '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n';
         tblBodyDetail.innerHTML += row;
+        var rowSubTotal = '  <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td>Sub total</td>\n' +
+            '            <td align="right">' + orderEdit.totalPrice + '</td>\n';
+        tblBodyDetail.innerHTML += rowSubTotal;
+
+        var rowShippingFee = '  <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td>Shipping Fee</td>\n' +
+            '            <td align="right">' + orderEdit.shipperEarn + '</td>\n';
+        tblBodyDetail.innerHTML += rowShippingFee;
+
+        var rowTotal = '  <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td></td>\n' +
+            '            <td>Total</td>\n' +
+            '            <td align="right">' + (orderEdit.totalPrice + orderEdit.shipperEarn) + '</td>\n';
+        tblBodyDetail.innerHTML += rowTotal;
     }
 
 }
@@ -887,9 +913,9 @@ function fpsSetImgFromInput(img, input) {
     var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
     if (input.files && input.files[0] && (ext === "png" || ext === "jpeg" || ext === "jpg")) {
         var reader = new FileReader();
-        reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(input.files[0]); // chuyen file anh thanh dang base64 url
         reader.onload = function () {
-            img.setAttribute('src', reader.result);
+            img.setAttribute('src', reader.result); // hien thi base64 url ra tag img
             return true;
         };
         reader.onerror = function (error) {
