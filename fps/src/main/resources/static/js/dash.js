@@ -70,7 +70,9 @@ $(document).ready(function () {
                 $("#lbSuccessRateM").html("<strong>" + formatNumber(summary.successRateTMonth) + "%</strong>");// month
                 var successTDayWeek = formatNumber(summary.successOrdersTWeek === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTWeek);
                 var successTDayMon = formatNumber(summary.successOrdersTMonth === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTMonth);
+                var successTWeekMon = formatNumber(summary.successOrdersTWeek === 0 ? 0 : summary.successOrdersTWeek / summary.successOrdersTMonth);
                 $("#lbSuccessRateD").attr('data-original-title', '<div>Success today over this week: ' + successTDayWeek + '%</div><div>Success today over this month: ' + successTDayMon + '%</div>');
+                $("#lbSuccessRateW").attr('data-original-title', '<div>Success this week over this month: ' + successTWeekMon + '%</div>');
                 //Total
                 $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + " VND</strong>");// all
                 $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + " VND</strong>");//day
