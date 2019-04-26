@@ -22,8 +22,6 @@ public class FRReceiveMember {
     private byte[] face2;
     @Column(name = "face3")
     private byte[] face3;
-    @Column(name = "id")
-    private Integer removePointer;
     @ManyToOne
     @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
@@ -69,14 +67,6 @@ public class FRReceiveMember {
 
     public void setFace3(byte[] face3) {
         this.face3 = face3;
-    }
-
-    public Integer getRemovePointer() {
-        return removePointer;
-    }
-
-    public void setRemovePointer(Integer removePointer) {
-        this.removePointer = removePointer;
     }
 
     public FRAccount getAccount() {

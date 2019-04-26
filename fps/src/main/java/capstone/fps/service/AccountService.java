@@ -552,7 +552,6 @@ public class AccountService {
         frReceiveMember.setFace1(faceBytes1);
         frReceiveMember.setFace2(faceBytes2);
         frReceiveMember.setFace3(faceBytes3);
-        frReceiveMember.setRemovePointer(1);
         frReceiveMember.setAccount(frAccount);
         receiveMemberRepo.save(frReceiveMember);
 
@@ -705,26 +704,22 @@ public class AccountService {
         return response;
     }
 
-    private int setRevMemFace(Methods methods, FRReceiveMember frReceiveMember, String face, int pointer, String dirName) {
+    private void setRevMemFace(Methods methods, FRReceiveMember frReceiveMember, String face, int pointer, String dirName) {
         if (face != null) {
             byte[] faceBytes = methods.base64ToBytes(face);
             switch (pointer) {
                 case 1:
                     frReceiveMember.setFace1(faceBytes);
-                    pointer = 2;
                     break;
                 case 2:
                     frReceiveMember.setFace2(faceBytes);
-                    pointer = 3;
                     break;
                 case 3:
                     frReceiveMember.setFace3(faceBytes);
-                    pointer = 1;
                     break;
             }
             putFaceToPythonDir(dirName, faceBytes);
         }
-        return pointer;
     }
 
     public Response<String> updateMemberFaceMem(Integer revMemId, String revMemName, String face1, String face2, String face3) {
@@ -752,7 +747,6 @@ public class AccountService {
             frReceiveMember.setFace1(faceBytes1);
             frReceiveMember.setFace2(faceBytes2);
             frReceiveMember.setFace3(faceBytes3);
-            frReceiveMember.setRemovePointer(1);
             receiveMemberRepo.save(frReceiveMember);
 
             // training in python here
@@ -777,16 +771,12 @@ public class AccountService {
         }
         // train here
         String dirName = createPythonDir(revMemId);
-        int pointer = frReceiveMember.getRemovePointer();
-        pointer = setRevMemFace(methods, frReceiveMember, face1, pointer, dirName);
-        pointer = setRevMemFace(methods, frReceiveMember, face2, pointer, dirName);
-        pointer = setRevMemFace(methods, frReceiveMember, face3, pointer, dirName);
+        setRevMemFace(methods, frReceiveMember, face1, 1, dirName);
+        setRevMemFace(methods, frReceiveMember, face2, 2, dirName);
+        setRevMemFace(methods, frReceiveMember, face3, 3, dirName);
         pythonCrop();
         deletePythonDir(dirName);
-
-        frReceiveMember.setRemovePointer(pointer);
         receiveMemberRepo.save(frReceiveMember);
-
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
