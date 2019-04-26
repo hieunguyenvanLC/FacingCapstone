@@ -246,4 +246,13 @@ public final class Methods {
         }
         return "fail";
     }
+
+
+    public Long getTomorrow() {
+        Calendar now = new GregorianCalendar();
+        now.add(Calendar.DAY_OF_YEAR, 1);
+        now.set(Calendar.HOUR_OF_DAY, 23);
+        now.set(Calendar.MINUTE, 1);
+        return now.getTimeInMillis();
+    }
 }

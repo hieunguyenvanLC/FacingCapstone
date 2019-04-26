@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -45,11 +47,11 @@ public class OrderService {
     private ShipperRepo shipperRepo;
     private OrderMap orderMap;
     private TransactionRepo transactionRepo;
-    private final ShipperWait shipperWait;
+//    private final ShipperWait shipperWait;
 
 
     @Autowired
-    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
+    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -60,7 +62,7 @@ public class OrderService {
         this.shipperRepo = shipperRepo;
         this.orderMap = orderMap;
         this.transactionRepo = transactionRepo;
-        this.shipperWait = shipperWait;
+//        this.shipperWait = shipperWait;
     }
 
 
@@ -459,7 +461,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Matching - Begin
-    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken) {
+    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken, HttpServletRequest request) {
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         Methods methods = new Methods();
@@ -469,9 +471,10 @@ public class OrderService {
         FRAccount currentUser = methods.getUser();
         int accId = currentUser.getId();
 
-        shipperWait.setCancel(false);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("cancelWait", false);
 
-        while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
+        while (methods.getTimeNow() < waitTime && !((boolean) session.getAttribute("cancelWait"))) {
             for (ArrayList<Delta> layer : orderMap.getLayers()) {
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
@@ -548,7 +551,7 @@ public class OrderService {
             }
         }
 
-        if (shipperWait.isCancel()) {
+        if ((boolean) session.getAttribute("cancelWait")) {
             response.setResponse(Response.STATUS_SUCCESS, "cancel");
             return response;
         } else {
@@ -612,16 +615,10 @@ public class OrderService {
         return methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
-    public Response<Integer> stopQueue() {
+    public Response<Integer> stopQueue(HttpServletRequest request) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        shipperWait.setCancel(true);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
-    }
-
-    public Response<Integer> cancelOrderA() {
-        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        shipperWait.setCancel(true);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("cancelWait", true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }

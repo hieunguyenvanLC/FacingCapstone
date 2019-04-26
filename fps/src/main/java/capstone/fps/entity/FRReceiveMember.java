@@ -16,8 +16,14 @@ public class FRReceiveMember {
     private Integer id;
     @Column(name = "name", length = 100)
     private String name;
-    @Column(name = "face")
-    private byte[] face;
+    @Column(name = "face1")
+    private byte[] face1;
+    @Column(name = "face2")
+    private byte[] face2;
+    @Column(name = "face3")
+    private byte[] face3;
+    @Column(name = "id")
+    private Integer removePointer;
     @ManyToOne
     @JoinColumn(name = "FR_Account_id")
     private FRAccount account;
@@ -41,12 +47,36 @@ public class FRReceiveMember {
         this.name = name;
     }
 
-    public byte[] getFace() {
-        return face;
+    public byte[] getFace1() {
+        return face1;
     }
 
-    public void setFace(byte[] face) {
-        this.face = face;
+    public void setFace1(byte[] face1) {
+        this.face1 = face1;
+    }
+
+    public byte[] getFace2() {
+        return face2;
+    }
+
+    public void setFace2(byte[] face2) {
+        this.face2 = face2;
+    }
+
+    public byte[] getFace3() {
+        return face3;
+    }
+
+    public void setFace3(byte[] face3) {
+        this.face3 = face3;
+    }
+
+    public Integer getRemovePointer() {
+        return removePointer;
+    }
+
+    public void setRemovePointer(Integer removePointer) {
+        this.removePointer = removePointer;
     }
 
     public FRAccount getAccount() {

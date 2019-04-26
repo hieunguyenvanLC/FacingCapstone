@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -171,10 +172,10 @@ public class OrderController extends AbstractController {
 
     // Mobile Shipper - Queue - Begin
     @DeleteMapping(Fix.MAP_SHP + API)
-    public String cancelQueue() {
+    public String cancelQueue(HttpServletRequest request) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.stopQueue();
+            response = orderService.stopQueue(request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -183,10 +184,10 @@ public class OrderController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_SHP + API)
-    public String startQueue(double longitude, double latitude, String shipperToken) {
+    public String startQueue(double longitude, double latitude, String shipperToken, HttpServletRequest request) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.autoAssign(gson, longitude, latitude, shipperToken);
+            response = orderService.autoAssign(gson, longitude, latitude, shipperToken, request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
