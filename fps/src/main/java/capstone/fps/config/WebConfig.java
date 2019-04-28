@@ -16,9 +16,9 @@ public class WebConfig {
         return new OrderMap();
     }
 
-    @Bean
-    @Scope("singleton")
-    public ShipperWait shipperWait() {
-        return new ShipperWait();
-    }
+//    @Bean
+//    @Scope("singleton")
+//    public ShipperWait shipperWait() {
+//        return new ShipperWait();
+//    }
 }

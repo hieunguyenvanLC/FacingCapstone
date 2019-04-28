@@ -142,9 +142,9 @@
         var cbbStatus = document.getElementById("cbbStatus");
 
         function fpsFetchData() {
-            store = JSON.parse(sessionStorage.getItem("store")); // Lay du lieu store trong session storage luu vao bien tam (store)
+            store = JSON.parse(sessionStorage.getItem("store"));
             // console.log(store);
-            sessionStorage.removeItem("store"); // Xoa du lieu store trong session storage
+            sessionStorage.removeItem("store");
             if (!isStoreExist()) {
                 btnAdd.style.display = "none";
 
@@ -154,18 +154,18 @@
             getProList();
             fpsSetCbbStatus(cbbStatus, PRO_STAT_LIST);
         }
-// Ham nay la cai xet store neu co store thi co add new button, khong thi thoi. // Hieu roi/ chi la tiep theo 4 cai function thoi ong
+
 
         function drawTblProduct() {
-            document.getElementById("btnCloseModal").click(); // de lam gi ? toi doan la de tu dong dong close Modal,
-            var list = proList;// gan list
-            $('#account-table').DataTable().destroy();// huy bang
-            var accountTable = $('#account-table').DataTable();// khoi tao table
-            accountTable.clear().draw();// ve table
+            document.getElementById("btnCloseModal").click();
+            var list = proList;
+            $('#account-table').DataTable().destroy();
+            var accountTable = $('#account-table').DataTable();
+            accountTable.clear().draw();
             for (var i = 0; i < list.length; i++) {
                 var product = list[i];
 
-                var statStr = fpsGetStatMsg(PRO_STAT_LIST, product.status); // gan status = may . uhm la 1 con so.=> chuoi ok. 1=> Ok. Hieu roi
+                var statStr = fpsGetStatMsg(PRO_STAT_LIST, product.status);
                 accountTable.row.add([
                     '<span data-target="#product-detail-modal" data-toggle="modal" onclick="getProDetail(' + product.id + ')" >' + product.name + '</span>',
                     product.price,
@@ -200,7 +200,7 @@
             $.ajax({
                 type: 'GET',
                 url: fpsApiPro,
-                data: {storeId: storeId}, // API . hieu roi, nhung la storeId: sotreId goi la gi, minh gan hay sao ong ? roi ok sau do se chay tiep draw
+                data: {storeId: storeId},
                 dataType: 'json',
                 success: function (response) {
                     proList = response.data;
@@ -233,7 +233,7 @@
             proEditPos = getProPos(proId);
             if (proEditPos < 0) {
                 proList.push(getProDetailFromServer(proId));
-                proEditPos = getProPos(proId); // load vi tri san pham trong list
+                proEditPos = getProPos(proId);
                 return;
             }
             if (typeof proList[proEditPos].createTime === "undefined") {
@@ -258,15 +258,16 @@
             cbbStatus.value = proEdit.status;
         }
 
+
         function loadAddForm() {
-            proEditPos = -1; // list la vi tri 0, add new la -1 ??
+            proEditPos = -1;
 
             txtProName.value = "";
             lblStore.innerHTML = store.name + " " + store.address;
             txtPrice.value = "";
             txtDescription.value = "";
             txtNote.value = "";
-            fpsSetImgDefault(imgProIcon); // la cai gi// ok
+            fpsSetImgDefault(imgProIcon);
             uplProIcon.value = "";
             cbbStatus.value = proEdit.status;
         }
@@ -356,7 +357,7 @@
 
 
         function uplProIconOnChange() {
-            fpsSetImgFromInput(imgProIcon, uplProIcon); // Ham load anh. la thu vien hay gi hay ong ?
+            fpsSetImgFromInput(imgProIcon, uplProIcon);
         }
 
 

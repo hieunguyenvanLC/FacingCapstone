@@ -207,10 +207,10 @@ public class AccountController extends AbstractController {
 
     // Mobile Mem - Register - Begin
     @PostMapping(Fix.MAP_ANY + API)
-    public String createAccountMember(String phoneNumber, String password, String fullName, String face, String payUsername, String payPassword) {
+    public String createAccountMember(String phoneNumber, String password, String fullName, String face1, String face2, String face3, String payUsername, String payPassword) {
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.createAccountMember(phoneNumber, password, fullName, face, payUsername, payPassword);
+            response = accountService.createAccountMember(phoneNumber, password, fullName, face1, face2, face3, payUsername, payPassword);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -258,10 +258,10 @@ public class AccountController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_MEM + API + "/face")
-    public String updateRevMemFace(Integer revMemId, String revMemName, String face) {
+    public String updateRevMemFace(Integer revMemId, String revMemName, String face1, String face2, String face3) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.updateMemberFaceMem(revMemId, revMemName, face);
+            response = accountService.updateMemberFaceMem(revMemId, revMemName, face1, face2, face3);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

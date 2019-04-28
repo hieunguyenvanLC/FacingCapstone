@@ -758,7 +758,8 @@ function getOrderDetail(pos) {
     if (typeof orderList[pos].createTime === "undefined") {
         $.ajax({
             type: 'GET',
-            url: "/adm/api/order/detail",
+            url: "/any/api/orderdetail",
+            // url: "/adm/api/order/detail",
             data: {orderId: orderList[pos].id},
             dataType: 'json',
             success: function (response) {

@@ -1,11 +1,10 @@
 package capstone.fps.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AppData {
 
-    private static Map<String, String> faceResult = new HashMap<>();
+    private static final Map<String, String> faceResult = new HashMap<>();
 
     public static Map<String, String> getFaceResult() {
         return faceResult;

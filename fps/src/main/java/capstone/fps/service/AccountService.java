@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,54 +70,54 @@ public class AccountService {
     }
 
 
-    public boolean banAccount(Integer accountId, String reason) {
-        Methods methods = new Methods();
-
-        if (accountId == null) {
-            return false;
-        }
-        if (methods.getUser().getId().equals(accountId)) {
-            return false;
-        }
-        Optional<FRAccount> optional = accountRepo.findById(accountId);
-        if (!optional.isPresent()) {
-            return false;
-        }
-        if (methods.nullOrSpace(reason)) {
-            reason = "";
-        }
-
-        FRAccount frAccount = optional.get();
-        frAccount.setDeleteTime(methods.getTimeNow());
-        frAccount.setStatus(Fix.ACC_BAN.index);
-        frAccount.setNote(reason);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        return true;
-    }
-
-    public boolean activateAccount(Integer accountId, String reason) {
-        Methods methods = new Methods();
-
-        if (accountId == null) {
-            return false;
-        }
-        Optional<FRAccount> optional = accountRepo.findById(accountId);
-        if (!optional.isPresent()) {
-            return false;
-        }
-        if (methods.nullOrSpace(reason)) {
-            reason = "";
-        }
-
-        FRAccount frAccount = optional.get();
-        frAccount.setUpdateTime(methods.getTimeNow());
-        frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setNote(reason);
-        frAccount.setEditor(methods.getUser());
-        accountRepo.save(frAccount);
-        return true;
-    }
+//    public boolean banAccount(Integer accountId, String reason) {
+//        Methods methods = new Methods();
+//
+//        if (accountId == null) {
+//            return false;
+//        }
+//        if (methods.getUser().getId().equals(accountId)) {
+//            return false;
+//        }
+//        Optional<FRAccount> optional = accountRepo.findById(accountId);
+//        if (!optional.isPresent()) {
+//            return false;
+//        }
+//        if (methods.nullOrSpace(reason)) {
+//            reason = "";
+//        }
+//
+//        FRAccount frAccount = optional.get();
+//        frAccount.setDeleteTime(methods.getTimeNow());
+//        frAccount.setStatus(Fix.ACC_BAN.index);
+//        frAccount.setNote(reason);
+//        frAccount.setEditor(methods.getUser());
+//        accountRepo.save(frAccount);
+//        return true;
+//    }
+//
+//    public boolean activateAccount(Integer accountId, String reason) {
+//        Methods methods = new Methods();
+//
+//        if (accountId == null) {
+//            return false;
+//        }
+//        Optional<FRAccount> optional = accountRepo.findById(accountId);
+//        if (!optional.isPresent()) {
+//            return false;
+//        }
+//        if (methods.nullOrSpace(reason)) {
+//            reason = "";
+//        }
+//
+//        FRAccount frAccount = optional.get();
+//        frAccount.setUpdateTime(methods.getTimeNow());
+//        frAccount.setStatus(Fix.ACC_NEW.index);
+//        frAccount.setNote(reason);
+//        frAccount.setEditor(methods.getUser());
+//        accountRepo.save(frAccount);
+//        return true;
+//    }
 
     // Web Admin - Member - Begin
     public Response<List<MdlMember>> getMemberList() {
@@ -139,11 +140,11 @@ public class AccountService {
         return response;
     }
 
-    public Response updateMemberAdm(int accId, String name, String email, Long dob, String note, Integer status) {
+    public Response<MdlMember> updateMemberAdm(int accId, String name, String email, Long dob, String note, Integer status) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
-        Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         FRAccount frAccount = accountRepo.findById(accId).orElse(null);
         if (frAccount == null) {
@@ -283,7 +284,6 @@ public class AccountService {
 
     public Response<MdlAdmin> getAdminProfileAdm() {
         Methods methods = new Methods();
-        Repo repo = new Repo();
         FRAccount frAccount = methods.getUser();
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
@@ -293,7 +293,6 @@ public class AccountService {
 
     public Response<MdlAdmin> updateProfileAdm(String password, String name, MultipartFile avatar) {
         Methods methods = new Methods();
-        Repo repo = new Repo();
         FRAccount frAccount = methods.getUser();
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         if (password != null) {
@@ -513,7 +512,7 @@ public class AccountService {
 
 
     // Mobile Member - Register - Begin
-    public Response createAccountMember(String phone, String pass, String name, String face, String payUsername, String payPassword) {
+    public Response createAccountMember(String phone, String pass, String name, String face1, String face2, String face3, String payUsername, String payPassword) {
         Methods methods = new Methods();
         Validator valid = new Validator();
         Response response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -523,7 +522,9 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number.");
             return response;
         }
-        byte[] faceBytes = methods.base64ToBytes(face);
+        byte[] faceBytes1 = methods.base64ToBytes(face1);
+        byte[] faceBytes2 = methods.base64ToBytes(face2);
+        byte[] faceBytes3 = methods.base64ToBytes(face3);
 
         FRAccount frAccount = new FRAccount();
         frAccount.setPhone(phone);
@@ -541,14 +542,16 @@ public class AccountService {
         frAccount.setNote("");
         frAccount.setStatus(Fix.ACC_NEW.index);
         frAccount.setEditor(null);
-        frAccount.setAvatar(faceBytes);
+        frAccount.setAvatar(faceBytes1);
         accountRepo.save(frAccount);
 
 
-        frAccount = accountRepo.findById(frAccount.getId()).get();
+        frAccount = accountRepo.findById(frAccount.getId()).orElse(null);
         FRReceiveMember frReceiveMember = new FRReceiveMember();
         frReceiveMember.setName("default");
-        frReceiveMember.setFace(faceBytes);
+        frReceiveMember.setFace1(faceBytes1);
+        frReceiveMember.setFace2(faceBytes2);
+        frReceiveMember.setFace3(faceBytes3);
         frReceiveMember.setAccount(frAccount);
         receiveMemberRepo.save(frReceiveMember);
 
@@ -561,49 +564,108 @@ public class AccountService {
         paymentInfoRepo.save(frPaymentInformation);
 
         // training in python here
-        trainingFaceRecognise(frReceiveMember);
+//        Map<Integer, FaceTrain> trainQueue = AppData.getTrainQueue();
+//        int revMemId = frReceiveMember.getId();
+//        trainQueue.put(revMemId, new FaceTrain(true));
+        int revMemId = frReceiveMember.getId();
+        String dirName = createPythonDir(revMemId);
+        putFaceToPythonDir(dirName, faceBytes1);
+        putFaceToPythonDir(dirName, faceBytes2);
+        putFaceToPythonDir(dirName, faceBytes3);
+        pythonCrop();
+        deletePythonDir(dirName);
+
+
+//        trainingFaceRecognise(frReceiveMember);
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
 
-    public void trainingFaceRecognise(FRReceiveMember frReceiveMember) {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Methods methods = new Methods();
-                String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
-                String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
-                File directory = new File(folderName);
-                if (!directory.exists()) {
-                    directory.mkdir();
-                }
-                File jpgFile = new File(folderName + "/" + jpgName);
-                ByteArrayInputStream bis = new ByteArrayInputStream(frReceiveMember.getFace());
-                try {
-                    BufferedImage bufferedImage = ImageIO.read(bis);
-                    ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
-                    CommandPrompt commandPrompt = new CommandPrompt();
-                    String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
-                    commandPrompt.execute(cutAndRecenter);
-                    String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
-                    commandPrompt.execute(trainingAI);
-                    System.out.println(commandPrompt);
-                    // delete folder generated by Python
-//                    methods.deleteDirectoryWalkTree(Fix.CROP_FACE_FOLDER + "fps" + frReceiveMember.getId());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // delete folder generated by Java
-                try {
-                    methods.deleteDirectoryWalkTree(folderName);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        t.start();
+    private String createPythonDir(int revMemId) {
+        String folderName = Fix.FACE_FOLDER + "fps" + revMemId;
+        File directory = new File(folderName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        return folderName;
     }
+
+    private boolean deletePythonDir(String dirName) {
+        try {
+            new Methods().deleteDirectoryWalkTree(dirName);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean putFaceToPythonDir(String folderName, byte[] faceByte) {
+        String jpgName = "p" + new Date().getTime() + ".jpg";
+        File jpgFile = new File(folderName + "/" + jpgName);
+        ByteArrayInputStream bis = new ByteArrayInputStream(faceByte);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private CommandPrompt pythonCrop() {
+        CommandPrompt commandPrompt = new CommandPrompt();
+        String cropCenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
+        commandPrompt.execute(cropCenter);
+        return commandPrompt;
+    }
+
+    private CommandPrompt pythonTrain() {
+        CommandPrompt commandPrompt = new CommandPrompt();
+        String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
+        commandPrompt.execute(trainingAI);
+        return commandPrompt;
+    }
+
+//    public void trainingFaceRecognise(FRReceiveMember frReceiveMember) {
+//        Thread t = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Methods methods = new Methods();
+//                String folderName = Fix.FACE_FOLDER + "fps" + frReceiveMember.getId();
+//                String jpgName = "p" + methods.getTimeNow() + "." + "jpg";
+//                File directory = new File(folderName);
+//                if (!directory.exists()) {
+//                    directory.mkdir();
+//                }
+//                File jpgFile = new File(folderName + "/" + jpgName);
+//                ByteArrayInputStream bis = new ByteArrayInputStream(frReceiveMember.getFace());
+//                try {
+//                    BufferedImage bufferedImage = ImageIO.read(bis);
+//                    ImageIO.write(bufferedImage, Fix.DEF_IMG_TYPE, jpgFile);
+//                    CommandPrompt commandPrompt = new CommandPrompt();
+//                    String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/fps --output-dir /docker/output/fps --crop-dim 180";
+//                    commandPrompt.execute(cutAndRecenter);
+//                    String trainingAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/fps --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 16 --num-epochs 25 --min-num-images-per-class 5 --is-train";
+//                    commandPrompt.execute(trainingAI);
+//                    System.out.println(commandPrompt);
+//                    // delete folder generated by Python
+////                    methods.deleteDirectoryWalkTree(Fix.CROP_FACE_FOLDER + "fps" + frReceiveMember.getId());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                // delete folder generated by Java
+//                try {
+//                    methods.deleteDirectoryWalkTree(folderName);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        t.start();
+//    }
     // Mobile Member - Register - End
 
 
@@ -642,7 +704,25 @@ public class AccountService {
         return response;
     }
 
-    public Response<String> updateMemberFaceMem(Integer revMemId, String revMemName, String face) {
+    private void setRevMemFace(Methods methods, FRReceiveMember frReceiveMember, String face, int pointer, String dirName) {
+        if (face != null) {
+            byte[] faceBytes = methods.base64ToBytes(face);
+            switch (pointer) {
+                case 1:
+                    frReceiveMember.setFace1(faceBytes);
+                    break;
+                case 2:
+                    frReceiveMember.setFace2(faceBytes);
+                    break;
+                case 3:
+                    frReceiveMember.setFace3(faceBytes);
+                    break;
+            }
+            putFaceToPythonDir(dirName, faceBytes);
+        }
+    }
+
+    public Response<String> updateMemberFaceMem(Integer revMemId, String revMemName, String face1, String face2, String face3) {
         Methods methods = new Methods();
         Repo repo = new Repo();
         FRAccount currentUser = methods.getUser();
@@ -650,27 +730,60 @@ public class AccountService {
 
         FRReceiveMember frReceiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
         if (frReceiveMember == null) {
+            if (revMemName == null) {
+                response.setResponse(Response.STATUS_FAIL, "Name is null");
+                return response;
+            }
+            if (face1 == null || face2 == null || face3 == null) {
+                response.setResponse(Response.STATUS_FAIL, "Need 3 images");
+                return response;
+            }
             frReceiveMember = new FRReceiveMember();
             frReceiveMember.setAccount(currentUser);
+            frReceiveMember.setName(revMemName);
+            byte[] faceBytes1 = methods.base64ToBytes(face1);
+            byte[] faceBytes2 = methods.base64ToBytes(face2);
+            byte[] faceBytes3 = methods.base64ToBytes(face3);
+            frReceiveMember.setFace1(faceBytes1);
+            frReceiveMember.setFace2(faceBytes2);
+            frReceiveMember.setFace3(faceBytes3);
+            receiveMemberRepo.save(frReceiveMember);
+
+            // training in python here
+//            Map<Integer, FaceTrain> trainQueue = AppData.getTrainQueue();
+//            revMemId = frReceiveMember.getId();
+//            FaceTrain faceTrain = trainQueue.get(revMemId);
+
+            revMemId = frReceiveMember.getId();
+            String dirName = createPythonDir(revMemId);
+            putFaceToPythonDir(dirName, faceBytes1);
+            putFaceToPythonDir(dirName, faceBytes2);
+            putFaceToPythonDir(dirName, faceBytes3);
+            pythonCrop();
+            deletePythonDir(dirName);
+
+            response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+            return response;
         }
+
         if (revMemName != null) {
             frReceiveMember.setName(revMemName);
         }
-        if (face != null) {
-            frReceiveMember.setFace(methods.base64ToBytes(face));
-        }
+        // train here
+        String dirName = createPythonDir(revMemId);
+        setRevMemFace(methods, frReceiveMember, face1, 1, dirName);
+        setRevMemFace(methods, frReceiveMember, face2, 2, dirName);
+        setRevMemFace(methods, frReceiveMember, face3, 3, dirName);
+        pythonCrop();
+        deletePythonDir(dirName);
         receiveMemberRepo.save(frReceiveMember);
-        if (face != null) {
-            // train here
-            trainingFaceRecognise(frReceiveMember);
-        }
+
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
 
     public Response<String> updateAvatar(String avatar) {
         Methods methods = new Methods();
-        Repo repo = new Repo();
         FRAccount currentUser = methods.getUser();
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         if (avatar == null) {
@@ -688,7 +801,6 @@ public class AccountService {
     // Mobile Shipper - Profile - Begin
     public Response<MdlShipper> getShipperDetailShp() {
         Methods methods = new Methods();
-        Repo repo = new Repo();
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
 

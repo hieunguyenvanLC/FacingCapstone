@@ -11,12 +11,19 @@ public class MdlFace {
     @Expose
     private String name;
     @Expose
-    private String face;
+    private String face1;
+    @Expose
+    private String face2;
+    @Expose
+    private String face3;
+
 
     public MdlFace(FRReceiveMember frReceiveMember) {
         Methods methods = new Methods();
         this.id = frReceiveMember.getId();
         this.name = frReceiveMember.getName();
-        this.face = methods.bytesToBase64(frReceiveMember.getFace());
+        this.face1 = methods.bytesToBase64(frReceiveMember.getFace1());
+        this.face2 = methods.bytesToBase64(frReceiveMember.getFace2());
+        this.face3 = methods.bytesToBase64(frReceiveMember.getFace3());
     }
 }

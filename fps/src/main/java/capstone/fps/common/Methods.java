@@ -128,22 +128,38 @@ public final class Methods {
 //        return price;
 //    }
 
-
-    public double calculateShpEarn(double dis) {
-        double price = 14000d;
-        if (dis > 0) {
-            price += dis * 1000d;
+    public Double calculateShpEarn(double dis) {
+        double price;
+        if (dis > 10D) {
+            price = 29000 + (dis - 10) * 3000d;
+            return Math.ceil(price / 1000d) * 1000d;
         }
-        dis -= 5;
-        if (dis > 0) {
-            price += dis * 1000d;
+        if (dis > 5D) {
+            price = 19000 + (dis - 5) * 2000d;
+            return Math.ceil(price / 1000d) * 1000d;
         }
-        dis -= 5;
         if (dis > 0) {
-            price += dis * 1000d;
+            price = 19000 + dis * 2000d;
+            return Math.ceil(price / 1000d) * 1000d;
         }
-        return Math.ceil(price / 1000d) * 1000d;
+        return null;
     }
+
+//    public double calculateShpEarn(double dis) {
+//        double price = 14000d;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        dis -= 5;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        dis -= 5;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        return Math.ceil(price / 1000d) * 1000d;
+//    }
 
     // Converting InputStream to String
     public String readStream(InputStream in) {
@@ -229,5 +245,14 @@ public final class Methods {
             e.printStackTrace();
         }
         return "fail";
+    }
+
+
+    public Long getTomorrow() {
+        Calendar now = new GregorianCalendar();
+        now.add(Calendar.DAY_OF_YEAR, 1);
+        now.set(Calendar.HOUR_OF_DAY, 23);
+        now.set(Calendar.MINUTE, 1);
+        return now.getTimeInMillis();
     }
 }

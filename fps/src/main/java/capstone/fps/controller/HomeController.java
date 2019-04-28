@@ -939,9 +939,17 @@ public class HomeController extends AbstractController {
 
     @GetMapping(Fix.MAP_ANY + API + "/orderdetail")
     public String getOrderDetail(Integer orderId) {
+//        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        try {
+//            response = orderService.getOrderDetailStatic(orderId);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+//        }
+//        return gson.toJson(response);
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.getOrderDetailStatic(orderId);
+            response = orderService.getOrderDetailAdm(orderId);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -45,11 +47,11 @@ public class OrderService {
     private ShipperRepo shipperRepo;
     private OrderMap orderMap;
     private TransactionRepo transactionRepo;
-    private final ShipperWait shipperWait;
+//    private final ShipperWait shipperWait;
 
 
     @Autowired
-    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo, ShipperWait shipperWait) {
+    public OrderService(OrderRepo orderRepository, OrderDetailRepo orderDetailRepository, ProductRepo productRepository, AccountRepo accountRepository, PaymentInfoRepo paymentInfoRepo, ReceiveMemberRepo receiveMemberRepo, ShipperRepo shipperRepo, OrderMap orderMap, TransactionRepo transactionRepo) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -60,7 +62,7 @@ public class OrderService {
         this.shipperRepo = shipperRepo;
         this.orderMap = orderMap;
         this.transactionRepo = transactionRepo;
-        this.shipperWait = shipperWait;
+//        this.shipperWait = shipperWait;
     }
 
 
@@ -176,19 +178,6 @@ public class OrderService {
 
     }
 
-    public Response<MdlOrder> getOrderDetailStatic(Integer orderId) {
-        Repo repo = new Repo();
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
-        return response;
-    }
-
     public Response<MdlOrder> getOrderDetailAdm(Integer orderId) {
         Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
@@ -267,9 +256,22 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAllByAccount(currentUser);
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+            mdlOrderList.add(orderBuilder.buildHistoryBuyer(frOrder));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
+        return response;
+    }
+
+    public Response<MdlOrder> getOrderDetailMem(Integer orderId) {
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Repo repo = new Repo();
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
         return response;
     }
     // Mobile Member - Order History - End
@@ -373,20 +375,6 @@ public class OrderService {
         return response;
     }
 
-    public Response<MdlOrder> getOrderDetailMem(Integer orderId) {
-        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        Repo repo = new Repo();
-        FROrder frOrder = repo.getOrder(orderId, orderRepository);
-        if (frOrder == null) {
-            response.setResponse(Response.STATUS_FAIL, "Cant find order");
-            return response;
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
-        return response;
-    }
-
-
     public Response<MdlOrder> cancelOrderMem(int orderId, double longitude, double latitude) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
@@ -464,7 +452,7 @@ public class OrderService {
         List<FROrder> frOrderList = orderRepository.findAllByShipper(currentUser.getShipper());
         List<MdlOrder> mdlOrderList = new ArrayList<>();
         for (FROrder frOrder : frOrderList) {
-            mdlOrderList.add(orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
+            mdlOrderList.add(orderBuilder.buildHistoryBuyer(frOrder));
         }
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlOrderList);
         return response;
@@ -473,7 +461,7 @@ public class OrderService {
 
 
     // Mobile Shipper - Order Matching - Begin
-    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken) {
+    public Response<MdlOrder> autoAssign(Gson gson, double longitude, double latitude, String shipperToken, HttpServletRequest request) {
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         Methods methods = new Methods();
@@ -483,9 +471,10 @@ public class OrderService {
         FRAccount currentUser = methods.getUser();
         int accId = currentUser.getId();
 
-        shipperWait.setCancel(false);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("cancelWait", false);
 
-        while (methods.getTimeNow() < waitTime && !shipperWait.isCancel()) {
+        while (methods.getTimeNow() < waitTime && !((boolean) session.getAttribute("cancelWait"))) {
             for (ArrayList<Delta> layer : orderMap.getLayers()) {
                 for (Delta delta : layer) {
                     int colNode = col + delta.col;
@@ -562,7 +551,7 @@ public class OrderService {
             }
         }
 
-        if (shipperWait.isCancel()) {
+        if ((boolean) session.getAttribute("cancelWait")) {
             response.setResponse(Response.STATUS_SUCCESS, "cancel");
             return response;
         } else {
@@ -626,16 +615,10 @@ public class OrderService {
         return methods.sendHttpRequest(Fix.FCM_URL, header, body);
     }
 
-    public Response<Integer> stopQueue() {
+    public Response<Integer> stopQueue(HttpServletRequest request) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        shipperWait.setCancel(true);
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
-        return response;
-    }
-
-    public Response<Integer> cancelOrderA() {
-        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        shipperWait.setCancel(true);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("cancelWait", true);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
@@ -679,12 +662,17 @@ public class OrderService {
         faceResult.remove(key);
         System.out.println(faceRecognise(faceBytes, key));
 
-        while (faceResult.get(key) == null) {
+        Long maxWait = methods.getTimeNow() + 1 * 60 * 1000;
+        while (faceResult.get(key) == null && methods.getTimeNow() < maxWait) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        if (methods.getTimeNow() >= maxWait) {
+            response.setResponse(Response.STATUS_FAIL, "Python connection error");
+            return response;
         }
         String faceListStr = faceResult.get(key);
         faceResult.remove(key);
@@ -696,7 +684,6 @@ public class OrderService {
         String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
-
 
         String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         System.out.println("PayPal resp " + payId);
@@ -717,7 +704,7 @@ public class OrderService {
             frOrder.setReceiveTime(time);
             orderRepository.save(frOrder);
             System.out.println("save frOrder");
-            FRShipper frShipper = methods.getUser().getShipper();
+            FRShipper frShipper = frOrder.getShipper();
             double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
             frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
             frShipper.setOrderCount(frShipper.getOrderCount() + 1);
