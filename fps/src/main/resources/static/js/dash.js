@@ -316,12 +316,14 @@ $(document).ready(function () {
         }
     }
 
-    function drawChart(data, title, subtitle) {
+    function drawChart(data, title, subtitle, opts) {
         var options = {
             chart: {
                 title: title,
                 subtitle: subtitle
             },
+            hAxis: opts.hAxis,
+            vAxis: opts.vAxis,
             // width: 900,
             height: 500
         };
@@ -389,32 +391,41 @@ $(document).ready(function () {
         // console.log(reportT, charT, startUnix, endUnix);
         var charNameT = "";
         var xLabel = "";
+        var chartOpts = {
+            hAxis: { title: '', titleTextStyle: { bold: true } },
+            vAxis: { title: '', titleTextStyle: { bold: true } }
+        };
 
         switch (reportT) {
             case "productSld":
                 apiEndpoint = "soldproductchart";
                 chartTitle = "Sold Products";
                 charNameT += "The number of sold products by ";
+                chartOpts.vAxis.title = "Products";
                 break;
             case "rateScc":
                 apiEndpoint = "successratechart";
                 chartTitle = "Success Delivery Rate";
                 charNameT += "The rate of success by ";
+                chartOpts.vAxis.title = "Percent";
                 break;
             case "totalAmt":
                 apiEndpoint = "incomeammountchart";
                 chartTitle = "Total Amount";
                 charNameT += "The total amount by ";
+                chartOpts.vAxis.title = "VND";
                 break;
             case "shipPaid":
                 apiEndpoint = "paidshipperchart";
                 chartTitle = "Paid Shipper Amount";
                 charNameT += "The paid amount for shippers by ";
+                chartOpts.vAxis.title = "VND";
                 break;
             default:
                 apiEndpoint = "orderchart";
                 chartTitle = "Orders";
                 charNameT += "The number of orders by ";
+                chartOpts.vAxis.title = "Orders";
         }
 
         switch (charT) {
@@ -437,6 +448,7 @@ $(document).ready(function () {
         }
 
         charNameT += " chart";
+        chartOpts.hAxis.title = xLabel;
 
         // Validate start date and end date
         if (endUnix < startUnix) {
@@ -473,7 +485,7 @@ $(document).ready(function () {
                         dataTable = createOrderChartData(xLabel, chartData);
                 }
 
-                drawChart(dataTable, charNameT, '');
+                drawChart(dataTable, charNameT, '', chartOpts);
                 loadReportTable(null, null, '', '');
             },
             error: function (err) {
