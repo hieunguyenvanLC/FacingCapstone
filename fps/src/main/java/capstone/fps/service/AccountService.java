@@ -542,7 +542,7 @@ public class AccountService {
         frAccount.setDob(null);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote("");
-        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setStatus(Fix.ACC_CHK.index);
         frAccount.setEditor(null);
         frAccount.setAvatar(faceBytes1);
         accountRepo.save(frAccount);
