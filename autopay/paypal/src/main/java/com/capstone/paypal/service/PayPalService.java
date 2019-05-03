@@ -6,12 +6,15 @@ import com.capstone.paypal.model.PayPalData;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class PayPalService {
@@ -67,10 +70,17 @@ public class PayPalService {
 //        return payment;
 //    }
 
+    private String basicDecrypt(String input) {
+        String s = StringUtils.newStringUtf8(Base64.decodeBase64(input));
+        System.out.println(s);
+        return s.split("ấ")[1];
+    }
+
     public String receivePaymentInput(String username, String password, String price, String description) {
         payPalData.setResult(null);
         payPalData.setPrice(price);
         payPalData.setDescription(description);
+        System.out.println(basicDecrypt(password));
 
         String markLogin = Fix.IMG_DIR + "markLogin" + Fix.PNG;
         String markBill = Fix.IMG_DIR + "markBill" + Fix.PNG;
@@ -109,7 +119,7 @@ public class PayPalService {
             s.delayRandomMedium();
             s.type('\t');
             s.delayRandomMedium();
-            s.copyParseString(password);
+            s.copyParseString(basicDecrypt(password));
             s.delay(1000);
             if (id == 1) {
                 p = s.waitForImage(1, 1, screenW, screenH, btnLogin, 60000);

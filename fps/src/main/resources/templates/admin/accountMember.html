@@ -197,7 +197,7 @@
             txtEmail.value = accEdit.email;
             cbbStatus.value = accEdit.status;
             cbbUserFaceInit(accEdit.faceList);
-            fpsSetImgSrc(imgUserFace, accEdit.faceList[0].face);
+            fpsSetImgSrc(imgUserFace, accEdit.faceList[0].face1);
             txtNote.value = accEdit.note;
             fpsHideMsg(lblMsg);
             editFaceList = [];
@@ -245,7 +245,7 @@
         function cbbUserFaceOnChange() {
             var index = cbbUserFace.selectedIndex;
             console.log(index);
-            fpsSetImgSrc(imgUserFace, accEdit.faceList[index].face);
+            fpsSetImgSrc(imgUserFace, accEdit.faceList[index].face1);
         }
 
 

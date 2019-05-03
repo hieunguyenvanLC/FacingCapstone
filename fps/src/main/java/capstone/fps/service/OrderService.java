@@ -234,7 +234,7 @@ public class OrderService {
             frOrder.setNote(valid.nullProof(note));
         }
         frOrder.setUpdateTime(time);
-        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
+        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.ORD_STAT_LIST));
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
         if (buyerFace != null) {

@@ -2,6 +2,8 @@ package capstone.fps;
 
 import capstone.fps.common.CommandPrompt;
 import capstone.fps.common.Methods;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -30,9 +32,11 @@ public class FpsApplication {
 //
 //        firstCal.setTimeInMillis(7954156800000L);
 //        System.out.println(firstCal.toString());
+        Methods methods = new Methods();
+        System.out.println(methods.basicEncrypt("12345678"));
         SpringApplication.run(FpsApplication.class, args);
 
-        Methods methods = new Methods();
+
         while (true) {
             try {
                 Thread.sleep(methods.getTomorrow() - methods.getTimeNow());

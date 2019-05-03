@@ -255,4 +255,11 @@ public final class Methods {
         now.set(Calendar.MINUTE, 1);
         return now.getTimeInMillis();
     }
+
+
+    public String basicEncrypt(String input) {
+        Random ran = new Random();
+        String s = ran.nextInt() + "ấ" + input + "ấ" + ran.nextInt();
+        return StringUtils.newStringUtf8(Base64.encodeBase64(s.getBytes(), false));
+    }
 }

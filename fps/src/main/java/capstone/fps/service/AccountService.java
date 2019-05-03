@@ -5,6 +5,8 @@ import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
 import capstone.fps.repository.*;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -560,7 +562,7 @@ public class AccountService {
         frPaymentInformation.setPaymentType(initPaymentType("sale"));
         frPaymentInformation.setAccount(frAccount);
         frPaymentInformation.setUsername(payUsername);
-        frPaymentInformation.setPassword(payPassword);
+        frPaymentInformation.setPassword(methods.basicEncrypt(payPassword));
         paymentInfoRepo.save(frPaymentInformation);
 
         // training in python here
