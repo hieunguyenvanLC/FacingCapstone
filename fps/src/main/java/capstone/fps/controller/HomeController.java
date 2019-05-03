@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.WeekFields;
@@ -958,23 +959,24 @@ public class HomeController extends AbstractController {
     }
 
     private long dateToUnix(int year, int month, int days, int hour, int min, int sec) {
-//        if (month > 12) {
-//            month = 1;
-//            year++;
-//        }
-//
-//        YearMonth yearMonthObject = YearMonth.of(year, month);
-//        Integer daysInMonth = yearMonthObject.lengthOfMonth();
-//
-//        if (days > daysInMonth) {
-//            days = 1;
-//            if (month == 12) {
-//                month = 1;
-//                year++;
-//            } else {
-//                month++;
-//            }
-//        }
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
+
+        YearMonth yearMonthObject = YearMonth.of(year, month);
+        Integer daysInMonth = yearMonthObject.lengthOfMonth();
+
+        if (days > daysInMonth) {
+            days = 1;
+            if (month == 12) {
+                month = 1;
+                year++;
+            } else {
+                month++;
+            }
+        }
+
         LocalDateTime dateTime = LocalDateTime.of(year, month, days, hour, min, sec);
         return dateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
     }

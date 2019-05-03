@@ -561,7 +561,7 @@ $(document).ready(function () {
     var drdTableCol = null;
     var drdTableColValue = null;
     var columnMap = {};
-    var columnIndices = ['buyerPhone', 'buyerName', 'shipperPhone', 'shipperName', 'storeName', 'totalPrice', 'createTime', 'status'];
+    var columnIndices = ['orderCode', 'buyerPhone', 'buyerName', 'shipperPhone', 'shipperName', 'storeName', 'totalPrice', 'createTime', 'status'];
     var filterCol = '';
     var filterColVal = '';
 
@@ -646,7 +646,7 @@ $(document).ready(function () {
                 for (var i = 0; i < list.length; i++) {
                     var order = list[i];
                     tblMainReport.row.add([
-                        // '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.id + '</span>',
+                        '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.orderCode + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerPhone + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.buyerName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.shipperPhone + '</span>',
@@ -699,7 +699,7 @@ $(document).ready(function () {
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.sTableId === "report-table") {
-                console.log(data)
+                console.log({ data: data, filterCol: filterCol, filterColVal: filterColVal})
                 if (filterCol && filterColVal) {
                     if ((data[columnIndices.indexOf(filterCol)] === filterColVal)) {
                         return true;
