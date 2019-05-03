@@ -37,8 +37,11 @@
                     </h3>
                   </div>
                   <div *ngIf=(isLoaded)>
-                      <h3>
-                        Extra point: {{extraPoint}}
+                      <h3 *ngIf="extraPoint == 1">
+                          <ion-badge color="success">Verified</ion-badge>
+                      </h3>
+                      <h3 *ngIf="extraPoint == 2">
+                          <ion-badge color="medium">Verifying...</ion-badge>
                       </h3>
                     </div>
                   </ion-text>
@@ -49,13 +52,13 @@
                         <span>edit profile</span>
                       </ion-text>
                     </a>
-                    <ion-text color="medium"> | </ion-text>
+                    <!-- <ion-text color="medium"> | </ion-text>
                     <a tappable (click)="logout()">
                       <ion-text color="medium">
                         <ion-icon class="margin--2" name="log-out"></ion-icon>
                         <span>logout</span>
                       </ion-text>
-                    </a>
+                    </a> -->
                   </ion-menu-toggle>
                 </ion-label>
               </ion-col>

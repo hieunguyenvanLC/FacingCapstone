@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: 'home', loadChildren: './screens/home/home.module#HomePageModule' },
   { path: 'list', loadChildren: './screens/list/list.module#ListPageModule' },
   { path: 'login', loadChildren: './screens/login/login.module#LoginPageModule' },
+  { path: 'login/:flag', loadChildren: './screens/login/login.module#LoginPageModule' },
   { path: 'store', loadChildren: './screens/store/store.module#StorePageModule' },
   { path: 'store/:id', loadChildren: './screens/store/store.module#StorePageModule' },
   { path: 'registor', loadChildren: './screens/registor/registor.module#RegistorPageModule' },
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'rating/:id', loadChildren: './screens/rating/rating.module#RatingPageModule' },
   { path: 'order-history', loadChildren: './screens/order-history/order-history.module#OrderHistoryPageModule' },
   { path: 'order-detail', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' },
-  { path: 'order-detail/:id', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' }
+  { path: 'order-detail/:id', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' },
+  { path: 'logout', loadChildren: './screens/logout/logout.module#LogoutPageModule' }
 ];
 
 @NgModule({

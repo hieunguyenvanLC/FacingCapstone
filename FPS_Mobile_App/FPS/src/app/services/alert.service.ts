@@ -67,6 +67,34 @@ export class AlertService {
     await alert.present();
   }
 
+  async presentAlertWithMsg(header, msg){
+    const alert = await this.alertController.create({
+      header: header,
+      message: msg,
+      buttons: [
+        // {
+        //   text: 'Cancel',
+        //   role: 'cancel',
+          
+        //   cssClass: 'secondary',
+        //   handler: (blah) => {
+        //     console.log('Confirm Cancel: blah');
+        //     return false;
+        //   }
+        // },
+         {
+          text: 'OK',
+          handler: () => {
+            // console.log('Confirm Okay');
+            // return false;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async dissmissAlert(){
     return await this.alertController.dismiss();
   }

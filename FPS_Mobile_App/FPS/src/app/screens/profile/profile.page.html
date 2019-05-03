@@ -19,7 +19,12 @@
           <img src="../../../assets/image/default-user.png">
         </div>
         <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
-        <h2 margin-bottom>Extra point: {{ userDetail[0].data.extraPoint }}</h2>
+        <h2 margin-bottom *ngIf="userDetail[0].data.status == 1">
+            <ion-badge color="success">Verified</ion-badge>
+        </h2>
+        <h2 margin-bottom *ngIf="userDetail[0].data.status == 2">
+            <ion-badge color="medium">Verifying...</ion-badge>
+        </h2>
         <ion-button icon-left color="light">
           <ion-icon name="photos"></ion-icon>
           Edit / Add Avatar
@@ -48,19 +53,22 @@
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Full Name:</ion-label>
-                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" [(ngModel)]="fullName" value="{{ userDetail[0].data.name }}">
+                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" [(ngModel)]="fullName"
+                  value="{{ userDetail[0].data.name }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Email:</ion-label>
-                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" [(ngModel)]="email" value="{{ userDetail[0].data.email }}">
+                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" [(ngModel)]="email"
+                  value="{{ userDetail[0].data.email }}">
                 </ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label color="dark" position="stacked">Date of birth:</ion-label>
-                <ion-datetime display-format="DD/MM/YYYY" picker-format="DD MM  YYYY" [(ngModel)]="cusDOB" value="{{ userDetail[0].data.dateOfBirth }}"></ion-datetime>
+                <ion-datetime display-format="DD/MM/YYYY" picker-format="DD MM  YYYY" [(ngModel)]="cusDOB"
+                  value="{{ userDetail[0].data.dateOfBirth }}"></ion-datetime>
               </ion-item>
 
 
@@ -122,25 +130,64 @@
               <ion-list-header color="light">
                 <ion-label class="fw700">Your member</ion-label>
               </ion-list-header>
-
-              <ion-item *ngFor="let member of userDetail[0].data.faceList">
-                <div class="card-drop">
-                  <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-                  <img src="{{member.face}}" class="card-drop__image" />
-                  <div class="card-drop__content">
-                    <h1 class="card-drop__content--title">
-                      {{member.name}}
-                    </h1>
-                    <div class="card-drop__content--body">
-                      <div class="card-drop__content--text">
-                        <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face)">
-                          Edit</ion-button>
+              <div *ngFor="let member of userDetail[0].data.faceList">
+                <ion-item>
+                  <ion-icon name="contact"></ion-icon>
+                  <ion-label class="fw700">{{member.name}}</ion-label>
+                </ion-item>
+                <ion-item>
+                  <div class="card-drop">
+                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+                    <img src="{{member.face1}}" class="card-drop__image" />
+                    <div class="card-drop__content">
+                      <h1 class="card-drop__content--title">
+                        Front side
+                      </h1>
+                      <div class="card-drop__content--body">
+                        <div class="card-drop__content--text">
+                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face1, 'Edit front side')">
+                            Edit</ion-button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </ion-item>
-              <ion-button expand="block" (click)="addMember('add','','','')">Add new face's member</ion-button>
+                </ion-item>
+                <ion-item>
+                  <div class="card-drop">
+                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+                    <img src="{{member.face2}}" class="card-drop__image" />
+                    <div class="card-drop__content">
+                      <h1 class="card-drop__content--title">
+                        Left side
+                      </h1>
+                      <div class="card-drop__content--body">
+                        <div class="card-drop__content--text">
+                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face2, 'Edit left side')">
+                            Edit</ion-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ion-item>
+                <ion-item>
+                  <div class="card-drop">
+                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
+                    <img src="{{member.face3}}" class="card-drop__image" />
+                    <div class="card-drop__content">
+                      <h1 class="card-drop__content--title">
+                        Right side
+                      </h1>
+                      <div class="card-drop__content--body">
+                        <div class="card-drop__content--text">
+                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face3, 'Edit right side')">
+                            Edit</ion-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ion-item>
+              </div>
+              <ion-button expand="block" (click)="addMember('add','','','','')">Add new face's member</ion-button>
             </ion-list>
           </ion-col>
         </ion-row>

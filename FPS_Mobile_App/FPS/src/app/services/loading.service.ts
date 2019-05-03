@@ -27,6 +27,21 @@ export class LoadingService {
     })
   }
 
+  async presentWithtime(loadingMsg, time){
+    this.isLoading = true;
+    return await this.loadingController.create({
+      message: loadingMsg,
+      duration: time
+    }).then(a => {
+      a.present()
+      // .then( () => {
+      //   if (this.isLoading){
+      //     a.dismiss();
+      //   }
+      // })
+    })
+  }
+
   async dismiss(){
     this.isLoading = false;
     return await this.loadingController.dismiss();

@@ -17,6 +17,9 @@
     <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)</ion-label>
   </div>
   <br>
+  <ion-item>
+    <ion-textarea [(ngModel)]="note" placeholder="Enter any notes here..."></ion-textarea>
+  </ion-item>
   <!-- item group -->
   <ion-item-group>
     <!-- item -->

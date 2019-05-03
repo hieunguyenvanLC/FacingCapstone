@@ -7,6 +7,8 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { AccountService } from '../../services/account.service';
 import { Account } from '../../models/account';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
+import { LoadingService } from 'src/app/services/loading.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 //import * as $ from 'jquery';
 
@@ -26,13 +28,19 @@ export class RegistorPage implements OnInit {
 
   registerForm: FormGroup;
 
-  myPhoto: any;
-  myPhotoBinary: string;
+  face1: any;
+  face1_Binary: any;
+
+  face2: any;
+  face2_Binary: any;
+
+  face3: any;
+  face3_Binary: any;
 
   resArr = [];
 
   file: any;
-
+  temp = 0;
   BASE64_MARKER = ';base64,';
   array: any;
 
@@ -42,11 +50,22 @@ export class RegistorPage implements OnInit {
     public accountService: AccountService,
     private camera: Camera,
     private toastHandle: ToastHandleService,
+    private loading : LoadingService,
+    private alertService : AlertService,
   ) {
-    this.password = "123";
-    this.fullname = "thangdp";
+    this.password = "";
+    this.fullname = "";
 
+    this.face1 = '';
+    this.face1_Binary = '';
 
+    this.face2 = '';
+    this.face2_Binary = '';
+
+    this.face3 = '';
+    this.face3_Binary = '';
+
+    this.temp = 0;
   }
 
 
@@ -57,92 +76,77 @@ export class RegistorPage implements OnInit {
     this.router.navigateByUrl("login");
   }
 
-  //Alert handler
-  async presentAlertConfirm() {
-    const alert = await this.alertController.create({
-      header: 'Next step !',
-      message: 'We will need take photo your face for payment !',
-      // <strong>text</strong>
-      buttons: [
-        // {
-        //   text: 'Skip',
-        //   role: 'cancel',
-        //   cssClass: 'secondary',
-        //   handler: () => {
-        //     //Create without image
-        //     this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname).subscribe((res: any) => {
-        //       this.data = res;
-        //       console.log(res);
-        //     }), err => {
-        //       console.log(err);
-        //     };
-        //     this.router.navigateByUrl('login');
-
-
-        //   }
-        // },
-        {
-          text: 'Okay',
-          handler: () => {
-            console.log('Confirm Okay ' + this.phoneNumber);
-            //this.openCamera();
-            //this.router.navigateByUrl('home');
-            this.takePhoto();
-
-            //create
-            console.log(this.myPhotoBinary);
-            // if (this.myPhotoBinary){
-            //   this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary).subscribe((res: any) => {
-            //     this.data.push(res);
-            //     console.log(this.data[0].status_code);
-            //   }), err => {
-            //     console.log(err);
-            //   };
-            // }
-
-
-
-
-
-
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
 
 
   onSubmit() {
     this.phoneNumber = this.phoneNumber.replace("+", "");
-    console.log(this.myPhotoBinary);
-    this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.myPhotoBinary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
-      this.data.push(res);
-      console.log(this.data[0].message);
-      if (this.data[0].message === "Success") {
-        this.toastHandle.presentToast("Create success !");
-      }
-      this.router.navigateByUrl("login");
-    }), err => {
-      this.toastHandle.presentToast("Create error !");
-      console.log(err);
-    };
+    // console.log(this.myPhotoBinary);
+    this.loading.present('Creating...').then( () => {
+      this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.face1_Binary, this.face2_Binary, this.face3_Binary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
+        console.log("face 3 Binary *****************");
+        console.log(this.face3_Binary);
+        console.log("face 3 Binary ******************");
+        this.data.push(res);
+        console.log(this.data[0].message);
+        if (this.data[0].message === "Success") {
+          this.toastHandle.presentToast("Create success !");
+          this.loading.dismiss();
+        }
+        this.router.navigateByUrl("login");
+        this.alertService.presentAlertWithMsg("Notification", "Your account is verifying");
+      }), err => {
+        this.loading.dismiss();
+        this.toastHandle.presentToast("Create error !");
+        console.log(err);
+      };
+    }
+      
+    )//end loading
   }
 
 
 
-  takePhoto() {
-    if (this.myPhoto) {
+
+
+  // changeListener($event): void {
+  //   this.file = $event.target.files[0];
+  //   console.log(this.file);
+  // }
+
+  //#region ********* FACE 1
+
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      header: 'Step 1',
+      message: 'We will need take photo your <strong>front face</strong> for payment !',
+      // <strong>text</strong>
+      buttons: [
+        {
+          text: 'Okay',
+          handler: async () => {
+
+            console.log('Confirm Okay ' + this.temp);
+            await this.takePhoto_1();
+            await this.loading.presentWithtime('Loading...', 3*1000);
+            await setTimeout( () => this.presentAlertConfirm_2(), 3000);
+            // await this.presentAlertConfirm_2();
+          }
+        }
+      ]
+    });
+    await alert.present();
+    // await this.presentAlertConfirm_2();
+  }//end alert 1
+
+  takePhoto_1() {
+    if (this.face1) {
       console.log("photo is exist, set null");
-      this.myPhoto = '';
+      this.face1 = '';
     }
-    console.log("my photo: " +this.myPhoto);
-    if (this.myPhotoBinary){
+    if (this.face1_Binary) {
       console.log("photoBinary is exist, set null");
-      this.myPhotoBinary = '';
+      this.face1_Binary = '';
     }
-    console.log("my photoBinary: " + this.myPhotoBinary);
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -156,18 +160,165 @@ export class RegistorPage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
-      this.myPhoto = 'data:image/jpeg;base64,' + imageData;
-      this.myPhotoBinary = imageData;
-      // this.myPhotoBinary = new Blob([imageData],{type:'image/jpeg'});
-      //console.log(imageData);
-      console.log(this.myPhotoBinary);
+      this.face1 = 'data:image/jpeg;base64,' + imageData;
+      this.face1_Binary = imageData;
+      this.temp = 1;
     }, (err) => {
-      console.log("error at takephoto :" + err)
+      console.log("error at takephoto front :" + err)
     });
+
   }//end take photo
 
-  // changeListener($event): void {
-  //   this.file = $event.target.files[0];
-  //   console.log(this.file);
-  // }
+  //#endregion face 1
+
+  //#region ********* FACE 2
+  async presentAlertConfirm_2() {
+    const alert = await this.alertController.create({
+      header: 'Step 2',
+      message: 'We will need take photo your <strong>left face</strong> for payment !',
+      // <strong>text</strong>
+      buttons: [
+        {
+          text: 'Okay',
+          handler: async () => {
+
+            console.log('Confirm Okay ' + this.temp);
+            await this.takePhoto_2();
+            await this.loading.presentWithtime('Loading...', 3*1000);
+            await setTimeout( () => this.presentAlertConfirm_3(), 3000);
+            // await this.presentAlertConfirm_3();
+            //create
+            // console.log(this.myPhotoBinary);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }//end alert 1
+
+  takePhoto_2() {
+    if (this.face2) {
+      console.log("photo 2 is exist, set null");
+      this.face1 = '';
+    }
+    if (this.face2_Binary) {
+      console.log("photoBinary 2 is exist, set null");
+      this.face2_Binary = '';
+    }
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      //sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.face2 = 'data:image/jpeg;base64,' + imageData;
+      this.face2_Binary = imageData;
+      this.temp = 2;
+    }, (err) => {
+      console.log("error at takephoto front :" + err)
+    });
+  }//end take photo
+  //#endregion face 2
+
+  //#region ************* FACE 3
+  async presentAlertConfirm_3() {
+    const alert = await this.alertController.create({
+      header: 'Step 3',
+      message: 'We will need take photo your <strong>right face</strong> for payment !',
+      // <strong>text</strong>
+      buttons: [
+        {
+          text: 'Okay',
+          handler: () => {
+
+            console.log('Confirm Okay ' + this.temp);
+            this.takePhoto_3();
+            
+
+            //create
+            // console.log(this.myPhotoBinary);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }//end alert 1
+
+  takePhoto_3() {
+    if (this.face3) {
+      console.log("photo 3 is exist, set null");
+      this.face3 = '';
+    }
+    if (this.face3_Binary) {
+      console.log("photoBinary 3 is exist, set null");
+      this.face3_Binary = '';
+    }
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      //sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.face3 = 'data:image/jpeg;base64,' + imageData;
+      this.face3_Binary = imageData;
+    }, (err) => {
+      console.log("error at takephoto front :" + err)
+    });
+  }//end take photo
+  //#endregion face 3
+
+  //Edit face
+  TakePhotoForEdit(side){
+    if (side == "front"){
+      this.face1 = '';
+      this.face1_Binary = '';
+    }else if (side == "left"){
+      this.face2 = '';
+      this.face2_Binary = '';
+    }else if (side == "right"){
+      this.face3 = '';
+      this.face3_Binary = '';
+    }
+
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      //sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      if (side == "front"){
+        this.face1 = 'data:image/jpeg;base64,' + imageData;
+        this.face1_Binary = imageData;
+      }else if (side == "left"){
+        this.face2 = 'data:image/jpeg;base64,' + imageData;
+        this.face2_Binary = imageData;
+      }else if (side == "right"){
+        this.face3 = 'data:image/jpeg;base64,' + imageData;
+        this.face3_Binary = imageData;
+      }
+    }, (err) => {
+      console.log("error at takephoto front :" + err)
+    });
+  }
 }

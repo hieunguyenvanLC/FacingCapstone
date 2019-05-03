@@ -27,6 +27,11 @@ export class AppComponent {
       title: 'Order History',
       url: '/order-history',
       icon: 'list'
+    },
+    {
+      title: 'Log out',
+      url: '/logout',
+      icon: 'log-out'
     }
   ];
 
@@ -95,10 +100,10 @@ export class AppComponent {
     // });
   }
 
-  refreshSlideMenu(name, avatar, extraPoint) {
+  refreshSlideMenu(name, avatar, status) {
     this.isLoaded = true;
     this.username = name;
-    this.extraPoint = extraPoint;
+    this.extraPoint = status;
     if (avatar) {
       this.isLoadImg = true;
       this.avatar = avatar;

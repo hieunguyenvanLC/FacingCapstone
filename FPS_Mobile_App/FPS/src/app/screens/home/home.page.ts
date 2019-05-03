@@ -137,7 +137,7 @@ export class HomePage {
         tempArr.push(res);
         console.log("in get user----")
         console.log(tempArr[0].data);
-        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.extraPoint);
+        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.status);
       }, error => {
         console.log(error);
       },

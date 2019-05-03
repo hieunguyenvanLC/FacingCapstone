@@ -37,6 +37,7 @@ export class OrdermodalPage implements OnInit {
   orderStatus: any;
 
   tokenFCM: any;
+  note : any;
 
   constructor(
     private navParams: NavParams,
@@ -55,10 +56,12 @@ export class OrdermodalPage implements OnInit {
   ) {
     // componentProps can also be accessed at construction time using NavParams
     this.prodList = "";
+    this.note = '';
   }
   ngOnInit() {
 
-    console.log(this.myOrder)
+    console.log(this.myOrder);
+    console.log(this.note);
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
 
     //firebase
@@ -131,7 +134,7 @@ export class OrdermodalPage implements OnInit {
     console.log("cb create")
     await this.orderService.createOrder(this.myOrder[0].longitudeCus, 
                                         this.myOrder[0].latitudeCus, 
-                                        "", 
+                                        this.note, 
                                         this.prodList, 
                                         this.myOrder[0].distance, 
                                         this.tokenFCM, 

@@ -28,14 +28,18 @@ export class AccountService {
     return this.apiHttpService.post(this.constant.LOGIN, formData);
   }
 
-  sendcreate( txtPhone, txtPassword, txtFullName, image, ppUsername, ppPassword ): Observable<any> {
+  sendcreate( txtPhone, txtPassword, txtFullName, face1, face2, face3, ppUsername, ppPassword ): Observable<any> {
     // var headers = new Headers();
     // headers.append("Content-Type", "application/json; chartset=utf-8");
+    console.log("face 3 account service");
+    console.log(face3);
     let formData :FormData = new FormData();
     formData.append('phoneNumber', txtPhone);
     formData.append('password', txtPassword);
     formData.append('fullName', txtFullName);
-    formData.append('face', image);
+    formData.append('face1', face1);
+    formData.append('face2', face2);
+    formData.append('face3', face3);
     formData.append('payUsername', ppUsername);
     formData.append('payPassword', ppPassword);
     //return this.HttpClient.post(this.createApi , formData);
@@ -63,11 +67,13 @@ export class AccountService {
     return this.apiHttpService.get(this.constant.LOGOUT);
   }
 
-  updateMemberFace(memId, memName, face){
+  updateMemberFace(memId, memName, face1, face2, face3){
     let formData : FormData = new FormData();
     formData.append("revMemId", memId);
     formData.append("revMemName", memName);
-    formData.append("face", face);
+    formData.append("face1", face1);
+    formData.append("face2", face2);
+    formData.append("face3", face3);
     return this.apiHttpService.put(this.constant.MAP_MEM + 
                                    this.constant.MAP_API + 
                                    this.constant.ACCOUNT +

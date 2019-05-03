@@ -140,7 +140,7 @@ export class ProfilePage implements OnInit {
     });
   }//end take photo
 
-  async addMember(status, id,name, face){
+  async addMember(status,id,name,face,title){
     await this.modalController.create({
       animated: true,
       component: AddMemberPage,
@@ -150,6 +150,7 @@ export class ProfilePage implements OnInit {
           id: id,
           name: name,
           face: face,
+          title: title,
         }]
 
       }
