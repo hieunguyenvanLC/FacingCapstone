@@ -681,7 +681,7 @@ public class OrderService {
         FRPaymentInformation frPayInfo = informationList.get(0);
         String payUsername = frPayInfo.getUsername();
         String payPassword = frPayInfo.getPassword();
-        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getOrderCode();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
 

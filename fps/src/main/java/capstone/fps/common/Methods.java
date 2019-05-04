@@ -132,15 +132,15 @@ public final class Methods {
         double price;
         if (dis > 10D) {
             price = 29000 + (dis - 10) * 3000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         if (dis > 5D) {
             price = 19000 + (dis - 5) * 2000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         if (dis > 0) {
             price = 19000 + dis * 2000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         return null;
     }

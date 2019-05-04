@@ -784,6 +784,18 @@ public class AccountService {
         return response;
     }
 
+
+    public Response<MdlMember> getAvatarMem() {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemAvatar(currentUser));
+        return response;
+    }
+
+
     public Response<String> updateAvatar(String avatar) {
         Methods methods = new Methods();
         FRAccount currentUser = methods.getUser();

@@ -86,4 +86,14 @@ public class MdlMemberBuilder {
         }
         return mdlMember;
     }
+
+    public MdlMember buildMemAvatar(FRAccount frAccount) {
+        Methods methods = new Methods();
+        MdlMember mdlMember = new MdlMember();
+        mdlMember.id = frAccount.getId();
+        mdlMember.name = frAccount.getName();
+        mdlMember.status = frAccount.getStatus();
+        mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
+        return mdlMember;
+    }
 }
