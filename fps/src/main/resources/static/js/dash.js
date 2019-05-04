@@ -2,6 +2,7 @@ var orderList;
 var orderEdit;
 var orderEditPos;
 var fpsApiOrd = fpsBackEnd + MAP_ADM + MAP_API + "/order";  // /adm/api/order
+var orderStatusColors = ['#43459d', '#f1ca3a', '#6f9654', '#1c91c0', '#e2431e'];
 
 $(document).ready(function () {
     uplBuyerFace = document.getElementById("uplBuyerFace");
@@ -101,6 +102,7 @@ $(document).ready(function () {
     // Khoi tao chart
     var mainDataTable = null;
     var mainChart = null;
+    var mainChartColors = orderStatusColors; // thu tu theo status (new, assigned, on delivery, done, cancel)
     google.charts.load('current', {'packages': ['line']}); // bar => line (doi chart)
     google.charts.setOnLoadCallback(function () {
         mainChart = new google.charts.Line(document.getElementById('barChartExample')); // Bar => Line (doi chart)
@@ -324,6 +326,7 @@ $(document).ready(function () {
             },
             hAxis: opts.hAxis,
             vAxis: opts.vAxis,
+            colors: opts.colors,
             // width: 900,
             height: 500
         };
@@ -337,7 +340,7 @@ $(document).ready(function () {
         data.addColumn('string', xLable);
         data.addColumn('number', 'New Orders');
         data.addColumn('number', 'Assigned Orders');
-        data.addColumn('number', 'Bought Orders');
+        data.addColumn('number', 'On Delivery');
         data.addColumn('number', 'Received Orders');
         data.addColumn('number', 'Canceled Orders');
         data.addRows(chartData);
@@ -392,8 +395,9 @@ $(document).ready(function () {
         var charNameT = "";
         var xLabel = "";
         var chartOpts = {
-            hAxis: { title: '', titleTextStyle: { bold: true } },
-            vAxis: { title: '', titleTextStyle: { bold: true } }
+            hAxis: {title: '', titleTextStyle: {bold: true}},
+            vAxis: {title: '', titleTextStyle: {bold: true}},
+            colors: orderStatusColors
         };
 
         switch (reportT) {
@@ -402,30 +406,34 @@ $(document).ready(function () {
                 chartTitle = "Sold Products";
                 charNameT += "The number of sold products by ";
                 chartOpts.vAxis.title = "Products";
+                mainChartColors = ['#1c91c0'];
                 break;
             case "rateScc":
                 apiEndpoint = "successratechart";
                 chartTitle = "Success Delivery Rate";
                 charNameT += "The rate of success by ";
                 chartOpts.vAxis.title = "Percent";
+                mainChartColors = ['#1c91c0', '#e2431e'];
                 break;
             case "totalAmt":
                 apiEndpoint = "incomeammountchart";
                 chartTitle = "Total Amount";
                 charNameT += "The total amount by ";
                 chartOpts.vAxis.title = "VND";
+                mainChartColors = ['#00b8d4', '#00c853'];
                 break;
-            case "shipPaid":
-                apiEndpoint = "paidshipperchart";
-                chartTitle = "Paid Shipper Amount";
-                charNameT += "The paid amount for shippers by ";
-                chartOpts.vAxis.title = "VND";
-                break;
+            // case "shipPaid":
+            //     apiEndpoint = "paidshipperchart";
+            //     chartTitle = "Paid Shipper Amount";
+            //     charNameT += "The paid amount for shippers by ";
+            //     chartOpts.vAxis.title = "VND";
+            //     break;
             default:
                 apiEndpoint = "orderchart";
                 chartTitle = "Orders";
                 charNameT += "The number of orders by ";
                 chartOpts.vAxis.title = "Orders";
+                mainChartColors = orderStatusColors;
         }
 
         switch (charT) {
@@ -449,6 +457,7 @@ $(document).ready(function () {
 
         charNameT += " chart";
         chartOpts.hAxis.title = xLabel;
+        chartOpts.colors = mainChartColors;
 
         // Validate start date and end date
         if (endUnix < startUnix) {
@@ -589,6 +598,7 @@ $(document).ready(function () {
                 // console.log(columnMap);
                 orderList = orders;
                 var list = orders;
+                var statusColor = orderStatusColors[status - 1];
                 // report-table
                 $("#report-table").DataTable().destroy();
                 tblMainReport = $("#report-table").DataTable({
@@ -654,7 +664,7 @@ $(document).ready(function () {
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + order.storeName + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.totalPrice + order.shipperEarn) + '</span>',
                         '<span data-target="#statistic-detail-modal" data-toggle="modal" onclick="getOrderDetail(' + i + ')">' + (order.createTime ? moment.unix(order.createTime / 1000).format('DD/MM/YYYY') : '') + '</span>',
-                        fpsGetStatMsg(ORD_STAT_LIST, order.status)
+                        '<span style="color: ' + statusColor + '">' + fpsGetStatMsg(ORD_STAT_LIST, order.status) + '</span>'
                     ]).draw();
                 }
             },
@@ -699,7 +709,7 @@ $(document).ready(function () {
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.sTableId === "report-table") {
-                console.log({ data: data, filterCol: filterCol, filterColVal: filterColVal})
+                console.log({data: data, filterCol: filterCol, filterColVal: filterColVal})
                 if (filterCol && filterColVal) {
                     if ((data[columnIndices.indexOf(filterCol)] === filterColVal)) {
                         return true;
@@ -802,6 +812,7 @@ function loadEditForm() {
     txtShipperName.value = orderEdit.shipperName;
     txtShipperPhone.value = orderEdit.shipperPhone;
     cbbStatus.value = changeStatus(orderEdit.status);
+    cbbStatus.style.color = orderStatusColors[orderEdit.status - 1];
     txtOrderCode.value = orderEdit.orderCode;
     txtLatitude.value = orderEdit.latitude;
     txtLongitude.value = orderEdit.longitude;
@@ -828,12 +839,13 @@ function loadEditForm() {
             '            <td>' + pro.proName + '</td>\n' +
             '            <td>' + pro.unitPrice + '</td>\n' +
             '            <td>' + pro.quantity + '</td>\n' +
-            '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n';
+            '            <td>' + (pro.unitPrice * pro.quantity) + '</td>\n' +
+            '</br>';
         tblBodyDetail.innerHTML += row;
         var rowSubTotal = '  <td></td>\n' +
             '            <td></td>\n' +
             '            <td></td>\n' +
-            '            <td>Sub total</td>\n' +
+            '            <td >Sub total</td>\n' +
             '            <td align="right">' + orderEdit.totalPrice + '</td>\n';
         tblBodyDetail.innerHTML += rowSubTotal;
 
@@ -871,7 +883,7 @@ function changeStatus(status) {
         status = "Assigned";
     }
     if (status == 3) {
-        status = "Bought";
+        status = "On Delivery";
     }
     if (status == 4) {
         status = "Done";

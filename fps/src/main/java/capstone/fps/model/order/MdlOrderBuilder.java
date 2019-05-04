@@ -107,6 +107,7 @@ public class MdlOrderBuilder {
         mdlOrder.address = frOrder.getShipAddress();
         mdlOrder.shipperEarn = frOrder.getShipperEarn();
         mdlOrder.createTime = frOrder.getCreateTime();
+        mdlOrder.receiveTime = frOrder.getReceiveTime();
         mdlOrder.status = frOrder.getStatus();
         mdlOrder.longitude = frOrder.getLongitude();
         mdlOrder.latitude = frOrder.getLatitude();
