@@ -21,8 +21,8 @@ $(document).ready(function () {
     txtLatitude = document.getElementById("txtLatitude");
     txtLongitude = document.getElementById("txtLongitude");
 
-    txtTotalPrice = document.getElementById("txtTotalPrice");
-    txtShipperEarn = document.getElementById("txtShipperEarn");
+    // txtTotalPrice = document.getElementById("txtTotalPrice");
+    // txtShipperEarn = document.getElementById("txtShipperEarn");
     txtStoreAddress = document.getElementById("txtStoreAddress");
     txtStoreName = document.getElementById("txtStoreName");
     txtCustomerDescription = document.getElementById("txtCustomerDescription");
@@ -75,15 +75,15 @@ $(document).ready(function () {
                 $("#lbSuccessRateD").attr('data-original-title', '<div>Success today over this week: ' + successTDayWeek + '%</div><div>Success today over this month: ' + successTDayMon + '%</div>');
                 $("#lbSuccessRateW").attr('data-original-title', '<div>Success this week over this month: ' + successTWeekMon + '%</div>');
                 //Total
-                $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + " VND</strong>");// all
-                $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + " VND</strong>");//day
-                $("#lbTotalAmountW").html("<strong>" + abbrNum(summary.totalAmountTWeek) + " VND</strong>");// week
-                $("#lbTotalAmountM").html("<strong>" + abbrNum(summary.totalAmountTMonth) + " VND</strong>"); // month
+                $("#lbTotalAmount").html("<strong>" + abbrNum(summary.totalAmount) + "</strong>");// all
+                $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + "</strong>");//day
+                $("#lbTotalAmountW").html("<strong>" + abbrNum(summary.totalAmountTWeek) + "</strong>");// week
+                $("#lbTotalAmountM").html("<strong>" + abbrNum(summary.totalAmountTMonth) + "</strong>"); // month
                 //Paid
-                $("#lbPaidShipper").html("<strong>" + abbrNum(summary.paidShipper) + " VND</strong>");// all
-                $("#lbPaidShipperD").html("<strong>" + abbrNum(summary.paidShipperTDay) + " VND</strong>");//day
-                $("#lbPaidShipperW").html("<strong>" + abbrNum(summary.paidShipperTWeek) + " VND</strong>");// week
-                $("#lbPaidShipperM").html("<strong>" + abbrNum(summary.paidShipperTMonth) + " VND</strong>");// month
+                $("#lbPaidShipper").html("<strong>" + abbrNum(summary.paidShipper) + "</strong>");// all
+                $("#lbPaidShipperD").html("<strong>" + abbrNum(summary.paidShipperTDay) + "</strong>");//day
+                $("#lbPaidShipperW").html("<strong>" + abbrNum(summary.paidShipperTWeek) + "</strong>");// week
+                $("#lbPaidShipperM").html("<strong>" + abbrNum(summary.paidShipperTMonth) + "</strong>");// month
                 //Sold Product
                 $("#lbSoldProduct").html("<strong>" + abbrNum(summary.soldProductCount) + "</strong>");// all
                 $("#lbSoldProductD").html("<strong>" + abbrNum(summary.soldProductCountTDay) + "</strong>");//day
@@ -777,11 +777,11 @@ function fpsFormatDate(date) {
 function getOrderDetail(pos) {
     orderEditPos = pos;
     console.log(orderList[pos], pos);
-    if (typeof orderList[pos].createTime === "undefined") {
+    if (!orderList[pos].buyerFace) {
         $.ajax({
             type: 'GET',
-            url: "/any/api/orderdetail",
-            // url: "/adm/api/order/detail",
+            // url: "/any/api/orderdetail",
+            url: "/adm/api/order/detail",
             data: {orderId: orderList[pos].id},
             dataType: 'json',
             success: function (response) {
@@ -801,7 +801,7 @@ function getOrderDetail(pos) {
 function loadEditForm() {
 
     uplBuyerFace.value = "";
-    fpsSetImgSrc(imgBuyerFace, orderEdit.BuyerFace);
+    fpsSetImgSrc(imgBuyerFace, orderEdit.buyerFace);
 
     uplBill.value = "";
     fpsSetImgSrc(imgBill, orderEdit.bill);
@@ -818,8 +818,8 @@ function loadEditForm() {
     txtLongitude.value = orderEdit.longitude;
     txtAddress.value = orderEdit.address;
 
-    txtTotalPrice.value = orderEdit.totalPrice;
-    txtShipperEarn.value = orderEdit.shipperEarn;
+    // txtTotalPrice.value = orderEdit.totalPrice;
+    // txtShipperEarn.value = orderEdit.shipperEarn;
 
     txtStoreName.value = orderEdit.storeName;
     txtStoreAddress.value = orderEdit.storeAddress;

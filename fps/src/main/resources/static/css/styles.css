@@ -32,6 +32,13 @@ section.dashboard-counts .row {
     height: 100%;
 }
 
+/* Card */
+.dashboard-counts .title strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+}
+
 /* Datatable */
 .dataTables_wrapper .filter-group {
     float: right;

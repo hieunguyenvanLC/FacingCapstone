@@ -88,12 +88,15 @@ public class MdlOrderBuilder {
     }
 
     public MdlOrder buildAdminTableRow(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
+        Methods methods = new Methods();
         MdlOrderDetailBuilder mdlOrderDetailBuilder = new MdlOrderDetailBuilder();
         MdlOrder mdlOrder = new MdlOrder();
         MdlOrderDetail mdlOrderDetail = new MdlOrderDetail();
         mdlOrder.id = frOrder.getId();
         mdlOrder.buyerName = frOrder.getAccount().getName();
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
+//        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
+//        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
         mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
@@ -114,6 +117,10 @@ public class MdlOrderBuilder {
         mdlOrder.note = frOrder.getNote();
         mdlOrder.customerDescription = frOrder.getCustomerDescription();
 
+        FRStore store = orderDetailRepo.findAllByOrder(frOrder).get(0).getProduct().getStore();
+        mdlOrder.storeName = store.getStoreName();
+        mdlOrder.storeAddress = store.getAddress() + " " + store.getDistrict().getName();
+
         List<MdlOrderDetail> mdlDetailList = new ArrayList<>();
         for (FROrderDetail frDetail : frOrderDetails) {
             MdlOrderDetail mdlDetail = mdlOrderDetailBuilder.buildFull(frDetail);
@@ -121,6 +128,7 @@ public class MdlOrderBuilder {
         }
         mdlOrder.detailList = mdlDetailList;
         return mdlOrder;
+
     }
 
     public MdlOrder buildDetailWthImg(FROrder frOrder, OrderDetailRepo orderDetailRepo) {
