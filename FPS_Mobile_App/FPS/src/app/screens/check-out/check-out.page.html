@@ -97,9 +97,12 @@
         </ion-input>
       </ion-item>
       <ion-item>
-        <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-        <ion-input readonly inputmode="text" value="{{myOrder[0].data.shipperPhone}}">
-        </ion-input>
+        <!-- <ion-label color="dark" position="stacked">Phone Number: -->
+            <ion-button color="success" (click)="callNow()"><ion-icon name="call"></ion-icon>{{myOrder[0].data.shipperPhone}}</ion-button>
+        <!-- </ion-label> -->
+        <!-- <ion-input readonly inputmode="text" value="{{myOrder[0].data.shipperPhone}}"> -->
+          
+        <!-- </ion-input> -->
       </ion-item>
     </ion-list>
   </div>

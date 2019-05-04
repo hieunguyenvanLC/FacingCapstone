@@ -26,6 +26,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http/ngx';
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
 import { StorageApiService } from './services/storage-api.service';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,6 +56,7 @@ import { StorageApiService } from './services/storage-api.service';
     FCM,
     Storage,
     GoogleMaps,
+    CallNumber,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -51,8 +51,7 @@ import { StorageApiService } from './services/storage-api.service';
 import { AlertService } from './services/alert.service';
 import { AddMemberPageModule } from './screens/add-member/add-member.module';
 import { ImageResizer } from '@ionic-native/image-resizer/ngx';
-// import { StarRatingModule } from 'ionic3-star-rating';
-// import { IonicRatingModule } from 'ionic-rating';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -90,6 +89,7 @@ import { ImageResizer } from '@ionic-native/image-resizer/ngx';
     NativeGeocoder,
     FCM,
     ImageResizer,
+    CallNumber,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     
   ],

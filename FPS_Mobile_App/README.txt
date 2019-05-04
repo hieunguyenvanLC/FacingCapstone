@@ -117,4 +117,10 @@ dpt321997-facilitator@gmail.com
 
 password 12345678
 -------
+Call number
+ionic cordova plugin add call-number
+npm install @ionic-native/call-number
 
+----------
+fix bug node sass
+sudo npm install --save-dev  --unsafe-perm node-sass

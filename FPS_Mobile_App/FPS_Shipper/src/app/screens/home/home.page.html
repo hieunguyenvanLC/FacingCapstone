@@ -132,9 +132,10 @@
         </ion-input>
       </ion-item>
       <ion-item>
-        <ion-label color="dark" position="stacked">Phone Number:</ion-label>
+          <ion-button color="success" (click)="callNow()"><ion-icon name="call"></ion-icon>{{order[0].data.buyerPhone}}</ion-button>
+        <!-- <ion-label color="dark" position="stacked">Phone Number:</ion-label>
         <ion-input readonly inputmode="text" value="{{order[0].data.buyerPhone}}">
-        </ion-input>
+        </ion-input> -->
       </ion-item>
     </ion-list>
     <!-- end customer info -->

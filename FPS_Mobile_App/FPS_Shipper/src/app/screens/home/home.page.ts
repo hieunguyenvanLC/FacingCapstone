@@ -27,6 +27,7 @@ import { element } from '@angular/core/src/render3';
 import { GoogleApiService } from 'src/app/services/google-api.service';
 import { AccountService } from 'src/app/services/account.service';
 import { AppComponent } from 'src/app/app.component';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 declare var google;
 
 @Component({
@@ -68,6 +69,7 @@ export class HomePage {
     private GoogleApiService: GoogleApiService,
     private accountService: AccountService,
     private appComponent: AppComponent,
+    private callNumber: CallNumber,
 
   ) {
     this.shipperMode = false;
@@ -479,4 +481,10 @@ export class HomePage {
 
 
   //#endregion END MAP
+
+  callNow(){
+    this.callNumber.callNumber(this.order[0].data.buyerPhone, true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+  }
 }

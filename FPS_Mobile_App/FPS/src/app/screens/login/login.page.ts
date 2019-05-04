@@ -11,6 +11,7 @@ import { getHostElement } from '@angular/core/src/render3';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
 // import { setTimeout } from 'timers';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class LoginPage implements OnInit {
   password: string;
   error: string;
   account = [];
+  temp: any;
   // accountDetail = [];
 
   constructor(
@@ -32,18 +34,26 @@ export class LoginPage implements OnInit {
     private toastHandle: ToastHandleService,
     private storage: StorageApiService,
     private googleAPI: GoogleApiService,
-    private loading : LoadingService,
+    private loading: LoadingService,
+    private callNumber: CallNumber,
   ) {
     this.phonenumber = '84965142724';
     this.password = 'zzz';
     this.error = '';
 
-
+    this.temp = 1131;
   }
 
   async ngOnInit() {
     this.googleAPI.getCurrentLocation();
     console.log(this.googleAPI.getCurrentLocation());
+  }
+
+  callNow() {
+    console.log("123123123123123123213asdhjasbfjkasb");
+    this.callNumber.callNumber("18001010101", true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
   }
 
   async login() {
@@ -54,39 +64,39 @@ export class LoginPage implements OnInit {
     //this.accountService.logOut();
     this.account.length = 0;
     this.loading.present("Waiting...").then(() => {
-    this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
-      // console.log(this.phonenumber + "  " + this.password);
-      // console.log(res);
+      this.accountService.sendLogin(this.phonenumber, this.password).subscribe(res => {
+        // console.log(this.phonenumber + "  " + this.password);
+        // console.log(res);
 
-      //let body = res.json();  // If response is a JSON use json()
+        //let body = res.json();  // If response is a JSON use json()
 
-      this.account.push(res);
+        this.account.push(res);
 
-      if (this.account) {
-        //if (role === "ROLE_MEMBER"){
-        if (this.account[0].data === "ROLE_MEMBER") {
-          this.error = '';
-          this.getDetailAccount();
-          sleep(1000).then(() => {
-            //get storage
-            this.getStorage();
-          })
+        if (this.account) {
+          //if (role === "ROLE_MEMBER"){
+          if (this.account[0].data === "ROLE_MEMBER") {
+            this.error = '';
+            this.getDetailAccount();
+            sleep(1000).then(() => {
+              //get storage
+              this.getStorage();
+            })
 
-          this.loading.dismiss();
-          //end api get detail
+            this.loading.dismiss();
+            //end api get detail
+          } else {
+            this.loading.dismiss();
+            this.error = "Wrong username or password";
+          }
         } else {
-          this.loading.dismiss();
-          this.error = "Wrong username or password";
-        }
-      } else {
 
-      }
-    }), //end api login
-    err => {
-      this.loading.dismiss()
-      this.toastHandle.presentToast("Error connection! Please check your connection");
-      console.log(err);
-    };
+        }
+      }), //end api login
+        err => {
+          this.loading.dismiss()
+          this.toastHandle.presentToast("Error connection! Please check your connection");
+          console.log(err);
+        };
     })//end loading
   }
 

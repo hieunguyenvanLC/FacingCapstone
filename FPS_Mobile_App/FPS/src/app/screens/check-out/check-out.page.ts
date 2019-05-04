@@ -7,6 +7,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @Component({
   selector: 'app-check-out',
@@ -28,6 +29,7 @@ export class CheckOutPage implements OnInit {
     private geolocation: Geolocation,
     private fcm: FCM,
     private router : Router,
+    private callNumber: CallNumber,
   ) {
     this.myOrder.length = 0;
     this.orderId = this.route.snapshot.params['id'];
@@ -120,4 +122,9 @@ export class CheckOutPage implements OnInit {
     })//end api get order by id
   }//end get order by id
 
+  callNow(){
+    this.callNumber.callNumber(this.myOrder[0].data.shipperPhone, true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+  }//end call now
 }
