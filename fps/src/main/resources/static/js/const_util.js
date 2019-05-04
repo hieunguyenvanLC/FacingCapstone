@@ -38,19 +38,19 @@ var ORD_CXL = new Stat(5, "cancel");
 var ORD_STAT_LIST = [ORD_NEW, ORD_ASS, ORD_BUY, ORD_COM, ORD_CXL];
 
 /* account status */
-var ACC_NEW = new Stat(1, "new");
-var ACC_CHK = new Stat(2, "checked");
+var ACC_NEW = new Stat(1, "in use");
+var ACC_CHK = new Stat(2, "unverified");
 var ACC_BAN = new Stat(3, "banned");
 var accStatList = [ACC_NEW, ACC_CHK, ACC_BAN];
 
 
 /* Product status */
-var PRO_NEW = new Stat(1, "new");
-var PRO_HID = new Stat(2, "hidden");
+var PRO_NEW = new Stat(1, "activated");
+var PRO_HID = new Stat(2, "deactivated");
 var PRO_STAT_LIST = [PRO_NEW, PRO_HID];
 
 
 /* Product status */
-var STO_NEW = new Stat(1, "new");
-var STO_HID = new Stat(2, "hidden");
+var STO_NEW = new Stat(1, "activated");
+var STO_HID = new Stat(2, "deactivated");
 var stoStatList = [STO_NEW, STO_HID];

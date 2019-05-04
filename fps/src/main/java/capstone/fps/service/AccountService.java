@@ -5,6 +5,8 @@ import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
 import capstone.fps.repository.*;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -540,7 +542,7 @@ public class AccountService {
         frAccount.setDob(null);
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote("");
-        frAccount.setStatus(Fix.ACC_NEW.index);
+        frAccount.setStatus(Fix.ACC_CHK.index);
         frAccount.setEditor(null);
         frAccount.setAvatar(faceBytes1);
         accountRepo.save(frAccount);
@@ -560,7 +562,7 @@ public class AccountService {
         frPaymentInformation.setPaymentType(initPaymentType("sale"));
         frPaymentInformation.setAccount(frAccount);
         frPaymentInformation.setUsername(payUsername);
-        frPaymentInformation.setPassword(payPassword);
+        frPaymentInformation.setPassword(methods.basicEncrypt(payPassword));
         paymentInfoRepo.save(frPaymentInformation);
 
         // training in python here
@@ -781,6 +783,18 @@ public class AccountService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
     }
+
+
+    public Response<MdlMember> getAvatarMem() {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
+
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemAvatar(currentUser));
+        return response;
+    }
+
 
     public Response<String> updateAvatar(String avatar) {
         Methods methods = new Methods();

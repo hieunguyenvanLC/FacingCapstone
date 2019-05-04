@@ -132,15 +132,15 @@ public final class Methods {
         double price;
         if (dis > 10D) {
             price = 29000 + (dis - 10) * 3000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         if (dis > 5D) {
             price = 19000 + (dis - 5) * 2000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         if (dis > 0) {
             price = 19000 + dis * 2000d;
-            return Math.ceil(price / 1000d) * 1000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
         return null;
     }
@@ -254,5 +254,12 @@ public final class Methods {
         now.set(Calendar.HOUR_OF_DAY, 23);
         now.set(Calendar.MINUTE, 1);
         return now.getTimeInMillis();
+    }
+
+
+    public String basicEncrypt(String input) {
+        Random ran = new Random();
+        String s = ran.nextInt() + "ấ" + input + "ấ" + ran.nextInt();
+        return StringUtils.newStringUtf8(Base64.encodeBase64(s.getBytes(), false));
     }
 }

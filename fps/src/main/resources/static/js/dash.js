@@ -845,22 +845,22 @@ function loadEditForm() {
         var rowSubTotal = '  <td></td>\n' +
             '            <td></td>\n' +
             '            <td></td>\n' +
-            '            <td >Sub total</td>\n' +
-            '            <td align="right">' + orderEdit.totalPrice + '</td>\n';
+            '            <td style="font-size: 23px; color: black">Sub total</td>\n' +
+            '            <td align="right">' + orderEdit.totalPrice + '&ensp;VND' + '</td>\n';
         tblBodyDetail.innerHTML += rowSubTotal;
 
         var rowShippingFee = '  <td></td>\n' +
             '            <td></td>\n' +
             '            <td></td>\n' +
-            '            <td>Shipping Fee</td>\n' +
-            '            <td align="right">' + orderEdit.shipperEarn + '</td>\n';
+            '            <td style="font-size: 23px; color: black">Shipping Fee</td>\n' +
+            '            <td align="right">' + orderEdit.shipperEarn + '&ensp;VND' + '</td>\n';
         tblBodyDetail.innerHTML += rowShippingFee;
 
         var rowTotal = '  <td></td>\n' +
             '            <td></td>\n' +
             '            <td></td>\n' +
-            '            <td>Total</td>\n' +
-            '            <td align="right">' + (orderEdit.totalPrice + orderEdit.shipperEarn) + '</td>\n';
+            '            <td style="font-size: 23px; color: black">Total</td>\n' +
+            '            <td align="right">' + (orderEdit.totalPrice + orderEdit.shipperEarn) + '&ensp;VND' + '</td>\n';
         tblBodyDetail.innerHTML += rowTotal;
     }
 

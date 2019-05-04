@@ -234,7 +234,7 @@ public class OrderService {
             frOrder.setNote(valid.nullProof(note));
         }
         frOrder.setUpdateTime(time);
-        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.STO_STAT_LIST));
+        frOrder.setStatus(valid.checkUpdateStatus(frOrder.getStatus(), status, Fix.ORD_STAT_LIST));
         frOrder.setEditor(currentUser);
         orderRepository.save(frOrder);
         if (buyerFace != null) {
@@ -681,7 +681,7 @@ public class OrderService {
         FRPaymentInformation frPayInfo = informationList.get(0);
         String payUsername = frPayInfo.getUsername();
         String payPassword = frPayInfo.getPassword();
-        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getId();
+        String description = "Account " + buyer.getPhone() + " pay for order " + frOrder.getOrderCode();
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
 

@@ -77,12 +77,23 @@ public class MdlMemberBuilder {
         mdlMember.extraPoint = frAccount.getExtraPoint();
         mdlMember.reportPoint = frAccount.getReportPoint();
         mdlMember.dob = frAccount.getDob();
+        mdlMember.status = frAccount.getStatus();
         mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
         List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
         mdlMember.faceList = new MdlFace[receiveMembers.size()];
         for (int i = 0; i < receiveMembers.size(); i++) {
             mdlMember.faceList[i] = new MdlFace(receiveMembers.get(i));
         }
+        return mdlMember;
+    }
+
+    public MdlMember buildMemAvatar(FRAccount frAccount) {
+        Methods methods = new Methods();
+        MdlMember mdlMember = new MdlMember();
+        mdlMember.id = frAccount.getId();
+        mdlMember.name = frAccount.getName();
+        mdlMember.status = frAccount.getStatus();
+        mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
         return mdlMember;
     }
 }

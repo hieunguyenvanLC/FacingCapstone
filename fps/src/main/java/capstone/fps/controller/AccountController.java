@@ -245,6 +245,19 @@ public class AccountController extends AbstractController {
         return gson.toJson(response);
     }
 
+
+    @GetMapping(Fix.MAP_MEM + API + "/avatar")
+    public String getAvatarMem() {
+        Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getAvatarMem();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
     @PutMapping(Fix.MAP_MEM + API + "/avatar")
     public String updateAvatarMem(String avatar) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
