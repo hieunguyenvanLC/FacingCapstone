@@ -55,15 +55,15 @@
                 <img src="{{item.proImg}}">
               </ion-thumbnail>
             </ion-col>
-            <ion-col size="4" class="prod-title">
+            <ion-col size="3" class="prod-title">
               <strong>{{item.proName}}</strong>
 
             </ion-col>
-            <ion-col size="4" class="prod-price none-padding">
+            <ion-col size="3" class="prod-price none-padding">
               <p>{{item.quantity}}</p>
             </ion-col>
-            <ion-col size="4" class="prod-price">
-              <p>{{item.unitPrice}}</p>
+            <ion-col size="3" class="prod-price">
+              <p>{{(item.unitPrice/1000).toFixed(3)}} ₫</p>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -80,7 +80,7 @@
           Subtotal
         </ion-col>
         <ion-col size="3">
-          {{order[0].data.totalPrice}}
+          {{(order[0].data.totalPrice/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
       <ion-row>
@@ -88,7 +88,7 @@
           Delivery fees
         </ion-col>
         <ion-col size="3">
-          {{order[0].data.shipperEarn}}
+          {{(order[0].data.shipperEarn/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -100,7 +100,7 @@
             Total
           </ion-col>
           <ion-col size="3">
-            {{order[0].data.total}}
+            {{(order[0].data.total/1000).toFixed(3)}} ₫
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -113,7 +113,7 @@
                   <ion-icon class="margin--2" name="cash"></ion-icon>Shipper Earn
               </ion-col>
               <ion-col size="3">
-                  {{order[0].data.shipperMoney}} VND
+                  {{(order[0].data.shipperMoney/1000).toFixed(3)}} ₫
                 </ion-col>
             </ion-row>
           </ion-grid>

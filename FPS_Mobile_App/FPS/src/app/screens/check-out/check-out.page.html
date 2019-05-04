@@ -19,10 +19,11 @@
       <!-- <p class="primary-text">{{myOrder[0].currentAddress}}</p> -->
       <ion-textarea no-padding type="text" color="primary" value="{{myOrder[0].data.address}}" position="fixed" readonly>
       </ion-textarea>
+      <br>
       Your order from <strong>{{myOrder[0].data.storeAddress}}</strong>
       <br>
-      <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
-      </ion-label>
+      <!-- <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)
+      </ion-label> -->
     </div>
     <br>
     <!-- item group -->
@@ -44,7 +45,7 @@
               <p>{{item.quantity}}</p>
             </ion-col>
             <ion-col size="3" class="prod-price">
-              <p>{{item.unitPrice}}</p>
+              <p>{{(item.unitPrice/1000).toFixed(3)}} ₫</p>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -61,7 +62,7 @@
           Subtotal
         </ion-col>
         <ion-col size="3">
-          {{myOrder[0].data.totalPrice}}
+          {{(myOrder[0].data.totalPrice/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
       <ion-row>
@@ -69,7 +70,7 @@
           Delivery fees
         </ion-col>
         <ion-col size="3">
-          {{myOrder[0].data.shipperEarn}}
+          {{(myOrder[0].data.shipperEarn/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -81,7 +82,7 @@
           Total
         </ion-col>
         <ion-col size="3">
-          {{myOrder[0].data.total}}
+          {{(myOrder[0].data.total/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
     </ion-grid>

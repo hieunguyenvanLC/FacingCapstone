@@ -39,7 +39,7 @@
             <p>{{item.quantity}}</p>
           </ion-col>
           <ion-col size="3" class="prod-price">
-            <p>{{item.price}}</p>
+            <p>{{(item.price/1000).toFixed(3)}} ₫</p>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -56,7 +56,7 @@
           Subtotal
         </ion-col>
         <ion-col size="3">
-          {{myOrder[0].subTotal}}
+          {{(myOrder[0].subTotal/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
       <ion-row>
@@ -64,7 +64,7 @@
           Delivery fees
         </ion-col>
         <ion-col size="3">
-          {{myOrder[0].shpEarn}}
+          {{(myOrder[0].shpEarn/1000).toFixed(3)}} ₫
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -76,7 +76,7 @@
             Total
           </ion-col>
           <ion-col size="3">
-            {{total}}
+            {{(total/1000).toFixed(3)}} ₫
           </ion-col>
         </ion-row>
   </ion-grid>

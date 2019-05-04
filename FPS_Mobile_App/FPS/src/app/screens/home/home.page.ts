@@ -130,7 +130,7 @@ export class HomePage {
   }
 
   getUser() {
-    this.accountService.getDetailUser().subscribe(
+    this.accountService.getAvatar().subscribe(
       res => {
         //this.userDetail.push(res);
         let tempArr = [];

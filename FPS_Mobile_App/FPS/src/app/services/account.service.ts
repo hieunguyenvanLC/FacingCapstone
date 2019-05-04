@@ -90,4 +90,11 @@ export class AccountService {
                                    this.constant.ACCOUNT, formData);
   }
 
+  getAvatar(){
+    return this.apiHttpService.get(this.constant.MAP_MEM +
+                                   this.constant.MAP_API +
+                                   this.constant.ACCOUNT +
+                                   "/avatar");
+  }
+
 }
