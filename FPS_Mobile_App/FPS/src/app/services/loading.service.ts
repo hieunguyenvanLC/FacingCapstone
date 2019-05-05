@@ -12,11 +12,26 @@ export class LoadingService {
     
   ) { }
 
-  async present(){
+  async present(loadingMsg){
     this.isLoading = true;
     return await this.loadingController.create({
-      message: 'Waiting...',
+      message: loadingMsg,
       duration: 10*60*1000
+    }).then(a => {
+      a.present()
+      // .then( () => {
+      //   if (this.isLoading){
+      //     a.dismiss();
+      //   }
+      // })
+    })
+  }
+
+  async presentWithtime(loadingMsg, time){
+    this.isLoading = true;
+    return await this.loadingController.create({
+      message: loadingMsg,
+      duration: time
     }).then(a => {
       a.present()
       // .then( () => {

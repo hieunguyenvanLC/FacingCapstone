@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ export class ToastHandleService {
 
   constructor(
     public toastController: ToastController,
+    public alertController: AlertController,
     ) { }
 
     async presentToast(myMessage) {

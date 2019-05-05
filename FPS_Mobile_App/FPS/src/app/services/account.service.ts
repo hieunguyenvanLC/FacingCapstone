@@ -28,25 +28,32 @@ export class AccountService {
     return this.apiHttpService.post(this.constant.LOGIN, formData);
   }
 
-  sendcreate( txtPhone, txtPassword, txtFullName, image, ppUsername, ppPassword ): Observable<any> {
+  sendcreate( txtPhone, txtPassword, txtFullName, face1, face2, face3, ppUsername, ppPassword ): Observable<any> {
     // var headers = new Headers();
     // headers.append("Content-Type", "application/json; chartset=utf-8");
+    console.log("face 3 account service");
+    console.log(face3);
     let formData :FormData = new FormData();
     formData.append('phoneNumber', txtPhone);
     formData.append('password', txtPassword);
     formData.append('fullName', txtFullName);
-    formData.append('face', image);
+    formData.append('face1', face1);
+    formData.append('face2', face2);
+    formData.append('face3', face3);
     formData.append('payUsername', ppUsername);
     formData.append('payPassword', ppPassword);
     //return this.HttpClient.post(this.createApi , formData);
     return this.apiHttpService.post(this.constant.MAP_ANY + this.constant.MAP_API + this.constant.ACCOUNT,formData);
   }
 
-  updateImageMember(image){
+  updateImageMember(id,image){
+    let formData: FormData = new FormData();
+    formData.append('revMemId', id);
+    formData.append('face', image);
     return this.apiHttpService.put(this.constant.MAP_MEM + 
                                    this.constant.MAP_API +
                                    this.constant.ACCOUNT +
-                                   "/face", image);
+                                   "/face", formData);
   }
 
   getDetailUser(){
@@ -54,6 +61,40 @@ export class AccountService {
                                    this.constant.MAP_API +
                                    this.constant.ACCOUNT +
                                    "/detail");
+  }
+
+  logOut(){
+    return this.apiHttpService.get(this.constant.LOGOUT);
+  }
+
+  updateMemberFace(memId, memName, face1, face2, face3){
+    let formData : FormData = new FormData();
+    formData.append("revMemId", memId);
+    formData.append("revMemName", memName);
+    formData.append("face1", face1);
+    formData.append("face2", face2);
+    formData.append("face3", face3);
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT +
+                                   this.constant.FACE, formData);
+  }
+
+  updateMemberDetail(name, email, dob){
+    let formData : FormData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("dob", dob);
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT, formData);
+  }
+
+  getAvatar(){
+    return this.apiHttpService.get(this.constant.MAP_MEM +
+                                   this.constant.MAP_API +
+                                   this.constant.ACCOUNT +
+                                   "/avatar");
   }
 
 }
