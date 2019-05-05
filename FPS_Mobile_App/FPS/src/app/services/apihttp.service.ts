@@ -20,7 +20,7 @@ export class ApihttpService {
 
   put(url, data){
     let headers = this.createHeader();
-    return this.http.put(this.constant.APIURL + url, data,{ withCredentials: true });
+    return this.http.put(this.constant.APIURL + url, data);
   }
 
   get(url){
@@ -40,12 +40,12 @@ export class ApihttpService {
 
   delete(url): Observable<any> {
     let headers = this.createHeader();
-    return this.http.delete(this.constant.APIURL + url, { withCredentials: true });
+    return this.http.delete(this.constant.APIURL + url);
   }
 
   deletes(url, data): Observable<any> {
     let headers = this.createHeader();
-    return this.http.post(this.constant.APIURL + url, data, { withCredentials: true });
+    return this.http.post(this.constant.APIURL + url, data);
   }
 }
 

@@ -4,80 +4,46 @@
       <ion-icon name="arrow-back"></ion-icon>
     </ion-buttons>
     <ion-title>Edit Profile</ion-title>
-    <ion-button slot="end" fill="outline" (click)="saveProfile()">Save</ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="profile">
   <ion-card no-margin>
-    <div *ngIf=(isLoaded)>
-      <ion-card-content class="bg-profile">
-        <div *ngIf=(isImg)>
-          <img src="{{ userDetail[0].data.avatar }}">
-        </div>
-        <div *ngIf=(!isImg)>
-          <img src="../../../assets/image/default-user.png">
-        </div>
-        <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
-        <h2 margin-bottom *ngIf="userDetail[0].data.status == 1">
-            <ion-badge color="success">Verified</ion-badge>
-        </h2>
-        <h2 margin-bottom *ngIf="userDetail[0].data.status == 2">
-            <ion-badge color="medium">Verifying...</ion-badge>
-        </h2>
-        <ion-button icon-left color="light">
-          <ion-icon name="photos"></ion-icon>
-          Edit / Add Avatar
-        </ion-button>
-        <!-- <ion-button icon-left color="light">
-          <ion-icon name="photos"></ion-icon>
-          Edit face for payment
-        </ion-button> -->
-      </ion-card-content>
+    <ion-card-content class="bg-profile">
+      <img src="{{ userDetail[0].data.avatar }}">
+      <h1 class="fw500">{{ userDetail[0].data.name }}</h1>
+      <h2 margin-bottom>Extra point: {{ userDetail[0].data.extraPoint }}</h2>
+      <ion-button icon-left color="light">
+        <ion-icon name="photos"></ion-icon> 
+        Edit / Add Avatar
+      </ion-button>
+    </ion-card-content>
+  
+    <ion-grid fixed no-padding>
+      <ion-row>
+        <ion-col size="12" padding>
 
-      <ion-grid fixed no-padding>
-        <ion-row>
-          <ion-col size="12" padding>
+          <ion-list margin-bottom>
+            <ion-list-header color="light">
+              <ion-label class="fw700">Form</ion-label>
+            </ion-list-header>
 
-            <ion-list margin-bottom>
-              <ion-list-header color="light">
-                <ion-label class="fw700">Form</ion-label>
-              </ion-list-header>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Phone Number:</ion-label>
-                <ion-input inputmode="number" placeholder="Ex.: 0909080888" value="{{ userDetail[0].data.phone }}"
-                  readonly>
-                </ion-input>
-              </ion-item>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Full Name:</ion-label>
-                <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" [(ngModel)]="fullName"
-                  value="{{ userDetail[0].data.name }}">
-                </ion-input>
-              </ion-item>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Email:</ion-label>
-                <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" [(ngModel)]="email"
-                  value="{{ userDetail[0].data.email }}">
-                </ion-input>
-              </ion-item>
-
-              <ion-item>
-                <ion-label color="dark" position="stacked">Date of birth:</ion-label>
-                <ion-datetime display-format="DD/MM/YYYY" picker-format="DD MM  YYYY" [(ngModel)]="cusDOB"
-                  value="{{ userDetail[0].data.dateOfBirth }}"></ion-datetime>
-              </ion-item>
-
-
-              <!-- <ion-item> -->
+            <ion-item>
+              <ion-label color="dark" position="stacked">Full Name:</ion-label>
+              <ion-input inputmode="text" placeholder="Ex..: Nguyen Van A" value="{{ userDetail[0].data.name }}"></ion-input>
+            </ion-item>
+    
+            <ion-item>
+              <ion-label color="dark" position="stacked">Email:</ion-label>
+              <ion-input inputmode="email" placeholder="Ex.: abc@gmail.com" value="{{ userDetail[0].data.email }}"></ion-input>
+            </ion-item>
+    
+            <!-- <ion-item> -->
               <!-- <ion-label color="dark" position="stacked">Extra point: {{ userDetail[0].data.extraPoint }}</ion-label> -->
               <!-- <ion-input inputmode="text" placeholder="Ex.: Abey Road 5"></ion-input> -->
-              <!-- </ion-item> -->
-
-              <!-- <ion-item>
+            <!-- </ion-item> -->
+    
+            <!-- <ion-item>
               <ion-label color="dark">City</ion-label>
               <ion-select>
                 <ion-select-option value="nes">New York</ion-select-option>
@@ -102,9 +68,9 @@
                 <ion-select-option value="snes">Delhi</ion-select-option>
               </ion-select>
             </ion-item>-->
-            </ion-list>
+          </ion-list> 
 
-            <!-- <ion-list>
+          <!-- <ion-list>
             <ion-radio-group>
               <ion-list-header color="light">
                 <ion-label class="fw700">User Type</ion-label>
@@ -126,74 +92,11 @@
               <ion-checkbox></ion-checkbox>
             </ion-item>
           </ion-list> -->
-            <ion-list margin-bottom lines="none">
-              <ion-list-header color="light">
-                <ion-label class="fw700">Your member</ion-label>
-              </ion-list-header>
-              <div *ngFor="let member of userDetail[0].data.faceList">
-                <ion-item>
-                  <ion-icon name="contact"></ion-icon>
-                  <ion-label class="fw700">{{member.name}}</ion-label>
-                </ion-item>
-                <ion-item>
-                  <div class="card-drop">
-                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-                    <img src="{{member.face1}}" class="card-drop__image" />
-                    <div class="card-drop__content">
-                      <h1 class="card-drop__content--title">
-                        Front side
-                      </h1>
-                      <div class="card-drop__content--body">
-                        <div class="card-drop__content--text">
-                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face1, 'Edit front side')">
-                            Edit</ion-button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ion-item>
-                <ion-item>
-                  <div class="card-drop">
-                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-                    <img src="{{member.face2}}" class="card-drop__image" />
-                    <div class="card-drop__content">
-                      <h1 class="card-drop__content--title">
-                        Left side
-                      </h1>
-                      <div class="card-drop__content--body">
-                        <div class="card-drop__content--text">
-                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face2, 'Edit left side')">
-                            Edit</ion-button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ion-item>
-                <ion-item>
-                  <div class="card-drop">
-                    <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-                    <img src="{{member.face3}}" class="card-drop__image" />
-                    <div class="card-drop__content">
-                      <h1 class="card-drop__content--title">
-                        Right side
-                      </h1>
-                      <div class="card-drop__content--body">
-                        <div class="card-drop__content--text">
-                          <ion-button expand="block" (click)="addMember('update', member.id, member.name,member.face3, 'Edit right side')">
-                            Edit</ion-button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ion-item>
-              </div>
-              <ion-button expand="block" (click)="addMember('add','','','','')">Add new face's member</ion-button>
-            </ion-list>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-
-      <!-- <ion-button size="" expand="full" color="primary" no-margin>Save</ion-button> -->
-    </div>
+  
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+    <ion-button size="" expand="full" color="primary" no-margin>Edit</ion-button>
   </ion-card>
 </ion-content>

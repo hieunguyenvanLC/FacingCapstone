@@ -9,10 +9,8 @@ import { OrdermodalPage } from '../ordermodal/ordermodal.page';
 import { StoreService } from 'src/app/services/store.service';
 import { Store } from './../../models/store.model';
 import { LoadingService } from 'src/app/services/loading.service';
+import { isLoaded } from 'google-maps';
 import { ToastHandleService } from 'src/app/services/toasthandle.service';
-import { GoogleApiService } from 'src/app/services/google-api.service';
-import { Storage } from '@ionic/storage';
-import { Constant } from 'src/app/common/constant';
 
 @Component({
   selector: 'app-store',
@@ -30,15 +28,44 @@ export class StorePage implements OnInit {
   store: Store[];
   quantity = 1;
   status_code = 0;
-  temp = [];
 
-  latitudeCus: any;
-  longitudeCus: any;
-  duration: any;
-  distance: any;
-  shpEarn: any;
-  currentAddress: any;
   isLoaded = false;
+
+  // {
+  //   id: "AL1",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size M (500ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL2",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size L (750ml)",
+  //   price: "500000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL3",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size XL (1050ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL4",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size XXL (1200ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // },
+  // {
+  //   id: "AL5",
+  //   img: "../../assets/image/trasua1.jpg",
+  //   name: "Trà sữa chân trâu đường đen - size S (500ml)",
+  //   price: "100000",
+  //   quantity: 0
+  // }
 
   constructor(
     private router: Router,
@@ -47,15 +74,11 @@ export class StorePage implements OnInit {
     private storeService: StoreService,
     private loading: LoadingService,
     private toastHandle: ToastHandleService,
-    private googleApi: GoogleApiService,
-    private storage: Storage,
-    private constant: Constant,
   ) {
-    this.products.length = 0;
   }
 
   ngOnInit() {
-    this.loading.present(this.constant.LOADINGMSG).then(() => {
+    this.loading.present().then(() => {
       this.getStoreDetail();
     })
 
@@ -119,32 +142,19 @@ export class StorePage implements OnInit {
   }
 
   async openOrderModal() {
-    console.log("o trong openModalOder");
-    console.log("currentAddress");
-    console.log(this.currentAddress);
-    setTimeout(() => {},1000);
     await this.modalController.create({
       animated: true,
       component: OrdermodalPage,
       componentProps: {
-        myOrder: [{
-          products: this.orders,
-          latitudeStore: this.products[0].data.latitude, //latitude store
-          longitudeStore: this.products[0].data.longitude, //longitude store
-          addressStore: this.products[0].data.address + ", " + this.products[0].data.distStr,
-          subTotal: this.total,
-          shpEarn: this.shpEarn,
-          duration: this.duration,
-          distance: this.distance,
-          currentAddress: this.currentAddress,
-          latitudeCus: this.latitudeCus,
-          longitudeCus: this.longitudeCus,
-        }]
-
+        products: this.orders,
+        latitudeStore: this.products[0].data.latitude,
+        longitudeStore: this.products[0].data.longitude,
+        addressStore: this.products[0].data.address + ", " + this.products[0].data.distStr,
+        subTotal: this.total,
       }
     }).then(modal => {
       modal.present();
-      // this.currentModal = modal;
+      this.currentModal = modal;
     });
   }
 
@@ -153,35 +163,18 @@ export class StorePage implements OnInit {
   }
 
   getStoreByid(id: number) {
-    this.products.length = 0;
     this.storeService.getStorebyid(id).subscribe(
       res => {
         this.products.push(res);
         console.log(this.products[0].data);
 
         this.status_code = this.products[0].status_code;
-        this.storage.get("MYLOCATION").then(value => {
-          console.log(value);
-          this.latitudeCus = value.latitude;
-          this.longitudeCus = value.longitude;
-          // console.log(value.longitude);
-          //console.log(this.products[0].data.latitude);
-          //console.log(this.products[0].data.longitude);
-          this.googleApi.getAddressGoogle(value.latitude, value.longitude, this.products[0].data.latitude, this.products[0].data.longitude)
-            .then(res => {
-              let myArr =  JSON.parse(res.data);
-              this.currentAddress = myArr.routes[0].legs[0].start_address
-              this.duration = myArr.routes[0].legs[0].duration.text.replace(" phút", "");
-              this.duration = parseInt(this.duration) + 15;
-              this.duration += " phút";
-              this.distance = myArr.routes[0].legs[0].distance.text.split(" ",1);
-              this.shpEarn = this.calculateShpEarn(parseFloat(this.distance));
-            });//end google api
-        });//end storage
+
+        // console.log(this.products[0].data.proList);
         this.products[0].data.proList.forEach(element => {
+          //add 2 attribute into product detail
           element["quantity"] = 0;
           element["total"] = 0;
-          element.price = element.price;
         });
       }, error => {
         this.toastHandle.presentToast("Error to get product store !");
@@ -199,27 +192,5 @@ export class StorePage implements OnInit {
     )
   }
 
-  calculateShpEarn(dis) {
-    let price = 14000;
-    let kms;
-    // if (dis < 1) {
-    //   kms = 1
-    // } else {
-    //   kms = dis
-    // }
-    kms = dis;
-    // let kms = Math.ceil(dis);
-    if (kms > 0) {
-      price += kms * 1000;
-    }
-    kms -= 5;
-    if (kms > 0) {
-      price += kms * 1000;
-    }
-    kms -= 5;
-    if (kms > 0) {
-      price += kms * 1000;
-    }
-    return Math.ceil(price/1000) *1000;
-  }//end calculateShpEarn
+
 } 

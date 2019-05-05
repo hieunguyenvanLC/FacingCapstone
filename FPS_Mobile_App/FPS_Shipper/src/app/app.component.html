@@ -1,85 +1,24 @@
 <ion-app>
-    <ion-split-pane>
-      <ion-menu>
-        <!-- Profile user -->
-        <ion-item class="margin0 marginTop--10" no-padding margin-bottom>
-          <ion-toolbar>
-            <ion-grid>
-              <ion-row>
-                <ion-col size="3">
-                  <div *ngIf="avatar === undefine">
-                    <ion-avatar class="user-avatar">
-                      <img src="../assets/image/default-user.png">
-                    </ion-avatar>
-                  </div>
-                  <div *ngIf="avatar !== undefine">
-                    <img src="{{ avatar }}">
-                  </div>
-                </ion-col>
-                <ion-col size="9">
-                  <ion-label style="padding-left: 5px">
-                    <ion-text color="medium">
-                      <div *ngIf=(!isLoaded)>
-                        <h1>
-                          <strong>Username</strong>
-                        </h1>
-                      </div>
-                      <div *ngIf=(isLoaded)>
-                        <h1>
-                          <strong>{{username}}</strong>
-                        </h1>
-                      </div>
-                    </ion-text>
-                    <ion-text color="medium">
-                      <div *ngIf=(!isLoaded)>
-                      <h3>
-                        Extra point: 0
-                      </h3>
-                    </div>
-                    <div *ngIf=(isLoaded)>
-                        <h3>
-                          Extra point: {{extraPoint}}
-                        </h3>
-                      </div>
-                    </ion-text>
-                    <ion-menu-toggle auto-hide="false">
-                      <a tappable (click)="goToEditProgile()">
-                        <ion-text color="medium">
-                          <ion-icon class="margin--2" name="contact"></ion-icon>
-                          <span>edit profile</span>
-                        </ion-text>
-                      </a>
-                      <ion-text color="medium"> | </ion-text>
-                      <a tappable (click)="logout()">
-                        <ion-text color="medium">
-                          <ion-icon class="margin--2" name="log-out"></ion-icon>
-                          <span>logout</span>
-                        </ion-text>
-                      </a>
-                    </ion-menu-toggle>
-                  </ion-label>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-toolbar>
-        </ion-item>
-        <!-- End profile user -->
-        <ion-content>
-          <ion-list>
-            <!-- <ion-header>
-              <ion-title>Menu</ion-title>
-            </ion-header> -->
-            <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-              <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
-                <ion-icon slot="start" [name]="p.icon"></ion-icon>
-                <ion-label>
-                  {{p.title}}
-                </ion-label>
-              </ion-item>
-            </ion-menu-toggle>
-          </ion-list>
-        </ion-content>
-      </ion-menu>
-      <ion-router-outlet main></ion-router-outlet>
-    </ion-split-pane>
-  </ion-app>
+  <ion-split-pane>
+    <ion-menu>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{p.title}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet main></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

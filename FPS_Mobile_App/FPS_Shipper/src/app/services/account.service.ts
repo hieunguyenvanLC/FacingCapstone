@@ -47,13 +47,10 @@ export class AccountService {
   }
 
   getDetailUser(){
-    return this.apiHttpService.get(this.constant.MAP_SHP +
+    return this.apiHttpService.get(this.constant.MAP_MEM +
                                    this.constant.MAP_API +
                                    this.constant.ACCOUNT +
-                                   "/shp/detail");
+                                   "/detail");
   }
 
-  logOut(){
-    return this.apiHttpService.get(this.constant.LOGOUT);
-  }
 }

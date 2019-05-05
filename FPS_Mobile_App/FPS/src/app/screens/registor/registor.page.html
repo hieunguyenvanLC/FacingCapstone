@@ -9,7 +9,7 @@
 
 <ion-content class="bodyApp">
   <ion-grid>
-    <ion-item-divider color="light">Basic Info</ion-item-divider>
+      <ion-item-divider color="light">Basic Info</ion-item-divider>
     <!-- Phone Number -->
     <ion-row>
       <ion-col size="12">
@@ -22,26 +22,26 @@
       <ion-col size="12" class="phoneRegion">
         <int-phone-prefix defaultCountry="vn" [(ngModel)]="phoneNumber"></int-phone-prefix>
       </ion-col>
-
+      
     </ion-row>
     <!-- End phonenumber-->
-
+    
     <!-- Password -->
     <ion-row>
-      <ion-col size="12">
-        <ion-label>
-          Password
-        </ion-label>
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12">
-        <ion-input type="password" placeholder="Password" value="" [(ngModel)]="password"></ion-input>
-
-      </ion-col>
-    </ion-row>
-    <!-- End password-->
+        <ion-col size="12">
+          <ion-label>
+            Password
+          </ion-label>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col size="12">
+            <ion-input type="password" placeholder="Password" value="" [(ngModel)]="password"></ion-input>
+  
+        </ion-col>
+      </ion-row>
+      <!-- End password-->
 
     <!-- Fullname -->
     <ion-row>
@@ -53,8 +53,8 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <ion-input type="text" placeholder="Fullname" value="" [(ngModel)]="fullname"></ion-input>
-
+          <ion-input type="text" placeholder="Fullname" value="" [(ngModel)]="fullname"></ion-input>
+       
       </ion-col>
     </ion-row>
     <!-- End Fullname-->
@@ -69,7 +69,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <ion-input type="text" placeholder="Paypal username" value="" [(ngModel)]="ppUsername"></ion-input>
+          <ion-input type="text" placeholder="Paypal username" value="" [(ngModel)]="ppUsername"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -81,81 +81,14 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <ion-input type="password" placeholder="Paypal password" value="" [(ngModel)]="ppPassword"></ion-input>
+          <ion-input type="password" placeholder="Paypal password" value="" [(ngModel)]="ppPassword"></ion-input>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-
-  <ion-item-divider color="light">Your face image </ion-item-divider>
-  <div padding class="item-center" *ngIf=(!face3)>
-    <div *ngIf="temp == 0">
-        <ion-button color="primary" (click)="presentAlertConfirm()">Take picture</ion-button>
-    </div>
-    <div *ngIf="temp == 1">
-        <ion-button color="primary" (click)="presentAlertConfirm_2()">Take picture</ion-button>
-    </div>
-    <div *ngIf="temp == 2">
-        <ion-button color="primary" (click)="presentAlertConfirm_3()">Take picture</ion-button>
-    </div>
+  <div padding class="item-center">
+    <ion-button color="primary" (click)="presentAlertConfirm()" >Take picture</ion-button>
   </div>
-  <!-- face 1 -->
-  <ion-item *ngIf=(face1)>
-    <div class="card-drop">
-      <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-      <img src="{{face1}}" class="card-drop__image" />
-      <div class="card-drop__content">
-        <h1 class="card-drop__content--title">
-          Front side
-        </h1>
-        <div class="card-drop__content--body">
-          <div class="card-drop__content--text">
-            <ion-button expand="block" (click)="TakePhotoForEdit('front')">Take Again</ion-button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ion-item>
-  <!-- end face 1 -->
-
-  <!-- face 2 -->
-  <ion-item *ngIf=(face2)>
-    <div class="card-drop">
-      <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-      <img src="{{face2}}" class="card-drop__image" />
-      <div class="card-drop__content">
-        <h1 class="card-drop__content--title">
-          Left side
-        </h1>
-        <div class="card-drop__content--body">
-          <div class="card-drop__content--text">
-            <ion-button expand="block" (click)="TakePhotoForEdit('left')">Take Again</ion-button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ion-item>
-  <!-- end face 2 -->
-
-  <!-- face 3 -->
-  <ion-item *ngIf=(face3)>
-    <div class="card-drop">
-      <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
-      <img src="{{face3}}" class="card-drop__image" />
-      <div class="card-drop__content">
-        <h1 class="card-drop__content--title">
-          Right side
-        </h1>
-        <div class="card-drop__content--body">
-          <div class="card-drop__content--text">
-            <ion-button expand="block" (click)="TakePhotoForEdit('right')">Take Again</ion-button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ion-item>
-  <!-- end face 3 -->
-  <!-- <img src="{{ myPhoto }}"> -->
+  <img src="{{ myPhoto }}">
   <div padding class="item-center">
     <ion-button color="primary" (click)="onSubmit()">Sign Up</ion-button>
   </div>
