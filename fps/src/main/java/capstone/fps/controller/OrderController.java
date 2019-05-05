@@ -1,18 +1,16 @@
 package capstone.fps.controller;
 
 import capstone.fps.common.Fix;
-import capstone.fps.model.AppData;
+import capstone.fps.common.Methods;
 import capstone.fps.model.MapFaceResult;
 import capstone.fps.model.Response;
 import capstone.fps.model.order.MdlOrder;
 import capstone.fps.service.OrderService;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -30,7 +28,7 @@ public class OrderController extends AbstractController {
     public String getOrderListAdm() {
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.getOrderList();
+            response = orderService.getOrderListAdm();
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -51,10 +49,10 @@ public class OrderController extends AbstractController {
     }
 
     @PutMapping(Fix.MAP_ADM + API)
-    public String editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, String buyerName, String buyerPhone, String shipperName, String shipperPhone, Integer status, Double latitude, Double longitude, Double totalPrice, Double shipperEarn, String customerDescription, String note) {
+    public String editOrderAdm(Integer orderId, MultipartFile buyerFace, MultipartFile bill, Integer status, String note, String customerDescription, String address, Double latitude, Double longitude) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.editOrderAdm(orderId, buyerFace, bill, buyerName, buyerPhone, shipperName, shipperPhone, status, latitude, longitude, totalPrice, shipperEarn, customerDescription, note);
+            response = orderService.editOrderAdm(gson, orderId, buyerFace, bill, status, note, customerDescription, address, latitude, longitude);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -64,12 +62,27 @@ public class OrderController extends AbstractController {
     // Web Admin - Order - End
 
 
+    // Mobile Member - Order History - Begin
+    @GetMapping(Fix.MAP_MEM + API + "/history")
+    public String getOrderListMem() {
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderListMem();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Order History - End
+
+
     // Mobile Member - Order Booking - Begin
     @PostMapping(Fix.MAP_MEM + API)
-    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance) {
+    public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance, String deviceToken, String buyerAddress) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.createOrder(longitude, latitude, customerDescription, proList, distance);
+            response = orderService.createOrder(longitude, latitude, customerDescription, proList, distance, deviceToken, buyerAddress);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -102,10 +115,10 @@ public class OrderController extends AbstractController {
     }
 
     @DeleteMapping(Fix.MAP_MEM + API)
-    public String cancelOrderMem(Integer orderId, Integer col, Integer row) {
+    public String cancelOrderMem(int orderId, double longitude, double latitude) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.cancelOrderMem(orderId, col, row);
+            response = orderService.cancelOrderMem(orderId, longitude, latitude);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -115,12 +128,54 @@ public class OrderController extends AbstractController {
     // Mobile Member - Order Booking - End
 
 
-    // Mobile Shipper - Queue - Begin
-    @DeleteMapping(Fix.MAP_SHP + API)
-    public String cancelQueue() {
+    // Mobile Member - Order Rating - Begin
+    @PutMapping(Fix.MAP_MEM + API + "/rate")
+    public String rateOrderMem(int orderId, int rating) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.stopQueue();
+            response = orderService.rateOrder(orderId, rating);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Member - Order Rating - End
+
+
+    // Mobile Shipper - Order History - Begin
+    @GetMapping(Fix.MAP_SHP + API + "/history")
+    public String getOrderListShp() {
+        Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderListShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @GetMapping(Fix.MAP_SHP + API + "/detail")
+    public String getOrderDetailShp(Integer orderId) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getOrderDetailMem(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+    // Mobile Shipper - Order History - End
+
+
+    // Mobile Shipper - Queue - Begin
+    @DeleteMapping(Fix.MAP_SHP + API)
+    public String cancelQueue(HttpServletRequest request) {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.stopQueue(request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -129,10 +184,10 @@ public class OrderController extends AbstractController {
     }
 
     @GetMapping(Fix.MAP_SHP + API)
-    public String startQueue(Double longitude, Double latitude) {
+    public String startQueue(double longitude, double latitude, String shipperToken, HttpServletRequest request) {
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.autoAssign(longitude, latitude);
+            response = orderService.autoAssign(gson, longitude, latitude, shipperToken, request);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
@@ -142,34 +197,51 @@ public class OrderController extends AbstractController {
     // Mobile Shipper - Queue - Begin
 
 
-    // Mobile Shipper - Checkout - Begin
-    @PutMapping(Fix.MAP_ANY + API + "/checkout")
-    public String checkout(Integer orderId, String face) {
+    // Mobile Shipper - Post Bill - Begin
+    @PutMapping(Fix.MAP_ANY + API + "/bill")
+    public String postBill(Integer orderId, String bill) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = orderService.checkout(gson, orderId, face);
+            response = orderService.postBill(orderId, bill);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
         }
         return gson.toJson(response);
     }
+    // Mobile Shipper - Post Bill - End
+
+    // Mobile Shipper - Checkout - Begin
+    @PutMapping(Fix.MAP_ANY + API + "/checkout")
+    public String checkout(Integer orderId, String face) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            Methods methods = new Methods();
+            byte[] faceBytes = methods.base64ToBytes(face);
+            response = orderService.checkout(gson, orderId, faceBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+    @PostMapping(Fix.MAP_ANY + "/python")
+    public String receiveFaceResult(@RequestBody MapFaceResult map) {
+        return orderService.receiveFaceResult(map.key, map.faceListStr);
+    }
     // Mobile Shipper - Checkout - End
 
 
-    @PostMapping(Fix.MAP_ANY + "/paypal")
-    public String receiveFaceTestResult(@RequestBody MapFaceResult map) {
-
-
-        System.out.println("------------------------------call API------------------------------" + map.getRep() + "---"+ map.getKey());
-        if(AppData.faceReceive == null){
-
-            AppData.faceReceive = new HashMap<>();
+    @GetMapping(Fix.MAP_ANY + API + "/notify")
+    public String testNotify(int orderId, String shipperToken) {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.testNotify(gson, orderId, shipperToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
         }
-        AppData.faceReceive.put(map.getKey(), map.getRep());
-//        orderService.receiveFaceTestResult(map.getRep());
-
-        return "Sucess call";
-
+        return gson.toJson(response);
     }
 }

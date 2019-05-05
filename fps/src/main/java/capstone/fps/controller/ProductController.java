@@ -66,17 +66,17 @@ public class ProductController extends AbstractController {
 
 
     // Mobile Member - Home - Begin
-    @GetMapping(Fix.MAP_ANY + API + "/best5")
-    public String getProBest5() {
-        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        try {
-            response = productService.getBest5();
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
-        }
-        return gson.toJson(response);
-    }
+//    @GetMapping(Fix.MAP_ANY + API + "/best5")
+//    public String getProBest5() {
+//        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        try {
+//            response = productService.getBest5();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+//        }
+//        return gson.toJson(response);
+//    }
     // Mobile Member - Home - End
 
 }

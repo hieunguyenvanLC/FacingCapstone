@@ -60,7 +60,6 @@ public class ProductService {
         frProduct.setPrice(price);
         frProduct.setProductImage(proImgBytes);
         frProduct.setDescription(valid.nullProof(description));
-        frProduct.setRatingCount(0);
         frProduct.setCreateTime(time);
         frProduct.setNote(valid.nullProof(note));
         frProduct.setStatus(Fix.PRO_NEW.index);
@@ -145,18 +144,18 @@ public class ProductService {
 
 
     // Mobile Member - Home - Begin
-    public Response<List<MdlProduct>> getBest5() {
-        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
-        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        List<FRProduct> frProducts = productRepository.findAllByStatusOrderByRatingDesc(Fix.PRO_NEW.index);
-        int size = Math.min(5, frProducts.size());
-        List<MdlProduct> mdlProducts = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            mdlProducts.add(mdlProductBuilder.buildBig(frProducts.get(i)));
-        }
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProducts);
-        return response;
-    }
+//    public Response<List<MdlProduct>> getBest5() {
+//        MdlProductBuilder mdlProductBuilder = new MdlProductBuilder();
+//        Response<List<MdlProduct>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+//        List<FRProduct> frProducts = productRepository.findAllByStatusOrderByRatingDesc(Fix.PRO_NEW.index);
+//        int size = Math.min(5, frProducts.size());
+//        List<MdlProduct> mdlProducts = new ArrayList<>();
+//        for (int i = 0; i < size; i++) {
+//            mdlProducts.add(mdlProductBuilder.buildBig(frProducts.get(i)));
+//        }
+//        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlProducts);
+//        return response;
+//    }
     // Mobile Member - Home - End
 
 }

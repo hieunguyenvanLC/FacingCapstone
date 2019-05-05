@@ -49,7 +49,7 @@ public class StoreService {
             response.setResponse(Response.STATUS_FAIL, "Cant find dist");
             return response;
         }
-        phone = valid.checkPhone(phone);
+        phone = valid.checkStorePhone(phone);
         if (phone == null) {
             response.setResponse(Response.STATUS_FAIL, "Please enter valid phone number");
             return response;
@@ -63,8 +63,6 @@ public class StoreService {
         frStore.setLongitude(longitude);
         frStore.setLatitude(latitude);
         frStore.setStoreImage(methods.multipartToBytes(storeImg));
-        frStore.setRating(0D);
-        frStore.setRatingCount(0);
         frStore.setCreateTime(time);
         frStore.setNote(valid.nullProof(note));
         frStore.setStatus(Fix.STO_NEW.index);
@@ -100,7 +98,7 @@ public class StoreService {
         if (!methods.nullOrSpace(name)) {
             frStore.setStoreName(name);
         }
-        phone = valid.checkPhone(phone);
+        phone = valid.checkStorePhone(phone);
         if (phone != null) {
             frStore.setPhone(phone);
         }
@@ -157,7 +155,7 @@ public class StoreService {
     public Response<List<MdlStore>> getStoreNearby(double longitude, double latitude) {
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<List<MdlStore>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        double dis = 5 * Fix.DEGREE_PER_KM;
+        double dis = 15 * Fix.DEGREE_PER_KM;
         double minLon = longitude - dis;
         double maxLon = longitude + dis;
         double minLat = latitude - dis;

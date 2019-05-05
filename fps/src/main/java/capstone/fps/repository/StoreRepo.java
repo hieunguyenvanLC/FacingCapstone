@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoreRepo extends JpaRepository<FRStore,Integer> {
+    public int countByStatus(int status);
+
+    public int countByStatusAndCreateTimeGreaterThanAndCreateTimeLessThan(int status, long start, long end);
 }

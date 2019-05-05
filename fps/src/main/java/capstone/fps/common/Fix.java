@@ -16,10 +16,15 @@ public interface Fix {
     String DEF_CURRENCY = "USD";
     double DEF_TAX_RATE = 0.1D;
     String LOCAL_URL = "http://localhost:8080/";
-//    String PAY_SERVER_URL = "http://192.168.100.99:8084/";
-    String PAY_SERVER_URL = "http://192.168.43.244:8084/";
+    String PAY_SERVER_URL = "http://192.168.100.126:8084/";
+
+    int shipperRange = 15;// * 1.1km
 
 
+    String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+    String FCM_KEY = "AAAAQE2HpyA:APA91bHSMzhajeXcYtWn6iE83V_SYX_CSqAP57zUxMLbrFmwToKsxpW8bsBL6pOX05tXJQeVOBziYmPqguQF1NFRqU03Wy8qdwbh4gYsqNmJzVwfsNhK5Uadnvbs_-KiB8mX_UV_o0oH";
+
+    String FACE_RESULT_TAG = "<result>";
 
 
 //    Path IMG_DIR_PATH = Paths.get("src/main/resources/static/img/").toAbsolutePath().normalize();
@@ -52,7 +57,7 @@ public interface Fix {
     /* Order status */
     Stat ORD_NEW = new Stat(1, "new");
     Stat ORD_ASS = new Stat(2, "assigned");
-    Stat ORD_BUY = new Stat(3, "bought");
+    Stat ORD_BUY = new Stat(3, "on delivery");
     Stat ORD_COM = new Stat(4, "done");
     Stat ORD_CXL = new Stat(5, "cancel");
     Stat[] ORD_STAT_LIST = {ORD_NEW, ORD_ASS, ORD_BUY, ORD_COM, ORD_CXL};
@@ -76,6 +81,7 @@ public interface Fix {
     Stat STO_NEW = new Stat(1, "new");
     Stat STO_HID = new Stat(2, "hidden");
     Stat[] STO_STAT_LIST = {STO_NEW, STO_HID};
+
 
 
 }

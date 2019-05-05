@@ -36,9 +36,9 @@
                     <div class="info d-flex align-items-center">
                         <div class="content">
                             <div class="logo">
-                                <h1>Dashboard</h1>
+                                <h1>FPS</h1>
                             </div>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                            <p>Web for Admin</p>
                         </div>
                     </div>
                 </div>
@@ -92,9 +92,11 @@
 <script src="/js/const_util.js"></script>
 <script src="/js/dash.js"></script>
 <script>
-    var lblMsg = document.getElementById("lblMsg");
 
+    var lblMsg = document.getElementById("lblMsg");
     var input = document.getElementById("txtPass");
+
+    sessionStorage.removeItem("profile");
     input.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -123,7 +125,7 @@
 
         $.ajax({
             type: 'POST',
-            url: fpsBackEnd + "/login",
+            url: fpsBackEnd + "/sign_in",
             data: {phoneNumber: txtPhone.val(), password: txtPassword.val()},
             dataType: 'json',
             success: function (response) {
@@ -138,7 +140,7 @@
                 //     }
                 // }
                 if (roleStr === ROL_ADM) {
-                    document.location.href = "/adm/";
+                    document.location.href = "/adm/order";
                 } else if (roleStr === ROL_MEM || roleStr === ROL_SHP) {
                     fpsShowMsg(lblMsg, "Unable to access")
                 } else if (roleStr === "Error") {

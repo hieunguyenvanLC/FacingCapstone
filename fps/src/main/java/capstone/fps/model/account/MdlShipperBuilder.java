@@ -6,9 +6,8 @@ import capstone.fps.entity.FRShipper;
 
 public class MdlShipperBuilder {
 
-    public MdlShipper buildFull(FRAccount frAccount){
+    public MdlShipper buildFull(FRAccount frAccount, FRShipper frShipper) {
         Methods methods = new Methods();
-        FRShipper frShipper = frAccount.getShipper();
         MdlShipper mdlShipper = new MdlShipper();
 
         mdlShipper.id = frAccount.getId();
@@ -20,7 +19,7 @@ public class MdlShipperBuilder {
         mdlShipper.userImage = methods.bytesToBase64(frAccount.getUserImage());
         mdlShipper.natId = frAccount.getNatId();
         mdlShipper.natDate = frAccount.getNatDate();
-        mdlShipper.dateOfBirth = frAccount.getDateOfBirth();
+        mdlShipper.dateOfBirth = frAccount.getDob();
         mdlShipper.createTime = frAccount.getCreateTime();
         mdlShipper.updateTime = frAccount.getUpdateTime();
         mdlShipper.deleteTime = frAccount.getDeleteTime();
@@ -30,17 +29,19 @@ public class MdlShipperBuilder {
         mdlShipper.bikeRegId = frShipper.getBikeRegId();
         mdlShipper.bikeRegDate = frShipper.getBikeRegDate();
         mdlShipper.introduce = frShipper.getIntroduce();
-        mdlShipper.natFront = methods.bytesToBase64(frShipper.getNationalIdFrontImage());
-        mdlShipper.natBack = methods.bytesToBase64(frShipper.getNationalIdBackImage());
+        mdlShipper.natFront = methods.bytesToBase64(frShipper.getNatIdFrontImage());
+        mdlShipper.natBack = methods.bytesToBase64(frShipper.getNatIdBackImage());
         mdlShipper.sumRevenue = frShipper.getSumRevenue();
         mdlShipper.sourceId = frShipper.getSource().getId();
         mdlShipper.bikeRegFront = methods.bytesToBase64(frShipper.getBikeRegFront());
-        mdlShipper.bikeRegBack =  methods.bytesToBase64(frShipper.getBikeRegBack());
+        mdlShipper.bikeRegBack = methods.bytesToBase64(frShipper.getBikeRegBack());
         mdlShipper.priceLevelId = frShipper.getPriceLevel().getId();
+        mdlShipper.rating = frShipper.getRating();
+        mdlShipper.orderCount = frShipper.getOrderCount();
         return mdlShipper;
     }
 
-    public MdlShipper buildTableRowAdm(FRAccount frAccount){
+    public MdlShipper buildTableRowAdm(FRAccount frAccount) {
         FRShipper frShipper = frAccount.getShipper();
         MdlShipper mdlShipper = new MdlShipper();
         mdlShipper.id = frAccount.getId();

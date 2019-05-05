@@ -1,10 +1,7 @@
 package capstone.fps.config;
 
 import capstone.fps.common.Fix;
-import capstone.fps.entity.FRAccount;
 import capstone.fps.model.Response;
-import capstone.fps.model.account.MdlAccount;
-import capstone.fps.repository.AccountRepo;
 import capstone.fps.service.AccountService;
 import capstone.fps.service.LoginService;
 import com.google.gson.Gson;
@@ -32,16 +29,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.stereotype.Component;
 
 @RestController
 @Configuration
@@ -50,7 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
     private AccountService accountService;
-
 
     @Autowired
     public WebSecurityConfig(LoginService loginService, AccountService accountService) {
@@ -89,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/loginPage")
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/sign_in")
                 .usernameParameter("phoneNumber")
                 .passwordParameter("password")
                 .permitAll()
@@ -102,7 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/sign_out", "GET"))
                 .permitAll()
-                .logoutSuccessUrl("/loginPage")
+                .logoutSuccessUrl("/logout_success")
                 .and()
                 .cors().and().rememberMe();
 
@@ -111,11 +108,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler loginSuccessHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                 List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) authentication.getAuthorities();
                 String role = authorities.get(0).getAuthority();
-                Response<String> responseObj = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-                responseObj.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
+                Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+                response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, role);
 //                String phoneNumber = authentication.getName();
 
 //                FRAccount account = accountService.findByPhone(phoneNumber);
@@ -145,7 +142,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                });
 //                t.start();
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setDateFormat("dd/MM/yyyy HH:mm").create();
-                response.getWriter().append(gson.toJson(responseObj));
+                httpServletResponse.getWriter().append(gson.toJson(response));
 //                System.out.println("Result: " + result.toString());
             }
         };

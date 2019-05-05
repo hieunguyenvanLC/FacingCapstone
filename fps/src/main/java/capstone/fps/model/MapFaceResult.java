@@ -1,28 +1,18 @@
 package capstone.fps.model;
 
 
-import com.google.gson.annotations.Expose;
-import com.sun.xml.internal.ws.developer.Serialization;
-
-
 public class MapFaceResult {
 
-    String rep;
-    String key;
+    public String key;
+    public String faceListStr;
 
     public MapFaceResult() {
     }
 
-    public MapFaceResult(String rep, String key) {
-        this.rep = rep;
+    public MapFaceResult(String key, String faceListStr) {
         this.key = key;
+        this.faceListStr = faceListStr;
     }
-
-    public String getRep() {
-        return rep;
-    }
-
-
 
     public String getKey() {
         return key;
@@ -30,5 +20,13 @@ public class MapFaceResult {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getFaceListStr() {
+        return faceListStr;
+    }
+
+    public void setFaceListStr(String faceListStr) {
+        this.faceListStr = faceListStr;
     }
 }

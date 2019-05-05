@@ -32,7 +32,7 @@ public class OrderStat {
         return storeLat;
     }
 
-    public Integer getLockBy() {
+    public int getLockBy() {
         return lockBy;
     }
 

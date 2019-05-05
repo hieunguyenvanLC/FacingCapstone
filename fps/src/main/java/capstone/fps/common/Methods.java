@@ -1,6 +1,9 @@
 package capstone.fps.common;
 
 import capstone.fps.entity.FRAccount;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -10,10 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
@@ -42,7 +45,10 @@ public final class Methods {
         return BCrypt.hashpw(input, salt);
     }
 
-    public int getAge(long time) {
+    public int getAge(Long time) {
+        if (time == null) {
+            return -1;
+        }
         Calendar firstCal = GregorianCalendar.getInstance();
         Calendar secondCal = GregorianCalendar.getInstance();
         firstCal.setTimeInMillis(time);
@@ -122,26 +128,41 @@ public final class Methods {
 //        return price;
 //    }
 
-
-    public double calculateShpEarn(double dis) {
-        double price = 14000;
-        int kms = (int) Math.ceil(dis);
-        if (kms > 0) {
-            price += kms * 1000;
+    public Double calculateShpEarn(double dis) {
+        double price;
+        if (dis > 10D) {
+            price = 29000 + (dis - 10) * 3000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
-        kms -= 5;
-        if (kms > 0) {
-            price += kms * 1000;
+        if (dis > 5D) {
+            price = 19000 + (dis - 5) * 2000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
-        kms -= 5;
-        if (kms > 0) {
-            price += kms * 1000;
+        if (dis > 0) {
+            price = 19000 + dis * 2000d;
+            return Math.ceil(price / 1000d) * 1000;
         }
-        return price;
+        return null;
     }
 
+//    public double calculateShpEarn(double dis) {
+//        double price = 14000d;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        dis -= 5;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        dis -= 5;
+//        if (dis > 0) {
+//            price += dis * 1000d;
+//        }
+//        return Math.ceil(price / 1000d) * 1000d;
+//    }
+
     // Converting InputStream to String
-    public static String readStream(InputStream in) {
+    public String readStream(InputStream in) {
         BufferedReader reader = null;
         StringBuilder response = new StringBuilder();
         try {
@@ -190,5 +211,55 @@ public final class Methods {
             }
         };
         Files.walkFileTree(deleteDirPath, visitor);
+    }
+
+
+    public String sendHttpRequest(String url, Map<String, String> header, JsonObject body) {
+        URL urlObj;
+        HttpURLConnection urlConnection;
+
+        String method = "POST";
+        try {
+            urlObj = new URL(url);
+            urlConnection = (HttpURLConnection) urlObj.openConnection();
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+            urlConnection.setRequestMethod(method);
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(body.toString().getBytes("UTF-8"));
+            os.close();
+
+            urlConnection.connect();
+            int responseCode = urlConnection.getResponseCode();
+//            if (responseCode == HttpURLConnection.HTTP_OK) {
+//
+//            }
+            return readStream(urlConnection.getInputStream());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "fail";
+    }
+
+
+    public Long getTomorrow() {
+        Calendar now = new GregorianCalendar();
+        now.add(Calendar.DAY_OF_YEAR, 1);
+        now.set(Calendar.HOUR_OF_DAY, 23);
+        now.set(Calendar.MINUTE, 1);
+        return now.getTimeInMillis();
+    }
+
+
+    public String basicEncrypt(String input) {
+        Random ran = new Random();
+        String s = ran.nextInt() + "ấ" + input + "ấ" + ran.nextInt();
+        return StringUtils.newStringUtf8(Base64.encodeBase64(s.getBytes(), false));
     }
 }

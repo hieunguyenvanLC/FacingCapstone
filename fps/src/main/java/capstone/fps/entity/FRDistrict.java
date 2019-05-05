@@ -20,8 +20,8 @@ public class FRDistrict {
     @JoinColumn(name = "FR_City_id")
     private FRCity city;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "district")
-    private Collection<FROrder> orderCollection;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "district")
+//    private Collection<FROrder> orderCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "district")
     private Collection<FRStore> storeCollection;
 

@@ -2,8 +2,6 @@ package capstone.fps.entity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
@@ -30,17 +28,18 @@ public class FROrder {
     private String orderCode;
     @Column(name = "total_price")
     private Double totalPrice;
-    @Column(name = "book_time")
-    private Long bookTime;
+    @Column(name = "taken_time")
+    private Long assignTime;
+    @Column(name = "buy_time")
+    private Long buyTime;
     @Column(name = "receive_time")
     private Long receiveTime;
     @Column(name = "shipper_earn")
     private Double shipperEarn;
+    @Column(name = "price_level")
+    private Double priceLevel;
     @Column(name = "ship_address", length = 300)
     private String shipAddress;
-    @ManyToOne
-    @JoinColumn(name = "FR_District_id")
-    private FRDistrict district;
     @Column(name = "longitude")
     private Double longitude;
     @Column(name = "latitude")
@@ -60,6 +59,12 @@ public class FROrder {
     @ManyToOne
     @JoinColumn(name = "editor_id")
     private FRAccount editor;
+    @Column(name = "buyer_token", length = 300)
+    private String buyerToken;
+    @Column(name = "shipper_token", length = 300)
+    private String shipperToken;
+    @Column(name = "rating")
+    private Integer rating;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Collection<FROrderDetail> orderDetailCollection;
@@ -107,12 +112,12 @@ public class FROrder {
         this.totalPrice = totalPrice;
     }
 
-    public Long getBookTime() {
-        return bookTime;
+    public Long getBuyTime() {
+        return buyTime;
     }
 
-    public void setBookTime(Long bookTime) {
-        this.bookTime = bookTime;
+    public void setBuyTime(Long bookTime) {
+        this.buyTime = bookTime;
     }
 
     public Long getReceiveTime() {
@@ -137,14 +142,6 @@ public class FROrder {
 
     public void setShipAddress(String shipAddress) {
         this.shipAddress = shipAddress;
-    }
-
-    public FRDistrict getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(FRDistrict district) {
-        this.district = district;
     }
 
     public Double getLongitude() {
@@ -233,5 +230,45 @@ public class FROrder {
 
     public void setBuyerFace(byte[] buyerFace) {
         this.buyerFace = buyerFace;
+    }
+
+    public String getBuyerToken() {
+        return buyerToken;
+    }
+
+    public void setBuyerToken(String buyerToken) {
+        this.buyerToken = buyerToken;
+    }
+
+    public Double getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(Double priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
+    public String getShipperToken() {
+        return shipperToken;
+    }
+
+    public void setShipperToken(String shipperToken) {
+        this.shipperToken = shipperToken;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public Long getAssignTime() {
+        return assignTime;
+    }
+
+    public void setAssignTime(Long assignTime) {
+        this.assignTime = assignTime;
     }
 }

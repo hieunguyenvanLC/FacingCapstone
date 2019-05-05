@@ -20,9 +20,20 @@ public class FRPriceLevel {
     private String description;
     @Column(name = "price")
     private Double price;
+    @Column(name = "order_count_require")
+    private Integer orderReq;
+    @Column(name = "rating_require")
+    private Double rateReq;
+    @OneToOne
+    @JoinColumn(name = "next_level")
+    private FRPriceLevel nextLevel;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "nextLevel")
+    private FRPriceLevel previousLevel;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "priceLevel")
     private Collection<FRShipper> shipperCollection;
+
+
 
     public FRPriceLevel() {
     }
@@ -57,5 +68,37 @@ public class FRPriceLevel {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Integer getOrderReq() {
+        return orderReq;
+    }
+
+    public void setOrderReq(Integer orderReq) {
+        this.orderReq = orderReq;
+    }
+
+    public Double getRateReq() {
+        return rateReq;
+    }
+
+    public void setRateReq(Double rateReq) {
+        this.rateReq = rateReq;
+    }
+
+    public FRPriceLevel getNextLevel() {
+        return nextLevel;
+    }
+
+    public void setNextLevel(FRPriceLevel nextLevel) {
+        this.nextLevel = nextLevel;
+    }
+
+    public FRPriceLevel getPreviousLevel() {
+        return previousLevel;
+    }
+
+    public void setPreviousLevel(FRPriceLevel previousLevel) {
+        this.previousLevel = previousLevel;
     }
 }

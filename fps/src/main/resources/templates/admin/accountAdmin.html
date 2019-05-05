@@ -9,7 +9,7 @@
         <div class="flex-grow-1">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link" href="/adm/account/mem">User</a>
+                    <a class="nav-link" href="/adm/account/mem">Customer</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/adm/account/shp">Shipper</a>
@@ -32,9 +32,6 @@
                             Add new
                         </button>
                     </div>
-                    <div>
-                        <button id="deactive-sel" class="btn btn-danger">Deactive (0)</button>
-                    </div>
                 </div>
 
                 <table id="account-table" class="table">
@@ -45,7 +42,6 @@
                         <th>Email</th>
                         <th>Status</th>
                         <th>Note</th>
-                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="tblBodyAcc">
@@ -59,11 +55,10 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 id="exampleModalLabel" class="modal-title"></h4>
-                                <button id="btnCloseModal" type="button" data-dismiss="modal" aria-label="Close"
-                                        class="close"><span aria-hidden="true">×</span></button>
+                                <button type="button" data-dismiss="modal" aria-label="Close" class="close"
+                                        id="btnCloseModal"><span aria-hidden="true">×</span></button>
                             </div>
                             <div class="modal-body">
-                                <!--<p>Lorem ipsum dolor sit amet consectetur.</p>-->
                                 <div class="form-group">
                                     <label>Username</label>
                                     <input type="text" placeholder="Username" class="form-control" id="txtUsername">
@@ -97,42 +92,15 @@
                                     <div class="input-group date-picker" data-provider="dpNatDate">
                                         <input type="date" class="form-control" id="dpNatDate">
                                     </div>
-                                    <!--<div class="row row-eq-height">-->
-                                    <!--<div class="col-sm padding-0">-->
-                                    <!--<label>Front</label>-->
-                                    <!--<div class="text-center">-->
-                                    <!--<img src="/img/card.png" class="card-img" alt="Front">-->
-                                    <!--</div>-->
-                                    <!--&lt;!&ndash;<label for="exampleFormControlFile1">Example file input</label>&ndash;&gt;-->
-                                    <!--<input type="file" class="form-control-file" id="imgNatFront">-->
-                                    <!--</div>-->
-                                    <!--<div class="col-sm padding-0">-->
-                                    <!--<label>Back</label>-->
-                                    <!--<div class="text-center">-->
-                                    <!--<img src="/img/card.png" class="card-img" alt="Back">-->
-                                    <!--</div>-->
-                                    <!--&lt;!&ndash;<label for="exampleFormControlFile1">Example file input</label>&ndash;&gt;-->
-                                    <!--<input type="file" class="form-control-file" id="imgNatBack">-->
-                                    <!--</div>-->
-                                    <!--</div>-->
+                                </div>
+                                <div id="divStatus" class="form-group">
+                                    <label>Status</label>
+                                    <select id="cbbStatus" class="form-control"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label id="txtCreate">Create</label>
-                                    <label id="txtUpdate">Note</label>
-                                    <label id="txtDelete">Note</label>
-                                    <label id="txtEditor">Note</label>
                                     <label>Note</label>
                                     <input type="text" placeholder="Note" class="form-control" id="txtNote">
                                 </div>
-                                <!--<form>-->
-                                <!--<div class="form-group">-->
-                                <!--<div class="text-center">-->
-                                <!--<img src="/img/avatar-1.jpg" class="card-img" alt="Responsive image">-->
-                                <!--</div>-->
-                                <!--&lt;!&ndash;<label for="exampleFormControlFile1">Example file input</label>&ndash;&gt;-->
-                                <!--<input type="file" class="form-control-file" id="exampleFormControlFile1">-->
-                                <!--</div>-->
-                                <!--</form>-->
                                 <div class="form-group">
                                     <label id="lblDisplayMsg" style="display: none;color: red"></label>
                                 </div>
@@ -151,12 +119,16 @@
 
     <script>
         var admList;
-        var accId = -1;
-        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account";
+        var accEdit;
+        var accEditPos;
+        var fpsApiAcc = fpsBackEnd + MAP_ADM + MAP_API + "/account/adm";
 
+        var divPass = document.getElementById("divPass");
+        var divStatus = document.getElementById("divStatus");
+        var lblMsg = document.getElementById("lblDisplayMsg");
+        var btnCloseModal = document.getElementById("btnCloseModal");
 
         var txtUsername = document.getElementById("txtUsername");
-        var divPass = document.getElementById("divPass");
         var txtPass = document.getElementById("txtPass");
         var txtFullName = document.getElementById("txtFullName");
         var dpDob = document.getElementById("dpDob");
@@ -164,41 +136,26 @@
         var txtNatId = document.getElementById("txtNatId");
         var dpNatDate = document.getElementById("dpNatDate");
         var txtNote = document.getElementById("txtNote");
-        var txtCreate = document.getElementById("txtCreate");
-        var txtUpdate = document.getElementById("txtUpdate");
-        var txtDelete = document.getElementById("txtDelete");
-        var txtEditor = document.getElementById("txtEditor");
 
-        var lblMsg = document.getElementById("lblDisplayMsg");
         function fpsFetchData() {
             getAdmList();
+            fpsSetCbbStatus(cbbStatus, accStatList);
         }
 
         function drawTblAcc() {
+            btnCloseModal.click();
             var list = admList;
+            $('#account-table').DataTable().destroy();
             var accountTable = $('#account-table').DataTable();
-            accountTable.destroy();
             accountTable.clear().draw();
             for (var i = 0; i < list.length; i++) {
                 var adm = list[i];
-                if (typeof adm.email === 'undefined') {
-                    adm.email = "";
-                }
-                var statStr = ACC_NEW.msg;
-                var btnOnOff = '<button class="btn btn btn-danger" style="margin-top: 0;margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-radius: 0px" onclick="getTokenDel(' + adm.id + ')">👎</button>';
-
-                if (adm.status === ACC_BAN.index) {
-                    statStr = ACC_BAN.msg;
-                    btnOnOff = '<button class="btn btn btn-success" style="margin-top: 0;margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-radius: 0px" onclick="getTokenActivate(' + adm.id + ')">👍</button>';
-                }
-
                 accountTable.row.add([
                     '<span data-toggle="modal" data-target="#add-edit-modal" onclick="loadEditForm(' + i + ')" >' + adm.phone + '</span>',
                     adm.name,
                     adm.email,
-                    statStr,
+                    fpsGetStatMsg(accStatList, adm.status),
                     adm.note,
-                    btnOnOff
                 ]).draw();
             }
         }
@@ -207,7 +164,7 @@
             document.getElementById("btnCloseModal").click();
             $.ajax({
                 type: 'GET',
-                url: fpsApiAcc + "/adm",
+                url: fpsApiAcc,
                 data: {},
                 dataType: 'json',
                 success: function (response) {
@@ -222,95 +179,64 @@
 
 
         function loadAddForm() {
-            accId = -1;
-            txtUsername.value = "";
             txtUsername.disabled = false;
-            txtPass.value = "";
             divPass.style.display = 'block';
+            divStatus.style.display = 'none';
+            fpsHideMsg(lblMsg);
+
+            accEditPos = -1;
+            txtUsername.value = "";
+            txtPass.value = "";
             txtFullName.value = "";
-            dpDob.value = "";
+            dpDob.valueAsNumber = "";
             txtEmail.value = "";
             txtNatId.value = "";
             dpNatDate.value = "";
             txtNote.value = "";
-            txtCreate.style.display = 'none';
-            txtUpdate.style.display = 'none';
-            txtDelete.style.display = 'none';
-            txtEditor.style.display = 'none';
-            fpsHideMsg(lblMsg);
         }
 
         function loadEditForm(pos) {
-            var acc = admList[pos];
-            $("#txtUsername").val(acc.phone);
-            $("#txtFullName").val(acc.name);
-            $("#dpDob")[0].valueAsNumber = acc.dob;
-
-            $("#txtEmail").val(acc.email);
-            $("#txtNatId").val(acc.natId);
-            $("#dpNatDate")[0].valueAsNumber = acc.natDate;
-
-            var createTime = new Date(acc.createTime);
-            $("#txtCreate").html("Create: " + fpsFormatDate(createTime) + " " + createTime.toLocaleTimeString());
-            document.getElementById("txtCreate").style.display = 'block';
-            if (typeof acc.updateTime === 'undefined') {
-                document.getElementById("txtUpdate").style.display = 'none';
-            } else {
-                var updateTime = new Date(acc.updateTime);
-                $("#txtUpdate").html("Update: " + fpsFormatDate(updateTime) + " " + updateTime.toLocaleTimeString());
-                document.getElementById("txtUpdate").style.display = 'block';
-            }
-            // console.log(acc.deleteTime);
-            if (typeof acc.deleteTime === 'undefined') {
-                document.getElementById("txtDelete").style.display = 'none';
-            } else {
-                var deleteTime = new Date(acc.deleteTime);
-                $("#txtDelete").html("Deactivate: " + fpsFormatDate(deleteTime) + " " + deleteTime.toLocaleTimeString());
-                document.getElementById("txtDelete").style.display = 'block';
-            }
-            if (typeof acc.editor === 'undefined') {
-                document.getElementById("txtEditor").style.display = 'none';
-            } else {
-                $("#txtEditor").html("Editor: " + acc.editor);
-                document.getElementById("txtEditor").style.display = 'block';
-            }
-
-            $("#txtNote").val(acc.note);
-            accId = acc.id;
-            document.getElementById("txtUsername").disabled = true;
-            document.getElementById("divPass").style.display = 'none';
+            txtUsername.disabled = true;
+            divPass.style.display = 'none';
+            divStatus.style.display = 'block';
             fpsHideMsg(lblMsg);
+
+            accEditPos = pos;
+            accEdit = admList[pos];
+            txtUsername.value = accEdit.phone;
+            txtPass.value = "";
+            txtFullName.value = accEdit.name;
+            dpDob.valueAsNumber = accEdit.dob;
+            txtEmail.value = accEdit.email;
+            txtNatId.value = accEdit.natId;
+            dpNatDate.valueAsNumber = accEdit.natDate;
+            txtNote.value = accEdit.note;
         }
 
         function checkAccId() {
-            if (accId > 0) {
-                sendEdit();
-            } else {
+            if (accEditPos < 0) {
                 sendAdd();
+            } else {
+                sendEdit();
             }
         }
 
         function sendEdit() {
-            var username = $("#txtUsername").val();
-            var pass = $("#txtPass").val();
-            var fullName = $("#txtFullName").val();
-            var dob = $("#dpDob")[0].valueAsNumber;
-            var email = $("#txtEmail").val();
-            var natId = $("#txtNatId").val();
-            var natDate = $("#dpNatDate")[0].valueAsNumber;
-            var note = $("#txtNote").val();
+            var formData = new FormData();
+            fpsFormAppend(formData, "accId", accEdit.id);
+            fpsFormAppend2(formData, "name", txtFullName.value, accEdit.name);
+            fpsFormAppend2(formData, "dob", dpDob.valueAsNumber, accEdit.dob);
+            fpsFormAppend2(formData, "email", txtEmail.value, accEdit.email);
+            fpsFormAppend2(formData, "note", txtNote.value, accEdit.note);
+            fpsFormAppend2(formData, "status", cbbStatus.value, accEdit.status);
+            fpsFormAppend2(formData, "natId", txtNatId.value, accEdit.natId);
+            fpsFormAppend2(formData, "natDate", dpNatDate.valueAsNumber, accEdit.natDate);
             $.ajax({
                 type: 'PUT',
-                url: fpsApiAcc + "/adm",
-                data: {
-                    accId: accId,
-                    fullName: fullName,
-                    email: email,
-                    natId: natId,
-                    natDate: natDate,
-                    dob: dob,
-                    note: note
-                },
+                url: fpsApiAcc,
+                data: formData,
+                processData: false,
+                contentType: false,
                 dataType: 'json',
                 success: function (response) {
                     if (response.status_code === RESP_SUCCESS) {
@@ -320,34 +246,27 @@
                     }
                 },
                 error: function (response) {
-                    alert("Unable to Add");
+                    alert("Unable to Edit");
                 }
             })
         }
 
         function sendAdd() {
-            var username = $("#txtUsername").val();
-            var pass = $("#txtPass").val();
-            var fullName = $("#txtFullName").val();
-            var dob = $("#dpDob")[0].valueAsNumber;
-            var email = $("#txtEmail").val();
-            var natId = $("#txtNatId").val();
-            var natDate = $("#dpNatDate")[0].valueAsNumber;
-            var note = $("#txtNote").val();
-
+            var formData = new FormData();
+            fpsFormAppend(formData, "username", txtUsername.value);
+            fpsFormAppend(formData, "password", txtPass.value);
+            fpsFormAppend(formData, "name", txtFullName.value);
+            fpsFormAppend(formData, "dob", dpDob.valueAsNumber);
+            fpsFormAppend(formData, "email", txtEmail.value);
+            fpsFormAppend(formData, "note", txtNote.value);
+            fpsFormAppend(formData, "natId", txtNatId.value);
+            fpsFormAppend(formData, "natDate", dpNatDate.valueAsNumber);
             $.ajax({
                 type: 'POST',
-                url: fpsApiAcc + "/adm",
-                data: {
-                    username: username,
-                    password: pass,
-                    fullName: fullName,
-                    email: email,
-                    natId: natId,
-                    natDate: natDate,
-                    dob: dob,
-                    note: note
-                },
+                url: fpsApiAcc,
+                data: formData,
+                processData: false,
+                contentType: false,
                 dataType: 'json',
                 success: function (response) {
                     if (response.status_code === RESP_SUCCESS) {
@@ -361,40 +280,6 @@
                 }
             })
         }
-
-
-        function sendDel(accId) {
-            var reason = "";
-            $.ajax({
-                type: 'DELETE',
-                url: fpsApiAcc,
-                data: {accountId: accId, reason: reason},
-                dataType: 'json',
-                success: function (response) {
-                    getAdmList();
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            })
-        }
-
-        function sendActivate(accId) {
-            var reason = "";
-            $.ajax({
-                type: 'PUT',
-                url: fpsApiAcc + "/activate",
-                data: {accountId: accId, reason: reason},
-                dataType: 'json',
-                success: function (response) {
-                    getAdmList();
-                },
-                error: function (response) {
-                    console.log(response);
-                }
-            })
-        }
-
     </script>
 
 </div>

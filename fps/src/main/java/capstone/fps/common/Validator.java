@@ -45,6 +45,19 @@ public class Validator {
         }
     }
 
+    public String checkStorePhone(String phone) {
+        try {
+            String s = phone.replaceAll("\\s+", " ").trim();
+            if (!s.matches("^([0-9] *){9,13}+$")) {
+                return null;
+            }
+            return s;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
     public String checkNumber(String input) {
         try {
             String s = input.replaceAll("\\s", "");

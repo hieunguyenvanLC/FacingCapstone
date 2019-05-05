@@ -28,12 +28,10 @@ public class FRStore {
     private Double latitude;
     @Column(name = "store_image")
     private byte[] storeImage;
-    @Column(name = "rating")
-    private Double rating;
+
     @Column(name = "phone")
     private String phone;
-    @Column(name = "rating_count")
-    private Integer ratingCount;
+
     @Column(name = "create_time")
     private Long createTime;
     @Column(name = "update_time")
@@ -48,8 +46,6 @@ public class FRStore {
     @JoinColumn(name = "editor_id")
     private FRAccount editor;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<FRSchedule> scheduleCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<FRProduct> productCollection;
 
@@ -110,22 +106,6 @@ public class FRStore {
 
     public void setStoreImage(byte[] storeImage) {
         this.storeImage = storeImage;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public Integer getRatingCount() {
-        return ratingCount;
-    }
-
-    public void setRatingCount(Integer ratingCount) {
-        this.ratingCount = ratingCount;
     }
 
     public Long getCreateTime() {

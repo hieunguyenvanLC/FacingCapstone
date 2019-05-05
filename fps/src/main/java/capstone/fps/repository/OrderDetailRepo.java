@@ -11,4 +11,6 @@ import java.util.List;
 public interface OrderDetailRepo extends JpaRepository<FROrderDetail, Integer> {
 
     List<FROrderDetail> findAllByOrder(FROrder order);
+
+    FROrderDetail findFirstByOrder(FROrder frOrder);
 }
