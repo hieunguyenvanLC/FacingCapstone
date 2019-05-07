@@ -78,6 +78,19 @@ public class OrderController extends AbstractController {
 
 
     // Mobile Member - Order Booking - Begin
+    @GetMapping(Fix.MAP_LOG + API + "/current")
+    public String getCurrentOrder() {
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.getCurrentOrder();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
+
     @PostMapping(Fix.MAP_MEM + API)
     public String createOrderMem(Double longitude, Double latitude, String customerDescription, String proList, double distance, String deviceToken, String buyerAddress) {
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);

@@ -357,6 +357,10 @@ public class OrderService {
         frOrder = repo.getOrder(frOrder.getId(), orderRepository);
         orderMap.addOrder(frOrder, frStore.getLongitude(), frStore.getLatitude());
 
+
+        currentUser.setCurrentOrder(frOrder.getId());
+        accountRepository.save(currentUser);
+
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, frOrder.getId());
         return response;
     }
@@ -497,6 +501,10 @@ public class OrderService {
                                     frOrder.setPriceLevel(currentUser.getShipper().getPriceLevel().getPrice());
                                     frOrder.setShipperToken(shipperToken);
                                     orderRepository.save(frOrder);
+
+                                    currentUser.setCurrentOrder(frOrder.getId());
+                                    accountRepository.save(currentUser);
+
                                     notifyBuyer(frOrder);
                                     notifyShipper(frOrder, shipperToken);
                                     MdlOrder mdlOrder = orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository);
@@ -715,10 +723,18 @@ public class OrderService {
                 }
             }
             shipperRepo.save(frShipper);
+
+            buyer.setCurrentOrder(0);
+            FRAccount shipperAcc = frShipper.getAccount();
+            shipperAcc.setCurrentOrder(0);
+            accountRepository.save(buyer);
+            accountRepository.save(shipperAcc);
             System.out.println("save frShipper");
             notifyBuyerCheckout(frOrder);
             notifyShipperCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+
+
             return response;
         }
     }
@@ -878,6 +894,16 @@ public class OrderService {
     }
     // Mobile Shipper - Order Checkout - End
 
+
+    public Response<Integer> getCurrentOrder() {
+        Methods methods = new Methods();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount currentUser = methods.getUser();
+        Integer currentOrder = currentUser.getCurrentOrder();
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, currentOrder);
+        return response;
+    }
 
     public Response<String> testNotify(Gson gson, int orderId, String deviceToken) {
         Methods methods = new Methods();

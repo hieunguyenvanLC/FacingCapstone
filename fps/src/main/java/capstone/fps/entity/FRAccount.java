@@ -59,6 +59,8 @@ public class FRAccount implements UserDetails {
     private FRAccount editor;
     @Column(name = "avatar")
     private byte[] avatar;
+    @Column(name = "current_order")
+    private Integer currentOrder;
 
 
 
@@ -272,5 +274,13 @@ public class FRAccount implements UserDetails {
 
     public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
+    }
+
+    public Integer getCurrentOrder() {
+        return currentOrder;
+    }
+
+    public void setCurrentOrder(Integer currentOrder) {
+        this.currentOrder = currentOrder;
     }
 }
