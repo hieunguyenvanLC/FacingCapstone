@@ -98,8 +98,15 @@ public class MdlOrderBuilder {
 //        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
 //        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
-        mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
+        if(frOrder.getShipper() != null){
+
+            mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
+            mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
+        }else{
+            mdlOrder.shipperPhone = "";
+            mdlOrder.shipperName = "";
+        }
+
         mdlOrder.orderCode = frOrder.getOrderCode();
         List<FROrderDetail> frOrderDetails = orderDetailRepo.findAllByOrder(frOrder);
         if (frOrderDetails.size() > 0) {
