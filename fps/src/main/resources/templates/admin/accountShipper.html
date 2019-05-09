@@ -446,7 +446,7 @@
         }
 
         function loadEditForm() {
-            divPassword.style.display = "none";
+            divPassword.style.display = "block";
             divSumRevenue.style.display = "block";
             divStatus.style.display = "block";
             divPriceLevel.style.display = "block";
@@ -566,6 +566,7 @@
             var formData = new FormData();
             fpsFormAppend(formData, "accId", accEdit.id);
             fpsFormAppend2(formData, "phone", txtPhone.value, accEdit.phone);
+            fpsFormAppend(formData, "password", txtPassword.value);
             fpsFormAppend2(formData, "sumRevenue", txtSumRevenue.value, accEdit.sumRevenue);
             fpsFormAppend2(formData, "name", txtFullName.value, accEdit.name);
             // fpsFormAppend2(formData, "sourceId", cbbSource.value, accEdit.sourceId);

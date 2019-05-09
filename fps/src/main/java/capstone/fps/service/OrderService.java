@@ -274,6 +274,23 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildDetailWthImg(frOrder, orderDetailRepository));
         return response;
     }
+
+
+    public Response<JsonObject> getFaceCheckout(Integer orderId) {
+        Methods methods = new Methods();
+        Response<JsonObject> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Repo repo = new Repo();
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        JsonObject faceObj = new JsonObject();
+        faceObj.addProperty("face", methods.bytesToBase64(frOrder.getBuyerFace()));
+        faceObj.addProperty("name", frOrder.getReceiverName());
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, faceObj);
+        return response;
+    }
     // Mobile Member - Order History - End
 
 
@@ -693,7 +710,7 @@ public class OrderService {
         double price = (frOrder.getTotalPrice() + frOrder.getShipperEarn()) / Fix.USD;
         String priceStr = String.format("%.2f", price);
 
-        String payId = handlingFaceResult(faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
+        String payId = handlingFaceResult(frOrder, faceListStr, gson, buyer, payUsername, payPassword, priceStr, description);
         System.out.println("PayPal resp " + payId);
         if ("fail".equals(payId)) {
             response.setResponse(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -723,7 +740,6 @@ public class OrderService {
                 }
             }
             shipperRepo.save(frShipper);
-
             buyer.setCurrentOrder(0);
             FRAccount shipperAcc = frShipper.getAccount();
             shipperAcc.setCurrentOrder(0);
@@ -733,8 +749,6 @@ public class OrderService {
             notifyBuyerCheckout(frOrder);
             notifyShipperCheckout(frOrder);
             response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
-
-
             return response;
         }
     }
@@ -746,16 +760,23 @@ public class OrderService {
     }
 
     /* Compare Member List with buyer */
-    private String handlingFaceResult(String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
+    private String handlingFaceResult(FROrder frOrder, String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
+        System.out.println("face str -" + memListStr + "-");
         memListStr = memListStr.replace("fps", "");
         String[] strList = memListStr.split("\\|");
         int buyerId = buyer.getId();
         for (String idStr : strList) {
-            int revMemId = Integer.parseInt(idStr);
+            int revMemId;
+            try {
+                revMemId = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                return "fail";
+            }
             FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
             if (receiveMember != null) {
                 if (buyerId == receiveMember.getAccount().getId()) {
+                    frOrder.setReceiverName(receiveMember.getName());
                     return callEmulatorServer(gson, payUsername, payPassword, priceStr, description);
                 }
             }

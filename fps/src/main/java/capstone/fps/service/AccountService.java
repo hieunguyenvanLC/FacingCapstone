@@ -386,7 +386,7 @@ public class AccountService {
         return response;
     }
 
-    public Response<MdlShipper> updateShipper(int accId, String phone, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
+    public Response<MdlShipper> updateShipper(int accId, String phone, String password, Double sumRevenue, String name, Integer sourceId, Long dob, String email, String note, Integer priceLevelId, MultipartFile userFace, String introduce, Integer extraPoint, Integer reportPoint, Integer status, String natId, Long natDate, String bikeRegId, Long bikeRegDate, MultipartFile natFront, MultipartFile natBack, MultipartFile bikeRegFront, MultipartFile bikeRegBack) {
         Methods methods = new Methods();
         long time = methods.getTimeNow();
         Validator valid = new Validator();
@@ -404,6 +404,9 @@ public class AccountService {
         phone = valid.checkPhone(phone);
         if (phone != null) {
             frAccount.setPhone(phone);
+        }
+        if (password != null) {
+            frAccount.setPassword(methods.hashPass(password));
         }
         name = valid.checkFullName(name);
         if (name != null) {

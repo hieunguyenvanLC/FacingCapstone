@@ -22,6 +22,8 @@ public class FROrder {
     private FRShipper shipper;
     @Column(name = "buyer_face")
     private byte[] buyerFace;
+    @Column(name = "receiver_name")
+    private String receiverName;
     @Column(name = "bill")
     private byte[] bill;
     @Column(name = "order_code", length = 50)
@@ -270,5 +272,13 @@ public class FROrder {
 
     public void setAssignTime(Long assignTime) {
         this.assignTime = assignTime;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }
