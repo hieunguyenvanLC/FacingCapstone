@@ -83,6 +83,11 @@
                                                     <input type="password" placeholder="Password" class="form-control"
                                                            id="txtPassword">
                                                 </div>
+                                                <div class="form-group" id="divConfirm">
+                                                    <label>Confirm Password</label>
+                                                    <input type="password" placeholder="Confirm" class="form-control"
+                                                           id="txtConfirm">
+                                                </div>
                                                 <div class="form-group" id="divSumRevenue">
                                                     <label>Sum Revenue</label>
                                                     <input type="text" placeholder="Sum Revenue" class="form-control"
@@ -100,11 +105,7 @@
                                                     </select>
                                                 </div>
 
-                                                <div class="form-group" id="divRating">
-                                                    <label>Rating</label>
-                                                    <input type="text" placeholder="Rating" class="form-control"
-                                                           disabled id="txtRating">
-                                                </div>
+
                                             </div>
 
 
@@ -145,6 +146,11 @@
                                                     <label>Order delivered</label>
                                                     <input type="text" placeholder="" class="form-control"
                                                            disabled id="txtOrderCount">
+                                                </div>
+                                                <div class="form-group" id="divRating">
+                                                    <label>Rating</label>
+                                                    <input type="text" placeholder="Rating" class="form-control"
+                                                           disabled id="txtRating">
                                                 </div>
                                             </div>
                                         </div>
@@ -330,6 +336,7 @@
 
         var txtPhone = document.getElementById("txtPhone");
         var txtPassword = document.getElementById("txtPassword");
+        var txtConfirm = document.getElementById("txtConfirm");
         var txtSumRevenue = document.getElementById("txtSumRevenue");
         var txtFullName = document.getElementById("txtFullName");
         var cbbSource = document.getElementById("cbbSource");
@@ -368,6 +375,7 @@
         var uplBikeRegBack = document.getElementById("uplBikeRegBack");
 
         var divPassword = document.getElementById("divPassword");
+        var divConfirm = document.getElementById("divConfirm");
         var divSumRevenue = document.getElementById("divSumRevenue");
         var divStatus = document.getElementById("divStatus");
         var divPriceLevel = document.getElementById("divPriceLevel");
@@ -496,8 +504,6 @@
             uplNatBack.value = "";
             uplBikeRegFront.value = "";
             uplBikeRegBack.value = "";
-
-
         }
 
 

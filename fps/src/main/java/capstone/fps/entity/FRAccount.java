@@ -61,7 +61,8 @@ public class FRAccount implements UserDetails {
     private byte[] avatar;
     @Column(name = "current_order")
     private Integer currentOrder;
-
+    @Column(name = "wallet")
+    private Double wallet;
 
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
@@ -282,5 +283,13 @@ public class FRAccount implements UserDetails {
 
     public void setCurrentOrder(Integer currentOrder) {
         this.currentOrder = currentOrder;
+    }
+
+    public Double getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Double wallet) {
+        this.wallet = wallet;
     }
 }

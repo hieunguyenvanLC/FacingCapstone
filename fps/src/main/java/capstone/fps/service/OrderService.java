@@ -672,6 +672,85 @@ public class OrderService {
     // Mobile Shipper - Order Checkout - Begin
     public Response<MdlOrder> checkout(Gson gson, Integer orderId, byte[] faceBytes) {
         Methods methods = new Methods();
+        long time = methods.getTimeNow();
+        Repo repo = new Repo();
+        MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        // test face here
+        String key = frOrder.getId() + "" + methods.getTimeNow();
+        Map<String, String> faceResult = AppData.getFaceResult();
+        faceResult.remove(key);
+        System.out.println(faceRecognise(faceBytes, key));
+
+
+        Long maxWait = methods.getTimeNow() + 1 * 60 * 1000;
+        while (faceResult.get(key) == null && methods.getTimeNow() < maxWait) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (methods.getTimeNow() >= maxWait) {
+            response.setResponse(Response.STATUS_FAIL, "Python connection error");
+            return response;
+        }
+
+        String faceListStr = faceResult.get(key);
+        faceResult.remove(key);
+        FRAccount buyer = frOrder.getAccount();
+        FRReceiveMember frReceiveMember = checkFaceResult(frOrder, faceListStr, buyer);
+        if (frReceiveMember == null) {
+            response.setResponse(Response.STATUS_FAIL, "Face not match");
+            return response;
+        }
+
+        frOrder.setReceiverName(frReceiveMember.getName());
+
+        // order
+        frOrder.setStatus(Fix.ORD_COM.index);
+        frOrder.setBuyerFace(faceBytes);
+        frOrder.setReceiveTime(time);
+        // shipper
+        FRShipper frShipper = frOrder.getShipper();
+        double revenue = frOrder.getPriceLevel() * frOrder.getShipperEarn();
+        frShipper.setSumRevenue(frShipper.getSumRevenue() + revenue);
+        frShipper.setOrderCount(frShipper.getOrderCount() + 1);
+        FRPriceLevel nextLevel = frShipper.getPriceLevel().getNextLevel();
+        if (nextLevel != null) {
+            if (frShipper.getOrderCount() >= nextLevel.getOrderReq() && frShipper.getRating() >= nextLevel.getRateReq()) {
+                frShipper.setPriceLevel(nextLevel);
+            }
+        }
+        FRAccount shipperAcc = frShipper.getAccount();
+        shipperAcc.setCurrentOrder(0);
+        // buyer
+        buyer.setCurrentOrder(0);
+        buyer.setWallet(buyer.getWallet() - frOrder.getTotalPrice() - frOrder.getShipperEarn());
+
+        orderRepository.save(frOrder);
+        System.out.println("save frOrder");
+        shipperRepo.save(frShipper);
+        System.out.println("save frAccount");
+        accountRepository.save(buyer);
+        accountRepository.save(shipperAcc);
+        System.out.println("save frAccount");
+        notifyBuyerCheckout(frOrder);
+        notifyShipperCheckout(frOrder);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
+        return response;
+
+    }
+
+    /*
+    public Response<MdlOrder> checkoutOld(Gson gson, Integer orderId, byte[] faceBytes) {
+        Methods methods = new Methods();
         Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
@@ -752,6 +831,7 @@ public class OrderService {
             return response;
         }
     }
+    */
 
     /* Receive HttpReq from Python */
     public String receiveFaceResult(String key, String faceListStr) {
@@ -760,6 +840,30 @@ public class OrderService {
     }
 
     /* Compare Member List with buyer */
+    private FRReceiveMember checkFaceResult(FROrder frOrder, String memListStr, FRAccount buyer) {
+        Repo repo = new Repo();
+        System.out.println("face str -" + memListStr + "-");
+        memListStr = memListStr.replace("fps", "");
+        String[] strList = memListStr.split("\\|");
+        int buyerId = buyer.getId();
+        for (String idStr : strList) {
+            int revMemId;
+            try {
+                revMemId = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+            FRReceiveMember receiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
+            if (receiveMember != null) {
+                if (buyerId == receiveMember.getAccount().getId()) {
+                    return receiveMember;
+                }
+            }
+        }
+        return null;
+    }
+
+    /*
     private String handlingFaceResult(FROrder frOrder, String memListStr, Gson gson, FRAccount buyer, String payUsername, String payPassword, String priceStr, String description) {
         Repo repo = new Repo();
         System.out.println("face str -" + memListStr + "-");
@@ -783,6 +887,7 @@ public class OrderService {
         }
         return "fail";
     }
+    */
 
     /* Send HttpReq to PayPal Emulator */
     private String callEmulatorServer(Gson gson, String payUsername, String payPassword, String priceStr, String description) {
