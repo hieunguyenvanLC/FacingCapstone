@@ -49,11 +49,27 @@ $(document).ready(function () {
                 $("#lbActivedShipperTDay").html("<strong>" + abbrNum(summary.shipperCountTDay) + "</strong>"); //Shipper day
                 $("#lbActivedShipperTWeek").html("<strong>" + abbrNum(summary.shipperCountTWeek) + "</strong>");//Shipper week
                 $("#lbActivedShipperTMonth").html("<strong>" + abbrNum(summary.shipperCountTMonth) + "</strong>");//Shipper month
+                var shipperTDayWeek = formatNumber(summary.shipperCountTWeek === 0 ? 0 : summary.shipperCountTDay / summary.shipperCountTWeek);
+                var shipperTDayMonth = formatNumber(summary.shipperCountTMonth === 0 ? 0 : summary.shipperCountTDay / summary.shipperCountTMonth);
+                var shipperTWeekMonth = formatNumber(summary.shipperCountTMonth === 0 ? 0 : summary.shipperCountTWeek / summary.shipperCountTMonth);
+                $("#lbActivedShipperTDay").attr('data-original-title', '<div>Shipper Active today over this week: ' + shipperTDayWeek + '%</div><div>Shipper Active today over this month: ' + shipperTDayMonth + '%</div>');
+                $("#lbActivedShipperTWeek").attr('data-original-title', '<div>Shipper Active this week over this month: ' + shipperTWeekMonth + '%</div>');
+
+                // var successTDayWeek = formatNumber(summary.successOrdersTWeek === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTWeek);
+                // var successTDayMon = formatNumber(summary.successOrdersTMonth === 0 ? 0 : summary.successOrdersTDay / summary.successOrdersTMonth);
+                // var successTWeekMon = formatNumber(summary.successOrdersTWeek === 0 ? 0 : summary.successOrdersTWeek / summary.successOrdersTMonth);
+                // $("#lbSuccessRateD").attr('data-original-title', '<div>Success today over this week: ' + successTDayWeek + '%</div><div>Success today over this month: ' + successTDayMon + '%</div>');
+                // $("#lbSuccessRateW").attr('data-original-title', '<div>Success this week over this month: ' + successTWeekMon + '%</div>');
+                //Total
                 //customer
                 $("#lbNewCus").html("<strong>" + abbrNum(summary.CustomerCount) + "</strong>"); //customer all
                 $("#lbNewCusTDay").html("<strong>" + abbrNum(summary.CustomerCountTDay) + "</strong>");//customer day
                 $("#lbNewCusTWeek").html("<strong>" + abbrNum(summary.CustomerCountTWeek) + "</strong>");//customer week
                 $("#lbNewCusTMonth").html("<strong>" + abbrNum(summary.CustomerCountTMonth) + "</strong>");//customer month
+                var customerTDayWeek= formatNumber(summary.CustomerCountTWeek===0?0:summary.CustomerCountTDay/summary.CustomerCountTWeek);
+                var customerTDayMonth=formatNumber(summary.CustomerCountTMonth===0?0:summary.CustomerCountTDay/summary.CustomerCountTMonth);
+                $("#lbNewCusTDay").attr('data-original-title', '<div>Customer Registration today over this week: ' + customerTDayWeek + '%</div>'+'<div>Customer Registration today over this month: ' + customerTDayMonth + '%</div>');
+
                 //Store
                 $("#lbNewStores").html("<strong>" + abbrNum(summary.StoreCount) + "</strong>");   //Store all
                 $("#lbNewStoresTDay").html("<strong>" + abbrNum(summary.StoreCountTDay) + "</strong>");//Store day
@@ -103,100 +119,115 @@ $(document).ready(function () {
     var mainDataTable = null;
     var mainChart = null;
     var mainChartColors = orderStatusColors; // thu tu theo status (new, assigned, on delivery, done, cancel)
-    google.charts.load('current', {'packages': ['line']}); // bar => line (doi chart)
+    google.charts.load('current', {'packages': ['corechart']}); // bar => line (doi chart)
     google.charts.setOnLoadCallback(function () {
-        mainChart = new google.charts.Line(document.getElementById('barChartExample')); // Bar => Line (doi chart)
+        initGoogleChart(0);
+    });
 
-        google.visualization.events.addListener(mainChart, 'select', selectHandler);
+    function initGoogleChart(type) { // type: 0 - line, 1 - pie
+        if (mainChart) {
+            google.visualization.events.removeListener(mainChart, 'select', selectChartHandler);
+            mainChart.clearChart();
+            delete mainChart;
+        }
 
-        function selectHandler(e) { //Select click chart
-            // alert('A table row was selected');
-            var selections = mainChart.getSelection();
-            // console.log(selections);
-            if (selections.length) {
-                var selection = selections[0];
-                if (selection.column) {
-                    // console.log(e, mainDataTable.getValue(selection.row, 0));
-                    var status = selection.column;
-                    var startMoment = null;
-                    var endMoment = null;
-                    var startUnix1 = 0;
-                    var endUnix1 = 0;
+        if (type === 0) {
+            mainChart = new google.visualization.LineChart(document.getElementById('barChartExample')); // Bar => Line (doi chart)
+            google.visualization.events.addListener(mainChart, 'select', selectChartHandler);
+        } else {
+            mainChart = new google.visualization.BarChart(document.getElementById('barChartExample')); // Bar => Line (doi chart)
+            google.visualization.events.addListener(mainChart, 'select', selectChartHandler);
+        }
+    }
 
-                    // Lay start date va end date tu selection.row
-                    if (selection.row) {
-                        var selectedLabel = mainDataTable.getValue(selection.row, 0);
-                        switch (chartType) {
-                            case '0':
-                                // la ngay
-                                startMoment = moment(selectedLabel, "DD/MM/YYYY");
-                                startUnix1 = startMoment.unix() * 1000;
-                                endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
-                                break;
-                            // IPhone iPhone5 = iPhone4.clone();
-                            // iPhone5.setThietKe(new ThietKe12254512());
-                            // iPhone5.setHeDieuHanh(new HeDieuHanh12355());
-                            // iPhone5.setDungLuongPin(n));
-                            case '1':
-                                //la tuan
-                                var parts = selectedLabel.split("/");
-                                startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
-                                startUnix1 = startMoment.unix() * 1000;
-                                endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
-                                break;
+    function selectChartHandler(e) {
+        //Select click chart
+        // alert('A table row was selected');
+        var selections = mainChart.getSelection();
+        // console.log(selections);
+        if (selections.length) {
+            var selection = selections[0];
+            if (selection.column) {
+                // console.log(e, mainDataTable.getValue(selection.row, 0));
+                var status = selection.column;
+                var startMoment = null;
+                var endMoment = null;
+                var startUnix1 = 0;
+                var endUnix1 = 0;
 
-                            case '2'://thang
-                                startMoment = moment('01/' + selectedLabel, "DD/MM/YYYY");
-                                startUnix1 = startMoment.unix() * 1000;
-                                endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
-                                break;
-
-                            case '3': //nam
-                                startUnix1 = moment("01/01/" + selectedLabel, "DD/MM/YYYY").unix() * 1000;
-                                endUnix1 = moment("01/01/" + (parseInt(selectedLabel) + 1), "DD/MM/YYYY").unix() * 1000;
-                                break;
-                        }
-                    } else {
-                        startMoment = moment(startDate, "DD/MM/YYYY");
-                        endMoment = moment(endDate, "DD/MM/YYYY");
-                        switch (chartType) {
-                            case '0':
-                                endMoment.hours(23).minute(59).second(59).millisecond(999);
-                                break;
-                            case '1':
-                                endMoment.hours(23).minute(59).second(59).millisecond(999);
-                                break;
-                            case '2':
-                                endMoment.add(1, 'M');
-                                break;
-                            case '3':
-                                endMoment.add(1, 'Y');
-                                break;
-                        }
-                        startUnix1 = startMoment.unix() * 1000;
-                        endUnix1 = endMoment.unix() * 1000;
-                    }
-
-                    switch (reportType) { // Chuyen status theo legend doi voi chart khac
-                        case "productSld":
-                            status = 4;
+                // Lay start date va end date tu selection.row
+                if (selection.row) {
+                    var selectedLabel = mainDataTable.getValue(selection.row, 0);
+                    switch (chartType) {
+                        case '0':
+                            // la ngay
+                            startMoment = moment(selectedLabel, "DD/MM/YYYY");
+                            startUnix1 = startMoment.unix() * 1000;
+                            endUnix1 = startMoment.clone().add(1, 'days').unix() * 1000;
                             break;
-                        case "rateScc":
-                            if (selection.column === 1) {
-                                status = 4;
-                            } else {
-                                status = 5;
-                            }
+                        // IPhone iPhone5 = iPhone4.clone();
+                        // iPhone5.setThietKe(new ThietKe12254512());
+                        // iPhone5.setHeDieuHanh(new HeDieuHanh12355());
+                        // iPhone5.setDungLuongPin(n));
+                        case '1':
+                            //la tuan
+                            var parts = selectedLabel.split("/");
+                            startMoment = moment(getDateOfWeek(parseInt(parts[0], 10), parseInt(parts[1], 10)));
+                            startUnix1 = startMoment.unix() * 1000;
+                            endUnix1 = startMoment.clone().add(1, 'w').unix() * 1000;
                             break;
-                        case "totalAmt":
-                            status = 4;
+
+                        case '2'://thang
+                            startMoment = moment('01/' + selectedLabel, "DD/MM/YYYY");
+                            startUnix1 = startMoment.unix() * 1000;
+                            endUnix1 = startMoment.clone().add(1, 'M').unix() * 1000;
+                            break;
+
+                        case '3': //nam
+                            startUnix1 = moment("01/01/" + selectedLabel, "DD/MM/YYYY").unix() * 1000;
+                            endUnix1 = moment("01/01/" + (parseInt(selectedLabel) + 1), "DD/MM/YYYY").unix() * 1000;
                             break;
                     }
-                    handleBarClick(startUnix1, endUnix1, status);
+                } else {
+                    startMoment = moment(startDate, "DD/MM/YYYY");
+                    endMoment = moment(endDate, "DD/MM/YYYY");
+                    switch (chartType) {
+                        case '0':
+                            endMoment.hours(23).minute(59).second(59).millisecond(999);
+                            break;
+                        case '1':
+                            endMoment.hours(23).minute(59).second(59).millisecond(999);
+                            break;
+                        case '2':
+                            endMoment.add(1, 'M');
+                            break;
+                        case '3':
+                            endMoment.add(1, 'Y');
+                            break;
+                    }
+                    startUnix1 = startMoment.unix() * 1000;
+                    endUnix1 = endMoment.unix() * 1000;
                 }
+
+                switch (reportType) { // Chuyen status theo legend doi voi chart khac
+                    case "productSld":
+                        status = 4;
+                        break;
+                    case "rateScc":
+                        if (selection.column === 1) {
+                            status = 4;
+                        } else {
+                            status = 5;
+                        }
+                        break;
+                    case "totalAmt":
+                        status = 4;
+                        break;
+                }
+                handleBarClick(startUnix1, endUnix1, status);
             }
         }
-    });
+    }
 
     // Khoi tao filter
     var selReportType = $("#selReportType");
@@ -320,18 +351,37 @@ $(document).ready(function () {
 
     function drawChart(data, title, subtitle, opts) {
         var options = {
-            chart: {
-                title: title,
-                subtitle: subtitle
-            },
+            title: title,
+            subtitle: subtitle,
+            // chart: {
+            //     title: title,
+            //     subtitle: subtitle
+            // },
             hAxis: opts.hAxis,
             vAxis: opts.vAxis,
             colors: opts.colors,
-            // width: 900,
-            height: 500
+            // width: 1400,
+            height: 560
+
         };
         mainDataTable = data;
-        mainChart.draw(mainDataTable, google.charts.Line.convertOptions(options)); // Bar => Line (doi chart)
+
+        if (mainDataTable && (mainDataTable.getNumberOfRows() === 1)) {
+            initGoogleChart(1);
+            var titleTmp = options['hAxis'].title;
+            options['hAxis'].title = options['vAxis'].title;
+            options['vAxis'].title = titleTmp;
+            // delete options['hAxis'];
+            // delete options['vAxis'];
+            options.chartArea = {left:100,top:40,width:'75%',height:'80%'};
+            options.isStacked = true;
+            options.bars = "horizontal";
+            mainChart.draw(mainDataTable, options);
+        } else {
+            initGoogleChart(0);
+            options.chartArea = {left:60,top:40,width:'80%',height:'85%'};
+            mainChart.draw(mainDataTable, options); // Bar => Line (doi chart)
+        }
     }
 
     function createOrderChartData(xLable, chartData) {

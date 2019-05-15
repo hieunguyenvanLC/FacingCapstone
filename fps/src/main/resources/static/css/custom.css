@@ -1,8 +1,8 @@
 /* your styles go here */
 
 .tooltip-inner {
-    max-width: 280px;
+    max-width: 380px;
     /* If max-width does not work, try using width instead */
-    width: 280px;
+    width: 380px;
     text-align: left;
 }
