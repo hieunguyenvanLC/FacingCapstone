@@ -59,4 +59,11 @@ export class OrderService {
                             this.constant.ORDER + 
                             "/history");
   }
+
+  getCurrentOrder(){
+    return this.apihttp.get(this.constant.MAP_LOG +
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            "/current");
+  }
 }

@@ -49,13 +49,6 @@ export class LoginPage implements OnInit {
     console.log(this.googleAPI.getCurrentLocation());
   }
 
-  callNow() {
-    console.log("123123123123123123213asdhjasbfjkasb");
-    this.callNumber.callNumber("18001010101", true)
-      .then(res => console.log('Launched dialer!', res))
-      .catch(err => console.log('Error launching dialer', err));
-  }
-
   async login() {
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))

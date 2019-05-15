@@ -53,7 +53,7 @@ export class HomePage {
   myPhoto: any;
   myPhotoBinary: string;
   tokenFCM: any;
-
+  currentOrder: any;
 
 
   constructor(
@@ -75,6 +75,7 @@ export class HomePage {
     this.shipperMode = false;
     this.stateOrder = 0;
     this.order.length = 0;
+    this.currentOrder = '';
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -100,7 +101,13 @@ export class HomePage {
       }
     });// end fcm
 
-
+    this.orderService.getCurrentOrder().subscribe(res => {
+      console.log("1");
+      console.log(res);
+      let tempArr = [];
+      tempArr.push(res);
+      this.currentOrder = tempArr[0].data;
+    })//end api get current order
 
   }
 
@@ -114,6 +121,10 @@ export class HomePage {
       this.loadMap();
     });
     this.getUser();
+    console.log(this.currentOrder)
+    if (this.currentOrder !== '' && this.currentOrder !== undefined) {
+      this.shipperMode = true;
+    }
   }
 
   getUser() {
@@ -140,40 +151,33 @@ export class HomePage {
 
   changeMode() {
     if (this.shipperMode) {
-
-      this.findOrder();
-      this.toastHandle.presentToast("Finding order");
-      //loading 
-      // this.loading.present("Finding order...").then(() => {
-
-      //   this.isLoading = true;
-      //   //call api to auto assign order
-      //   this.orderService.onShipMode(this.longitudeShp, this.latitudeShp, this.tokenFCM).subscribe(
-      //     res => {
-      //       console.log("Begin res: ");
-      //       console.log(res);
-      //       this.order.push(res);
-
-
-      //       if (this.order[0].message === "Success") {
-      //         if (this.order[0].data) {
-      //           this.isLoaded = true;
-      //           this.isLoading = false;
-      //           this.loading.dismiss();
-      //           console.log("in if success :"+this.order[0].data);
-      //         }
-      //       }//end if success
-      //       else if (this.order[0].message === "time out"){
-      //         // this.isLoaded = true;
-      //         this.isLoading = false;
-      //         this.loading.dismiss();
-      //         this.shipperMode = false;
-      //       }//end if time out
-      //     }, () => {
-      //       //handle finish loading
-      //     }
-      //   ); //end api auto assign order
-      // });//end loading
+      if (this.currentOrder !== '' && this.currentOrder !== undefined) {
+        this.loading.present("Loading....").then(() => {
+          this.orderService.getOrderDetailById(this.currentOrder).subscribe(res => {
+            console.log(res);
+            this.order.length = 0;
+            this.order.push(res);
+  
+            this.order[0].data["total"] = this.order[0].data.totalPrice + this.order[0].data.shipperEarn
+            this.order[0].data["shipperMoney"] = this.order[0].data.priceLevel * this.order[0].data.shipperEarn
+            if (this.order[0].message === "Success") {
+              if (this.order[0].data) {
+                this.isLoaded = true;
+                // add routing function here
+                this.loading.dismiss();
+                this.routingForShipper(this.order);
+                this.stateOrder = 1;
+                // this.isLoading = false;
+                // this.loading.dismiss();
+                console.log("in if success :" + this.order[0].data);
+              }
+            }//end if success
+          })//end api get detail
+        })//end loading
+      } else {
+        this.findOrder();
+        this.toastHandle.presentToast("Finding order");
+      }
 
 
     } else {
@@ -185,7 +189,6 @@ export class HomePage {
       this.stateOrder = 0;
       this.toastHandle.presentToast("Shipper mode is off !");
     }
-    console.log(this.shipperMode);
   }
 
   findOrder() {
@@ -226,6 +229,8 @@ export class HomePage {
       ); //end api auto assign order
     })//end geolocation
   }//end find order
+
+
 
   routingForShipper(order) {
     // loadMap() {
@@ -482,7 +487,7 @@ export class HomePage {
 
   //#endregion END MAP
 
-  callNow(){
+  callNow() {
     this.callNumber.callNumber(this.order[0].data.buyerPhone, true)
       .then(res => console.log('Launched dialer!', res))
       .catch(err => console.log('Error launching dialer', err));
