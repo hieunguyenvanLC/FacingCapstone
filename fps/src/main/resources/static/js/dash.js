@@ -66,20 +66,34 @@ $(document).ready(function () {
                 $("#lbNewCusTDay").html("<strong>" + abbrNum(summary.CustomerCountTDay) + "</strong>");//customer day
                 $("#lbNewCusTWeek").html("<strong>" + abbrNum(summary.CustomerCountTWeek) + "</strong>");//customer week
                 $("#lbNewCusTMonth").html("<strong>" + abbrNum(summary.CustomerCountTMonth) + "</strong>");//customer month
-                var customerTDayWeek= formatNumber(summary.CustomerCountTWeek===0?0:summary.CustomerCountTDay/summary.CustomerCountTWeek);
-                var customerTDayMonth=formatNumber(summary.CustomerCountTMonth===0?0:summary.CustomerCountTDay/summary.CustomerCountTMonth);
-                $("#lbNewCusTDay").attr('data-original-title', '<div>Customer Registration today over this week: ' + customerTDayWeek + '%</div>'+'<div>Customer Registration today over this month: ' + customerTDayMonth + '%</div>');
+                var customerTDayWeek = formatNumber(summary.CustomerCountTWeek === 0 ? 0 : summary.CustomerCountTDay / summary.CustomerCountTWeek);
+                var customerTDayMonth = formatNumber(summary.CustomerCountTMonth === 0 ? 0 : summary.CustomerCountTDay / summary.CustomerCountTMonth);
+                var customerTWeekMonth = formatNumber(summary.CustomerCountTMonth === 0 ? 0 : summary.CustomerCountTWeek / summary.CustomerCountTMonth);
+                $("#lbNewCusTDay").attr('data-original-title', '<div>Customer Registration today over this week: ' + customerTDayWeek + '%</div>' + '<div>Customer Registration today over this month: ' + customerTDayMonth + '%</div>');
+                $("#lbNewCusTWeek").attr('data-original-title', '<div>Customer Registration this week over this months: ' + customerTWeekMonth + '%</div>');
 
                 //Store
                 $("#lbNewStores").html("<strong>" + abbrNum(summary.StoreCount) + "</strong>");   //Store all
                 $("#lbNewStoresTDay").html("<strong>" + abbrNum(summary.StoreCountTDay) + "</strong>");//Store day
                 $("#lbNewStoresTWeek").html("<strong>" + abbrNum(summary.StoreCountTWeek) + "</strong>");//Store week
                 $("#lbNewStoresTMonth").html("<strong>" + abbrNum(summary.StoreCountTMonth) + "</strong>");//Store month
+                var storeTDayWeek = formatNumber(summary.StoreCountTWeek === 0 ? 0 : summary.StoreCountTDay / summary.StoreCountTWeek);
+                var storeTDayMonth = formatNumber(summary.StoreCountTMonth === 0 ? 0 : summary.StoreCountTDay / summary.StoreCountTMonth);
+                var storeTWeekMonth = formatNumber(summary.StoreCountTMonth === 0 ? 0 : summary.StoreCountTWeek / summary.StoreCountTMonth)
+                $("#lbNewStoresTDay").attr('data-original-title', '<div>Store Partners this day over this week: ' + storeTDayWeek + '%</div>' + '<div>Store Partners this day over this months: ' + storeTDayMonth + '%</div>');
+                $("#lbNewStoresTWeek").attr('data-original-title', '<div>Store Partners this week over this months: ' + storeTWeekMonth + '%</div>');
+
                 //Order
                 $("#lbNewOrder").html("<strong>" + abbrNum(summary.OrderCount) + "</strong>");  // all
                 $("#lbNewOrderTDay").html("<strong>" + abbrNum(summary.OrderCountTDay) + "</strong>"); //day
                 $("#lbNewOrderTWeek").html("<strong>" + abbrNum(summary.OrderCountTWeek) + "</strong>"); // week
                 $("#lbNewOrderTMonth").html("<strong>" + abbrNum(summary.OrderCountTMonth) + "</strong>"); // month
+                var orderTDayWeek = formatNumber(summary.OrderCountTWeek === 0 ? 0 : summary.OrderCountTDay / summary.OrderCountTWeek);
+                var orderTDayMonth = formatNumber(summary.OrderCountTMonth === 0 ? 0 : summary.OrderCountTDay / summary.OrderCountTMonth);
+                var orderTWeekMonth = formatNumber(summary.OrderCountTMonth === 0 ? 0 : summary.OrderCountTWeek / summary.OrderCountTMonth);
+                $("#lbNewOrderTDay").attr('data-original-title', '<div>Order Created this day over this week: ' + orderTDayWeek + '%</div>' + '<div>Order Created this day over this months: ' + orderTDayMonth + '%</div>');
+                $("#lbNewOrderTWeek").attr('data-original-title', '<div>Order Created this week over this month: ' + orderTWeekMonth + '%</div>');
+
                 //Rate
                 $("#lbSuccessRate").html("<strong>" + formatNumber(summary.successRate) + "%</strong>");// all
                 $("#lbSuccessRateD").html("<strong>" + formatNumber(summary.successRateTDay) + "%</strong>");//day
@@ -95,16 +109,35 @@ $(document).ready(function () {
                 $("#lbTotalAmountD").html("<strong>" + abbrNum(summary.totalAmountTDay) + "</strong>");//day
                 $("#lbTotalAmountW").html("<strong>" + abbrNum(summary.totalAmountTWeek) + "</strong>");// week
                 $("#lbTotalAmountM").html("<strong>" + abbrNum(summary.totalAmountTMonth) + "</strong>"); // month
+                var totalTDayWeek = formatNumber(summary.totalAmountTWeek === 0 ? 0 : summary.totalAmountTDay / summary.totalAmountTWeek);
+                var totalTDayMonth = formatNumber(summary.totalAmountTMonth === 0 ? 0 : summary.totalAmountTDay / summary.totalAmountTMonth);
+                var totalTWekMonth = formatNumber(summary.totalAmountTMonth === 0 ? 0 : summary.totalAmountTWeek / summary.totalAmountTMonth);
+                $("#lbTotalAmountD").attr('data-original-title', '<div>Total Amount today over this week: ' + totalTDayWeek + '%</div><div>Total Amount today over this month: ' + totalTDayMonth + '%</div>');
+                $("#lbTotalAmountW").attr('data-original-title', '<div>Total Amount this week over this month: ' + totalTWekMonth + '%</div>');
+
+
                 //Paid
                 $("#lbPaidShipper").html("<strong>" + abbrNum(summary.paidShipper) + "</strong>");// all
                 $("#lbPaidShipperD").html("<strong>" + abbrNum(summary.paidShipperTDay) + "</strong>");//day
                 $("#lbPaidShipperW").html("<strong>" + abbrNum(summary.paidShipperTWeek) + "</strong>");// week
                 $("#lbPaidShipperM").html("<strong>" + abbrNum(summary.paidShipperTMonth) + "</strong>");// month
+                var paidTDayWeek = formatNumber(summary.paidShipperTWeek === 0 ? 0 : summary.paidShipperTDay / summary.paidShipperTWeek);
+                var paidTDayMonth = formatNumber(summary.paidShipperTMonth === 0 ? 0 : summary.paidShipperTDay / summary.paidShipperTMonth);
+                var paidTWekMonth = formatNumber(summary.paidShipperTMonth === 0 ? 0 : summary.paidShipperTWeek / summary.paidShipperTMonth);
+                $("#lbPaidShipperD").attr('data-original-title', '<div>Paid Shipper today over this week: ' + paidTDayWeek + '%</div><div>Paid Shipper today over this month: ' + paidTDayMonth + '%</div>');
+                $("#lbPaidShipperW").attr('data-original-title', '<div>Paid Shipper this week over this month: ' + paidTWekMonth + '%</div>');
+
                 //Sold Product
                 $("#lbSoldProduct").html("<strong>" + abbrNum(summary.soldProductCount) + "</strong>");// all
                 $("#lbSoldProductD").html("<strong>" + abbrNum(summary.soldProductCountTDay) + "</strong>");//day
                 $("#lbSoldProductW").html("<strong>" + abbrNum(summary.soldProductCountTWeek) + "</strong>");// week
                 $("#lbSoldProductM").html("<strong>" + abbrNum(summary.soldProductCountTMonth) + "</strong>");// month
+                var soldTDayWeek = formatNumber(summary.soldProductCountTWeek === 0 ? 0 : summary.soldProductCountTDay / summary.soldProductCountTWeek);
+                var soldTDayMonth = formatNumber(summary.soldProductCountTMonth === 0 ? 0 : summary.soldProductCountTDay / summary.soldProductCountTMonth);
+                var soldTWekMonth = formatNumber(summary.soldProductCountTMonth === 0 ? 0 : summary.soldProductCountTWeek / summary.soldProductCountTMonth);
+                $("#lbSoldProductD").attr('data-original-title', '<div>Sold Product today over this week: ' + soldTDayWeek + '%</div><div>Sold Product today over this month: ' + soldTDayMonth + '%</div>');
+                $("#lbSoldProductW").attr('data-original-title', '<div>Sold Product this week over this month: ' + soldTWekMonth + '%</div>');
+
             },
             error: function (err) {
                 console.log(err);
@@ -373,13 +406,13 @@ $(document).ready(function () {
             options['vAxis'].title = titleTmp;
             // delete options['hAxis'];
             // delete options['vAxis'];
-            options.chartArea = {left:100,top:40,width:'75%',height:'80%'};
+            options.chartArea = {left: 100, top: 40, width: '75%', height: '80%'};
             options.isStacked = true;
             options.bars = "horizontal";
             mainChart.draw(mainDataTable, options);
         } else {
             initGoogleChart(0);
-            options.chartArea = {left:60,top:40,width:'80%',height:'85%'};
+            options.chartArea = {left: 60, top: 40, width: '80%', height: '85%'};
             mainChart.draw(mainDataTable, options); // Bar => Line (doi chart)
         }
     }
