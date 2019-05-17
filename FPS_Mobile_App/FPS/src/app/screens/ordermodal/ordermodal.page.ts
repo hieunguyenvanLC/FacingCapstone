@@ -8,6 +8,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { AlertService } from 'src/app/services/alert.service';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-ordermodal',
@@ -38,6 +39,7 @@ export class OrdermodalPage implements OnInit {
 
   tokenFCM: any;
   note : any;
+  wallet : any;
 
   constructor(
     private navParams: NavParams,
@@ -52,17 +54,20 @@ export class OrdermodalPage implements OnInit {
     private firebase: Firebase,
     public alertController: AlertController,
     private alertHandle: AlertService,
-
+    private accountService : AccountService,
   ) {
     // componentProps can also be accessed at construction time using NavParams
     this.prodList = "";
     this.note = '';
+    this.wallet = '';
   }
   ngOnInit() {
 
     console.log(this.myOrder);
     console.log(this.note);
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
+
+    
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -117,7 +122,11 @@ export class OrdermodalPage implements OnInit {
   }
 
   async checkout() {
-    console.log(this.myOrder[0].products.length)
+    if (this.total > this.myOrder[0].userWallet){
+      this.presentWarningAlert();
+    }//end if total > wallet 
+    else{
+      console.log(this.myOrder[0].products.length)
     for (let i = 0; i < this.myOrder[0].products.length; i++) {
       const element = this.myOrder[0].products[i];
       if (element != undefined) {
@@ -157,73 +166,14 @@ export class OrdermodalPage implements OnInit {
           //get id order
           this.orderId = this.temp[0].data;
           console.log(this.orderId);
-
-          //this.router.navigateByUrl("order");
-
-          //-----get status order
-          if (this.orderId) {
-            // this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //   if (!this.temp) {
-            //     // console.log("in !temp");
-            //     // this.temp = [];
-            //     // this.temp.push(res);
-            //     // console.log(this.temp[0].data);
-            //   }else{
-            //     console.log("in temp");
-            //     this.temp = [];
-            //     this.temp.push(res);
-
-            //     console.log(this.temp[0].data);
-            //     //start if status
-            //     if (this.temp[0].data.status !== undefined){
-            //       this.orderStatus = this.temp[0].data.status;
-            //       console.log("order status - " + this.orderStatus + " - " + this.temp[0].data.status);
-
-
-
-            //     // while(this.orderStatus === 1){
-            //     //   console.log("in while loop");
-            //     //   setTimeout(()=> {
-            //     //     console.log("in while");
-            //     //     this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //     //       this.temp = [];
-            //     //       this.temp.push(res);
-            //     //       if (this.temp[0].data.status === 2){
-            //     //         this.orderStatus = this.temp[0].data.status;
-            //     //         console.log("in set interval - " + this.orderStatus);
-            //     //       }
-            //     //     });
-            //     //   }, 3*1000);
-            //     // }
-
-            //     // setInterval(() => {
-            //     //   console.log("set interval");
-            //     //   this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //     //     this.temp = [];
-            //     //     this.temp.push(res);
-            //     //     if (this.temp[0].data.status === 2){
-            //     //       this.orderStatus = this.temp[0].data.status;
-            //     //       console.log("in set interval - " + this.orderStatus);
-            //     //       return;
-            //     //     }
-            //     //   });
-            //     // }, 5*1000)
-
-            //   }// end if status
-
-
-            //   }
-            // });
-            console.log("done request status !");
-          }
-          //-----end get status order
-
         }
 
         console.log("--end create order");
       });
 
     //get user status
+    }
+    
 
 
   }//end checkout
@@ -326,6 +276,31 @@ export class OrdermodalPage implements OnInit {
     //   modal.present();
     //   this.currentModal = modal;
     // });
+  }
+
+  async presentWarningAlert() {
+    const alert = await this.alertController.create({
+      header: 'Warning!',
+      message: 'Your wallet do not have enough money !!!',
+      buttons: [
+        {
+          text: 'Okay',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, 
+        // {
+        //   text: 'Okay',
+        //   handler: () => {
+        //     console.log('Confirm Okay');
+        //   }
+        // }
+      ]
+    });
+
+    await alert.present();
   }
 
 }

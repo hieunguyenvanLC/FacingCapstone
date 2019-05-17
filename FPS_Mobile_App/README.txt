@@ -132,3 +132,9 @@ cordova.system.library.8=com.google.firebase:firebase-config:16.4.1
 cordova.system.library.9=com.google.firebase:firebase-perf:16.2.4
 
 in project.properties
+
+---------
+Paypal
+
+ionic cordova plugin add com.paypal.cordova.mobilesdk
+npm install @ionic-native/paypal

@@ -97,4 +97,22 @@ export class AccountService {
                                    "/avatar");
   }
 
+  depositToWallet(money_VND){
+    let formData : FormData = new FormData();
+    formData.append("amount", money_VND);
+    return this.apiHttpService.post(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT +
+                                   '/deposit', formData);
+  }
+
+  updateAvatar(avatar){
+    let formData : FormData = new FormData();
+    formData.append("avatar", avatar);
+    return this.apiHttpService.put(this.constant.MAP_MEM + 
+                                   this.constant.MAP_API + 
+                                   this.constant.ACCOUNT +
+                                   '/avatar', formData);
+  }
+
 }

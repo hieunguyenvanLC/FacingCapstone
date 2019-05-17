@@ -122,7 +122,7 @@ export class HomePage {
     });
     this.getUser();
     console.log(this.currentOrder)
-    if (this.currentOrder !== '' && this.currentOrder !== undefined) {
+    if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0) {
       this.shipperMode = true;
     }
   }
@@ -151,7 +151,7 @@ export class HomePage {
 
   changeMode() {
     if (this.shipperMode) {
-      if (this.currentOrder !== '' && this.currentOrder !== undefined) {
+      if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0) {
         this.loading.present("Loading....").then(() => {
           this.orderService.getOrderDetailById(this.currentOrder).subscribe(res => {
             console.log(res);

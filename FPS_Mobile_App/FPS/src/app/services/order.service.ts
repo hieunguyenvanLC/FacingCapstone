@@ -66,4 +66,11 @@ export class OrderService {
                             this.constant.ORDER +
                             "/current");
   }
+
+  getFaceResult(orderID){
+    return this.apihttp.get(this.constant.MAP_LOG +
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            "/receiver?orderId=" + orderID);
+  }
 }

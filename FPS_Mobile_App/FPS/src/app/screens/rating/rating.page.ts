@@ -14,6 +14,8 @@ export class RatingPage implements OnInit {
 
   rate: any;
   orderId: any;
+  face : any;
+  name : any;
   constructor(
     public events: Events,
     private router: Router,
@@ -25,11 +27,22 @@ export class RatingPage implements OnInit {
     this.rate = 0;
     this.orderId = this.route.snapshot.params['id'];
 
+    this.face = "";
+    this.name = "";
     
   }
 
   ngOnInit() {
     document.getElementById("rate2").nodeValue = "checked";
+    this.loading.present(this.constant.LOADINGMSG).then(() => {
+      this.orderService.getFaceResult(this.orderId).subscribe(res => {
+        console.log(res);
+        let tempArr = [];
+        tempArr.push(res);
+        this.face = tempArr[0].data[0].face;
+        this.name = tempArr[0].data[0].name;
+      })
+    })//end loading
   }
 
   starmark(rateStar) {

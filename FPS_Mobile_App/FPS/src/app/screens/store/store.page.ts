@@ -13,6 +13,7 @@ import { ToastHandleService } from 'src/app/services/toasthandle.service';
 import { GoogleApiService } from 'src/app/services/google-api.service';
 import { Storage } from '@ionic/storage';
 import { Constant } from 'src/app/common/constant';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-store',
@@ -27,10 +28,8 @@ export class StorePage implements OnInit {
   isHaveProduct = false;
   currentModal = null;
   storeId: number;
-  store: Store[];
   quantity = 1;
   status_code = 0;
-  temp = [];
 
   latitudeCus: any;
   longitudeCus: any;
@@ -39,7 +38,7 @@ export class StorePage implements OnInit {
   shpEarn: any;
   currentAddress: any;
   isLoaded = false;
-
+  userWallet : any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -50,13 +49,23 @@ export class StorePage implements OnInit {
     private googleApi: GoogleApiService,
     private storage: Storage,
     private constant: Constant,
+    private accountService : AccountService,
   ) {
     this.products.length = 0;
+
+    this.userWallet = '';
+
+    this.latitudeCus = '';
+    this.longitudeCus = '';
+    this.duration = '';
+    this.distance = '';
+    this.shpEarn = '';
   }
 
   ngOnInit() {
     this.loading.present(this.constant.LOADINGMSG).then(() => {
       this.getStoreDetail();
+      this.getWallet();
     })
 
 
@@ -139,6 +148,7 @@ export class StorePage implements OnInit {
           currentAddress: this.currentAddress,
           latitudeCus: this.latitudeCus,
           longitudeCus: this.longitudeCus,
+          userWallet : this.userWallet,
         }]
 
       }
@@ -222,4 +232,13 @@ export class StorePage implements OnInit {
     }
     return Math.ceil(price/1000) *1000;
   }//end calculateShpEarn
+
+  getWallet(){
+    this.accountService.getAvatar().subscribe(res => {
+        let tempArr = [];
+        tempArr.push(res);
+      this.userWallet = tempArr[0].data.wallet;
+      console.log(this.userWallet);
+    })//end api get avatar 
+  }
 } 

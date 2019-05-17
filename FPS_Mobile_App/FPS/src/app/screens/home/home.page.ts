@@ -85,10 +85,12 @@ export class HomePage {
         console.log("current order")
         let tempArr = [];
         tempArr.push(res)
-        // console.log(tempArr[0].data);
+        console.log(tempArr[0].data);
         this.currentOrder = tempArr[0].data;
-        if (this.currentOrder !== '' || this.currentOrder !== undefined){
+        console.log(this.currentOrder);
+        if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0){
           this.router.navigate(['check-out', this.currentOrder]);
+          //return;
         }
       })//end get current order
       this.geolocation.getCurrentPosition().then((resp) => {
