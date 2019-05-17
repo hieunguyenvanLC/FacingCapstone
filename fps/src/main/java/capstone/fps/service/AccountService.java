@@ -846,6 +846,7 @@ public class AccountService {
         }
         Double total = frAccount.getWallet() + amount;
         frAccount.setWallet(total);
+        accountRepo.save(frAccount);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, total);
         return response;
 
