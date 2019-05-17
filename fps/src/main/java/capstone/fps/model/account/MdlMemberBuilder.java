@@ -78,6 +78,7 @@ public class MdlMemberBuilder {
         mdlMember.reportPoint = frAccount.getReportPoint();
         mdlMember.dob = frAccount.getDob();
         mdlMember.status = frAccount.getStatus();
+        mdlMember.wallet = frAccount.getWallet();
         mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
         List<FRReceiveMember> receiveMembers = receiveMemberRepo.findAllByAccount(frAccount);
         mdlMember.faceList = new MdlFace[receiveMembers.size()];
@@ -93,6 +94,7 @@ public class MdlMemberBuilder {
         mdlMember.id = frAccount.getId();
         mdlMember.name = frAccount.getName();
         mdlMember.status = frAccount.getStatus();
+        mdlMember.wallet = frAccount.getWallet();
         mdlMember.avatar = methods.bytesToBase64(frAccount.getAvatar());
         return mdlMember;
     }
