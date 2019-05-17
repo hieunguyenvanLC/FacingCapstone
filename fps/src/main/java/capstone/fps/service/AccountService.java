@@ -671,6 +671,9 @@ public class AccountService {
 //        });
 //        t.start();
 //    }
+
+
+
     // Mobile Member - Register - End
 
 
@@ -830,6 +833,22 @@ public class AccountService {
         MdlShipper mdlShipper = shipperBuilder.buildFull(frAccount, frAccount.getShipper());
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipper);
         return response;
+    }
+
+    public Response<Double> depositToWallet(double amount) {
+        Methods methods = new Methods();
+        Response<Double> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FRAccount frAccount = methods.getUser();
+        if (frAccount == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+        Double total = frAccount.getWallet() + amount;
+        frAccount.setWallet(total);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, total);
+        return response;
+
     }
 
 

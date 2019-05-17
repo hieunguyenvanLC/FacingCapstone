@@ -10,7 +10,6 @@ import capstone.fps.model.order.MdlOrderBuilder;
 import capstone.fps.model.ordermatch.Delta;
 import capstone.fps.model.ordermatch.OrderMap;
 import capstone.fps.model.ordermatch.OrderStat;
-import capstone.fps.model.ordermatch.ShipperWait;
 import capstone.fps.repository.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -56,7 +55,6 @@ public class OrderService {
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.accountRepository = accountRepository;
-
         this.paymentInfoRepo = paymentInfoRepo;
         this.receiveMemberRepo = receiveMemberRepo;
         this.shipperRepo = shipperRepo;
