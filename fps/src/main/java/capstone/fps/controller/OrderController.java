@@ -60,6 +60,18 @@ public class OrderController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+    @DeleteMapping(Fix.MAP_ADM + API)
+    public String cancelOrderAdm(Integer orderId) {
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.cancelOrderAdm(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
     // Web Admin - Order - End
 
 
@@ -93,7 +105,7 @@ public class OrderController extends AbstractController {
     // Mobile Member - Order Booking - Begin
     @GetMapping(Fix.MAP_LOG + API + "/current")
     public String getCurrentOrder() {
-        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<JsonObject> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
             response = orderService.getCurrentOrder();
         } catch (Exception e) {
@@ -224,6 +236,18 @@ public class OrderController extends AbstractController {
 
 
     // Mobile Shipper - Post Bill - Begin
+    @DeleteMapping(Fix.MAP_SHP + API + "/cancel")
+    public String cancelOrderShp() {
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = orderService.cancelOrderShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
     @PutMapping(Fix.MAP_ANY + API + "/bill")
     public String postBill(Integer orderId, String bill) {
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);

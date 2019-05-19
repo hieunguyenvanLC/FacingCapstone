@@ -55,4 +55,15 @@ public class MdlShipperBuilder {
     }
 
 
+    public MdlShipper buildShpAvatar(FRAccount frAccount) {
+        Methods methods = new Methods();
+        MdlShipper mdlShipper = new MdlShipper();
+        mdlShipper.id = frAccount.getId();
+        mdlShipper.name = frAccount.getName();
+        mdlShipper.status = frAccount.getStatus();
+        mdlShipper.avatar = methods.bytesToBase64(frAccount.getAvatar());
+        FRShipper frShipper = frAccount.getShipper();
+        mdlShipper.sumRevenue = frShipper.getSumRevenue();
+        return mdlShipper;
+    }
 }

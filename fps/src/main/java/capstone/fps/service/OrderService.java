@@ -241,6 +241,35 @@ public class OrderService {
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, orderBuilder.buildFull(frOrder, orderDetailRepository));
         return response;
     }
+
+    public Response<MdlOrder> cancelOrderAdm(Integer orderId) {
+        Methods methods = new Methods();
+        long time = methods.getTimeNow();
+        Repo repo = new Repo();
+        Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        FRAccount currentUser = methods.getUser();
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        frOrder.setUpdateTime(time);
+        frOrder.setStatus(Fix.ORD_CXL.index);
+        frOrder.setEditor(currentUser);
+        orderRepository.save(frOrder);
+
+        FRAccount buyer = frOrder.getAccount();
+        buyer.setCurrentOrder(0);
+        accountRepository.save(buyer);
+        FRShipper frShipper = frOrder.getShipper();
+        if (frShipper != null) {
+            FRAccount shipper = frShipper.getAccount();
+            shipper.setCurrentOrder(0);
+            accountRepository.save(shipper);
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
     // Web Admin - Order - Begin
 
 
@@ -407,6 +436,10 @@ public class OrderService {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
             return response;
         }
+        if (frOrder.getStatus() != Fix.ORD_NEW.index) {
+            response.setResponse(Response.STATUS_FAIL, "Order is assigned");
+            return response;
+        }
         int col = orderMap.convertLon(longitude);
         int row = orderMap.convertLat(latitude);
         List<OrderStat> statList = orderMap.getNode(col, row).getStatList();
@@ -420,7 +453,7 @@ public class OrderService {
             }
         }
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -429,6 +462,10 @@ public class OrderService {
             frOrder.setDeleteTime(time);
             frOrder.setStatus(Fix.ORD_CXL.index);
             orderRepository.save(frOrder);
+
+            FRAccount frAccount = methods.getUser();
+            frAccount.setCurrentOrder(0);
+            accountRepository.save(frAccount);
         }
 
         frOrder = repo.getOrder(orderId, orderRepository);
@@ -649,6 +686,39 @@ public class OrderService {
 
 
     // Mobile Shipper - Post Bill - Begin
+    public Response<String> cancelOrderShp() {
+        Methods methods = new Methods();
+        Repo repo = new Repo();
+        FRAccount shipper = methods.getUser();
+        Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        int orderId = shipper.getCurrentOrder();
+        if (orderId <= 0) {
+            response.setResponse(Response.STATUS_FAIL, "no current order");
+            return response;
+        }
+        FROrder frOrder = repo.getOrder(orderId, orderRepository);
+        if (frOrder == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find order");
+            return response;
+        }
+        frOrder.setDeleteTime(methods.getTimeNow());
+        frOrder.setStatus(Fix.ORD_CXL.index);
+        orderRepository.save(frOrder);
+
+        FRAccount buyer = frOrder.getAccount();
+        buyer.setCurrentOrder(0);
+        accountRepository.save(buyer);
+        shipper.setCurrentOrder(0);
+        accountRepository.save(shipper);
+        FRShipper frShipper = shipperRepo.findById(shipper.getShipper().getId()).get();
+        int newRatingCount = frShipper.getRatingCount() + 1;
+        frShipper.setRating(frShipper.getRating() * frShipper.getRatingCount() / newRatingCount);
+        frShipper.setRatingCount(newRatingCount);
+        shipperRepo.save(frShipper);
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
+        return response;
+    }
+
     public Response<String> postBill(Integer orderId, String bill) {
         Methods methods = new Methods();
         Repo repo = new Repo();
@@ -947,7 +1017,7 @@ public class OrderService {
             commandPrompt = new CommandPrompt();
             String cutAndRecenter = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/preprocess.py --input-dir /docker/data/testFace --output-dir /docker/output/test --crop-dim 180";
             commandPrompt.execute(cutAndRecenter);
-            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 5 --min-num-images-per-class 5 --key-gen " + key;
+            String testFaceAI = "docker run -v /Users/nguyenvanhieu/Project/CapstoneProject/docker:/docker -e PYTHONPATH=$PYTHONPATH:/docker -i fps-image python3 /docker/face_recognize_system/train_classifier.py --input-dir /docker/output/test --model-path /docker/etc/20170511-185253/20170511-185253.pb --classifier-path /docker/output/classifier.pkl --num-threads 5 --num-epochs 25 --min-num-images-per-class 5 --key-gen " + key;
             commandPrompt.execute(testFaceAI);
             //delete folder generated by Python
             methods.deleteDirectoryWalkTree(Fix.CROP_TEST_FACE_FOLDER + "fpsTestFile");
@@ -1019,13 +1089,16 @@ public class OrderService {
     // Mobile Shipper - Order Checkout - End
 
 
-    public Response<Integer> getCurrentOrder() {
+    public Response<JsonObject> getCurrentOrder() {
         Methods methods = new Methods();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
-        Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Response<JsonObject> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         FRAccount currentUser = methods.getUser();
         Integer currentOrder = currentUser.getCurrentOrder();
-        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, currentOrder);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("orderId", currentOrder);
+        jsonObject.addProperty("orderStatus", orderRepository.findById(currentOrder).orElse(null).getStatus());
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, jsonObject);
         return response;
     }
 

@@ -855,6 +855,16 @@ public class AccountService {
     }
 
 
+    public Response<MdlShipper> getAvatarShp() {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        Methods methods = new Methods();
+        FRAccount currentUser = methods.getUser();
+        MdlShipperBuilder mdlShipperBuilder = new MdlShipperBuilder();
+
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipperBuilder.buildShpAvatar(currentUser));
+        return response;
+    }
+
     // Mobile Shipper - Profile - End
 
 }

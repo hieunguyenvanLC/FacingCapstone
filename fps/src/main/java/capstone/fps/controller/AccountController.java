@@ -308,6 +308,20 @@ public class AccountController extends AbstractController {
         }
         return gson.toJson(response);
     }
+
+
+    @GetMapping(Fix.MAP_SHP + API + "/avatar")
+    public String getAvatarShp() {
+        Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getAvatarShp();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
     // Mobile Shipper - End
 
 }
