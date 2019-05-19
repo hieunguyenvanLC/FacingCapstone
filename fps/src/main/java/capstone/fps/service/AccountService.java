@@ -553,20 +553,22 @@ public class AccountService {
 
         frAccount = accountRepo.findById(frAccount.getId()).orElse(null);
         FRReceiveMember frReceiveMember = new FRReceiveMember();
-        frReceiveMember.setName("default");
+        frReceiveMember.setName(name);
         frReceiveMember.setFace1(faceBytes1);
         frReceiveMember.setFace2(faceBytes2);
         frReceiveMember.setFace3(faceBytes3);
         frReceiveMember.setAccount(frAccount);
         receiveMemberRepo.save(frReceiveMember);
 
-
+        /*
         FRPaymentInformation frPaymentInformation = new FRPaymentInformation();
         frPaymentInformation.setPaymentType(initPaymentType("sale"));
         frPaymentInformation.setAccount(frAccount);
         frPaymentInformation.setUsername(payUsername);
         frPaymentInformation.setPassword(methods.basicEncrypt(payPassword));
         paymentInfoRepo.save(frPaymentInformation);
+        */
+
 
         // training in python here
 //        Map<Integer, FaceTrain> trainQueue = AppData.getTrainQueue();
