@@ -171,7 +171,7 @@ public class AccountService {
         }
         frAccount.setUpdateTime(methods.getTimeNow());
         frAccount.setStatus(valid.checkUpdateStatus(frAccount.getStatus(), status, Fix.ACC_STAT_LIST));
-        frAccount.setEditor(methods.getUser());
+        frAccount.setEditor(methods.getUser(accountRepo));
         accountRepo.save(frAccount);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemDetailAdm(frAccount, receiveMemberRepo));
         return response;
@@ -222,7 +222,7 @@ public class AccountService {
         frAccount.setCreateTime(methods.getTimeNow());
         frAccount.setNote(note);
         frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setEditor(methods.getUser());
+        frAccount.setEditor(methods.getUser(accountRepo));
         accountRepo.save(frAccount);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
@@ -266,7 +266,7 @@ public class AccountService {
         }
         frAccount.setUpdateTime(methods.getTimeNow());
 
-        frAccount.setEditor(methods.getUser());
+        frAccount.setEditor(methods.getUser(accountRepo));
         accountRepo.save(frAccount);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS);
         return response;
@@ -286,7 +286,7 @@ public class AccountService {
 
     public Response<MdlAdmin> getAdminProfileAdm() {
         Methods methods = new Methods();
-        FRAccount frAccount = methods.getUser();
+        FRAccount frAccount = methods.getUser(accountRepo);
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlAdminBuilder mdlAdminBuilder = new MdlAdminBuilder();
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlAdminBuilder.buildAdmProfile(frAccount));
@@ -295,7 +295,7 @@ public class AccountService {
 
     public Response<MdlAdmin> updateProfileAdm(String password, String name, MultipartFile avatar) {
         Methods methods = new Methods();
-        FRAccount frAccount = methods.getUser();
+        FRAccount frAccount = methods.getUser(accountRepo);
         Response<MdlAdmin> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         if (password != null) {
             frAccount.setPassword(methods.hashPass(password));
@@ -360,7 +360,7 @@ public class AccountService {
         frAccount.setDeleteTime(null);
         frAccount.setNote(valid.nullProof(note));
         frAccount.setStatus(Fix.ACC_NEW.index);
-        frAccount.setEditor(methods.getUser());
+        frAccount.setEditor(methods.getUser(accountRepo));
         frAccount.setAvatar(null);
         accountRepo.save(frAccount);
 
@@ -391,7 +391,7 @@ public class AccountService {
         long time = methods.getTimeNow();
         Validator valid = new Validator();
         Repo repo = new Repo();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
@@ -682,7 +682,7 @@ public class AccountService {
     // Mobile Member - Profile - Begin
     public Response<MdlMember> getMemberDetailMem() {
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
 
@@ -693,7 +693,7 @@ public class AccountService {
 
     public Response<MdlMember> updateMemberDetailMem(String name, String email, Long dob) {
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         if (name != null) {
@@ -735,7 +735,7 @@ public class AccountService {
     public Response<String> updateMemberFaceMem(Integer revMemId, String revMemName, String face1, String face2, String face3) {
         Methods methods = new Methods();
         Repo repo = new Repo();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
         FRReceiveMember frReceiveMember = repo.getReceiveMember(revMemId, receiveMemberRepo);
@@ -796,7 +796,7 @@ public class AccountService {
     public Response<MdlMember> getAvatarMem() {
         Response<MdlMember> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         MdlMemberBuilder mdlMemberBuilder = new MdlMemberBuilder();
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlMemberBuilder.buildMemAvatar(currentUser));
@@ -806,7 +806,7 @@ public class AccountService {
 
     public Response<String> updateAvatar(String avatar) {
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         if (avatar == null) {
             response.setResponse(Response.STATUS_FAIL, "Avatar is null");
@@ -826,7 +826,7 @@ public class AccountService {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         MdlShipperBuilder shipperBuilder = new MdlShipperBuilder();
 
-        FRAccount frAccount = methods.getUser();
+        FRAccount frAccount = methods.getUser(accountRepo);
         if (frAccount == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find account");
             return response;
@@ -841,7 +841,7 @@ public class AccountService {
         Methods methods = new Methods();
         Response<Double> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
-        FRAccount frAccount = methods.getUser();
+        FRAccount frAccount = methods.getUser(accountRepo);
         if (frAccount == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find account");
             return response;
@@ -858,7 +858,7 @@ public class AccountService {
     public Response<MdlShipper> getAvatarShp() {
         Response<MdlShipper> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         MdlShipperBuilder mdlShipperBuilder = new MdlShipperBuilder();
 
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlShipperBuilder.buildShpAvatar(currentUser));

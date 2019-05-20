@@ -8,6 +8,7 @@ import capstone.fps.entity.FRStore;
 import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlProduct;
 import capstone.fps.model.store.MdlProductBuilder;
+import capstone.fps.repository.AccountRepo;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,12 @@ public class ProductService {
 
     private ProductRepo productRepository;
     private StoreRepo storeRepository;
+    private AccountRepo accountRepo;
 
-    public ProductService(ProductRepo productRepository, StoreRepo storeRepository) {
+    public ProductService(ProductRepo productRepository, StoreRepo storeRepository, AccountRepo accountRepo) {
         this.productRepository = productRepository;
         this.storeRepository = storeRepository;
+        this.accountRepo = accountRepo;
     }
 
 
@@ -63,7 +66,7 @@ public class ProductService {
         frProduct.setCreateTime(time);
         frProduct.setNote(valid.nullProof(note));
         frProduct.setStatus(Fix.PRO_NEW.index);
-        frProduct.setEditor(methods.getUser());
+        frProduct.setEditor(methods.getUser(accountRepo));
         productRepository.save(frProduct);
 
         MdlProduct mdlProduct = mdlProductBuilder.buildBig(frProduct);
@@ -112,7 +115,7 @@ public class ProductService {
         }
         frProduct.setUpdateTime(time);
         frProduct.setStatus(valid.checkUpdateStatus(frProduct.getStatus(), status, Fix.PRO_STAT_LIST));
-        frProduct.setEditor(methods.getUser());
+        frProduct.setEditor(methods.getUser(accountRepo));
         productRepository.save(frProduct);
 
         MdlProduct mdlProduct = mdlProductBuilder.buildBig(frProduct);

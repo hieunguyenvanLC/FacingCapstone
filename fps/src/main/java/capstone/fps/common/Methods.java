@@ -24,11 +24,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-@Component
-public final class Methods {
 
-    @Autowired
-    AccountRepo accountRepo;
+public final class Methods {
 
     public Methods() {
     }
@@ -43,7 +40,7 @@ public final class Methods {
         return roles.get(0).getAuthority();
     }
 
-    public FRAccount getUser() {
+    public FRAccount getUser(AccountRepo accountRepo) {
         FRAccount frAccount = (FRAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return accountRepo.findById(frAccount.getId()).orElse(null);
     }

@@ -196,7 +196,7 @@ public class OrderService {
         Repo repo = new Repo();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
 
         FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
@@ -247,7 +247,7 @@ public class OrderService {
         long time = methods.getTimeNow();
         Repo repo = new Repo();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         FROrder frOrder = repo.getOrder(orderId, orderRepository);
         if (frOrder == null) {
             response.setResponse(Response.STATUS_FAIL, "Cant find order");
@@ -276,7 +276,7 @@ public class OrderService {
     // Mobile Member - Order History - Begin
     public Response<List<MdlOrder>> getOrderListMem() {
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
@@ -327,7 +327,7 @@ public class OrderService {
         long time = methods.getTimeNow();
         Validator valid = new Validator();
         Repo repo = new Repo();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         Response<Integer> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         if (currentUser == null) {
             response.setResponse(Response.STATUS_FAIL, "Authentication fail.");
@@ -463,7 +463,7 @@ public class OrderService {
             frOrder.setStatus(Fix.ORD_CXL.index);
             orderRepository.save(frOrder);
 
-            FRAccount frAccount = methods.getUser();
+            FRAccount frAccount = methods.getUser(accountRepository);
             frAccount.setCurrentOrder(0);
             accountRepository.save(frAccount);
         }
@@ -502,7 +502,7 @@ public class OrderService {
     // Mobile Shipper - Order History - Begin
     public Response<List<MdlOrder>> getOrderListShp() {
         Methods methods = new Methods();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<List<MdlOrder>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         List<FROrder> frOrderList = orderRepository.findAllByShipper(currentUser.getShipper());
@@ -524,7 +524,7 @@ public class OrderService {
         long waitTime = methods.getTimeNow() + (3 * 60 * 1000);
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<MdlOrder> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         int accId = currentUser.getId();
 
         HttpSession session = request.getSession(true);
@@ -689,7 +689,7 @@ public class OrderService {
     public Response<String> cancelOrderShp() {
         Methods methods = new Methods();
         Repo repo = new Repo();
-        FRAccount shipper = methods.getUser();
+        FRAccount shipper = methods.getUser(accountRepository);
         Response<String> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         int orderId = shipper.getCurrentOrder();
         if (orderId <= 0) {
@@ -1093,7 +1093,7 @@ public class OrderService {
         Methods methods = new Methods();
         MdlOrderBuilder orderBuilder = new MdlOrderBuilder();
         Response<JsonObject> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepository);
         Integer currentOrder = currentUser.getCurrentOrder();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orderId", currentOrder);

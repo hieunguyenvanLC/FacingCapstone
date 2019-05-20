@@ -11,10 +11,10 @@ import capstone.fps.model.Response;
 import capstone.fps.model.store.MdlStore;
 import capstone.fps.model.store.MdlStoreBuilder;
 import capstone.fps.model.store.StoreDis;
+import capstone.fps.repository.AccountRepo;
 import capstone.fps.repository.DistrictRepo;
 import capstone.fps.repository.ProductRepo;
 import capstone.fps.repository.StoreRepo;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,11 +26,13 @@ public class StoreService {
     private StoreRepo storeRepository;
     private DistrictRepo districtRepository;
     private ProductRepo productRepository;
+    private AccountRepo accountRepo;
 
-    public StoreService(StoreRepo storeRepository, DistrictRepo districtRepository, ProductRepo productRepository) {
+    public StoreService(StoreRepo storeRepository, DistrictRepo districtRepository, ProductRepo productRepository, AccountRepo accountRepo) {
         this.storeRepository = storeRepository;
         this.districtRepository = districtRepository;
         this.productRepository = productRepository;
+        this.accountRepo = accountRepo;
     }
 
     // Web Admin - Store - Begin
@@ -39,7 +41,7 @@ public class StoreService {
         long time = methods.getTimeNow();
         Validator valid = new Validator();
         Repo repo = new Repo();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
@@ -80,7 +82,7 @@ public class StoreService {
         Validator valid = new Validator();
         Repo repo = new Repo();
         MdlStoreBuilder mdlStoreBuilder = new MdlStoreBuilder();
-        FRAccount currentUser = methods.getUser();
+        FRAccount currentUser = methods.getUser(accountRepo);
 
         Response<MdlStore> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
