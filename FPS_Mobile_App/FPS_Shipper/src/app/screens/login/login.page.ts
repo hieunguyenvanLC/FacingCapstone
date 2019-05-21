@@ -35,8 +35,8 @@ export class LoginPage implements OnInit {
     private toastHandle: ToasthandleService,
     private storage: StorageApiService,
   ) { 
-    // this.phonenumber = '84965142724';
-    this.phonenumber = '84098734455';
+    this.phonenumber = '84965142724';
+    // this.phonenumber = '84098734455';
     this.password = 'zzz';
 
     this.backButtonEvent();
