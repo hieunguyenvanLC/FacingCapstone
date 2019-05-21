@@ -14,6 +14,7 @@ import { GoogleApiService } from 'src/app/services/google-api.service';
 import { Storage } from '@ionic/storage';
 import { Constant } from 'src/app/common/constant';
 import { AccountService } from 'src/app/services/account.service';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-store',
@@ -50,6 +51,7 @@ export class StorePage implements OnInit {
     private storage: Storage,
     private constant: Constant,
     private accountService : AccountService,
+    private appComponent : AppComponent,
   ) {
     this.products.length = 0;
 

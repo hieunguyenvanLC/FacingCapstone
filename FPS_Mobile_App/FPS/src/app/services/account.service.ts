@@ -28,11 +28,11 @@ export class AccountService {
     return this.apiHttpService.post(this.constant.LOGIN, formData);
   }
 
-  sendcreate( txtPhone, txtPassword, txtFullName, face1, face2, face3, ppUsername, ppPassword ): Observable<any> {
+  sendcreate( txtPhone, txtPassword, txtFullName, face1, face2, face3): Observable<any> {
     // var headers = new Headers();
     // headers.append("Content-Type", "application/json; chartset=utf-8");
-    console.log("face 3 account service");
-    console.log(face3);
+    // console.log("face 3 account service");
+    // console.log(face3);
     let formData :FormData = new FormData();
     formData.append('phoneNumber', txtPhone);
     formData.append('password', txtPassword);
@@ -40,8 +40,6 @@ export class AccountService {
     formData.append('face1', face1);
     formData.append('face2', face2);
     formData.append('face3', face3);
-    formData.append('payUsername', ppUsername);
-    formData.append('payPassword', ppPassword);
     //return this.HttpClient.post(this.createApi , formData);
     return this.apiHttpService.post(this.constant.MAP_ANY + this.constant.MAP_API + this.constant.ACCOUNT,formData);
   }

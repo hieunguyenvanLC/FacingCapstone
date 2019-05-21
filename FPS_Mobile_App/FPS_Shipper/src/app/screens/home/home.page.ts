@@ -119,7 +119,7 @@ export class HomePage {
   //    await this.loadMap();
   //   }
   async ionViewDidEnter() {
-    console.log("call ionViewDidLoad");
+    // console.log("call ionViewDidLoad");
     await this.platform.ready().then(() => {
       this.loadMap();
     });
@@ -136,8 +136,8 @@ export class HomePage {
         //this.userDetail.push(res);
         let tempArr = [];
         tempArr.push(res);
-        console.log("in get avatar user----")
-        console.log(tempArr[0].data);
+        // console.log("in get avatar user----")
+        // console.log(tempArr[0].data);
         this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.sumRevenue);
       }, error => {
         console.log(error);
@@ -157,6 +157,7 @@ export class HomePage {
       if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0) {
         this.loading.present("Loading....").then(() => {
           this.orderService.getOrderDetailById(this.currentOrder).subscribe(res => {
+            console.log("Change mode");
             console.log(res);
             this.order.length = 0;
             this.order.push(res);
@@ -209,14 +210,15 @@ export class HomePage {
         res => {
           this.order.length = 0;
           this.order.push(res);
-
+          console.log("in find order")
+          console.log(res)
           this.order[0].data["total"] = this.order[0].data.totalPrice + this.order[0].data.shipperEarn
           this.order[0].data["shipperMoney"] = this.order[0].data.priceLevel * this.order[0].data.shipperEarn
           if (this.order[0].message === "Success") {
             if (this.order[0].data) {
               this.isLoaded = true;
               // add routing function here
-              this.routingForShipper(this.order[0].storeLatitude, this.order[0].storeLongitude, false);
+              this.routingForShipper(this.order[0].data.storeLatitude, this.order[0].data.storeLongitude, false);
               this.stateOrder = 1;
               // this.isLoading = false;
               // this.loading.dismiss();

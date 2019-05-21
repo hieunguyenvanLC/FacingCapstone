@@ -82,7 +82,7 @@ export class RegistorPage implements OnInit {
     this.phoneNumber = this.phoneNumber.replace("+", "");
     // console.log(this.myPhotoBinary);
     this.loading.present('Creating...').then( () => {
-      this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.face1_Binary, this.face2_Binary, this.face3_Binary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
+      this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.face1_Binary, this.face2_Binary, this.face3_Binary).subscribe((res: any) => {
         console.log("face 3 Binary *****************");
         console.log(this.face3_Binary);
         console.log("face 3 Binary ******************");

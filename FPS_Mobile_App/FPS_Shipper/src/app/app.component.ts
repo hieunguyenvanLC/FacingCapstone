@@ -76,7 +76,7 @@ export class AppComponent {
       this.isLoadImg = true;
       this.avatar = avatar;
     }
-    console.log("refresh menu")
+    // console.log("refresh menu")
   }
 
   goToEditProgile() {
@@ -104,5 +104,9 @@ export class AppComponent {
       
       this.router.navigateByUrl("login");
     }); //end api log out
+  }
+
+  formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
   }
 }
