@@ -18,7 +18,7 @@ import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit{
 
   userDetail = [];
   status_code = 0;
@@ -61,21 +61,20 @@ export class ProfilePage {
 
   }
 
-  // ngOnInit() {
-  //   this.loadingService.present(this.constant.LOADINGMSG).then(() => {
-  //     this.getUser();
-  //   })
-
-
-  // }
-
-  async ionViewDidEnter() {
+  ngOnInit() {
     this.loadingService.present(this.constant.LOADINGMSG).then(() => {
       this.getUser();
     })
   }
 
+  // async ionViewDidEnter() {
+  //   this.loadingService.present(this.constant.LOADINGMSG).then(() => {
+  //     this.getUser();
+  //   })
+  // }
+
   getUser() {
+    this.userDetail.length = 0;
     this.accountService.getDetailUser().subscribe(
       res => {
         this.userDetail.push(res);

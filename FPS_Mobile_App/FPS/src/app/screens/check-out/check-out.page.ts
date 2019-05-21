@@ -45,7 +45,7 @@ export class CheckOutPage implements OnInit {
         //this.dismissModal();
         //this.loading.dismiss();
         //this.alertHandle.dissmissAlert();
-        if (data.orderId !== undefined || data.orderId !== ''){
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
           this.router.navigate(['rating', data.orderId]);
         }
         
@@ -56,7 +56,8 @@ export class CheckOutPage implements OnInit {
         //this.dismissModal();
         //this.loading.dismiss();
         //this.alertHandle.dissmissAlert();
-        if (data.orderId !== undefined || data.orderId !== ''){
+        //this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
           this.router.navigate(['rating', data.orderId]);
         }
       }
@@ -68,7 +69,7 @@ export class CheckOutPage implements OnInit {
        //this.dismissModal();
         //this.loading.dismiss();
         //this.alertHandle.dissmissAlert();
-        if (data.orderId !== undefined || data.orderId !== ''){
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
           this.router.navigate(['rating', data.orderId]);
         }
       });

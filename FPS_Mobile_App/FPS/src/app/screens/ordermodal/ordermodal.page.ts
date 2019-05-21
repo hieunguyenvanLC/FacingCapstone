@@ -179,16 +179,6 @@ export class OrdermodalPage implements OnInit {
   }//end checkout
 
   //for loading finding shipper
-  async presentLoading() {
-    const loadingController = document.querySelector('ion-loading-controller');
-    await loadingController.componentOnReady();
-
-    const loadingElement = await loadingController.create({
-      message: 'Finding shipper...',
-      duration: 2000,
-    });
-    loadingElement.present();
-  }
 
   //toast for notification
   async presentToast(myMessage) {

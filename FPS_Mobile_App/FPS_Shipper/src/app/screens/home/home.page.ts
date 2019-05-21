@@ -54,6 +54,7 @@ export class HomePage {
   myPhotoBinary: string;
   tokenFCM: any;
   currentOrder: any;
+  currentOrderStatus: any;
 
 
   constructor(
@@ -76,6 +77,7 @@ export class HomePage {
     this.stateOrder = 0;
     this.order.length = 0;
     this.currentOrder = '';
+    this.currentOrderStatus = '';
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -106,7 +108,8 @@ export class HomePage {
       console.log(res);
       let tempArr = [];
       tempArr.push(res);
-      this.currentOrder = tempArr[0].data;
+      this.currentOrder = tempArr[0].data.orderId;
+      this.currentOrderStatus = tempArr[0].data.orderStatus;
     })//end api get current order
 
   }
@@ -128,14 +131,14 @@ export class HomePage {
   }
 
   getUser() {
-    this.accountService.getDetailUser().subscribe(
+    this.accountService.getAvatar().subscribe(
       res => {
         //this.userDetail.push(res);
         let tempArr = [];
         tempArr.push(res);
-        console.log("in get user----")
+        console.log("in get avatar user----")
         console.log(tempArr[0].data);
-        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.userImage, tempArr[0].data.extraPoint);
+        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.sumRevenue);
       }, error => {
         console.log(error);
       },
@@ -165,11 +168,16 @@ export class HomePage {
                 this.isLoaded = true;
                 // add routing function here
                 this.loading.dismiss();
-                this.routingForShipper(this.order[0].storeLatitude, this.order[0].storeLongitude, false);
-                this.stateOrder = 1;
+                this.routingForShipper(this.order[0].data.storeLatitude, this.order[0].data.storeLongitude, false);
+                console.log(this.order[0].storeLatitude)
+                if (this.order[0].data.status !== 3){
+                  this.stateOrder = 1;
+                }else{
+                  this.stateOrder = 2;
+                }
+                
                 // this.isLoading = false;
                 // this.loading.dismiss();
-                console.log("in if success :" + this.order[0].data);
               }
             }//end if success
           })//end api get detail
@@ -239,7 +247,9 @@ export class HomePage {
         //resp.coords.latitude, resp.coords.longitude
         this.GoogleApiService.getAddressGoogle(respGeo.coords.latitude, respGeo.coords.longitude,desLatitude, desLongitude).then((resp) => {
           // , order[0].data.latitude, order[0].data.longitude
-    
+          console.log("at routing 1")
+          console.log("GEO" + respGeo.coords.latitude + " - " + respGeo.coords.longitude)
+          console.log("DES" + desLatitude + " - " + desLongitude);
           // get resp
           let positionList = [];
           positionList.length = 0;
@@ -260,10 +270,7 @@ export class HomePage {
             direct.push(element.start_location);
             direct.push(element.end_location);
           });
-          // draw map 
-          let location = [
-    
-          ]
+          // draw map
           let latLng = new google.maps.LatLng(respGeo.coords.latitude, respGeo.coords.longitude);
           // let latLng = new google.maps.LatLng(10.831481, 106.676775);
           let mapOptions = {
@@ -301,32 +308,34 @@ export class HomePage {
              snippet: 'You are here',
           })
 
-          if (!isTakeBill){
+          if (isTakeBill === false){
+            console.log("at routing 2")
             let marker1 = new google.maps.Marker({
               title: 'Building',
-              map: this.map,
-              position: new google.maps.LatLng(location[1][0], location[1][1]),
+              map: map1,
+              position: new google.maps.LatLng(desLatitude, desLongitude ),
               icon:{
-                url: '../../assets/image/building.svg',
-                size: {
-                    width: 30,
-                    height: 40
-                 }
+                url: './../../assets/image/building.svg',
+                // size: {
+                //     width: 30,
+                //     height: 40
+                //  }
                },
                snippet: '',
             })//end marker building
           }//end if not take bill
           else{
+            console.log("at routing 3")
             let marker1 = new google.maps.Marker({
               title: 'Customer',
-              map: this.map,
-              position: new google.maps.LatLng(location[1][0], location[1][1]),
+              map: map1,
+              position: new google.maps.LatLng(desLatitude, desLongitude),
               icon:{
-                url: '../../assets/image/customer.png',
-                size: {
-                    width: 30,
-                    height: 40
-                 }
+                url: '../../../assets/image/customer.png',
+                // size: {
+                //     width: 30,
+                //     height: 40
+                //  }
                },
                snippet: '',
             })
@@ -465,7 +474,7 @@ export class HomePage {
             this.stateOrder = 2;
             this.toastHandle.presentToast("Take bill success !");
             this.loading.dismiss();
-            this.routingForShipper(this.order[0].latitude, this.order[0].longitude, true);
+            this.routingForShipper(this.order[0].data.latitude, this.order[0].data.longitude, true);
           }, (err) => {
             this.loading.dismiss();
             this.toastHandle.presentToast("Take bill error !");
@@ -526,7 +535,7 @@ export class HomePage {
         map: this.map,
         position: latLng,
         icon:{
-          url: '../../assets/image/shipper.png',
+          url: '../../../assets/image/shipper.png',
           size: {
               width: 30,
               height: 40
@@ -534,8 +543,25 @@ export class HomePage {
          },
          snippet: 'You are here',
       })
-
+      // let location = [
+      //   ["10.828232", "106.679107"],
+      //   ["10.827958", "106.679623"]
+      // ]
       // let marker1 = new google.maps.Marker({
+      //   title: 'You are here',
+      //   map: this.map,
+      //   position: new google.maps.LatLng(location[0][0], location[0][1]),
+      //   icon:{
+      //     url: '../../assets/image/customer.png',
+      //     size: {
+      //         width: 30,
+      //         height: 40
+      //      }
+      //    },
+      //    snippet: 'You are here',
+      // })
+
+      // let marker2 = new google.maps.Marker({
       //   title: 'You are here',
       //   map: this.map,
       //   position: new google.maps.LatLng(location[1][0], location[1][1]),

@@ -24,6 +24,11 @@ export class AppComponent {
       title: 'Order history',
       url: '/order-history',
       icon: 'list'
+    },
+    {
+      title: 'Log out',
+      url: '/logout',
+      icon: 'log-out'
     }
   ];
 
@@ -31,7 +36,7 @@ export class AppComponent {
   isLoadImg = false;
   username: any;
   avatar: any;
-  extraPoint: any;
+  sumRevenue: any;
 
   constructor(
     private platform: Platform,
@@ -63,10 +68,10 @@ export class AppComponent {
     });
   }
 
-  refreshSlideMenu(name, avatar, extraPoint) {
+  refreshSlideMenu(name, avatar, sumRevenue) {
     this.isLoaded = true;
     this.username = name;
-    this.extraPoint = extraPoint;
+    this.sumRevenue = sumRevenue;
     if (avatar) {
       this.isLoadImg = true;
       this.avatar = avatar;

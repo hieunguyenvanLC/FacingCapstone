@@ -38,6 +38,7 @@ export class LoginPage implements OnInit {
     private callNumber: CallNumber,
   ) {
     this.phonenumber = '84965142724';
+    // this.phonenumber = '84932081194';
     this.password = 'zzz';
     this.error = '';
 

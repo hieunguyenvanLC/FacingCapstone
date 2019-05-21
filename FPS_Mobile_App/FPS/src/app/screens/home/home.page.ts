@@ -84,9 +84,8 @@ export class HomePage {
       this.orderService.getCurrentOrder().subscribe(res => {
         console.log("current order")
         let tempArr = [];
-        tempArr.push(res)
-        console.log(tempArr[0].data);
-        this.currentOrder = tempArr[0].data;
+        tempArr.push(res);
+        this.currentOrder = tempArr[0].data.orderId;
         console.log(this.currentOrder);
         if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0){
           this.router.navigate(['check-out', this.currentOrder]);

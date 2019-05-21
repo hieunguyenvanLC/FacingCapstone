@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'profile', loadChildren: './screens/profile/profile.module#ProfilePageModule' },
   { path: 'order-history', loadChildren: './screens/order-history/order-history.module#OrderHistoryPageModule' },
   { path: 'order-detail', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' },
-  { path: 'order-detail/:id', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' }
+  { path: 'order-detail/:id', loadChildren: './screens/order-detail/order-detail.module#OrderDetailPageModule' },
+  { path: 'logout', loadChildren: './screens/logout/logout.module#LogoutPageModule' }
 ];
 
 @NgModule({

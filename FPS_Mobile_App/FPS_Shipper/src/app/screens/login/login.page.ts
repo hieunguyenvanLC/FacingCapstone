@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AccountService } from '../../services/account.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ToasthandleService } from 'src/app/services/toasthandle.service';
 import { StorageApiService } from 'src/app/services/storage-api.service';
+import { IonRouterOutlet, MenuController, Platform } from '@ionic/angular';
 
 
 @Component({
@@ -14,6 +15,11 @@ import { StorageApiService } from 'src/app/services/storage-api.service';
 })
 export class LoginPage implements OnInit {
 
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+
+  lastTimeBackPress = 0;
+  timePeriodToExit = 2000;
+    
   phonenumber: string;
   password: string;
   error: string;
@@ -21,14 +27,19 @@ export class LoginPage implements OnInit {
   account = [];
 
   constructor(
+    private menu: MenuController,
+    private platform: Platform,
     private router: Router,
     private accountService: AccountService,
     private loading : LoadingService,
     private toastHandle: ToasthandleService,
     private storage: StorageApiService,
   ) { 
+    // this.phonenumber = '84965142724';
     this.phonenumber = '84098734455';
     this.password = 'zzz';
+
+    this.backButtonEvent();
   }
 
   async ngOnInit() {
@@ -121,6 +132,78 @@ export class LoginPage implements OnInit {
 
     return await result;
   }
+
+  backButtonEvent() {
+    this.platform.backButton.subscribe(async () => {
+        // // close action sheet
+        // try {
+        //     const element = await this.actionSheetCtrl.getTop();
+        //     if (element) {
+        //         element.dismiss();
+        //         return;
+        //     }
+        // } catch (error) {
+        // }
+
+        // // close popover
+        // try {
+        //     const element = await this.popoverCtrl.getTop();
+        //     if (element) {
+        //         element.dismiss();
+        //         return;
+        //     }
+        // } catch (error) {
+        // }
+
+        // // close modal
+        // try {
+        //     const element = await this.modalCtrl.getTop();
+        //     if (element) {
+        //         element.dismiss();
+        //         return;
+        //     }
+        // } catch (error) {
+        //     console.log(error);
+
+        // }
+
+        // // close side menua
+        // try {
+        //     const element = await this.menu.getOpen();
+        //     if (element !== null) {
+        //         this.menu.close();
+        //         return;
+
+        //     }
+
+        // } catch (error) {
+
+        // }
+
+        this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
+            if (outlet && outlet.canGoBack()) {
+                outlet.pop();
+
+            } else if (this.router.url === '/login') {
+                if (new Date().getTime() - this.lastTimeBackPress < this.timePeriodToExit) {
+                    // this.platform.exitApp(); // Exit from app
+                    navigator['app'].exitApp(); // work for ionic 4
+
+                } else {
+                    // this.toast.show(
+                    //     `Press back again to exit App.`,
+                    //     '2000',
+                    //     'center')
+                    //     .subscribe(toast => {
+                    //         // console.log(JSON.stringify(toast));
+                    //     });
+                    this.toastHandle.presentToast("Press back again to exit App.");
+                    this.lastTimeBackPress = new Date().getTime();
+                }
+            }
+        });
+    });
+}
 
 
 }

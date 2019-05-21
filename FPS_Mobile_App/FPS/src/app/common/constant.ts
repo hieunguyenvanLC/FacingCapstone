@@ -1,10 +1,12 @@
 export class Constant {
     public APIURL = "http://localhost:8080";
-    // public APIURL = "http://192.168.43.247:8080";
+    // public APIURL = "http://172.20.10.3:8080";
+    // public APIURL = "http://192.168.100.167:8080";
     public GOOGLEAPI = "https://maps.googleapis.com/maps/api/directions/json?origin="
     //https://maps.googleapis.com/maps/api/directions/json?origin=10.8529021,106.6295327&destination=10.857733,106.628304&key=AIzaSyDjWQt6GF2HGafIImK98n_OzfaC0tk2hUU
     public GOOGLEKEY = "AIzaSyASMHVlLhJr78esAqJVglJU67r-SD-VBNQ";
     // public GOOGLEKEY = "AIzaSyDjWQt6GF2HGafIImK98n_OzfaC0tk2hUU";
+    public PAYPAL_SANDBOX_KEY = "AU0bvhMKXYCMozXlPgQakOyw_Gk-FnT2emB1gABLwfzv9grO8GBAc3DnR_7jNr72YKpN8nThOQ8bzo3u";
     
 
     // MAPPING API
