@@ -78,7 +78,7 @@ public class AccountController extends AbstractController {
     }
 
 
-    @GetMapping(Fix.MAP_MEM + API + "/deposit")
+    @PostMapping(Fix.MAP_MEM + API + "/deposit")
     public String depositToWallet(double amount) {
         Response<Double> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
