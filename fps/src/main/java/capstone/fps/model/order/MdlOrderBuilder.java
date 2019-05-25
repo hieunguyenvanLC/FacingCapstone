@@ -19,13 +19,13 @@ public class MdlOrderBuilder {
         mdlOrder.id = frOrder.getId();
         mdlOrder.buyerName = frOrder.getAccount().getName();
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
-        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
+//        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
+//        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         FRShipper shipper = frOrder.getShipper();
         if (shipper != null) {
             mdlOrder.shipperName = shipper.getAccount().getName();
             mdlOrder.shipperPhone = shipper.getAccount().getPhone();
         }
-        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.assignTime = frOrder.getAssignTime();
@@ -98,11 +98,11 @@ public class MdlOrderBuilder {
 //        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
 //        mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
         mdlOrder.totalPrice = frOrder.getTotalPrice();
-        if(frOrder.getShipper() != null){
+        if (frOrder.getShipper() != null) {
 
             mdlOrder.shipperPhone = frOrder.getShipper().getAccount().getPhone();
             mdlOrder.shipperName = frOrder.getShipper().getAccount().getName();
-        }else{
+        } else {
             mdlOrder.shipperPhone = "";
             mdlOrder.shipperName = "";
         }
@@ -146,12 +146,12 @@ public class MdlOrderBuilder {
         mdlOrder.buyerName = frOrder.getAccount().getName();
         mdlOrder.buyerPhone = frOrder.getAccount().getPhone();
         mdlOrder.buyerFace = methods.bytesToBase64(frOrder.getBuyerFace());
+        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         FRShipper shipper = frOrder.getShipper();
         if (shipper != null) {
             mdlOrder.shipperName = shipper.getAccount().getName();
             mdlOrder.shipperPhone = shipper.getAccount().getPhone();
         }
-        mdlOrder.bill = methods.bytesToBase64(frOrder.getBill());
         mdlOrder.orderCode = frOrder.getOrderCode();
         mdlOrder.totalPrice = frOrder.getTotalPrice();
         mdlOrder.assignTime = frOrder.getAssignTime();

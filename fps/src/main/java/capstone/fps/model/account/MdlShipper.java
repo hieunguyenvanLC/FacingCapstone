@@ -35,6 +35,8 @@ public class MdlShipper {
     @Expose
     Integer status;
     @Expose
+    String avatar;
+    @Expose
     String editor;
 
 

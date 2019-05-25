@@ -47,12 +47,11 @@ import org.springframework.stereotype.Component;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LoginService loginService;
-    private AccountService accountService;
+
 
     @Autowired
-    public WebSecurityConfig(LoginService loginService, AccountService accountService) {
+    public WebSecurityConfig(LoginService loginService) {
         this.loginService = loginService;
-        this.accountService = accountService;
     }
 
     @Autowired

@@ -412,7 +412,7 @@ $(document).ready(function () {
             mainChart.draw(mainDataTable, options);
         } else {
             initGoogleChart(0);
-            options.chartArea = {left: 60, top: 40, width: '80%', height: '85%'};
+            options.chartArea = {left: 60, top: 40, width: '80%', height: '80%'};
             mainChart.draw(mainDataTable, options); // Bar => Line (doi chart)
         }
     }

@@ -1,15 +1,18 @@
 package capstone.fps.common;
 
 import capstone.fps.entity.FRAccount;
+import capstone.fps.repository.AccountRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +23,7 @@ import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+
 
 public final class Methods {
 
@@ -36,8 +40,9 @@ public final class Methods {
         return roles.get(0).getAuthority();
     }
 
-    public FRAccount getUser() {
-        return (FRAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public FRAccount getUser(AccountRepo accountRepo) {
+        FRAccount frAccount = (FRAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return accountRepo.findById(frAccount.getId()).orElse(null);
     }
 
     public String hashPass(String input) {

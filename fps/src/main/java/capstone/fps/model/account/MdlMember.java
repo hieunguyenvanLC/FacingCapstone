@@ -46,4 +46,6 @@ public class MdlMember {
     String avatar;
     @Expose
     MdlFace[] faceList;
+    @Expose
+    Double wallet;
 }

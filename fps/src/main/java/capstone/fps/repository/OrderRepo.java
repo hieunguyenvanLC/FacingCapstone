@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepo extends JpaRepository<FROrder, Integer> {
-
     List<FROrder> findAllByAccountAndStatusIn(FRAccount account, int[] status);
 
     List<FROrder> findAllByAccount(FRAccount account);

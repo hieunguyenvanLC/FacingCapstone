@@ -31,9 +31,9 @@ public interface Fix {
 //    Path IMG_DIR_PATH = Paths.get("../../faces/").toAbsolutePath().normalize();
 
     String FACE_FOLDER = "/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/fps/";
-    String TEST_FACE_FOLDER="/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/testFace/";
-    String CROP_FACE_FOLDER="/Users/nguyenvanhieu/Project/CapstoneProject/docker/output/fps/";
-    String CROP_TEST_FACE_FOLDER="/Users/nguyenvanhieu/Project/CapstoneProject/docker/output/test/";
+    String TEST_FACE_FOLDER = "/Users/nguyenvanhieu/Project/CapstoneProject/docker/data/testFace/";
+    String CROP_FACE_FOLDER = "/Users/nguyenvanhieu/Project/CapstoneProject/docker/output/fps/";
+    String CROP_TEST_FACE_FOLDER = "/Users/nguyenvanhieu/Project/CapstoneProject/docker/output/test/";
     String DEF_IMG_TYPE = "jpeg";
 
     String PAYPAL_CLIENT_ID = "Ae-WAkmVpZzdf5yYCDsw712GLWeT1RMqWTwirxkRRFnEEvMWKKxvpcn6WW7k2tv6Ck7RmRDEPLLUdJ0F";
@@ -81,7 +81,6 @@ public interface Fix {
     Stat STO_NEW = new Stat(1, "new");
     Stat STO_HID = new Stat(2, "hidden");
     Stat[] STO_STAT_LIST = {STO_NEW, STO_HID};
-
 
 
 }
