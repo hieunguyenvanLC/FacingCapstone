@@ -8,7 +8,7 @@ public class OrderNode {
     private final List<OrderStat> statList;
 
     public OrderNode() {
-        this.statList = new LinkedList<>();
+        this.statList = new ArrayList<>();
     }
 
     public List<OrderStat> getStatList() {

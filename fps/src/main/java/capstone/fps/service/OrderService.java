@@ -1097,7 +1097,7 @@ public class OrderService {
         Integer currentOrder = currentUser.getCurrentOrder();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orderId", currentOrder);
-        jsonObject.addProperty("orderStatus", orderRepository.findById(currentOrder).orElse(null).getStatus());
+//        jsonObject.addProperty("orderStatus", orderRepository.findById(currentOrder).orElse(null).getStatus());
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, jsonObject);
         return response;
     }
