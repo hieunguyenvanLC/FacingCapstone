@@ -12,13 +12,14 @@ import { ActionSheetHandleService } from 'src/app/services/action-sheet-handle.s
 import { AppModule } from 'src/app/app.module';
 import { AppComponent } from 'src/app/app.component';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit{
+export class ProfilePage implements OnInit {
 
   userDetail = [];
   status_code = 0;
@@ -52,6 +53,7 @@ export class ProfilePage implements OnInit{
     private payPal: PayPal,
     private loading: LoadingService,
     private alertController: AlertController,
+    private alertService : AlertService,
   ) {
     this.userDetail.length = 0;
     // this.fullName = "";
@@ -122,7 +124,7 @@ export class ProfilePage implements OnInit{
     //1 is take from libary
     //2 is take from camera
     let options: CameraOptions = {};
-    if (num == 1){
+    if (num == 1) {
       options = {
         quality: 100,
         destinationType: this.camera.DestinationType.DATA_URL,
@@ -133,7 +135,7 @@ export class ProfilePage implements OnInit{
         correctOrientation: true,
       }
     }//end if num = 1
-    else{
+    else {
       options = {
         quality: 100,
         destinationType: this.camera.DestinationType.DATA_URL,
@@ -160,14 +162,14 @@ export class ProfilePage implements OnInit{
       this.myPhotoBinary = imageData;
 
       console.log(this.myPhotoBinary);
-      this.loading.present('Loading...').then(() =>{
+      this.loading.present('Loading...').then(() => {
         this.accountService.updateAvatar(this.myPhotoBinary).subscribe(res => {
           console.log(res);
           this.updateAvatar();
           this.loading.dismiss();
         })//end update avatar
       })//end loading
-      
+
       // this.accountService.updateImageMember()
     }, (err) => {
       console.log("error at takephoto :" + err)
@@ -220,8 +222,12 @@ export class ProfilePage implements OnInit{
     let USD = 23255.814
     let money_USD = (this.newMoney / USD).toFixed(2);
     console.log(money_USD);
-    await this.paymentActionSheet(this.newMoney, money_USD, '', this.userDetail[0].data.phone)
-    
+    if (this.newMoney !== '') {
+      await this.paymentActionSheet(this.newMoney, money_USD, '', this.userDetail[0].data.phone)
+    }//end if check # null
+    else{
+      await this.alertService.presentAlertWithMsg("ERROR", "Please input amount of money !")
+    }
   }
 
   async presentEditAvaActionSheet() {
@@ -254,7 +260,7 @@ export class ProfilePage implements OnInit{
     await actionSheet.present();
   }
 
-  async updateWallet(){
+  async updateWallet() {
     await this.accountService.getAvatar().subscribe(res => {
       let tempArr = [];
       tempArr.push(res)
@@ -264,7 +270,7 @@ export class ProfilePage implements OnInit{
     })//end api get ava
   }
 
-  async updateAvatar(){
+  async updateAvatar() {
     await this.accountService.getAvatar().subscribe(res => {
       let tempArr = [];
       tempArr.push(res)

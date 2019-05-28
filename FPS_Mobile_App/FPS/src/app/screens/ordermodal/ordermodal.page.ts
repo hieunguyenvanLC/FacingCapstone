@@ -38,8 +38,9 @@ export class OrdermodalPage implements OnInit {
   orderStatus: any;
 
   tokenFCM: any;
-  note : any;
-  wallet : any;
+  note: any;
+  wallet: any;
+  isCreated = false;
 
   constructor(
     private navParams: NavParams,
@@ -54,7 +55,7 @@ export class OrdermodalPage implements OnInit {
     private firebase: Firebase,
     public alertController: AlertController,
     private alertHandle: AlertService,
-    private accountService : AccountService,
+    private accountService: AccountService,
   ) {
     // componentProps can also be accessed at construction time using NavParams
     this.prodList = "";
@@ -67,7 +68,7 @@ export class OrdermodalPage implements OnInit {
     console.log(this.note);
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
 
-    
+
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -122,58 +123,62 @@ export class OrdermodalPage implements OnInit {
   }
 
   async checkout() {
-    if (this.total > this.myOrder[0].userWallet){
-      this.presentWarningAlert();
+    if (this.myOrder[0].userStatus === 2){
+      this.alertHandle.presentAlertWithMsg("WARNING", "Your account is being verified. Please try later !")
+    }else
+    if (this.total > this.myOrder[0].userWallet) {
+      this.presentWarningAlert(); //show warning alert
     }//end if total > wallet 
-    else{
+    else {
       console.log(this.myOrder[0].products.length)
-    for (let i = 0; i < this.myOrder[0].products.length; i++) {
-      const element = this.myOrder[0].products[i];
-      if (element != undefined) {
-        if (i == this.myOrder[0].products.length - 1) {
-          this.prodList += element.id + "x" + element.quantity;
-        } else {
-          this.prodList += element.id + "x" + element.quantity + "n";
+      for (let i = 0; i < this.myOrder[0].products.length; i++) {
+        const element = this.myOrder[0].products[i];
+        if (element != undefined) {
+          if (i == this.myOrder[0].products.length - 1) {
+            this.prodList += element.id + "x" + element.quantity;
+          } else {
+            this.prodList += element.id + "x" + element.quantity + "n";
+          }
         }
+
+
       }
+      //this.router.navigateByUrl("order");
+      console.log("cb create")
+      await this.orderService.createOrder(this.myOrder[0].longitudeCus,
+        this.myOrder[0].latitudeCus,
+        this.note,
+        this.prodList,
+        this.myOrder[0].distance,
+        this.tokenFCM,
+        this.myOrder[0].currentAddress)
+        .subscribe(data => {
+          console.log(data);
+          console.log("in create order ----");
+          this.temp.push(data);
 
+          //if not success, toast for error
+          if (this.temp[0].message !== "Success") {
+            this.presentToast("Error check out ! Try again !");
+          } else {
+            //handle success api create order
+            //this.loading.present("Finding shipper for your order...");
+            //this.presentToast("Order success ! Finding shipper...");
+            this.alertHandle.presentAler();
+            console.log(this.temp[0].data);
+            this.isCreated = true;
 
+            //get id order
+            this.orderId = this.temp[0].data;
+            console.log(this.orderId);
+          }
+
+          console.log("--end create order");
+        });
+
+      //get user status
     }
-    //this.router.navigateByUrl("order");
-    console.log("cb create")
-    await this.orderService.createOrder(this.myOrder[0].longitudeCus, 
-                                        this.myOrder[0].latitudeCus, 
-                                        this.note, 
-                                        this.prodList, 
-                                        this.myOrder[0].distance, 
-                                        this.tokenFCM, 
-                                        this.myOrder[0].currentAddress)
-      .subscribe(data => {
-        console.log(data);
-        console.log("in create order ----");
-        this.temp.push(data);
 
-        //if not success, toast for error
-        if (this.temp[0].message !== "Success") {
-          this.presentToast("Error check out ! Try again !");
-        } else {
-          //handle success api create order
-          //this.loading.present("Finding shipper for your order...");
-          //this.presentToast("Order success ! Finding shipper...");
-          this.alertHandle.presentAler();
-          console.log(this.temp[0].data);
-
-          //get id order
-          this.orderId = this.temp[0].data;
-          console.log(this.orderId);
-        }
-
-        console.log("--end create order");
-      });
-
-    //get user status
-    }
-    
 
 
   }//end checkout
@@ -218,10 +223,11 @@ export class OrdermodalPage implements OnInit {
             console.log('Confirm Okay');
             // return false;
             //cancel order
-            this.orderService.cancelOrder(this.orderId,this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
-                             .subscribe(res => {
-                              console.log(res)
-                             })//end api cancel
+            this.orderService.cancelOrder(this.orderId, this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
+              .subscribe(res => {
+                console.log(res)
+                this.isCreated = false;
+              })//end api cancel
           }
         }
       ]
@@ -230,6 +236,14 @@ export class OrdermodalPage implements OnInit {
     await alert.present();
     alert.dismiss();
   }
+
+  cancelOrder() {
+    this.orderService.cancelOrder(this.orderId, this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
+      .subscribe(res => {
+        console.log(res)
+        this.isCreated = false;
+      })//end api cancel
+  }//end cancel order
 
   async showAddressModal() {
     // let modal = this.modalCtrl.create(AutocompletePage);
@@ -280,7 +294,7 @@ export class OrdermodalPage implements OnInit {
           handler: (blah) => {
             console.log('Confirm Cancel: blah');
           }
-        }, 
+        },
         // {
         //   text: 'Okay',
         //   handler: () => {

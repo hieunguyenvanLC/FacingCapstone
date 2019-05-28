@@ -11,7 +11,8 @@
   <div style="padding: 5px">
     Delivery to
     <!-- <p class="primary-text">{{myOrder[0].currentAddress}}</p> -->
-    <ion-textarea no-padding type="text" color="primary" (click)="showAddressModal()" [(ngModel)]="myOrder[0].currentAddress" value="myOrder[0].currentAddress" position="fixed"></ion-textarea>
+    <ion-textarea no-padding type="text" color="primary" (click)="showAddressModal()"
+      [(ngModel)]="myOrder[0].currentAddress" value="myOrder[0].currentAddress" position="fixed"></ion-textarea>
     Your order from <strong>{{myOrder[0].addressStore}}</strong>
     <br>
     <ion-label class="font-10" color="medium">Duration: {{myOrder[0].duration}} ({{myOrder[0].distance}} km)</ion-label>
@@ -49,39 +50,55 @@
   <!-- end item group -->
 
   <!-- <ion-item> -->
-    <br>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="9">
-          Subtotal
-        </ion-col>
-        <ion-col size="3">
-          {{(myOrder[0].subTotal/1000).toFixed(3)}} ₫
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="9">
-          Delivery fees
-        </ion-col>
-        <ion-col size="3">
-          {{(myOrder[0].shpEarn/1000).toFixed(3)}} ₫
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <br>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="9">
+        Subtotal
+      </ion-col>
+      <ion-col size="3">
+        {{(myOrder[0].subTotal/1000).toFixed(3)}} ₫
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="9">
+        Delivery fees
+      </ion-col>
+      <ion-col size="3">
+        {{(myOrder[0].shpEarn/1000).toFixed(3)}} ₫
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <!-- </ion-item> -->
   <ion-grid>
-      <br>
-      <ion-row>
-          <ion-col size="9">
-            Total
-          </ion-col>
-          <ion-col size="3">
-            {{(total/1000).toFixed(3)}} ₫
-          </ion-col>
-        </ion-row>
+    <br>
+    <ion-row>
+      <ion-col size="9">
+        Total
+      </ion-col>
+      <ion-col size="3">
+        {{(total/1000).toFixed(3)}} ₫
+      </ion-col>
+    </ion-row>
   </ion-grid>
+
+  <div *ngIf=(isCreated)>
+    <ion-list lines="none">
+      <ion-item>
+        <ion-label color="" style="margin-left: 40px;">Finding your shipper</ion-label>
+        <ion-spinner name="lines-small" style="margin-right: 30px;"></ion-spinner>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>
 
 <ion-footer class="footer">
-  <ion-button expand="full" (click)="checkout()">Create Order</ion-button>
+  <div *ngIf=(!isCreated)>
+    <ion-button expand="full" (click)="checkout()">Create Order</ion-button>
+  </div>
+  <div *ngIf=(isCreated)>
+    <ion-button expand="full" (click)="cancelOrder()" color="danger">
+      Cancel
+    </ion-button>
+  </div>
 </ion-footer>

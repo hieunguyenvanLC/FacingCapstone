@@ -41,6 +41,7 @@
 
       </ion-col>
     </ion-row>
+
     <!-- End password-->
 
     <!-- Fullname -->
@@ -58,18 +59,18 @@
       </ion-col>
     </ion-row>
     <!-- End Fullname-->
-
+  </ion-grid>
 
   <ion-item-divider color="light">Your face image </ion-item-divider>
   <div padding class="item-center" *ngIf=(!face3)>
     <div *ngIf="temp == 0">
-        <ion-button color="primary" (click)="presentAlertConfirm()">Take picture</ion-button>
+      <ion-button color="primary" (click)="presentAlertConfirm()">Take picture</ion-button>
     </div>
     <div *ngIf="temp == 1">
-        <ion-button color="primary" (click)="presentAlertConfirm_2()">Take picture</ion-button>
+      <ion-button color="primary" (click)="presentAlertConfirm_2()">Take picture</ion-button>
     </div>
     <div *ngIf="temp == 2">
-        <ion-button color="primary" (click)="presentAlertConfirm_3()">Take picture</ion-button>
+      <ion-button color="primary" (click)="presentAlertConfirm_3()">Take picture</ion-button>
     </div>
   </div>
   <!-- face 1 -->
@@ -91,7 +92,7 @@
   </ion-item>
   <!-- end face 1 -->
 
-  <!-- face 2 -->
+  <!-- face 2 left -->
   <ion-item *ngIf=(face2)>
     <div class="card-drop">
       <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->
@@ -110,7 +111,7 @@
   </ion-item>
   <!-- end face 2 -->
 
-  <!-- face 3 -->
+  <!-- face 3 right -->
   <ion-item *ngIf=(face3)>
     <div class="card-drop">
       <!--*ngFor="let crop of listSearch" [routerLink]="['/cropdetail', crop.id]" -->

@@ -40,6 +40,7 @@ export class StorePage implements OnInit {
   currentAddress: any;
   isLoaded = false;
   userWallet : any;
+  userStatus : any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -56,6 +57,7 @@ export class StorePage implements OnInit {
     this.products.length = 0;
 
     this.userWallet = '';
+    this.userStatus = '';
 
     this.latitudeCus = '';
     this.longitudeCus = '';
@@ -151,6 +153,7 @@ export class StorePage implements OnInit {
           latitudeCus: this.latitudeCus,
           longitudeCus: this.longitudeCus,
           userWallet : this.userWallet,
+          userStatus : this.userStatus,
         }]
 
       }
@@ -240,6 +243,7 @@ export class StorePage implements OnInit {
         let tempArr = [];
         tempArr.push(res);
       this.userWallet = tempArr[0].data.wallet;
+      this.userStatus = tempArr[0].data.status;
       console.log(this.userWallet);
     })//end api get avatar 
   }

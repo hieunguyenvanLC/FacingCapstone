@@ -37,8 +37,9 @@ export class LoginPage implements OnInit {
     private loading: LoadingService,
     private callNumber: CallNumber,
   ) {
-    // this.phonenumber = '84965142724';
-    this.phonenumber = '84932081194';
+    this.phonenumber = '84965142724';
+    // this.phonenumber = '84932081194'; //acc NVH
+    // this.phonenumber = '84932081194';
     this.password = 'zzz';
     this.error = '';
 
@@ -65,12 +66,12 @@ export class LoginPage implements OnInit {
         //let body = res.json();  // If response is a JSON use json()
 
         this.account.push(res);
-
         if (this.account) {
           //if (role === "ROLE_MEMBER"){
           if (this.account[0].data === "ROLE_MEMBER") {
             this.error = '';
             this.getDetailAccount();
+            this.router.navigateByUrl("home");
             sleep(1000).then(() => {
               //get storage
               this.getStorage();
@@ -104,7 +105,7 @@ export class LoginPage implements OnInit {
     this.storage.get("ACCOUNT").then(value => {
       //  console.log(value)
       //  console.log("in get account")
-      this.router.navigateByUrl("home");
+      // this.router.navigateByUrl("home");
     }).catch(Err => {
       console.log(Err);
     });
@@ -128,11 +129,6 @@ export class LoginPage implements OnInit {
     }, () => {
 
     });
-
-
-
-
-
     return await result;
   }
 
