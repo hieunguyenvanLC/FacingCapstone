@@ -99,7 +99,12 @@ public final class Methods {
         if (base64 == null) {
             return null;
         }
-        return Base64.decodeBase64(base64);
+//        return Base64.decodeBase64(base64);
+        try {
+            return Base64.decodeBase64(base64);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public byte[] multipartToBytes(MultipartFile input) {
