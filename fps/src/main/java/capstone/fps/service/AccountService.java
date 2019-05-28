@@ -675,7 +675,6 @@ public class AccountService {
 //    }
 
 
-
     // Mobile Member - Register - End
 
 
@@ -715,21 +714,22 @@ public class AccountService {
     }
 
     private void setRevMemFace(Methods methods, FRReceiveMember frReceiveMember, String face, int pointer, String dirName) {
-        if (face != null) {
-            byte[] faceBytes = methods.base64ToBytes(face);
-            switch (pointer) {
-                case 1:
-                    frReceiveMember.setFace1(faceBytes);
-                    break;
-                case 2:
-                    frReceiveMember.setFace2(faceBytes);
-                    break;
-                case 3:
-                    frReceiveMember.setFace3(faceBytes);
-                    break;
-            }
-            putFaceToPythonDir(dirName, faceBytes);
+        byte[] faceBytes = methods.base64ToBytes(face);
+        if (faceBytes == null) {
+            return;
         }
+        switch (pointer) {
+            case 1:
+                frReceiveMember.setFace1(faceBytes);
+                break;
+            case 2:
+                frReceiveMember.setFace2(faceBytes);
+                break;
+            case 3:
+                frReceiveMember.setFace3(faceBytes);
+                break;
+        }
+        putFaceToPythonDir(dirName, faceBytes);
     }
 
     public Response<String> updateMemberFaceMem(Integer revMemId, String revMemName, String face1, String face2, String face3) {
