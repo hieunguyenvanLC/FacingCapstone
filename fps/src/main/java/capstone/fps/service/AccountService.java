@@ -4,9 +4,8 @@ import capstone.fps.common.*;
 import capstone.fps.entity.*;
 import capstone.fps.model.Response;
 import capstone.fps.model.account.*;
+import capstone.fps.model.order.MdlTransaction;
 import capstone.fps.repository.*;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,9 +30,9 @@ public class AccountService {
     private ReceiveMemberRepo receiveMemberRepo;
     private PaymentTypeRepo paymentTypeRepo;
     private PaymentInfoRepo paymentInfoRepo;
+    private TransactionRepo transactionRepo;
 
-
-    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo, ReceiveMemberRepo receiveMemberRepo, PaymentTypeRepo paymentTypeRepo, PaymentInfoRepo paymentInfoRepo) {
+    public AccountService(AccountRepo accountRepo, RoleRepo roleRepo, SourceRepo sourceRepo, PriceLevelRepo priceLevelRepo, ShipperRepo shipperRepo, ReceiveMemberRepo receiveMemberRepo, PaymentTypeRepo paymentTypeRepo, PaymentInfoRepo paymentInfoRepo, TransactionRepo transactionRepo) {
         this.accountRepo = accountRepo;
         this.roleRepo = roleRepo;
         this.sourceRepo = sourceRepo;
@@ -42,6 +41,7 @@ public class AccountService {
         this.receiveMemberRepo = receiveMemberRepo;
         this.paymentTypeRepo = paymentTypeRepo;
         this.paymentInfoRepo = paymentInfoRepo;
+        this.transactionRepo = transactionRepo;
     }
 
     private FRRole initRole(String name) {
@@ -675,7 +675,6 @@ public class AccountService {
 //    }
 
 
-
     // Mobile Member - Register - End
 
 
@@ -838,7 +837,7 @@ public class AccountService {
         return response;
     }
 
-    public Response<Double> depositToWallet(double amount) {
+    public Response<Double> depositToWallet(String paymentId, double amount) {
         Methods methods = new Methods();
         Response<Double> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
 
@@ -847,12 +846,37 @@ public class AccountService {
             response.setResponse(Response.STATUS_FAIL, "Cant find account");
             return response;
         }
+
         Double total = frAccount.getWallet() + amount;
         frAccount.setWallet(total);
         accountRepo.save(frAccount);
+        FRTransaction frTransaction = new FRTransaction();
+        frTransaction.setAmount(amount);
+        frTransaction.setPayId(paymentId);
+        frTransaction.setTime(methods.getTimeNow());
+        frTransaction.setAccount(frAccount);
+        transactionRepo.save(frTransaction);
         response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, total);
         return response;
 
+    }
+
+    public Response<List<MdlTransaction>> getListTransactionMem() {
+        Methods methods = new Methods();
+        Response<List<MdlTransaction>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+
+        FRAccount frAccount = methods.getUser(accountRepo);
+        if (frAccount == null) {
+            response.setResponse(Response.STATUS_FAIL, "Cant find account");
+            return response;
+        }
+        List<FRTransaction> allByAccount = transactionRepo.findAllByAccount(frAccount);
+        List<MdlTransaction> mdlTransactionList = new ArrayList<>();
+        for (FRTransaction frTransaction : allByAccount) {
+            mdlTransactionList.add(new MdlTransaction(frTransaction));
+        }
+        response.setResponse(Response.STATUS_SUCCESS, Response.MESSAGE_SUCCESS, mdlTransactionList);
+        return response;
     }
 
 

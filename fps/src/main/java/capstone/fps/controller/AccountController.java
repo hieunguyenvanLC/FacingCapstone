@@ -5,6 +5,7 @@ import capstone.fps.model.Response;
 import capstone.fps.model.account.MdlAdmin;
 import capstone.fps.model.account.MdlMember;
 import capstone.fps.model.account.MdlShipper;
+import capstone.fps.model.order.MdlTransaction;
 import capstone.fps.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -79,16 +80,29 @@ public class AccountController extends AbstractController {
 
 
     @PostMapping(Fix.MAP_MEM + API + "/deposit")
-    public String depositToWallet(double amount) {
+    public String depositToWallet(String paymentId , double amount) {
         Response<Double> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
         try {
-            response = accountService.depositToWallet(amount);
+            response = accountService.depositToWallet(paymentId, amount);
         } catch (Exception e) {
             e.printStackTrace();
             response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
         }
         return gson.toJson(response);
     }
+
+    @GetMapping(Fix.MAP_MEM + API + "/wallet")
+    public String getListTransactionMem() {
+        Response<List<MdlTransaction>> response = new Response<>(Response.STATUS_FAIL, Response.MESSAGE_FAIL);
+        try {
+            response = accountService.getListTransactionMem();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse(Response.STATUS_SERVER_ERROR, Response.MESSAGE_SERVER_ERROR);
+        }
+        return gson.toJson(response);
+    }
+
 
     @PutMapping(Fix.MAP_ADM + API + "/mem")
     public String updateMemberAdm(int accId, String name, String email, Long dob, String note, Integer status) {

@@ -26,6 +26,7 @@ public class FRPaymentInformation implements Serializable {
     @Column(name = "password", length = 300)
     private String password;
 
+
     public FRPaymentInformation() {
     }
 

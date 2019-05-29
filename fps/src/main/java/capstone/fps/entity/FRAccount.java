@@ -81,7 +81,8 @@ public class FRAccount implements UserDetails {
     private Collection<FRProduct> productCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "editor")
     private Collection<FROrder> orderEditorCollection;
-
+   @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private Collection<FRTransaction> transactionCollection ;
     public FRAccount() {
     }
 

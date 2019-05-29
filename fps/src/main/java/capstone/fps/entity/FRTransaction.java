@@ -20,8 +20,8 @@ public class FRTransaction {
     @Column(name = "time")
     private Long time;
     @ManyToOne
-    @JoinColumn(name = "FR_Payment_Information_id")
-    private FRPaymentInformation paymentInformation;
+    @JoinColumn(name = "FR_Account_id")
+    private FRAccount account;
 
     public FRTransaction() {
     }
@@ -58,11 +58,11 @@ public class FRTransaction {
         this.time = time;
     }
 
-    public FRPaymentInformation getPaymentInformation() {
-        return paymentInformation;
+    public FRAccount getAccount() {
+        return account;
     }
 
-    public void setPaymentInformation(FRPaymentInformation paymentInformation) {
-        this.paymentInformation = paymentInformation;
+    public void setAccount(FRAccount account) {
+        this.account = account;
     }
 }
