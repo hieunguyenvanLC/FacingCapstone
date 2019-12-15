@@ -67,5 +67,5 @@
 
 </ion-content>
 <ion-footer *ngIf=(isHaveProduct) class="footer">
-  <ion-button expand="full" (click)="openOrderModal()">Your cart: {{num}} item(s) - {{(total/1000).toFixed(3)}} ₫</ion-button>
+  <ion-button expand="full" (click)="openOrderModal()">Your cart: {{num}} item(s) - {{appComponent.formatNumber(total)}} ₫</ion-button>
 </ion-footer>

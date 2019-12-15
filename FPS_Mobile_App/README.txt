@@ -124,3 +124,17 @@ npm install @ionic-native/call-number
 ----------
 fix bug node sass
 sudo npm install --save-dev  --unsafe-perm node-sass
+--------
+fix firebase version
+cordova.system.library.6=com.google.firebase:firebase-core:16.0.8
+cordova.system.library.7=com.google.firebase:firebase-messaging:17.5.0
+cordova.system.library.8=com.google.firebase:firebase-config:16.4.1
+cordova.system.library.9=com.google.firebase:firebase-perf:16.2.4
+
+in project.properties
+
+---------
+Paypal
+
+ionic cordova plugin add com.paypal.cordova.mobilesdk
+npm install @ionic-native/paypal

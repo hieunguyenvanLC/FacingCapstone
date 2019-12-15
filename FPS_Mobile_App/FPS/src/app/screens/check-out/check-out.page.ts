@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 @Component({
   selector: 'app-check-out',
@@ -30,6 +31,7 @@ export class CheckOutPage implements OnInit {
     private fcm: FCM,
     private router : Router,
     private callNumber: CallNumber,
+    private firebase: Firebase,
   ) {
     this.myOrder.length = 0;
     this.orderId = this.route.snapshot.params['id'];
@@ -43,7 +45,10 @@ export class CheckOutPage implements OnInit {
         //this.dismissModal();
         //this.loading.dismiss();
         //this.alertHandle.dissmissAlert();
-        this.router.navigate(['rating', data.orderId]);
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
+          this.router.navigate(['rating', data.orderId]);
+        }
+        
         //data.order.id
 
       } else {
@@ -51,10 +56,23 @@ export class CheckOutPage implements OnInit {
         //this.dismissModal();
         //this.loading.dismiss();
         //this.alertHandle.dissmissAlert();
-        this.router.navigate(['rating', data.orderId]);
+        //this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
+          this.router.navigate(['rating', data.orderId]);
+        }
       }
     });// end fcm
 
+    this.firebase.onNotificationOpen()
+      .subscribe(data => {
+        console.log('Received in rating background 2');
+       //this.dismissModal();
+        //this.loading.dismiss();
+        //this.alertHandle.dissmissAlert();
+        if (data.orderId !== '' && data.orderId !== undefined && data.orderId !== 0){
+          this.router.navigate(['rating', data.orderId]);
+        }
+      });
     console.log("1");
     this.getOrderbyID();
   }

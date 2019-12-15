@@ -53,6 +53,7 @@ export class RegistorPage implements OnInit {
     private loading : LoadingService,
     private alertService : AlertService,
   ) {
+    this.phoneNumber = "";
     this.password = "";
     this.fullname = "";
 
@@ -70,6 +71,7 @@ export class RegistorPage implements OnInit {
 
 
   ngOnInit() {
+    
   }
 
   backToLogin() {
@@ -79,10 +81,28 @@ export class RegistorPage implements OnInit {
 
 
   onSubmit() {
+    if (this.phoneNumber === '' || this.phoneNumber === undefined){
+      this.alertService.presentAlertWithMsg("ERROR", "Please input your phone number");
+    }else
+    if (this.password === '' || this.password === undefined){
+      this.alertService.presentAlertWithMsg("ERROR", "Please input your password");
+    }else
+    if (this.fullname === '' || this.fullname === undefined){
+      this.alertService.presentAlertWithMsg("ERROR", "Please input your full name");
+    }else
+    if ( (this.face1 === '' && this.face1_Binary === '')  || (this.face1 === undefined && this.face1_Binary === undefined)){
+      this.alertService.presentAlertWithMsg("ERROR", "Please take your front face");
+    }else
+    if ( (this.face2 === '' && this.face2_Binary === '')  || (this.face2 === undefined && this.face2_Binary === undefined)){
+      this.alertService.presentAlertWithMsg("ERROR", "Please take your left face");
+    }else
+    if ( (this.face3 === '' && this.face3_Binary === '')  || (this.face3 === undefined && this.face3_Binary === undefined)){
+      this.alertService.presentAlertWithMsg("ERROR", "Please take your right face");
+    }else{
     this.phoneNumber = this.phoneNumber.replace("+", "");
     // console.log(this.myPhotoBinary);
     this.loading.present('Creating...').then( () => {
-      this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.face1_Binary, this.face2_Binary, this.face3_Binary, this.ppUsername, this.ppPassword).subscribe((res: any) => {
+      this.accountService.sendcreate(this.phoneNumber, this.password, this.fullname, this.face1_Binary, this.face2_Binary, this.face3_Binary).subscribe((res: any) => {
         console.log("face 3 Binary *****************");
         console.log(this.face3_Binary);
         console.log("face 3 Binary ******************");
@@ -102,6 +122,7 @@ export class RegistorPage implements OnInit {
     }
       
     )//end loading
+  }//end else
   }
 
 

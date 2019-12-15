@@ -25,8 +25,8 @@
         <h2 margin-bottom *ngIf="userDetail[0].data.status == 2">
             <ion-badge color="medium">Verifying...</ion-badge>
         </h2>
-        <ion-button icon-left color="light">
-          <ion-icon name="photos"></ion-icon>
+        <ion-button (click)="presentEditAvaActionSheet()" icon-left color="light">
+          <ion-icon  name="photos"></ion-icon>
           Edit / Add Avatar
         </ion-button>
         <!-- <ion-button icon-left color="light">
@@ -126,7 +126,22 @@
               <ion-checkbox></ion-checkbox>
             </ion-item>
           </ion-list> -->
-            <ion-list margin-bottom lines="none">
+          <ion-list margin-bottom lines="none">
+            <ion-list-header color="light">
+              <ion-label class="fw700">Wallet</ion-label>
+            </ion-list-header>
+            <ion-item>
+              <ion-label position="floating"><ion-icon name="cash"></ion-icon>Your money (VND)</ion-label>
+              <ion-input value="{{appComponent.formatNumber(userDetail[0].data.wallet)}}" readonly></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating"><ion-icon name="cash"></ion-icon>Add money (VND)</ion-label>
+              <ion-input type='number' [(ngModel)]="newMoney"></ion-input>
+            </ion-item>
+            <ion-button (click)="addMoney()">Add more money</ion-button>
+          </ion-list>
+          
+          <ion-list margin-bottom lines="none">
               <ion-list-header color="light">
                 <ion-label class="fw700">Your member</ion-label>
               </ion-list-header>

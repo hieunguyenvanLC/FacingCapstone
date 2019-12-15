@@ -53,7 +53,8 @@ export class HomePage {
   myPhoto: any;
   myPhotoBinary: string;
   tokenFCM: any;
-
+  currentOrder: any;
+  currentOrderStatus: any;
 
 
   constructor(
@@ -75,6 +76,8 @@ export class HomePage {
     this.shipperMode = false;
     this.stateOrder = 0;
     this.order.length = 0;
+    this.currentOrder = '';
+    this.currentOrderStatus = '';
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -100,7 +103,14 @@ export class HomePage {
       }
     });// end fcm
 
-
+    this.orderService.getCurrentOrder().subscribe(res => {
+      console.log("1");
+      console.log(res);
+      let tempArr = [];
+      tempArr.push(res);
+      this.currentOrder = tempArr[0].data.orderId;
+      this.currentOrderStatus = tempArr[0].data.orderStatus;
+    })//end api get current order
 
   }
 
@@ -109,22 +119,26 @@ export class HomePage {
   //    await this.loadMap();
   //   }
   async ionViewDidEnter() {
-    console.log("call ionViewDidLoad");
+    // console.log("call ionViewDidLoad");
     await this.platform.ready().then(() => {
       this.loadMap();
     });
     this.getUser();
+    console.log(this.currentOrder)
+    if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0) {
+      this.shipperMode = true;
+    }
   }
 
   getUser() {
-    this.accountService.getDetailUser().subscribe(
+    this.accountService.getAvatar().subscribe(
       res => {
         //this.userDetail.push(res);
         let tempArr = [];
         tempArr.push(res);
-        console.log("in get user----")
-        console.log(tempArr[0].data);
-        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.userImage, tempArr[0].data.extraPoint);
+        // console.log("in get avatar user----")
+        // console.log(tempArr[0].data);
+        this.appComponent.refreshSlideMenu(tempArr[0].data.name, tempArr[0].data.avatar, tempArr[0].data.sumRevenue);
       }, error => {
         console.log(error);
       },
@@ -140,40 +154,39 @@ export class HomePage {
 
   changeMode() {
     if (this.shipperMode) {
+      if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0) {
+        this.loading.present("Loading....").then(() => {
+          this.orderService.getOrderDetailById(this.currentOrder).subscribe(res => {
+            console.log("Change mode");
+            console.log(res);
+            this.order.length = 0;
+            this.order.push(res);
 
-      this.findOrder();
-      this.toastHandle.presentToast("Finding order");
-      //loading 
-      // this.loading.present("Finding order...").then(() => {
+            this.order[0].data["total"] = this.order[0].data.totalPrice + this.order[0].data.shipperEarn
+            this.order[0].data["shipperMoney"] = this.order[0].data.priceLevel * this.order[0].data.shipperEarn
+            if (this.order[0].message === "Success") {
+              if (this.order[0].data) {
+                this.isLoaded = true;
+                // add routing function here
+                this.loading.dismiss();
+                this.routingForShipper(this.order[0].data.storeLatitude, this.order[0].data.storeLongitude, false);
+                console.log(this.order[0].storeLatitude)
+                if (this.order[0].data.status !== 3) {
+                  this.stateOrder = 1;
+                } else {
+                  this.stateOrder = 2;
+                }
 
-      //   this.isLoading = true;
-      //   //call api to auto assign order
-      //   this.orderService.onShipMode(this.longitudeShp, this.latitudeShp, this.tokenFCM).subscribe(
-      //     res => {
-      //       console.log("Begin res: ");
-      //       console.log(res);
-      //       this.order.push(res);
-
-
-      //       if (this.order[0].message === "Success") {
-      //         if (this.order[0].data) {
-      //           this.isLoaded = true;
-      //           this.isLoading = false;
-      //           this.loading.dismiss();
-      //           console.log("in if success :"+this.order[0].data);
-      //         }
-      //       }//end if success
-      //       else if (this.order[0].message === "time out"){
-      //         // this.isLoaded = true;
-      //         this.isLoading = false;
-      //         this.loading.dismiss();
-      //         this.shipperMode = false;
-      //       }//end if time out
-      //     }, () => {
-      //       //handle finish loading
-      //     }
-      //   ); //end api auto assign order
-      // });//end loading
+                // this.isLoading = false;
+                // this.loading.dismiss();
+              }
+            }//end if success
+          })//end api get detail
+        })//end loading
+      } else {
+        this.findOrder();
+        this.toastHandle.presentToast("Finding order");
+      }
 
 
     } else {
@@ -185,7 +198,6 @@ export class HomePage {
       this.stateOrder = 0;
       this.toastHandle.presentToast("Shipper mode is off !");
     }
-    console.log(this.shipperMode);
   }
 
   findOrder() {
@@ -198,14 +210,15 @@ export class HomePage {
         res => {
           this.order.length = 0;
           this.order.push(res);
-
+          console.log("in find order")
+          console.log(res)
           this.order[0].data["total"] = this.order[0].data.totalPrice + this.order[0].data.shipperEarn
           this.order[0].data["shipperMoney"] = this.order[0].data.priceLevel * this.order[0].data.shipperEarn
           if (this.order[0].message === "Success") {
             if (this.order[0].data) {
               this.isLoaded = true;
               // add routing function here
-              this.routingForShipper(this.order);
+              this.routingForShipper(this.order[0].data.storeLatitude, this.order[0].data.storeLongitude, false);
               this.stateOrder = 1;
               // this.isLoading = false;
               // this.loading.dismiss();
@@ -227,77 +240,177 @@ export class HomePage {
     })//end geolocation
   }//end find order
 
-  routingForShipper(order) {
+
+
+  routingForShipper(desLatitude, desLongitude, isTakeBill) {
     // loadMap() {
     // console.log(order[0].data.latitude, order[0].data.longitude);
-    this.GoogleApiService.getAddressGoogle(order[0].data.storeLatitude, order[0].data.storeLongitude, order[0].data.latitude, order[0].data.longitude).then((resp) => {
-      // this.GoogleApiService.getAddressGoogle(10.831481, 106.676775, 10.827835, 106.679275).then((resp) => {
+    this.geolocation.getCurrentPosition().then(respGeo => {
+      //resp.coords.latitude, resp.coords.longitude
+      this.GoogleApiService.getAddressGoogle(respGeo.coords.latitude.toFixed(6), respGeo.coords.longitude.toFixed(6), desLatitude, desLongitude).then((resp) => {
+        // , order[0].data.latitude, order[0].data.longitude
+        console.log("at routing 1")
+        console.log("GEO" + respGeo.coords.latitude + " - " + respGeo.coords.longitude)
+        console.log("GEO" + (respGeo.coords.latitude).toFixed(6) + " - " + respGeo.coords.longitude.toFixed(6))
+        console.log("DES" + desLatitude + " - " + desLongitude);
+        // get resp
+        let positionList = [];
+        positionList.length = 0;
+        positionList.push(resp);
+        // get step
 
-      // get resp
-      let positionList = [];
-      positionList.length = 0;
-      positionList.push(resp);
-      // get step
+        //let steps = [];
 
-      //let steps = [];
+        let direct = [];
+        let steps = JSON.parse(resp.data);
+        // console.log("-----------");
+        // console.log(steps)
+        let stepsChild = steps.routes[0].legs[0].steps;
+        // console.log("steps here");
+        // console.log(stepsChild);
 
-      let direct = [];
-      let steps = JSON.parse(resp.data);
-      console.log("-----------");
-      console.log(steps)
-      let stepsChild = steps.routes[0].legs[0].steps;
-      console.log("steps here");
-      console.log(stepsChild);
-      stepsChild.forEach(element => {
-        direct.push(element.start_location);
-        direct.push(element.end_location);
-      });
-      console.log("direct here:");
-      console.log(direct);
-      // draw map 
-      let latLng = new google.maps.LatLng(order[0].data.storeLatitude, order[0].data.storeLongitude);
-      // let latLng = new google.maps.LatLng(10.831481, 106.676775);
-      let mapOptions = {
-        center: latLng,
+        stepsChild.forEach(element => {
+          direct.push(element.start_location);
+          direct.push(element.end_location);
+        });
+        // draw map
+        let latLng = new google.maps.LatLng(respGeo.coords.latitude, respGeo.coords.longitude);
+        // let latLng = new google.maps.LatLng(10.831481, 106.676775);
+        let mapOptions = {
+          center: latLng,
 
-        zoom: 17,
-        tilt: 30,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      }
-      this.map = null;
-      var map1: any;
-      map1 = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      map1.addListener('tilesloaded', () => {
-        console.log('accuracy', map1);
-        this.getAddressFromCoords(map1.center.lat(), map1.center.lng())
-      });
+          zoom: 16.8,
+          tilt: 30,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        this.map = null;
+        var map1: any;
+        map1 = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+        map1.addListener('tilesloaded', () => {
+          console.log('accuracy', map1);
+          this.getAddressFromCoords(map1.center.lat(), map1.center.lng())
+        });
 
-      let marker = new google.maps.Marker({
-        title: 'Store here',
-        map: map1,
-        position: latLng,
+        // let marker = new google.maps.Marker({
+        //   title: 'Store here',
+        //   map: map1,
+        //   position: latLng,
 
-      })
+        // })
+        let marker = new google.maps.Marker({
+          title: 'You are here',
+          map: map1,
+          position: latLng,
+          icon: {
+            url: '../../assets/image/shipper.png',
+            size: {
+              width: 30,
+              height: 40
+            }
+          },
+          snippet: 'You are here',
+        })
 
-      // draw rooting
-      const sleep = (milliseconds) => {
-        return new Promise(resolve => setTimeout(resolve, milliseconds))
-      }
+        if (isTakeBill === false) {
+          console.log("at routing 2")
+          let marker1 = new google.maps.Marker({
+            title: 'Building',
+            map: map1,
+            position: new google.maps.LatLng(desLatitude, desLongitude),
+            icon: {
+              url: './../../assets/image/building.svg',
+              // size: {
+              //     width: 30,
+              //     height: 40
+              //  }
+            },
+            snippet: '',
+          })//end marker building
+        }//end if not take bill
+        else {
+          console.log("at routing 3")
+          let marker1 = new google.maps.Marker({
+            title: 'Customer',
+            map: map1,
+            position: new google.maps.LatLng(desLatitude, desLongitude),
+            icon: {
+              url: '../../../assets/image/customer.png',
+              // size: {
+              //     width: 30,
+              //     height: 40
+              //  }
+            },
+            snippet: '',
+          })
+        }//end else
+
+        // let marker1 = new google.maps.Marker({
+        //   title: 'You are here',
+        //   map: this.map,
+        //   position: new google.maps.LatLng(location[1][0], location[1][1]),
+        //   icon:{
+        //     url: '../../assets/image/building.svg',
+        //     size: {
+        //         width: 30,
+        //         height: 40
+        //      }
+        //    },
+        //    snippet: 'You are here',
+        // })
+
+        // draw rooting
+        const sleep = (milliseconds) => {
+          return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
 
 
-      var polyline = new google.maps.Polyline({
-        path: direct,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 5
-      });
-      polyline.setMap(map1);
+        // var polyline = new google.maps.Polyline({
+        //   path: direct,
+        //   geodesic: true,
+        //   strokeColor: '#FF0000',
+        //   strokeOpacity: 1.0,
+        //   strokeWeight: 5
+        // });
+        // polyline.setMap(map1);
 
+        let directionsService = new google.maps.DirectionsService;
+        directionsService.route({
+          origin: { lat: respGeo.coords.latitude, lng: respGeo.coords.longitude },
+          destination: { lat: desLatitude, lng: desLongitude },
+          travelMode: google.maps.TravelMode['DRIVING']
+        }, (res, status) => {
+          if (status == google.maps.DirectionsStatus.OK) {
+            let decodedPoints = GoogleMaps.getPlugin().geometry.encoding.decodePath(
+              res.routes[0].overview_polyline
+            );
+            // map1.addPolyline({
+            //   points: decodedPoints,
+            //   'color': '#4a4a4a',
+            //   width: 4,
+            //   geodesic: false
+            // });
+            var polyline = new google.maps.Polyline({
+              path: decodedPoints,
+              geodesic: false,
+              strokeColor: '#FF0000',
+              strokeOpacity: 1.0,
+              strokeWeight: 5
+            });
+            polyline.setMap(map1);
 
-      this.map = map1;
-      // and resp
-    });
+          } else {
+            console.warn(status);
+          }
+
+        });
+
+        this.map = map1;
+        // and resp
+
+      });//end getaddress google
+
+    })
+
 
   }
 
@@ -395,6 +508,7 @@ export class HomePage {
             this.stateOrder = 2;
             this.toastHandle.presentToast("Take bill success !");
             this.loading.dismiss();
+            this.routingForShipper(this.order[0].data.latitude, this.order[0].data.longitude, true);
           }, (err) => {
             this.loading.dismiss();
             this.toastHandle.presentToast("Take bill error !");
@@ -422,7 +536,7 @@ export class HomePage {
         //           lat: 10.8027415,
         //           lng: 106.6440769
         //         },
-        zoom: 18,
+        zoom: 16.8,
         tilt: 30,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
@@ -435,17 +549,72 @@ export class HomePage {
       //   console.log('accuracy', this.map);
       //   this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
       // });
-
+      // for (let i = 0; i < location.length; i++){
+      //   let marker = new google.maps.Marker({
+      //     position: new google.maps.LatLng(location[i][0], location[i][1]),
+      //     title: 'You are here',
+      //     map: this.map,
+      //     icon:{
+      //       url: '../../assets/image/shipper.png',
+      //       size: {
+      //           width: 30,
+      //           height: 40
+      //        }
+      //      },
+      //      snippet: 'You are here',
+      //   })
+      // }
       let marker = new google.maps.Marker({
         title: 'You are here',
         map: this.map,
         position: latLng,
-
+        icon: {
+          url: '../../../assets/image/shipper.png',
+          size: {
+            width: 30,
+            height: 40
+          }
+        },
+        snippet: 'You are here',
       })
+      // let location = [
+      //   ["10.828232", "106.679107"],
+      //   ["10.827958", "106.679623"]
+      // ]
+      // let marker1 = new google.maps.Marker({
+      //   title: 'You are here',
+      //   map: this.map,
+      //   position: new google.maps.LatLng(location[0][0], location[0][1]),
+      //   icon:{
+      //     url: '../../assets/image/customer.png',
+      //     size: {
+      //         width: 30,
+      //         height: 40
+      //      }
+      //    },
+      //    snippet: 'You are here',
+      // })
+
+      // let marker2 = new google.maps.Marker({
+      //   title: 'You are here',
+      //   map: this.map,
+      //   position: new google.maps.LatLng(location[1][0], location[1][1]),
+      //   icon:{
+      //     url: '../../assets/image/building.svg',
+      //     size: {
+      //         width: 30,
+      //         height: 40
+      //      }
+      //    },
+      //    snippet: 'You are here',
+      // })
+
     }) //end geolocation get current
       .catch((error) => {
         console.log('Error getting location', error);
       });
+
+
   }
 
 
@@ -482,7 +651,7 @@ export class HomePage {
 
   //#endregion END MAP
 
-  callNow(){
+  callNow() {
     this.callNumber.callNumber(this.order[0].data.buyerPhone, true)
       .then(res => console.log('Launched dialer!', res))
       .catch(err => console.log('Error launching dialer', err));

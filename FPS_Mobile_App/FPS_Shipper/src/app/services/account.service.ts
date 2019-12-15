@@ -56,4 +56,11 @@ export class AccountService {
   logOut(){
     return this.apiHttpService.get(this.constant.LOGOUT);
   }
+
+  getAvatar(){
+    return this.apiHttpService.get(this.constant.MAP_SHP +
+                                   this.constant.MAP_API +
+                                   this.constant.ACCOUNT +
+                                   "/avatar");
+  }
 }

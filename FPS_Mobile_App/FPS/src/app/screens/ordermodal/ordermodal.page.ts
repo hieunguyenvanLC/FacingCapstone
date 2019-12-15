@@ -8,6 +8,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { AlertService } from 'src/app/services/alert.service';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-ordermodal',
@@ -37,7 +38,9 @@ export class OrdermodalPage implements OnInit {
   orderStatus: any;
 
   tokenFCM: any;
-  note : any;
+  note: any;
+  wallet: any;
+  isCreated = false;
 
   constructor(
     private navParams: NavParams,
@@ -52,17 +55,20 @@ export class OrdermodalPage implements OnInit {
     private firebase: Firebase,
     public alertController: AlertController,
     private alertHandle: AlertService,
-
+    private accountService: AccountService,
   ) {
     // componentProps can also be accessed at construction time using NavParams
     this.prodList = "";
     this.note = '';
+    this.wallet = '';
   }
   ngOnInit() {
 
     console.log(this.myOrder);
     console.log(this.note);
     this.total = this.myOrder[0].shpEarn + this.myOrder[0].subTotal;
+
+
 
     //firebase
     this.fcm.getToken().then(token => {
@@ -117,128 +123,67 @@ export class OrdermodalPage implements OnInit {
   }
 
   async checkout() {
-    console.log(this.myOrder[0].products.length)
-    for (let i = 0; i < this.myOrder[0].products.length; i++) {
-      const element = this.myOrder[0].products[i];
-      if (element != undefined) {
-        if (i == this.myOrder[0].products.length - 1) {
-          this.prodList += element.id + "x" + element.quantity;
-        } else {
-          this.prodList += element.id + "x" + element.quantity + "n";
-        }
-      }
-
-
-    }
-    //this.router.navigateByUrl("order");
-    console.log("cb create")
-    await this.orderService.createOrder(this.myOrder[0].longitudeCus, 
-                                        this.myOrder[0].latitudeCus, 
-                                        this.note, 
-                                        this.prodList, 
-                                        this.myOrder[0].distance, 
-                                        this.tokenFCM, 
-                                        this.myOrder[0].currentAddress)
-      .subscribe(data => {
-        console.log(data);
-        console.log("in create order ----");
-        this.temp.push(data);
-
-        //if not success, toast for error
-        if (this.temp[0].message !== "Success") {
-          this.presentToast("Error check out ! Try again !");
-        } else {
-          //handle success api create order
-          //this.loading.present("Finding shipper for your order...");
-          //this.presentToast("Order success ! Finding shipper...");
-          this.alertHandle.presentAler();
-          console.log(this.temp[0].data);
-
-          //get id order
-          this.orderId = this.temp[0].data;
-          console.log(this.orderId);
-
-          //this.router.navigateByUrl("order");
-
-          //-----get status order
-          if (this.orderId) {
-            // this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //   if (!this.temp) {
-            //     // console.log("in !temp");
-            //     // this.temp = [];
-            //     // this.temp.push(res);
-            //     // console.log(this.temp[0].data);
-            //   }else{
-            //     console.log("in temp");
-            //     this.temp = [];
-            //     this.temp.push(res);
-
-            //     console.log(this.temp[0].data);
-            //     //start if status
-            //     if (this.temp[0].data.status !== undefined){
-            //       this.orderStatus = this.temp[0].data.status;
-            //       console.log("order status - " + this.orderStatus + " - " + this.temp[0].data.status);
-
-
-
-            //     // while(this.orderStatus === 1){
-            //     //   console.log("in while loop");
-            //     //   setTimeout(()=> {
-            //     //     console.log("in while");
-            //     //     this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //     //       this.temp = [];
-            //     //       this.temp.push(res);
-            //     //       if (this.temp[0].data.status === 2){
-            //     //         this.orderStatus = this.temp[0].data.status;
-            //     //         console.log("in set interval - " + this.orderStatus);
-            //     //       }
-            //     //     });
-            //     //   }, 3*1000);
-            //     // }
-
-            //     // setInterval(() => {
-            //     //   console.log("set interval");
-            //     //   this.orderService.getOrderStatus(this.orderId).subscribe(res => {
-            //     //     this.temp = [];
-            //     //     this.temp.push(res);
-            //     //     if (this.temp[0].data.status === 2){
-            //     //       this.orderStatus = this.temp[0].data.status;
-            //     //       console.log("in set interval - " + this.orderStatus);
-            //     //       return;
-            //     //     }
-            //     //   });
-            //     // }, 5*1000)
-
-            //   }// end if status
-
-
-            //   }
-            // });
-            console.log("done request status !");
+    if (this.myOrder[0].userStatus === 2){
+      this.alertHandle.presentAlertWithMsg("WARNING", "Your account is being verified. Please try later !")
+    }else
+    if (this.total > this.myOrder[0].userWallet) {
+      this.presentWarningAlert(); //show warning alert
+    }//end if total > wallet 
+    else {
+      console.log(this.myOrder[0].products.length)
+      for (let i = 0; i < this.myOrder[0].products.length; i++) {
+        const element = this.myOrder[0].products[i];
+        if (element != undefined) {
+          if (i == this.myOrder[0].products.length - 1) {
+            this.prodList += element.id + "x" + element.quantity;
+          } else {
+            this.prodList += element.id + "x" + element.quantity + "n";
           }
-          //-----end get status order
-
         }
 
-        console.log("--end create order");
-      });
 
-    //get user status
+      }
+      //this.router.navigateByUrl("order");
+      console.log("cb create")
+      await this.orderService.createOrder(this.myOrder[0].longitudeCus,
+        this.myOrder[0].latitudeCus,
+        this.note,
+        this.prodList,
+        this.myOrder[0].distance,
+        this.tokenFCM,
+        this.myOrder[0].currentAddress)
+        .subscribe(data => {
+          console.log(data);
+          console.log("in create order ----");
+          this.temp.push(data);
+
+          //if not success, toast for error
+          if (this.temp[0].message !== "Success") {
+            this.presentToast("Error check out ! Try again !");
+          } else {
+            //handle success api create order
+            //this.loading.present("Finding shipper for your order...");
+            //this.presentToast("Order success ! Finding shipper...");
+            this.alertHandle.presentAler();
+            console.log(this.temp[0].data);
+            this.isCreated = true;
+
+            //get id order
+            this.orderId = this.temp[0].data;
+            console.log(this.orderId);
+          }
+
+          console.log("--end create order");
+        });
+
+      //get user status
+    }
+
 
 
   }//end checkout
 
   //for loading finding shipper
-  async presentLoading() {
-    const loadingController = document.querySelector('ion-loading-controller');
-    await loadingController.componentOnReady();
-
-    const loadingElement = await loadingController.create({
-      message: 'Finding shipper...',
-      duration: 2000,
-    });
-    loadingElement.present();
-  }
 
   //toast for notification
   async presentToast(myMessage) {
@@ -278,10 +223,11 @@ export class OrdermodalPage implements OnInit {
             console.log('Confirm Okay');
             // return false;
             //cancel order
-            this.orderService.cancelOrder(this.orderId,this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
-                             .subscribe(res => {
-                              console.log(res)
-                             })//end api cancel
+            this.orderService.cancelOrder(this.orderId, this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
+              .subscribe(res => {
+                console.log(res)
+                this.isCreated = false;
+              })//end api cancel
           }
         }
       ]
@@ -290,6 +236,14 @@ export class OrdermodalPage implements OnInit {
     await alert.present();
     alert.dismiss();
   }
+
+  cancelOrder() {
+    this.orderService.cancelOrder(this.orderId, this.myOrder[0].longitudeCus, this.myOrder[0].latitudeCus)
+      .subscribe(res => {
+        console.log(res)
+        this.isCreated = false;
+      })//end api cancel
+  }//end cancel order
 
   async showAddressModal() {
     // let modal = this.modalCtrl.create(AutocompletePage);
@@ -326,6 +280,31 @@ export class OrdermodalPage implements OnInit {
     //   modal.present();
     //   this.currentModal = modal;
     // });
+  }
+
+  async presentWarningAlert() {
+    const alert = await this.alertController.create({
+      header: 'Warning!',
+      message: 'Your wallet do not have enough money !!!',
+      buttons: [
+        {
+          text: 'Okay',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        },
+        // {
+        //   text: 'Okay',
+        //   handler: () => {
+        //     console.log('Confirm Okay');
+        //   }
+        // }
+      ]
+    });
+
+    await alert.present();
   }
 
 }

@@ -16,6 +16,8 @@ import {
   // NativeGeocoderForwardResult,
   NativeGeocoderOptions
 } from '@ionic-native/native-geocoder/ngx';
+import { OrderService } from 'src/app/services/order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +38,7 @@ export class HomePage {
   isLoaded = false;
   userDetail = [];
   username: any;
-
+  currentOrder : any;
   myAccount: any;
 
   constructor(
@@ -48,8 +50,10 @@ export class HomePage {
     private appComponent: AppComponent,
     private constant: Constant,
     private geolocation: Geolocation,
-    private nativeGeocoder: NativeGeocoder,
+    private orderService : OrderService,
+    public router: Router,
   ) {
+    this.currentOrder = '';
     console.log('contructor')
     this.storage.get("MYLOCATION").then(value => {
       if (value === null) {
@@ -77,12 +81,24 @@ export class HomePage {
   ngOnInit() {
     console.log("da tao");
     this.loading.present(this.constant.LOADINGMSG).then(() => {
+      this.orderService.getCurrentOrder().subscribe(res => {
+        console.log("current order")
+        let tempArr = [];
+        tempArr.push(res);
+        this.currentOrder = tempArr[0].data.orderId;
+        console.log(this.currentOrder);
+        if (this.currentOrder !== '' && this.currentOrder !== undefined && this.currentOrder !== 0){
+          this.router.navigate(['check-out', this.currentOrder]);
+          //return;
+        }
+      })//end get current order
       this.geolocation.getCurrentPosition().then((resp) => {
         console.log(resp.coords.latitude)
         console.log(resp.coords.longitude)
       this.storeService.getList(resp.coords.longitude, resp.coords.latitude).subscribe(
         res => {
           this.storesObj.push(res);
+          console.log(this.storesObj);
           this.storesObj[0].data.forEach(element => {
             this.stores.push(element);
           });

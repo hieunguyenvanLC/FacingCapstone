@@ -52,6 +52,8 @@ import { AlertService } from './services/alert.service';
 import { AddMemberPageModule } from './screens/add-member/add-member.module';
 import { ImageResizer } from '@ionic-native/image-resizer/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { PayPal } from '@ionic-native/paypal/ngx';
+import { ProfilePage } from './screens/profile/profile.page';
 
 @NgModule({
   declarations: [AppComponent],
@@ -90,6 +92,8 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
     FCM,
     ImageResizer,
     CallNumber,
+    PayPal,
+    AppComponent,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     
   ],

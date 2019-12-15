@@ -38,7 +38,7 @@
                     </div>
                     <div *ngIf=(isLoaded)>
                         <h3>
-                          Extra point: {{extraPoint}}
+                          Revenue: {{formatNumber(sumRevenue)}} ₫
                         </h3>
                       </div>
                     </ion-text>
@@ -49,13 +49,13 @@
                           <span>edit profile</span>
                         </ion-text>
                       </a>
-                      <ion-text color="medium"> | </ion-text>
+                      <!-- <ion-text color="medium"> | </ion-text>
                       <a tappable (click)="logout()">
                         <ion-text color="medium">
                           <ion-icon class="margin--2" name="log-out"></ion-icon>
                           <span>logout</span>
                         </ion-text>
-                      </a>
+                      </a> -->
                     </ion-menu-toggle>
                   </ion-label>
                 </ion-col>

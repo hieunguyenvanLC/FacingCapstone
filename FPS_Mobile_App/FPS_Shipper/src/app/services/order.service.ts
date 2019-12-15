@@ -66,4 +66,11 @@ export class OrderService {
                             this.constant.ORDER +
                             "/bill", formData);
   }
+
+  getCurrentOrder(){
+    return this.apiHttp.get(this.constant.MAP_LOG +
+                            this.constant.MAP_API +
+                            this.constant.ORDER +
+                            "/current");
+  }
 }

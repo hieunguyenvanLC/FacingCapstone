@@ -62,42 +62,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
-      //fireBase
-      // this.fcm.getToken().then(token => {
-      //   console.log(token);
-      // });// end fcm
-      // this.fcm.onNotification().subscribe(data => {
-      //   console.log(data);
-      //   if (data.wasTapped) {
-      //     console.log('Received in background');
-          
-      //     //data.order.id
-      //     this.loading.dismiss();
-      //     this.router.navigate(['check-out', data.order.id]);
-      //   } else {
-      //     console.log('Received in foreground');
-      //     // this.router.navigate([data.landing_page, data.price]);
-      //     this.loading.dismiss();
-      //     this.router.navigate(['check-out', data.order.id]);
-      //   }
-      // });// end fcm
-      // this.storage.clear().then(() => {
-        console.log(11111111)
-        // this.geolocation.getCurrentPosition().then((resp) => {
-        //   console.log(resp)
-        //   let lati = resp.coords.latitude;
-        //   let longi = resp.coords.longitude;
-        //   this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
-        //   // resp.coords.latitude
-        //   // resp.coords.longitude
-        // }).catch((error) => {
-        //   console.log('Error getting location: ', error);
-        // });
-       
       });
-
-    // });
   }
 
   refreshSlideMenu(name, avatar, status) {
@@ -115,19 +80,6 @@ export class AppComponent {
     this.router.navigateByUrl("profile");
   }
 
-  // getLocataion(){
-  //   this.geolocation.getCurrentPosition().then((resp) => {
-  //     console.log(resp)
-  //     let lati = resp.coords.latitude;
-  //     let longi = resp.coords.longitude;
-  //     this.storage.set("MYLOCATION", { latitude: lati, longitude: longi })
-  //     // resp.coords.latitude
-  //     // resp.coords.longitude
-  //   }).catch((error) => {
-  //     console.log('Error getting location: ', error);
-  //   });
-  // }
-
    async logout() {
     await this.accountService.logOut().subscribe(res => {
       console.log(res);
@@ -136,5 +88,9 @@ export class AppComponent {
       
       this.router.navigateByUrl("login");
     }); //end api log out
+  }
+
+  formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
   }
 }
